@@ -1,0 +1,68 @@
+li a {
+    color: green;
+}
+
+
+body {
+    background: white ;
+}
+
+.header {
+	height: auto;
+/*    margin: 34px auto 0;*/
+	width: 100%;
+
+}
+
+.semantic-title {
+}
+
+.anno-title {
+	color: #BF0A0A;
+    font-size: 3em;
+	float: left;
+    text-align: center;
+	width: 80%;
+}
+
+.container {
+	background-color: #6094CF;
+    border-color: #03357E;
+    border-style: solid;
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.4);
+/*    height: auto;
+    margin: 34px auto 0;*/
+	float: left;
+    width: 100%;
+/*	padding: 10em;*/
+}
+
+#logo-title {
+	display: inline;
+    float: left;
+/*	width: 20%;*/
+/*    overflow: hidden;
+    position: relative;
+    text-align: center;*/
+    width: 200px;
+}
+
+.input-text {
+    position: relative;
+	text-align: center;
+	margin: 0 auto;
+}
+
+.input-file {
+	position: relative;
+    text-align: center;
+	margin: 0 auto;
+}
+
+
+.site-slogan {
+    color: #BF0A0A;
+    font-size: 0.8em;
+    font-weight: normal;
+    padding: 0;
+}

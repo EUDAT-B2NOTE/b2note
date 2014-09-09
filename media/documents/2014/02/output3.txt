@@ -1,0 +1,60 @@
+('1. INTRODUCTION', 1, 2)
+('2010', 5, 1)
+('2010 EFFIS', 1, 2)
+('2010 fire season', 2, 3)
+('2011 spring', 1, 2)
+('Additional efforts', 1, 2)
+('Agriculture Organization', 1, 2)
+('August 2010', 1, 2)
+('Commission', 4, 1)
+('Commission departments', 1, 2)
+('Directorate General', 1, 2)
+('EC', 3, 1)
+http://vocabs.lter-europe.net/EnvThes/USLterCV_136 - decay rates
+http://vocabs.lter-europe.net/EnvThes/USLterCV_137 - decomposition
+http://vocabs.lter-europe.net/EnvThes/USLterCV_15 - advection
+http://vocabs.lter-europe.net/EnvThes/USLterCV_172 - ecology
+http://vocabs.lter-europe.net/EnvThes/USLterCV_173 - ecosystems
+http://vocabs.lter-europe.net/EnvThes/USLterCV_175 - electric exclusion
+http://vocabs.lter-europe.net/EnvThes/USLterCV_176 - electrical conductivity
+http://vocabs.lter-europe.net/EnvThes/USLterCV_179 - endangered species
+http://vocabs.lter-europe.net/EnvThes/USLterCV_211 - forest ecology
+http://vocabs.lter-europe.net/EnvThes/USLterCV_212 - forest ecosystems
+http://vocabs.lter-europe.net/EnvThes/USLterCV_237 - habitat selection
+http://vocabs.lter-europe.net/EnvThes/USLterCV_267 - insects
+http://vocabs.lter-europe.net/EnvThes/USLterCV_269 - invasive species
+http://vocabs.lter-europe.net/EnvThes/USLterCV_290 - leaf decomposition
+http://vocabs.lter-europe.net/EnvThes/USLterCV_303 - litter decomposition
+http://vocabs.lter-europe.net/EnvThes/USLterCV_360 - natural selection
+http://vocabs.lter-europe.net/EnvThes/USLterCV_399 - paleoecology
+http://vocabs.lter-europe.net/EnvThes/USLterCV_41 - aquatic ecosystems
+http://vocabs.lter-europe.net/EnvThes/USLterCV_427 - plant ecology
+http://vocabs.lter-europe.net/EnvThes/USLterCV_431 - plant species
+http://vocabs.lter-europe.net/EnvThes/USLterCV_432 - plant species composition
+http://vocabs.lter-europe.net/EnvThes/USLterCV_443 - precipitation
+http://vocabs.lter-europe.net/EnvThes/USLterCV_457 - recovery
+http://vocabs.lter-europe.net/EnvThes/USLterCV_458 - recruitment
+http://vocabs.lter-europe.net/EnvThes/USLterCV_460 - reflectance
+http://vocabs.lter-europe.net/EnvThes/USLterCV_476 - root decomposition
+http://vocabs.lter-europe.net/EnvThes/USLterCV_490 - secchi depth
+http://vocabs.lter-europe.net/EnvThes/USLterCV_540 - speciation
+http://vocabs.lter-europe.net/EnvThes/USLterCV_541 - species
+http://vocabs.lter-europe.net/EnvThes/USLterCV_542 - species composition
+http://vocabs.lter-europe.net/EnvThes/USLterCV_543 - species diversity
+http://vocabs.lter-europe.net/EnvThes/USLterCV_544 - species interactions
+http://vocabs.lter-europe.net/EnvThes/USLterCV_545 - species lists
+http://vocabs.lter-europe.net/EnvThes/USLterCV_546 - species richness
+http://vocabs.lter-europe.net/EnvThes/USLterCV_548 - specific conductivity
+http://vocabs.lter-europe.net/EnvThes/USLterCV_549 - specific leaf area
+http://vocabs.lter-europe.net/EnvThes/USLterCV_559 - stream ecology
+http://vocabs.lter-europe.net/EnvThes/USLterCV_634 - wind direction
+http://vocabs.lter-europe.net/EnvThes/USLterCV_588 - time domain reflectometry
+http://vocabs.lter-europe.net/EnvThes/USLterCV_594 - transects
+http://vocabs.lter-europe.net/EnvThes/USLterCV_675 - ecosystem ecology
+http://vocabs.lter-europe.net/EnvThes/USLterCV_716 - ecosystem properties
+http://vocabs.lter-europe.net/EnvThes/USLterCV_798 - terrestrial ecosystems
+http://vocabs.lter-europe.net/EnvThes/EnvEu_16 - decomposers
+http://vocabs.lter-europe.net/EnvThes/EnvEu_78 - electric. connectivity
+http://vocabs.lter-europe.net/EnvThes/EnvEu_123 - isotopes measurements (Delta 13C measurement, Delta 15N measurement, 14C age, specify)
+http://vocabs.lter-europe.net/EnvThes/EnvEu_106 - reflected global radiation
+http://vocabs.lter-europe.net/EnvThes/EnvEu_121 - 

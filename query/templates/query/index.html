@@ -1,0 +1,60 @@
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'query/style.css' %}" />
+
+<body>
+<div class="header">
+	<div id="logo-title">
+		<a title="EUDAT" href="/">
+			<img id="logo" src="{% static 'query/images/EUDAT-logo.png' %}">
+		</a>
+	<div class="site-slogan"> European Data Infrastructure</div>
+	</div>
+	<div id="title" class="anno-title">
+		<p>
+		<span class="semantic-title"> EUDAT B2NOTE</span>
+		</p>
+	</div>
+</div>
+
+<div class="container">
+<form action="{% url 'query:query_vocab' %}" method="post">
+	{% csrf_token %}
+	<div id="input-text" class="input-text">
+	<table class="input-text">
+		<tr><th colspan="2"> Input text </th></tr>
+		</tr>
+		<tr><td colspan="2"><textarea name="text_parse" cols=120 rows=20></textarea></td></tr>
+		<tr>
+			<td><p> Select Onthology: </p>
+				<select name="ontology">
+					{% for ontology in ont.name %}
+					<option value="{{ ontology }}">{{ ontology }}</option>
+					{% endfor %}
+				</select>
+			</td>
+			<td><input type="submit" value="Query Text!"></td></tr>
+	</table>
+	</div>
+</form>
+<form action="{% url 'query:query_file' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div id="input-text" class="input-text">
+            <p>{{ form.non_field_errors }}</p>
+            <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
+            <p>
+                {{ form.docfile.errors }}
+                {{ form.docfile }}
+            </p>
+	 <p> Select Onthology: <select name="ontology">
+					{% for ontology in ont.name %}
+					<option value="{{ ontology }}">{{ ontology }}</option>
+					{% endfor %}
+				</select></p>
+            <p><input type="submit" value="Upload and Query file!" /></p>
+            </div>
+</form>
+
+</div>
+
+</body>

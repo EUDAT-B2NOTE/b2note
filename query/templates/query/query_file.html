@@ -1,0 +1,15 @@
+<table border="1">
+<thead>
+	<tr>
+		<th> Concept </th>
+		<th> Value </th>
+		<th> term </th>
+	</tr>
+</thead>
+<tbody>
+{% for out in text %}
+
+	<tr><td> {{ out.0 }} </td><td>{{ out.1 }}</td> <td>{{ out.2 }}</td></tr>
+{% endfor %}
+</tbody>
+</table>
