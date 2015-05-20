@@ -1,2 +1,0 @@
-The evaluation of ecosystem services in the LTSER platform Eisenwurzen is mainly based on biodiversity variables and geo-chemical properties. 
-This allows to use the invest model to calculate selected services.
