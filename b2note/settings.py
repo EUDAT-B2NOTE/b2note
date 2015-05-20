@@ -12,17 +12,16 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '((kdo%e4pg3wam0hjc0gd(je=msw^(jd-3(j(3k4g#v_)zhv+2'
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ['DJANGO_DEBUG_MODE']
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = os.environ['DJANGO_DEBUG_MODE']
 
 ALLOWED_HOSTS = []
 
@@ -65,11 +64,11 @@ WSGI_APPLICATION = 'b2note.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join('/var/www/b2note/', 'db.sqlite3'),
+        'NAME': os.environ['DJANGO_DB_NAME'],
     }
 }
 
-MEDIA_ROOT = '/bsc/support/apps/EUDAT/django/b2note/media/'
+MEDIA_ROOT = os.environ['DJANGO_MEDIA_PATH']
 MEDIA_URL = '/media/'
 
 # Internationalization
