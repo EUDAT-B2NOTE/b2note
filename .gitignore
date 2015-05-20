@@ -58,6 +58,7 @@ target/
 
 # b2note staff
 media/
+media/*
 db.*
 
 # Eclipse project
