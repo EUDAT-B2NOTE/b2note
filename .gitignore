@@ -56,7 +56,7 @@ docs/_build/
 # PyBuilder
 target/
 
-# b2note staff
+# b2note stuff
 media/
 media/*
 db.*
@@ -64,3 +64,6 @@ db.*
 # Eclipse project
 .pydevproject
 .project
+
+# local scripts
+*.sh
