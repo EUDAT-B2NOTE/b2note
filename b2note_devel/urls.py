@@ -20,4 +20,6 @@ urlpatterns = patterns('',
     url(r'^search/$', 'searchapp.views.typeahead', name='typeahead'),
     url(r'^search/', 'searchapp.views.ontology_search', name='ontology_search'),
     url(r'^testsearch/', 'testsearch.views.search', name='test_search'),
+    url(r'^hostpage', 'searchapp.views.hostpage'),
+    url(r'^interface_main', 'searchapp.views.interface_main'),
 )

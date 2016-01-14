@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <style>
+
+            ul {
+
+                display: block;
+                list-style-type: none;
+                margin-top: 1 em;
+                margin-bottom: 1 em;
+                margin-left: 0;
+                margin-right: 0;
+                padding-left: 5px;
+
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        {% if subject_tofeed|length = 0 %}
+
+            <script>
+
+                window.parent.document.getElementById('b2note_iframe').style.visibility="hidden";
+
+            </script>
+
+        {% else %}
+
+            <script>
+
+                window.parent.document.getElementById('b2note_iframe').style.visibility="visible";
+
+            </script>
+
+
+            <script>
+
+                //http://stackoverflow.com/questions/6754935/how-to-close-an-iframe-within-iframe-itself
+
+                function closeWin() {
+
+                    window.parent.document.getElementById('b2note_iframe').style.visibility="hidden";
+
+                }
+
+            </script>
+
+            <div align="right">
+
+                <input type = "button" value = "Export" title = "All your annotations as JSON" align = "right" />
+
+                <input type = "button" value = "Publish" title = "Make annotations available to SPARQL queries" align = "right" />
+
+                <input type = "button" value = "Settings" title = "Manage source ontologies" align = "right" />
+
+                <input class = question name="Close" type ="button" value = "x" title = "Close B2Note interface" onClick = "closeWin()" />
+
+            </div>
+
+            <h2 align="center">B2Note prototype interface</h2>
+
+            <hr><br>
+
+            <div align="center">
+
+                Subject: <b>{{subject_tofeed}}</b>
+
+            </div>
+
+            <br><hr>
+
+            <div>
+
+                <h3>Create annotation section</h3>
+
+                <p>
+
+                    Type keyword:
+
+                    <br>
+
+                    <input type="text" style="width: 250px;" value="# Solr-based autocomplete goes here #" readonly/>
+
+                </p>
+
+            </div>
+
+            <br><hr>
+
+            <div>
+
+                <h3>Current annotations section</h3>
+
+                    <i>List of annotations goes here (requires data-model implemented)</i>
+
+<!--  List of annotations goes here (requires data-model implemented) abremaud 14/01/2016:
+
+                <ul>
+
+                {% for tripl in triple_list %}
+
+                    {% if subject_tofeed in tripl.subject %}
+
+                        <li>{{tripl.predicate}} {{tripl.object}}</li>
+
+                    {% endif %}
+
+                {% endfor %}
+
+                </ul>
+
+-->
+
+            </div>
+
+        {% endif %}
+
+    </body>
+
+</html>

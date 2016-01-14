@@ -1,0 +1,65 @@
+<body>
+
+    <!--
+    # http://oliverspindler.com/articles/2012/06/06/abominable-iframe/
+    # <iframe src="iframed_src" onload="this.style.height = (this.contentWindow.document.body.scrollHeight) + 'px';" scroll="auto"></iframe>
+    -->
+
+    <!-- http://stackoverflow.com/questions/12102464/how-do-i-make-iframes-load-only-on-a-button-click -->
+    <iframe id="b2note_iframe" name="b2note_iframe" src="/interface_main" width={{iframe_on}} style="float:right; border:none" onload="this.style.height = (this.contentWindow.document.body.scrollHeight) + 'px';" scroll="auto"></iframe>
+
+    <script>
+        // http://stackoverflow.com/questions/1735230/can-i-add-custom-attribute-to-html-tag
+        document.getElementById("b2note_iframe").subject_tofeed = "{{ subject_tofeed }}"
+    </script>
+
+    <br>
+
+	<h1>Standing for B2Find results page</h1>
+	<br>
+	<p>This page displays hyperlinks to be annotated and hosts new B2Note interface iframe.</p>
+	<br><br>
+
+	<form action="interface_main" method="post" target="b2note_iframe">
+        {% csrf_token %}
+        <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/30" class="field left" readonly="readonly"/>
+        <a href="https://b2share.eudat.eu/record/30">Orthography-based dating and localisation of Middle Dutch charters</a>
+        <input type="submit" id="button1" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
+	</form>
+
+	<form action="interface_main" method="post" target="b2note_iframe">
+        {% csrf_token %}
+        <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/45" class="field left" readonly="readonly"/>
+        <a href="https://b2share.eudat.eu/record/45">ImageJ plugin ColonyArea</a>
+        <input type="submit" id="button2" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
+	</form>
+
+	<form action="interface_main" method="post" target="b2note_iframe">
+        {% csrf_token %}
+        <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/66" class="field left" readonly="readonly"/>
+        <a href="https://b2share.eudat.eu/record/66">REST paper 2014</a>
+        <input type="submit" id="button3" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
+	</form>
+
+	<form action="interface_main" method="post" target="b2note_iframe">
+        {% csrf_token %}
+        <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/88" class="field left" readonly="readonly"/>
+        <a href="https://b2share.eudat.eu/record/88">piSVM Analytics Runtimes JUDGE Cluster Rome Images 55 Features</a>
+        <input type="submit" id="button4" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
+	</form>
+
+	<form action="interface_main" method="post" target="b2note_iframe">
+        {% csrf_token %}
+        <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/125" class="field left" readonly="readonly"/>
+	    <a href="https://b2share.eudat.eu/record/125">GoNL SNPs and Indels release 5</a>
+        <input type="submit" id="button5" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
+	</form>
+
+	<form action="interface_main" method="post" target="b2note_iframe">
+        {% csrf_token %}
+        <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/127" class="field left" readonly="readonly"/>
+        <a href="https://b2share.eudat.eu/record/127">Influence of smoking and obesity in sperm quality</a>
+        <input type="submit" id="button6" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
+	</form>
+
+</body>
