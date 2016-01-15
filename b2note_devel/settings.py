@@ -20,10 +20,10 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django_mongodb_engine', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'b2note_mongodb',                      # Or path to database file if using sqlite3.
+        'NAME': os.environ['MONGODB_NAME'],                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
-        'USER': 'b2note',
-        'PASSWORD': 'eudat_2015;',
+        'USER': os.environ['MONGODB_USR'],
+        'PASSWORD': os.environ['MONGODB_PWD'],
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
     }
