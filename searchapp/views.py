@@ -30,7 +30,7 @@ def ontology_search(request):
 
 
 def hostpage(request):
-    return render(request, 'searchapp/hostpage.html', {'iframe_on': 300})
+    return render(request, 'searchapp/hostpage.html', {'iframe_on': 350})
 
 
 def interface_main(request):

@@ -1,8 +1,22 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 
     <head>
+    	<meta charset="UTF-8">
+
+    	{% load staticfiles %}
+	<link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.css' %}" />
+	<link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
+	<link rel='stylesheet' type='text/css' href="{% static 'css/dashboard.css' %}" />
+
+	<script src="{% static "js/jquery-1.11.3.min.js" %}"></script>
+	<script src="{% static "js/bloodhound.js" %}"></script>
+	<script src="{% static "js/handlebars-v4.0.0.js" %}"></script>
+	<script src="{% static "js/bootstrap.min.js" %}"></script>
+	<script src="{% static "js/ontology-typeahead.js" %}"></script>
+	<script src="{% static "js/underscore-min.js" %}"></script>
+	<script src="{% static "js/typeahead.min.js" %}"></script>
 
         <style>
 
@@ -19,7 +33,7 @@
             }
 
         </style>
-
+	<title></title>
     </head>
 
     <body>
@@ -81,15 +95,12 @@
 
                 <h3>Create annotation section</h3>
 
-                <p>
+<!--                <p> Type keyword: </p> -->
 
-                    Type keyword:
-
-                    <br>
-
-                    <input type="text" style="width: 250px;" value="# Solr-based autocomplete goes here #" readonly/>
-
-                </p>
+<!--                    <input type="text" style="width: 250px;" value="# Solr-based autocomplete goes here #" readonly/> -->
+		   <div class="form-group">
+                       <input type="text" class="form-control" style="width: 250px;" name="q" id="id_q" value="{{ query }}"  placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" />
+		   </div>
 
             </div>
 
