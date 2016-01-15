@@ -1,6 +1,7 @@
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from django.template import RequestContext
+from .models import Annotation
 
 
 def index(request):
@@ -34,16 +35,20 @@ def hostpage(request):
 
 
 def interface_main(request):
+    annotation_list = Annotation.objects.all()
     #triple_list = Triple.objects.all()
     if request.POST.get('subject_tofeed')==None:
         context = RequestContext(request, {
             #'triple_list': triple_list,
+	    'annotation_list': annotation_list,
             'subject_tofeed': ""
         })
     else:
         print request.POST.get('subject_tofeed')
         context = RequestContext(request, {
             #'triple_list': triple_list,
+	    'annotation_list': annotation_list,
             'subject_tofeed': request.POST.get('subject_tofeed'),
         })
     return render_to_response('searchapp/interface_main.html', context)
+ 

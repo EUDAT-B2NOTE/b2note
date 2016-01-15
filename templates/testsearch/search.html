@@ -26,7 +26,7 @@
     <div class="container-fluid">
         <div class="navbar-header">
 
-            <form class="navbar-form navbar-left" role="search" method="get" action="{% url 'ontology_search' %}">
+            <form class="navbar-form navbar-left" role="search" method="post" action="{% url 'save_data' %}">
                 <div class="form-group">
                     <input type="text" class="form-control" style="width: 250px;" placeholder="Ontology search">
                 </div>

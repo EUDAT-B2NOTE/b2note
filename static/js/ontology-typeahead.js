@@ -22,7 +22,8 @@ $(document).ready( function() {
                     return{
                         label : suggestionSet.labels,
                         ontology_name : suggestionSet.ontology_name,
-                        short_form : suggestionSet.short_form
+                        short_form : suggestionSet.short_form,
+			json_document: suggestionSet
                     };
                 });
             }
@@ -54,7 +55,9 @@ $(document).ready( function() {
                 suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}</p>' + '  {{short_form}}   #{{ontology_name}}</p>')
             },
             engine: Handlebars
-        });
+        }).on('typeahead:selected', function(evt, data) {
+            alert(JSON.stringify(data.json_document));
+    });
 
 
 });

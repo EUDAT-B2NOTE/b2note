@@ -110,8 +110,6 @@
 
                 <h3>Current annotations section</h3>
 
-                    <i>List of annotations goes here (requires data-model implemented)</i>
-
 <!--  List of annotations goes here (requires data-model implemented) abremaud 14/01/2016:
 
                 <ul>
@@ -129,6 +127,13 @@
                 </ul>
 
 -->
+		  <ul>
+                     {% for annotation in annotation_list %}
+                        {% if subject_tofeed in annotation.triple.subject.iri %}
+                          <li>{{annotation.triple.predicate.label}} {{annotation.triple.object.label}}</li>
+                        {% endif %}
+                      {% endfor %}
+                  </ul>
 
             </div>
 

@@ -16,10 +16,11 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', 'searchapp.views.index', name='index'),
+    url(r'^$', 'searchapp.views.hostpage', name='index'),
     url(r'^search/$', 'searchapp.views.typeahead', name='typeahead'),
     url(r'^search/', 'searchapp.views.ontology_search', name='ontology_search'),
     url(r'^testsearch/', 'testsearch.views.search', name='test_search'),
     url(r'^hostpage', 'searchapp.views.hostpage'),
     url(r'^interface_main', 'searchapp.views.interface_main'),
+    url(r'^test', 'testsearch.views.fetch_data'),
 )
