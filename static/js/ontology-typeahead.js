@@ -33,6 +33,12 @@ $(document).ready( function() {
 
     engine.initialize();
 
+    var elem = document.getElementById("subject");
+    var subject = "";
+    if (elem) {
+    	subject = elem.getElementsByTagName("b")[0].innerHTML;
+    }
+
     $('#id_q').typeahead({
             hint: true,
             highlight: true,
@@ -56,8 +62,11 @@ $(document).ready( function() {
             },
             engine: Handlebars
         }).on('typeahead:selected', function(evt, data) {
-            alert(JSON.stringify(data.json_document));
+	
+            $.post('interface_main',
+	    	    {
+		    	ontology_json: JSON.stringify(data.json_document),
+		    	subject_tofeed: subject
+		    });
     });
-
-
 });

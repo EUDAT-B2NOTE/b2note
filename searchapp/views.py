@@ -1,6 +1,7 @@
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from django.template import RequestContext
+from django.views.decorators.csrf import csrf_exempt
 from .models import Annotation
 
 
@@ -29,14 +30,20 @@ def ontology_search(request):
 
     return render_to_response('searchapp/search.html', context_dict, context)
 
-
 def hostpage(request):
     return render(request, 'searchapp/hostpage.html', {'iframe_on': 350})
 
 
+# forbidden CSRF verification failed. Request aborted.
+@csrf_exempt
 def interface_main(request):
     annotation_list = Annotation.objects.all()
     #triple_list = Triple.objects.all()
+    if request.POST.get('ontology_json'):
+            print request.POST.get('ontology_json')
+	    print request.POST.get('subject_tofeed')
+
+
     if request.POST.get('subject_tofeed')==None:
         context = RequestContext(request, {
             #'triple_list': triple_list,
