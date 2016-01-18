@@ -38,24 +38,24 @@ def hostpage(request):
 @csrf_exempt
 def interface_main(request):
     annotation_list = Annotation.objects.all()
+<<<<<<< HEAD
     #triple_list = Triple.objects.all()
     if request.POST.get('ontology_json'):
             print request.POST.get('ontology_json')
 	    print request.POST.get('subject_tofeed')
 
 
+=======
+>>>>>>> DisplayListStyle
     if request.POST.get('subject_tofeed')==None:
         context = RequestContext(request, {
-            #'triple_list': triple_list,
-	    'annotation_list': annotation_list,
+	        'annotation_list': annotation_list,
             'subject_tofeed': ""
         })
     else:
         print request.POST.get('subject_tofeed')
         context = RequestContext(request, {
-            #'triple_list': triple_list,
-	    'annotation_list': annotation_list,
+	        'annotation_list': annotation_list,
             'subject_tofeed': request.POST.get('subject_tofeed'),
         })
     return render_to_response('searchapp/interface_main.html', context)
- 
