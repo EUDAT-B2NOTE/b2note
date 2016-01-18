@@ -18,12 +18,36 @@
         <script src="{% static "js/underscore-min.js" %}"></script>
         <script src="{% static "js/typeahead.min.js" %}"></script>
 
+
         <style>
-            table, td, tr {
 
-                border: 0px solid black;
+            /*
+                http://stackoverflow.com/questions/28222672/navigate-html-table-rows-with-javascript
+                http://jsfiddle.net/vsgkjssq/5/
+            */
 
+            * {
+                font-size: 12px;
+                font-family:'Verdana', Arial, Sans-Serif;
+                box-sizing: border-box;
             }
+            table {
+                border: 1px solid black;
+            }
+            table tr td {
+                border: 1px solid lightgray;
+                padding: 2px;
+            }
+            table, td {
+                border-collapse:collapse;
+                border: solid 1px #ccc;
+                padding: 2px 4px;
+                text-align: center;
+            }
+            tr:nth-child(2n) {
+                background: #f1f1f1;
+            }
+
         </style>
 	<title></title>
     </head>
