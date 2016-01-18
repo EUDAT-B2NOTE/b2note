@@ -110,30 +110,19 @@
 
                 <h3>Current annotations section</h3>
 
-<!--  List of annotations goes here (requires data-model implemented) abremaud 14/01/2016:
-
-                <ul>
-
-                {% for tripl in triple_list %}
-
-                    {% if subject_tofeed in tripl.subject %}
-
-                        <li>{{tripl.predicate}} {{tripl.object}}</li>
-
-                    {% endif %}
-
-                {% endfor %}
-
-                </ul>
-
--->
-		  <ul>
-                     {% for annotation in annotation_list %}
-                        {% if subject_tofeed in annotation.triple.subject.iri %}
-                          <li>{{annotation.triple.predicate.label}} {{annotation.triple.object.label}}</li>
-                        {% endif %}
-                      {% endfor %}
-                  </ul>
+                    <ul>
+                        {% for annotation in annotation_list %}
+                            {% if subject_tofeed in annotation.triple.subject.iri %}
+                                {% if annotation.triple.object.label != "" %}
+                                    {% if "http://" in annotation.triple.object.iri %}
+                                        <li>{{annotation.triple.predicate.label}} <a href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></li>
+                                    {% else %}
+                                        <li>{{annotation.triple.predicate.label}} {{annotation.triple.object.label}}</li>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
 
             </div>
 
