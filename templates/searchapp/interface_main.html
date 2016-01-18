@@ -110,19 +110,27 @@
 
                 <h3>Current annotations section</h3>
 
-                    <ul>
-                        {% for annotation in annotation_list %}
-                            {% if subject_tofeed in annotation.triple.subject.iri %}
-                                {% if annotation.triple.object.label != "" %}
-                                    {% if "http://" in annotation.triple.object.iri %}
-                                        <li>{{annotation.triple.predicate.label}} <a href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></li>
-                                    {% else %}
-                                        <li>{{annotation.triple.predicate.label}} {{annotation.triple.object.label}}</li>
+                    <div border="1" style="height:200px;width:100%;overflow:auto;">
+                        <table>
+                            {% for annotation in annotation_list %}
+                                {% if subject_tofeed in annotation.triple.subject.iri %}
+                                    {% if annotation.triple.object.label != "" %}
+                                        {% if "http://" in annotation.triple.object.iri %}
+                                            <tr>
+                                                <td>{{annotation.triple.predicate.label}}</td>
+                                                <td><a href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></td>
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+                                                <td>{{annotation.triple.predicate.label}}</td>
+                                                <td>{{annotation.triple.object.label}}</td>
+                                            </tr>
+                                        {% endif %}
                                     {% endif %}
                                 {% endif %}
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
+                            {% endfor %}
+                        </table>
+                    </div>
 
             </div>
 
