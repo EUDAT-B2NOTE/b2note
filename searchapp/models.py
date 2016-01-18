@@ -50,10 +50,10 @@ for tupl in loadup_info:
 			predicate=models.TripleElement(iri="http://purl.obolibrary.org/obo/IAO_0000136",label="is about",definition="Is_about is a (currently) primitive relation that relates an information artifact to an entity.",curation_status="pending final vetting",ontology_iri="http://purl.obolibrary.org/obo/iao.owl",ontology_shortname="IAO",ontology_version="2015,02,23",),\
 			object=models.TripleElement(\
 				iri=tupl[0],\
-				label=tupl[1],
-				definition="",
-				curation_status="",
-				ontology_iri="",
+				label=tupl[1],\
+				definition="",\
+				curation_status="",\
+				ontology_iri="",\
 				ontology_shortname="",\
 				ontology_version="",\
 			),\

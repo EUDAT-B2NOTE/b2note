@@ -6,32 +6,24 @@
     	<meta charset="UTF-8">
 
     	{% load staticfiles %}
-	<link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.css' %}" />
-	<link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
-	<link rel='stylesheet' type='text/css' href="{% static 'css/dashboard.css' %}" />
+        <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.css' %}" />
+        <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
+        <link rel='stylesheet' type='text/css' href="{% static 'css/dashboard.css' %}" />
 
-	<script src="{% static "js/jquery-1.11.3.min.js" %}"></script>
-	<script src="{% static "js/bloodhound.js" %}"></script>
-	<script src="{% static "js/handlebars-v4.0.0.js" %}"></script>
-	<script src="{% static "js/bootstrap.min.js" %}"></script>
-	<script src="{% static "js/ontology-typeahead.js" %}"></script>
-	<script src="{% static "js/underscore-min.js" %}"></script>
-	<script src="{% static "js/typeahead.min.js" %}"></script>
+        <script src="{% static "js/jquery-1.11.3.min.js" %}"></script>
+        <script src="{% static "js/bloodhound.js" %}"></script>
+        <script src="{% static "js/handlebars-v4.0.0.js" %}"></script>
+        <script src="{% static "js/bootstrap.min.js" %}"></script>
+        <script src="{% static "js/ontology-typeahead.js" %}"></script>
+        <script src="{% static "js/underscore-min.js" %}"></script>
+        <script src="{% static "js/typeahead.min.js" %}"></script>
 
         <style>
+            table, td, tr {
 
-            ul {
-
-                display: block;
-                list-style-type: none;
-                margin-top: 1 em;
-                margin-bottom: 1 em;
-                margin-left: 0;
-                margin-right: 0;
-                padding-left: 5px;
+                border: 0px solid black;
 
             }
-
         </style>
 	<title></title>
     </head>
@@ -110,22 +102,23 @@
 
                 <h3>Current annotations section</h3>
 
-                    <div border="1" style="height:200px;width:100%;overflow:auto;">
+                    <div border="1" style="height:150px;width:100%;overflow:auto;">
                         <table>
                             {% for annotation in annotation_list %}
                                 {% if subject_tofeed in annotation.triple.subject.iri %}
                                     {% if annotation.triple.object.label != "" %}
+                                        <tr>
                                         {% if "http://" in annotation.triple.object.iri %}
-                                            <tr>
-                                                <td>{{annotation.triple.predicate.label}}</td>
-                                                <td><a href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></td>
-                                            </tr>
+                                            <td style="width:20%;text-align:center">{{annotation.triple.predicate.label}}</td>
+                                            <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
+                                            <td style="width:75%"><a target="_parent" href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></td>
                                         {% else %}
-                                            <tr>
-                                                <td>{{annotation.triple.predicate.label}}</td>
-                                                <td>{{annotation.triple.object.label}}</td>
-                                            </tr>
+                                            <td style="width:20%;text-align:center">{{annotation.triple.predicate.label}}</td>
+                                            <td style="width:75%">{{annotation.triple.object.label}}</td>
                                         {% endif %}
+                                        <!-- https://commons.wikimedia.org/wiki/File:Emojione_274C.svg -->
+                                        <td style="width:5%"><img width="8px" src="{% static "Emojione_274C.svg" %}" title="Delete annotation" alt="DelIco"/></td>
+                                        </tr>
                                     {% endif %}
                                 {% endif %}
                             {% endfor %}
