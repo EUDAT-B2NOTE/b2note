@@ -42,26 +42,20 @@ def hostpage(request):
 @csrf_exempt
 def interface_main(request):
 
-    if request.POST.get('ontology_json'):
-        CreateFromPOSTinfo( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
-
     annotation_list = Annotation.objects.all()
 
-    pid_tofeed = ""
-    if request.POST.get('pid_tofeed')!=None:
-        pid_tofeed = request.POST.get('pid_tofeed')
+    if request.POST.get('ontology_json'):
+        CreateFromPOSTinfo( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
 
     if request.POST.get('subject_tofeed')==None:
         context = RequestContext(request, {
 	        'annotation_list': annotation_list,
-            'subject_tofeed': "",
-            'pid_tofeed': pid_tofeed,
+            'subject_tofeed': ""
         })
     else:
         #print request.POST.get('subject_tofeed')
         context = RequestContext(request, {
 	        'annotation_list': annotation_list,
             'subject_tofeed': request.POST.get('subject_tofeed'),
-            'pid_tofeed': pid_tofeed,
         })
     return render_to_response('searchapp/interface_main.html', context)
