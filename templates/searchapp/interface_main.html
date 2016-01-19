@@ -135,7 +135,7 @@
                                         {% if "http://" in annotation.triple.object.iri %}
                                             <td style="width:20%;text-align:center">{{annotation.triple.predicate.label}}</td>
                                             <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
-                                            <td style="width:75%"><a target="_parent" href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></td>
+                                            <td style="width:75%"><a target="_blank" href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></td>
                                         {% else %}
                                             <td style="width:20%;text-align:center">{{annotation.triple.predicate.label}}</td>
                                             <td style="width:75%">{{annotation.triple.object.label}}</td>
