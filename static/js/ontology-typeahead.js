@@ -67,6 +67,9 @@ $(document).ready( function() {
 	    	    {
 		    	ontology_json: JSON.stringify(data.json_document),
 		    	subject_tofeed: subject
+		    },
+		    function(response) {
+			    $.redirect('interface_main', {subject_tofeed : subject});
 		    });
     });
 });
