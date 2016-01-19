@@ -17,6 +17,7 @@
         <script src="{% static "js/ontology-typeahead.js" %}"></script>
         <script src="{% static "js/underscore-min.js" %}"></script>
         <script src="{% static "js/typeahead.min.js" %}"></script>
+	<script src="{% static "js/utils.js" %}"></script>
 
 
         <style>
@@ -133,15 +134,15 @@
                                     {% if annotation.triple.object.label != "" %}
                                         <tr>
                                         {% if "http://" in annotation.triple.object.iri %}
-                                            <td style="width:20%;text-align:center">{{annotation.triple.predicate.label}}</td>
+                                            <td id="predicateLabel" style="width:20%;text-align:center">{{annotation.triple.predicate.label}}</td>
                                             <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
-                                            <td style="width:75%"><a target="_parent" href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></td>
+                                            <td id="objectLabel" style="width:75%"><a target="_parent" href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></td>
                                         {% else %}
-                                            <td style="width:20%;text-align:center">{{annotation.triple.predicate.label}}</td>
-                                            <td style="width:75%">{{annotation.triple.object.label}}</td>
+                                            <td id="predicateLabel" style="width:20%;text-align:center">{{annotation.triple.predicate.label}}</td>
+                                            <td id="objectLabel" style="width:75%">{{annotation.triple.object.label}}</td>
                                         {% endif %}
                                         <!-- https://commons.wikimedia.org/wiki/File:Emojione_274C.svg -->
-                                        <td style="width:5%"><img width="8px" src="{% static "Emojione_274C.svg" %}" title="Delete annotation" alt="DelIco"/></td>
+                                        <td id="delAnnotation" style="width:5%"><img width="8px" src="{% static "images/Emojione_274C.svg" %}" title="Delete annotation" alt="DelIco" /></td>
                                         </tr>
                                     {% endif %}
                                 {% endif %}
