@@ -1,18 +1,3 @@
-<!DOCTYPE html>
-
-<html lang="en">
-
-    <head>
-    	<meta charset="UTF-8">
-
-    	{% load staticfiles %}
-        <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.css' %}" />
-        <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
-        <link rel='stylesheet' type='text/css' href="{% static 'css/dashboard.css' %}" />
-
-	<title></title>
-    </head>
-
 <body>
 
     <!--
@@ -39,64 +24,42 @@
         {% csrf_token %}
         <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/30" class="field left" readonly="readonly"/>
         <a href="https://b2share.eudat.eu/record/30">Orthography-based dating and localisation of Middle Dutch charters</a>
-        <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/31c0d886-b988-11e3-8cd7-14feb57d12b9" class="field left" readonly="readonly"/>
         <input type="submit" id="button1" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
-        <br>http://hdl.handle.net/11304/31c0d886-b988-11e3-8cd7-14feb57d12b9
 	</form>
-
-    <br>
 
 	<form action="interface_main" method="post" target="b2note_iframe">
         {% csrf_token %}
         <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/45" class="field left" readonly="readonly"/>
         <a href="https://b2share.eudat.eu/record/45">ImageJ plugin ColonyArea</a>
-        <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/3522daa6-b988-11e3-8cd7-14feb57d12b9" class="field left" readonly="readonly"/>
         <input type="submit" id="button2" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
-        <br>http://hdl.handle.net/11304/3522daa6-b988-11e3-8cd7-14feb57d12b9
 	</form>
-
-    <br>
 
 	<form action="interface_main" method="post" target="b2note_iframe">
         {% csrf_token %}
         <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/66" class="field left" readonly="readonly"/>
         <a href="https://b2share.eudat.eu/record/66">REST paper 2014</a>
-        <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/6a9078c4-c3b0-11e3-8cd7-14feb57d12b9" class="field left" readonly="readonly"/>
         <input type="submit" id="button3" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
-        <br>http://hdl.handle.net/11304/6a9078c4-c3b0-11e3-8cd7-14feb57d12b9
 	</form>
-
-    <br>
 
 	<form action="interface_main" method="post" target="b2note_iframe">
         {% csrf_token %}
         <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/88" class="field left" readonly="readonly"/>
         <a href="https://b2share.eudat.eu/record/88">piSVM Analytics Runtimes JUDGE Cluster Rome Images 55 Features</a>
-        <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/69430fd2-e7d6-11e3-b2d7-14feb57d12b9" class="field left" readonly="readonly"/>
         <input type="submit" id="button4" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
-        <br>http://hdl.handle.net/11304/69430fd2-e7d6-11e3-b2d7-14feb57d12b9
 	</form>
-
-    <br>
 
 	<form action="interface_main" method="post" target="b2note_iframe">
         {% csrf_token %}
         <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/125" class="field left" readonly="readonly"/>
 	    <a href="https://b2share.eudat.eu/record/125">GoNL SNPs and Indels release 5</a>
-        <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/fe356a8e-3f2b-11e4-81ac-dcbd1b51435e" class="field left" readonly="readonly"/>
         <input type="submit" id="button5" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
-        <br>http://hdl.handle.net/11304/fe356a8e-3f2b-11e4-81ac-dcbd1b51435e
 	</form>
-
-    <br>
 
 	<form action="interface_main" method="post" target="b2note_iframe">
         {% csrf_token %}
         <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/127" class="field left" readonly="readonly"/>
         <a href="https://b2share.eudat.eu/record/127">Influence of smoking and obesity in sperm quality</a>
-        <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/9061f60c-41cf-11e4-81ac-dcbd1b51435e" class="field left" readonly="readonly"/>
         <input type="submit" id="button6" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
-        <br>http://hdl.handle.net/11304/9061f60c-41cf-11e4-81ac-dcbd1b51435e
 	</form>
 
 </body>
