@@ -45,7 +45,7 @@ def interface_main(request):
     annotation_list = Annotation.objects.all()
 
     if request.POST.get('ontology_json'):
-        CreateFromPOSTinfo( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
+        annotation_list = CreateFromPOSTinfo( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
 
     if request.POST.get('subject_tofeed')==None:
         context = RequestContext(request, {
