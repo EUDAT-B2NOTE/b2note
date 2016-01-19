@@ -102,6 +102,11 @@
             <div id="subject" align="center">
 
                 Subject: <b>{{subject_tofeed}}</b>
+                <br>
+                {% if pid_tofeed != "" %}
+                    <p style="font-size:8px">{{ pid_tofeed }}</p>
+                {% endif %}
+
 
             </div>
 
