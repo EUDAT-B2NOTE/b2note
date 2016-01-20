@@ -137,7 +137,10 @@
                             {% for annotation in annotation_list %}
                                 {% if subject_tofeed in annotation.triple.subject.iri %}
                                     {% if annotation.triple.object.label != "" %}
-                                        <tr>
+                                        <tr><form action="delete_annotation" method="post">
+					   <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
+					   <input type="hidden" name="subject" value="{{subject_tofeed}}" readonly="readonly" />
+					   <input type="hidden" name="pid" value="{{pid_tofeed}}" readonly="readonly" />
                                         {% if "http://" in annotation.triple.object.iri %}
                                             <td id="predicateLabel" style="width:20%;text-align:center">{{annotation.triple.predicate.label}}</td>
                                             <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
@@ -147,8 +150,8 @@
                                             <td id="objectLabel" style="width:75%">{{annotation.triple.object.label}}</td>
                                         {% endif %}
                                         <!-- https://commons.wikimedia.org/wiki/File:Emojione_274C.svg -->
-                                        <td id="delAnnotation" style="width:5%"><img width="8px" src="{% static "images/Emojione_274C.svg" %}" title="Delete annotation" alt="DelIco" /></td>
-                                        </tr>
+                                        <td id="delAnnotation" style="width:5%"><input type="image" width="8px" src="{% static "images/Emojione_274C.svg" %}" title="Delete annotation" alt="Delete annotation" /></td>
+					</form></tr>
                                     {% endif %}
                                 {% endif %}
                             {% endfor %}
