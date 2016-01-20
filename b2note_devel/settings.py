@@ -138,7 +138,6 @@ INSTALLED_APPS = (
     'django_mongodb_engine',
     'djangotoolbox',
     'searchapp',
-    'testsearch',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
