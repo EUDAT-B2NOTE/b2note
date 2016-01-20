@@ -67,3 +67,6 @@ db.*
 
 # local scripts
 *.sh
+
+# VI temp files
+.*.swp

@@ -16,7 +16,7 @@ def CreateFromPOSTinfo( subject_url, object_json ):
             o = json.loads(object_json)
 
             if "uris" in o.keys():
-                object_uri = o["uris"]
+                object_uri = o["uris"][0]
                 if "labels" in o.keys(): object_label = o["labels"]
 
                 print object_label, " ", object_uri
