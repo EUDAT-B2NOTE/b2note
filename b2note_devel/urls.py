@@ -19,4 +19,5 @@ urlpatterns = patterns('',
     url(r'^$', 'searchapp.views.hostpage', name='index'),
     url(r'^hostpage', 'searchapp.views.hostpage'),
     url(r'^interface_main', 'searchapp.views.interface_main'),
+    url(r'^create_annotation', 'searchapp.views.create_annotation'),
 )

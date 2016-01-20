@@ -62,14 +62,21 @@ $(document).ready( function() {
             },
             engine: Handlebars
         }).on('typeahead:selected', function(evt, data) {
-	
-            $.post('interface_main',
+	     /* pablo.rodenas@bsc.es, 19012016
+	      *
+	      * Problem: AJAX post method alone does not redirect to Django page.
+	      *
+	      * JS: http://stackoverflow.com/questions/29137910/redirecting-after-ajax-post-in-django
+	      *
+	      * (otherwise in Django): http://stackoverflow.com/questions/2140568/django-view-does-not-redirect-when-request-by-jquery-post
+	      *
+	      * Code source: https://github.com/mgalante/jquery.redirect
+	      *
+              */
+            $.redirect('create_annotation',
 	    	    {
 		    	ontology_json: JSON.stringify(data.json_document),
 		    	subject_tofeed: subject
-		    },
-		    function(response) {
-			    $.redirect('interface_main', {subject_tofeed : subject});
 		    });
     });
 });
