@@ -3,6 +3,19 @@ import json
 
 from .models import *
 
+def DeleteFromPOSTinfo( db_id ):
+    try:
+        if len(db_id)>0:
+            Annotation.objects.get(id=db_id).delete()
+        else:
+            print "Empty ID"
+    except ValueError:
+        print "Could not remove from DB"
+        return Annotation.objects.all()
+
+    print "Removed an Annotation"
+    return Annotation.objects.all()
+
 
 
 def CreateFromPOSTinfo( subject_url, object_json ):

@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 
-from .mongo_support_functions import CreateFromPOSTinfo
+from .mongo_support_functions import CreateFromPOSTinfo, DeleteFromPOSTinfo
 from .models import Annotation
 
 
@@ -19,11 +19,10 @@ def hostpage(request):
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
 def delete_annotation(request):
-
     annotation_list = Annotation.objects.all()
 
-    if request.POST.get('ontology_json'):
-        annotation_list = DeleteFromPOSTinfo( request.POST.get('ontology_json') )
+    if request.POST.get('db_id'):
+        annotation_list = DeleteFromPOSTinfo( request.POST.get('db_id') )
 
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
