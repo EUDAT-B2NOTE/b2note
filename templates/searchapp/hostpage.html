@@ -78,19 +78,17 @@
 
         <h3>The list of files:</h3>
 
-        {% for file_info in buttons_info %}
-
         <form action="interface_main" method="post" target="b2note_iframe">
             {% csrf_token %}
             <table>
                 <tr>
                     <td>
-                        <input type="hidden" name="subject_tofeed" value={{ file_info.file_url }} class="field left" readonly="readonly"/>
-                        <a href={{ file_info.file_url }}>{{ file_info.link_label }}</a>
-                        <input type="hidden" name="pid_tofeed" value={{ file_info.file_pid }} class="field left" readonly="readonly"/>
+                        <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/30" class="field left" readonly="readonly"/>
+                        <a href="https://b2share.eudat.eu/record/30">Orthography-based dating and localisation of Middle Dutch charters</a>
+                        <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/31c0d886-b988-11e3-8cd7-14feb57d12b9" class="field left" readonly="readonly"/>
                     </td>
                     <td rowspan="2">
-                        <input type="submit" id={{ file_info.button_n }} value="Create Annotation" title="Click to annotate hyperlink using B2Note."/>
+                        <input type="submit" id="button7" value="Create Annotation" title="Click to annotate hyperlink using B2Note."/>
                     </td>
                 </tr>
                 <tr>
@@ -103,9 +101,149 @@
 
         <br>
 
+        <form action="interface_main" method="post" target="b2note_iframe">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td>
+                        <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/45" class="field left" readonly="readonly"/>
+                        <a href="https://b2share.eudat.eu/record/45">ImageJ plugin ColonyArea</a>
+                        <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/3522daa6-b988-11e3-8cd7-14feb57d12b9" class="field left" readonly="readonly"/>
+                    </td>
+                    <td rowspan="2">
+                        <input type="submit" id="button8" value="Create Annotation" title="Click to annotate hyperlink using B2Note."/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        http://hdl.handle.net/11304/3522daa6-b988-11e3-8cd7-14feb57d12b9
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <br>
+
+        <form action="interface_main" method="post" target="b2note_iframe">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td>
+                        <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/66" class="field left" readonly="readonly"/>
+                        <a href="https://b2share.eudat.eu/record/66">REST paper 2014</a>
+                        <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/6a9078c4-c3b0-11e3-8cd7-14feb57d12b9" class="field left" readonly="readonly"/>
+                    </td>
+                    <td rowspan="2">
+                        <input type="submit" id="button9" value="Create Annotation" title="Click to annotate hyperlink using B2Note."/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        http://hdl.handle.net/11304/6a9078c4-c3b0-11e3-8cd7-14feb57d12b9
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <br>
+
+        <form action="interface_main" method="post" target="b2note_iframe">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td>
+                        <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/88" class="field left" readonly="readonly"/>
+                        <a href="https://b2share.eudat.eu/record/88">piSVM Analytics Runtimes JUDGE Cluster Rome Images 55 Features</a>
+                        <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/69430fd2-e7d6-11e3-b2d7-14feb57d12b9" class="field left" readonly="readonly"/>
+                    </td>
+                    <td rowspan="2">
+                        <input type="submit" id="button10" value="Create Annotation" title="Click to annotate hyperlink using B2Note."/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        hhttp://hdl.handle.net/11304/69430fd2-e7d6-11e3-b2d7-14feb57d12b9
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <br>
+
+        <form action="interface_main" method="post" target="b2note_iframe">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td>
+                        <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/125" class="field left" readonly="readonly"/>
+                        <a href="https://b2share.eudat.eu/record/125">GoNL SNPs and Indels release 5</a>
+                        <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/fe356a8e-3f2b-11e4-81ac-dcbd1b51435e" class="field left" readonly="readonly"/>
+                    </td>
+                    <td rowspan="2">
+                        <input type="submit" id="button11" value="Create Annotation" title="Click to annotate hyperlink using B2Note."/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        http://hdl.handle.net/11304/fe356a8e-3f2b-11e4-81ac-dcbd1b51435e
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <br>
+
+        <form action="interface_main" method="post" target="b2note_iframe">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td>
+                        <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/127" class="field left" readonly="readonly"/>
+                        <a href="https://b2share.eudat.eu/record/127">Influence of smoking and obesity in sperm quality</a>
+                        <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/9061f60c-41cf-11e4-81ac-dcbd1b51435e" class="field left" readonly="readonly"/>
+                    </td>
+                    <td rowspan="2">
+                        <input type="submit" id="button12" value="Create Annotation" title="Click to annotate hyperlink using B2Note."/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        http://hdl.handle.net/11304/9061f60c-41cf-11e4-81ac-dcbd1b51435e
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <br>
+
+        {% for file_info in buttons_info %}
+
+        <form action="interface_main" method="post" target="b2note_iframe">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td>
+                        <input type="hidden" name="subject_tofeed" value="{{ file_info.file_url }}" class="field left" readonly="readonly"/>
+                        <a href="{{ file_info.file_url }}">{{ file_info.link_label }}</a>
+                        <input type="hidden" name="pid_tofeed" value="{{ file_info.file_pid }}" class="field left" readonly="readonly"/>
+                    </td>
+                    <td rowspan="2">
+                        <input type="submit" id="{{ file_info.button_n }}" value="Create Annotation" title="Click to annotate hyperlink using B2Note."/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ file_info.file_pid }}
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <br>
+
         {% endfor %}
 
-        <h3>Some complementary explaining:</h3>
+        <h3>Some extra explaining:</h3>
 
         <p>
             The necessary information was collected by hand for a small subset of files.
