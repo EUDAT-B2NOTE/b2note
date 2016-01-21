@@ -12,17 +12,62 @@ def index(request):
     return HttpResponse("replace me with index text")
 
 def hostpage(request):
-    return render(request, 'searchapp/hostpage.html', {'iframe_on': 350})
+
+    buttons_info_text = """
+    http://hdl.handle.net/11304/31c0d886-b988-11e3-8cd7-14feb57d12b9
+    https://b2share.eudat.eu/record/30
+    Orthography-based dating and localisation of Middle Dutch charters
+
+    http://hdl.handle.net/11304/3522daa6-b988-11e3-8cd7-14feb57d12b9
+    https://b2share.eudat.eu/record/45
+    ImageJ plugin ColonyArea
+
+    http://hdl.handle.net/11304/6a9078c4-c3b0-11e3-8cd7-14feb57d12b9
+    https://b2share.eudat.eu/record/66
+    REST paper 2014
+
+    http://hdl.handle.net/11304/69430fd2-e7d6-11e3-b2d7-14feb57d12b9
+    https://b2share.eudat.eu/record/88
+    piSVM Analytics Runtimes JUDGE Cluster Rome Images 55 Features
+
+    http://hdl.handle.net/11304/fe356a8e-3f2b-11e4-81ac-dcbd1b51435e
+    https://b2share.eudat.eu/record/125
+    GoNL SNPs and Indels release 5
+
+    http://hdl.handle.net/11304/9061f60c-41cf-11e4-81ac-dcbd1b51435e
+    https://b2share.eudat.eu/record/127
+    Influence of smoking and obesity in sperm quality
+    """
+
+    buttons_info, k = [], 1
+    file_pid, file_url, link_label = "", "", ""
+    for line in buttons_info_text.splitlines():
+        if file_pid!="" and file_url!="" and link_label!="":
+            buttons_info.append({\
+                "file_pid":file_pid,\
+                "file_url":file_url,\
+                "link_label":link_label,\
+                "button_n":"button"+str(k),\
+            })
+            k += 1
+            file_pid, file_url, link_label = "", "", ""
+        if "http://hdl.handle.net" in line:
+            file_pid = line
+        elif "https://b2share.eudat.eu/record" in line:
+            file_url = line
+        elif line != "":
+            link_label = line
+
+    return render(request, 'searchapp/hostpage.html', {'iframe_on': 350, 'buttons_info':buttons_info})
 
 
 
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
 def delete_annotation(request):
-    annotation_list = Annotation.objects.all()
 
     if request.POST.get('db_id'):
-        annotation_list = DeleteFromPOSTinfo( request.POST.get('db_id') )
+        DeleteFromPOSTinfo( request.POST.get('db_id') )
 
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
@@ -31,6 +76,8 @@ def delete_annotation(request):
     pid_tofeed = ""
     if request.POST.get('pid_tofeed')!=None:
         pid_tofeed = request.POST.get('pid_tofeed')
+
+    annotation_list = Annotation.objects.all()
 
     context = RequestContext(request, {
         'annotation_list': annotation_list,
@@ -45,10 +92,8 @@ def delete_annotation(request):
 @csrf_exempt
 def create_annotation(request):
 
-    annotation_list = Annotation.objects.all()
-
     if request.POST.get('ontology_json'):
-        annotation_list = CreateFromPOSTinfo( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
+        CreateFromPOSTinfo( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
 
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
@@ -57,6 +102,8 @@ def create_annotation(request):
     pid_tofeed = ""
     if request.POST.get('pid_tofeed')!=None:
         pid_tofeed = request.POST.get('pid_tofeed')
+
+    annotation_list = Annotation.objects.all()
 
     context = RequestContext(request, {
         'annotation_list': annotation_list,
@@ -70,8 +117,6 @@ def create_annotation(request):
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
 def interface_main(request):
-    
-    annotation_list = Annotation.objects.all()
 
     pid_tofeed = ""
     if request.POST.get('pid_tofeed')!=None:
@@ -80,6 +125,8 @@ def interface_main(request):
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
         subject_tofeed = request.POST.get('subject_tofeed')
+
+    annotation_list = Annotation.objects.all()
 
     context = RequestContext(request, {
         'annotation_list': annotation_list,

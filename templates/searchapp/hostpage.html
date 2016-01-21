@@ -14,18 +14,28 @@
         <style>
 
             * {
-                font-size:12px;
+                font-size:14px;
                 font-family:'Verdana', Arial, Sans-Serif;
                 box-sizing: border-box;
                 margin-left:5px;
             }
             body{
-                background-color:#e5e5e5;
+                background-color:#f9f9f9;
+            }
+            input {
+                white-space: normal;
+                width: 90px;
+            }
+            th, td {
+                padding: 1px;
+            td {
+                padding: 0px;
+                text-align:left;
             }
 
         </style>
 
-        <title>B2Share search results page (emulated)</title>
+        <title>B2Note service demo</title>
 
     </head>
 
@@ -46,104 +56,56 @@
 
         <br>
 
-        <h1 style="text-align:center">B2Share search results page (emulated)</h1>
-        <br>
+        <h1 style="text-align:center">B2Note service prototype</h1>
+
+        <h3>Some explaining:</h3>
+
         <p>
-            This page emulates the <b>outcome of a search</b> performed by a user of EUDAT services such as B2Share.
+            This page emulates the<b>outcome of a search</b> performed by a user of EUDAT services such as B2Share.
             <br>
-            Thus, it displays a list of hyperlinks pointing to <b>files stored by EUDAT</b>.
+            Thus, it displays a list of hyperlinks pointing to<b>files stored by EUDAT</b>.
         </p>
         <p>
             Next to each hyperlink stands a "Create Annotation" button.
             <br>
-            Clicking one of these buttons <b>triggers the B2Note interface</b>.
+            Clicking one of these buttons<b>triggers the B2Note interface</b>.
         </p>
         <p>
-            The B2note interface allows the user to <b>select semantic concepts</b> for describing the corresponding file.
+            The B2note interface allows the user to<b>select semantic concepts</b> for describing the corresponding file.
             <br>
-            The semantic relations created in the process are <b>stored</b> by the B2Note service, allowing later retrieval and processing.
+            The semantic relations created in the process are<b>stored</b> by the B2Note service, allowing later retrieval and processing.
         </p>
 
-        <br>
+        <h3>The list of files:</h3>
+
+        {% for file_info in buttons_info %}
 
         <form action="interface_main" method="post" target="b2note_iframe">
             {% csrf_token %}
             <table>
                 <tr>
                     <td>
-                        <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/30" class="field left" readonly="readonly"/>
-                        <a href="https://b2share.eudat.eu/record/30">Orthography-based dating and localisation of Middle Dutch charters</a>
-                        <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/31c0d886-b988-11e3-8cd7-14feb57d12b9" class="field left" readonly="readonly"/>
+                        <input type="hidden" name="subject_tofeed" value={{ file_info.file_url }} class="field left" readonly="readonly"/>
+                        <a href={{ file_info.file_url }}>{{ file_info.link_label }}</a>
+                        <input type="hidden" name="pid_tofeed" value={{ file_info.file_pid }} class="field left" readonly="readonly"/>
                     </td>
-                    <td>
-                        <input type="submit" id="button1" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
+                    <td rowspan="2">
+                        <input type="submit" id={{ file_info.button_n }} value="Create Annotation" title="Click to annotate hyperlink using B2Note."/>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         http://hdl.handle.net/11304/31c0d886-b988-11e3-8cd7-14feb57d12b9
                     </td>
-                    <td></td>
                 </tr>
             </table>
         </form>
 
         <br>
 
-        <form action="interface_main" method="post" target="b2note_iframe">
-            {% csrf_token %}
-            <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/45" class="field left" readonly="readonly"/>
-            <a href="https://b2share.eudat.eu/record/45">ImageJ plugin ColonyArea</a>
-            <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/3522daa6-b988-11e3-8cd7-14feb57d12b9" class="field left" readonly="readonly"/>
-            <input type="submit" id="button2" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
-            <br>http://hdl.handle.net/11304/3522daa6-b988-11e3-8cd7-14feb57d12b9
-        </form>
+        {% endfor %}
 
-        <br>
-
-        <form action="interface_main" method="post" target="b2note_iframe">
-            {% csrf_token %}
-            <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/66" class="field left" readonly="readonly"/>
-            <a href="https://b2share.eudat.eu/record/66">REST paper 2014</a>
-            <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/6a9078c4-c3b0-11e3-8cd7-14feb57d12b9" class="field left" readonly="readonly"/>
-            <input type="submit" id="button3" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
-            <br>http://hdl.handle.net/11304/6a9078c4-c3b0-11e3-8cd7-14feb57d12b9
-        </form>
-
-        <br>
-
-        <form action="interface_main" method="post" target="b2note_iframe">
-            {% csrf_token %}
-            <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/88" class="field left" readonly="readonly"/>
-            <a href="https://b2share.eudat.eu/record/88">piSVM Analytics Runtimes JUDGE Cluster Rome Images 55 Features</a>
-            <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/69430fd2-e7d6-11e3-b2d7-14feb57d12b9" class="field left" readonly="readonly"/>
-            <input type="submit" id="button4" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
-            <br>http://hdl.handle.net/11304/69430fd2-e7d6-11e3-b2d7-14feb57d12b9
-        </form>
-
-        <br>
-
-        <form action="interface_main" method="post" target="b2note_iframe">
-            {% csrf_token %}
-            <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/125" class="field left" readonly="readonly"/>
-            <a href="https://b2share.eudat.eu/record/125">GoNL SNPs and Indels release 5</a>
-            <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/fe356a8e-3f2b-11e4-81ac-dcbd1b51435e" class="field left" readonly="readonly"/>
-            <input type="submit" id="button5" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
-            <br>http://hdl.handle.net/11304/fe356a8e-3f2b-11e4-81ac-dcbd1b51435e
-        </form>
-
-        <br>
-
-        <form action="interface_main" method="post" target="b2note_iframe">
-            {% csrf_token %}
-            <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/record/127" class="field left" readonly="readonly"/>
-            <a href="https://b2share.eudat.eu/record/127">Influence of smoking and obesity in sperm quality</a>
-            <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/9061f60c-41cf-11e4-81ac-dcbd1b51435e" class="field left" readonly="readonly"/>
-            <input type="submit" id="button6" value="Annotate" title="Click to annotate hyperlink using B2Note."/>
-            <br>http://hdl.handle.net/11304/9061f60c-41cf-11e4-81ac-dcbd1b51435e
-        </form>
-
-        <br><br>
+        <h3>Some complementary explaining:</h3>
 
         <p>
             The necessary information was collected by hand for a small subset of files.

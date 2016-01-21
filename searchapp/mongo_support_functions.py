@@ -1,21 +1,27 @@
-import json
+import json, bson
+
 
 
 from .models import *
 
+
 def DeleteFromPOSTinfo( db_id ):
+    del_flag = False
     try:
-        if len(db_id)>0:
+        if db_id and type(db_id) is unicode and len(db_id)>0:
             Annotation.objects.get(id=db_id).delete()
+            del_flag = True
         else:
-            print "Empty ID"
+            print "Argument provided is not a valid collection document id"
     except ValueError:
-        print "Could not remove from DB"
-        return Annotation.objects.all()
+        pass
 
-    print "Removed an Annotation"
-    return Annotation.objects.all()
+    if del_flag:
+        print "Removed an Annotation from DB"
+        return True
 
+    print "Could not remove from DB"
+    return False
 
 
 def CreateFromPOSTinfo( subject_url, object_json ):
@@ -56,7 +62,7 @@ def CreateFromPOSTinfo( subject_url, object_json ):
     except ValueError:
 
         print "Could not save to DB"
-        return Annotation.objects.all()
+        return False
 
     print "Created an Annotation"
-    return Annotation.objects.all()
+    return True
