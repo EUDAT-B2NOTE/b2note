@@ -36,7 +36,7 @@
             table {
                 border: 1px solid black;
             }
-            table tr td {
+            table, tr, td {
                 border: 1px solid lightgray;
                 padding: 2px;
             }
@@ -47,11 +47,16 @@
                 text-align: center;
             }
             tr:nth-child(2n) {
-                background: #f1f1f1;
+                background: #fffffe;
+            }
+            .beta, .beta td, .beta tr {
+                border:0px;
             }
 
         </style>
-	<title></title>
+
+	    <title>B2Note prototype interface</title>
+
     </head>
 
     <body>
@@ -87,17 +92,39 @@
 
             <div align="right">
 
-                <input type = "button" value = "Export" title = "All your annotations as JSON" align = "right" />
+                <table class="beta">
 
-                <input type = "button" value = "Publish" title = "Make annotations available to SPARQL queries" align = "right" />
+                    <td style="border:0px">
+                        <form action="export_annotations" method="post">
+                            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+                            <input type="Submit" value="Export" title="All your annotations as JSON"/>
+                        </form>
+                    </td>
 
-                <input type = "button" value = "Settings" title = "Manage source ontologies" align = "right" />
+                    <td>
+                        <form action="publish_annotations" method="post">
+                            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+                            <input type="Submit" value = "Publish" title = "Make annotations available to SPARQL queries"/>
+                        </form>
+                    </td>
 
-                <input class = question name="Close" type ="button" value = "x" title = "Close B2Note interface" onClick = "closeWin()" />
+                    <td>
+                        <form action="settings" method="post">
+                            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+                            <input type="Submit" value = "Settings" title = "Manage source ontologies"/>
+                        </form>
+                    </td>
+
+                    <td><input class = question name="Close" type ="button" value = "x" title = "Close B2Note interface" onClick = "closeWin()" /></td>
+
+                </table>
 
             </div>
 
-            <h2 align="center">B2Note prototype interface</h2>
+            <h2 align="center">B2Note interface</h2>
 
             <hr><br>
 
@@ -115,7 +142,7 @@
 
             <div>
 
-                <h3>Create annotation section</h3>
+                <h3>Create annotation</h3>
 
 <!--                <p> Type keyword: </p> -->
 
@@ -130,7 +157,7 @@
 
             <div>
 
-                <h3>Current annotations section</h3>
+                <h3>Existing annotations</h3>
 
                     <div border="1" style="height:150px;width:100%;overflow:auto;">
                         <table>
@@ -138,9 +165,9 @@
                                 {% if subject_tofeed in annotation.triple.subject.iri %}
                                     {% if annotation.triple.object.label != "" %}
                                         <tr><form action="delete_annotation" method="post">
-					   <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
-					   <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-					   <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+                                           <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
+                                           <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                                           <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
                                         {% if "http://" in annotation.triple.object.iri %}
                                             <td id="predicateLabel" style="width:20%;text-align:center">{{annotation.triple.predicate.label}}</td>
                                             <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
@@ -151,7 +178,7 @@
                                         {% endif %}
                                         <!-- https://commons.wikimedia.org/wiki/File:Emojione_274C.svg -->
                                         <td id="delAnnotation" style="width:5%"><input type="image" width="8px" src="{% static "images/Emojione_274C.svg" %}" title="Delete annotation" alt="Delete annotation" /></td>
-					</form></tr>
+                					    </form></tr>
                                     {% endif %}
                                 {% endif %}
                             {% endfor %}
