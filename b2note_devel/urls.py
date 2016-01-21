@@ -21,4 +21,7 @@ urlpatterns = patterns('',
     url(r'^interface_main', 'searchapp.views.interface_main'),
     url(r'^create_annotation', 'searchapp.views.create_annotation'),
     url(r'^delete_annotation', 'searchapp.views.delete_annotation'),
+    url(r'^export', 'searchapp.views.export_annotations'),
+    url(r'^publish', 'searchapp.views.publish_annotations'),
+    url(r'^settings', 'searchapp.views.settings'),
 )

@@ -11,6 +11,58 @@ from .models import Annotation
 def index(request):
     return HttpResponse("replace me with index text")
 
+
+# forbidden CSRF verification failed. Request aborted.
+@csrf_exempt
+def export_annotations(request):
+    subject_tofeed = ""
+    if request.POST.get('subject_tofeed')!=None:
+        subject_tofeed = request.POST.get('subject_tofeed')
+
+    pid_tofeed = ""
+    if request.POST.get('pid_tofeed')!=None:
+        pid_tofeed = request.POST.get('pid_tofeed')
+
+    text = """
+    This functionality will provide a json serialization of available annotations to the user.
+    """
+    return render(request, 'searchapp/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+
+
+# forbidden CSRF verification failed. Request aborted.
+@csrf_exempt
+def publish_annotations(request):
+    subject_tofeed = ""
+    if request.POST.get('subject_tofeed')!=None:
+        subject_tofeed = request.POST.get('subject_tofeed')
+
+    pid_tofeed = ""
+    if request.POST.get('pid_tofeed')!=None:
+        pid_tofeed = request.POST.get('pid_tofeed')
+
+    text = """
+    This functionality will publish selected annotations to a triplestore.
+    """
+    return render(request, 'searchapp/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+
+
+# forbidden CSRF verification failed. Request aborted.
+@csrf_exempt
+def settings(request):
+    subject_tofeed = ""
+    if request.POST.get('subject_tofeed')!=None:
+        subject_tofeed = request.POST.get('subject_tofeed')
+
+    pid_tofeed = ""
+    if request.POST.get('pid_tofeed')!=None:
+        pid_tofeed = request.POST.get('pid_tofeed')
+
+    text = """
+    This functionality will allow the user to select the domains from which to retrieve the concepts used for annotations in the main interface.
+    """
+    return render(request, 'searchapp/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+
+
 def hostpage(request):
 
     buttons_info_text = """
