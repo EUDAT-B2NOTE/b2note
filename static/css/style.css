@@ -1,0 +1,141 @@
+* {
+	font-family: 'Verdana', Arial, Sans-Serif;
+	box-sizing: border-box;
+}
+
+#hostpage {
+	background-color: #f9f9f9;
+	font-size: 14px;
+	margin-left: 10px;
+}
+
+#hostpage input {
+	white-space: normal;
+	width: 90px;
+}
+
+#hostpage h1 {
+	padding-top: 10px;
+	text-align: center;
+}
+
+#hostpage table,
+#hostpage tr,
+#hostpage td {
+	border: 0px;
+}
+
+#hostpage tr,
+#hostpage td {
+	padding: 1px;
+	text-align: left;
+}
+
+#b2note_iframe {
+	float: right;
+	border: none;
+}
+
+#interface_main {
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+#top_buttons {
+	float: right;
+	height: 30px;
+	margin: 10px;
+}
+
+#top_buttons table,
+#top_buttons tr,
+#top_buttons td {
+	border: 0px;
+	padding: 2px 4px;
+}
+
+#section_title {
+	float: right;
+	height: 65px;
+	width: 100%;
+	text-align: center;
+}
+
+#section_subject {
+	float: right;
+	height: 120px;
+	width: 100%;
+	text-align: center;
+	padding: 30px 10px 10px 10px;
+	border-top: thin solid lightgrey;
+	border-bottom: thin solid lightgrey;
+}
+
+#section_subject p {
+	font-size: 8px;
+}
+
+#section_create {
+	float: right;
+	height: 160px;
+	width: 100%;
+	padding: 10px;
+	border-bottom: thin solid lightgrey;
+}
+
+#section_create input {
+	width: 250px;
+}
+
+#section_existing {
+	float: right;
+	height: 200px;
+	width: 100%;
+	overflow: auto;
+	padding: 10px;
+}
+
+#section_existing input {
+	width: 8px;
+}
+
+/*
+	http://stackoverflow.com/questions/28222672/navigate-html-table-rows-with-javascript
+	http://jsfiddle.net/vsgkjssq/5/
+*/
+#section_existing table {
+	border: 1px solid black;
+}
+
+#section_existing table,
+#section_existing tr,
+#section_existing td {
+	border: 1px solid lightgray;
+	padding: 2px;
+}
+
+#section_existing table,
+#section_existing td {
+	border-collapse: collapse;
+	border: solid 1px #ccc;
+	text-align: center;
+}
+
+#section_existing tr:nth-child(2n) {
+	background: #fffffe;
+}
+
+#predicateLabel {
+	width: 20%;
+	text-align: center;
+}
+
+#objectLabel {
+	width: 75%;
+}
+
+#delAnnotation {
+	width: 5%;
+}

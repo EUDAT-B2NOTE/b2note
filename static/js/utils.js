@@ -1,15 +1,17 @@
 
 
-$( document ).ready( function () {
-	$( ".delAnnotation" ).on( 'click', function ( event ) {
-		console.log("DELETE ANNOTATION");
-		event.preventDefault();
-		
-		var row = $(this).closest("tr");        // Finds the closest row <tr> 
-	    	var tds = row.find("td:nth-child(2)"); // Finds the 2nd <td> element
-		console.log(tds);
-		$.post( "interface_main", { iri : tds }, function ( json ) {
+// Defines the height of the iframe in the onload event
+function load_iframe(subject){
+	elem = document.getElementById("b2note_iframe");
+	elem.style.height = (elem.contentWindow.document.body.scrollHeight) + 'px';
+	elem.subject_tofeed=subject;
+}
 
-		} );
-	} );
-} );
+function show_iframe() {
+	window.parent.document.getElementById('b2note_iframe').style.visibility="visible";
+}
+
+// http://stackoverflow.com/questions/6754935/how-to-close-an-iframe-within-iframe-itself
+function hide_iframe() {
+	window.parent.document.getElementById('b2note_iframe').style.visibility="hidden";
+}
