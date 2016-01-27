@@ -34,7 +34,7 @@ $(document).ready( function() {
     engine.initialize();
 
     // gets the subject selected to provide the subject_tofeed field
-    var elem = document.getElementById("subject");
+    var elem = document.getElementById("section_subject");
     var subject = "";
     if (elem) {
     	subject = elem.getElementsByTagName("a")[0].innerHTML;
