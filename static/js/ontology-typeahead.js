@@ -1,9 +1,8 @@
 /**
  * Created by malone on 15/09/15.
- */
-
-/**
- * Note change the url of the solr server to point to the approriate service
+ *
+ * Modified by prodenas on 19/01/16
+ *
  */
 
 $(document).ready( function() {
@@ -31,14 +30,17 @@ $(document).ready( function() {
 
     });
 
+    // iniializes the engina
     engine.initialize();
 
-    var elem = document.getElementById("subject");
+    // gets the subject selected to provide the subject_tofeed field
+    var elem = document.getElementById("section_subject");
     var subject = "";
     if (elem) {
-    	subject = elem.getElementsByTagName("b")[0].innerHTML;
+    	subject = elem.getElementsByTagName("a")[0].innerHTML;
     }
 
+    // selects the html element where the suggestion takes places
     $('#id_q').typeahead({
             hint: true,
             highlight: true,
@@ -49,8 +51,6 @@ $(document).ready( function() {
 	    display: 'label',
 
             source: engine.ttAdapter(),
-            //source: engine
-
 
             templates: {
                 empty: [
@@ -61,6 +61,7 @@ $(document).ready( function() {
                 suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}</p>' + '  {{short_form}}   #{{ontology_name}}</p>')
             },
             engine: Handlebars
+	// defines the event 'onclick'
         }).on('typeahead:selected', function(evt, data) {
 	     /* pablo.rodenas@bsc.es, 19012016
 	      *

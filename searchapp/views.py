@@ -66,29 +66,29 @@ def settings(request):
 def hostpage(request):
 
     buttons_info_text = """
-    http://hdl.handle.net/11304/31c0d886-b988-11e3-8cd7-14feb57d12b9
-    https://b2share.eudat.eu/record/30
-    Orthography-based dating and localisation of Middle Dutch charters
+http://hdl.handle.net/11304/31c0d886-b988-11e3-8cd7-14feb57d12b9
+https://b2share.eudat.eu/record/30
+Orthography-based dating and localisation of Middle Dutch charters
 
-    http://hdl.handle.net/11304/3522daa6-b988-11e3-8cd7-14feb57d12b9
-    https://b2share.eudat.eu/record/45
-    ImageJ plugin ColonyArea
+http://hdl.handle.net/11304/3522daa6-b988-11e3-8cd7-14feb57d12b9
+https://b2share.eudat.eu/record/45
+ImageJ plugin ColonyArea
 
-    http://hdl.handle.net/11304/6a9078c4-c3b0-11e3-8cd7-14feb57d12b9
-    https://b2share.eudat.eu/record/66
-    REST paper 2014
+http://hdl.handle.net/11304/6a9078c4-c3b0-11e3-8cd7-14feb57d12b9
+https://b2share.eudat.eu/record/66
+REST paper 2014
 
-    http://hdl.handle.net/11304/69430fd2-e7d6-11e3-b2d7-14feb57d12b9
-    https://b2share.eudat.eu/record/88
-    piSVM Analytics Runtimes JUDGE Cluster Rome Images 55 Features
+http://hdl.handle.net/11304/69430fd2-e7d6-11e3-b2d7-14feb57d12b9
+https://b2share.eudat.eu/record/88
+piSVM Analytics Runtimes JUDGE Cluster Rome Images 55 Features
 
-    http://hdl.handle.net/11304/fe356a8e-3f2b-11e4-81ac-dcbd1b51435e
-    https://b2share.eudat.eu/record/125
-    GoNL SNPs and Indels release 5
+http://hdl.handle.net/11304/fe356a8e-3f2b-11e4-81ac-dcbd1b51435e
+https://b2share.eudat.eu/record/125
+GoNL SNPs and Indels release 5
 
-    http://hdl.handle.net/11304/9061f60c-41cf-11e4-81ac-dcbd1b51435e
-    https://b2share.eudat.eu/record/127
-    Influence of smoking and obesity in sperm quality
+http://hdl.handle.net/11304/9061f60c-41cf-11e4-81ac-dcbd1b51435e
+https://b2share.eudat.eu/record/127
+Influence of smoking and obesity in sperm quality
     """
 
     buttons_info, k = [], 1

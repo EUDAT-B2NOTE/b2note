@@ -9,6 +9,7 @@
         <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.css' %}" />
         <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
         <link rel='stylesheet' type='text/css' href="{% static 'css/dashboard.css' %}" />
+        <link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
 
         <script src="{% static "js/jquery-1.11.3.min.js" %}"></script>
 	    <script src="{% static "js/jquery.redirect.js" %}"></script>
@@ -22,79 +23,25 @@
     	<script src="{% static "js/utils.js" %}"></script>
 
 
-        <style>
-
-            /*
-                http://stackoverflow.com/questions/28222672/navigate-html-table-rows-with-javascript
-                http://jsfiddle.net/vsgkjssq/5/
-            */
-
-            * {
-                font-family:'Verdana', Arial, Sans-Serif;
-                box-sizing: border-box;
-            }
-            table {
-                border: 1px solid black;
-            }
-            table, tr, td {
-                border: 1px solid lightgray;
-                padding: 2px;
-            }
-            table, td {
-                border-collapse:collapse;
-                border: solid 1px #ccc;
-                padding: 2px 4px;
-                text-align: center;
-            }
-            tr:nth-child(2n) {
-                background: #fffffe;
-            }
-            .beta, .beta td, .beta tr {
-                border:0px;
-            }
-
-        </style>
-
 	    <title>B2Note prototype interface</title>
 
     </head>
 
-    <body>
+    <body id="interface_main">
 
         {% if subject_tofeed|length = 0 %}
 
-            <script>
-
-                window.parent.document.getElementById('b2note_iframe').style.visibility="hidden";
-
-            </script>
+            <script>hide_iframe();</script>
 
         {% else %}
 
-            <script>
+            <script>show_iframe();</script>
+		<div id="iframe_content">
+            <div id="top_buttons">
 
-                window.parent.document.getElementById('b2note_iframe').style.visibility="visible";
-
-            </script>
-
-
-            <script>
-
-                //http://stackoverflow.com/questions/6754935/how-to-close-an-iframe-within-iframe-itself
-
-                function closeWin() {
-
-                    window.parent.document.getElementById('b2note_iframe').style.visibility="hidden";
-
-                }
-
-            </script>
-
-            <div align="right">
-
-                <table class="beta">
-
-                    <td style="border:0px">
+                <table>
+					<tr>
+                    <td>
                         <form action="export_annotations" method="post">
                             <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
                             <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
@@ -118,48 +65,45 @@
                         </form>
                     </td>
 
-                    <td><input class = question name="Close" type ="button" value = "x" title = "Close B2Note interface" onClick = "closeWin()" /></td>
-
+                    <td><input class = question name="Close" type ="button" value = "x" title = "Close B2Note interface" onClick = "hide_iframe()" /></td>
+					</tr>
                 </table>
 
             </div>
+			
+			<div id="section_title">
+            <h2>B2Note interface</h2>
+			</div>
 
-            <h2 align="center">B2Note interface</h2>
-
-            <hr><br>
-
-            <div id="subject" align="center">
-
-                Subject: <b>{{subject_tofeed}}</b>
+            <div id="section_subject">
+            	<table>
+            		<tr><th colspan="2">Subject</th></tr>
+                	<tr>
+                		<td>url:</td>
+                		<td><strong><a href="{{subject_tofeed}}" target="_blank">{{subject_tofeed}}</a></strong></td>
+                	</tr>
 		{% if pid_tofeed != "" %}
-                <br />
-                <p style="font-size:8px">{{ pid_tofeed }}</p>
+                	<tr>
+                		<td>pid:</td>
+                		<td>{{ pid_tofeed }}</td>
+                	</tr>
 		{% endif %}
-
+				</table>
             </div>
 
-            <br><hr>
-
-            <div>
+            <div id="section_create">
 
                 <h3>Create annotation</h3>
 
-<!--                <p> Type keyword: </p> -->
-
-<!--                    <input type="text" style="width: 250px;" value="# Solr-based autocomplete goes here #" readonly/> -->
 		   <div class="form-group">
-                       <input type="text" class="form-control" style="width: 250px;" name="q" id="id_q" value="{{ query }}"  placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" />
+                       <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"  placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" />
 		   </div>
 
             </div>
 
-            <br><hr>
-
-            <div>
+            <div id="section_existing">
 
                 <h3>Existing annotations</h3>
-
-                    <div border="1" style="height:150px;width:100%;overflow:auto;">
                         <table>
                             {% for annotation in annotation_list %}
                                 {% if subject_tofeed in annotation.triple.subject.iri %}
@@ -169,26 +113,24 @@
                                            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
                                            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
                                         {% if "http://" in annotation.triple.object.iri %}
-                                            <td id="predicateLabel" style="width:20%;text-align:center">{{annotation.triple.predicate.label}}</td>
+                                            <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
                                             <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
-                                            <td id="objectLabel" style="width:75%"><a target="_blank" href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></td>
+                                            <td id="objectLabel"><a target="_blank" href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></td>
                                         {% else %}
-                                            <td id="predicateLabel" style="width:20%;text-align:center">{{annotation.triple.predicate.label}}</td>
-                                            <td id="objectLabel" style="width:75%">{{annotation.triple.object.label}}</td>
+                                            <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
+                                            <td id="objectLabel">{{annotation.triple.object.label}}</td>
                                         {% endif %}
                                         <!-- https://commons.wikimedia.org/wiki/File:Emojione_274C.svg -->
-                                        <td id="delAnnotation" style="width:5%"><input type="image" width="8px" src="{% static "images/Emojione_274C.svg" %}" title="Delete annotation" alt="Delete annotation" /></td>
+                                        <td id="delAnnotation"><input type="image" src="{% static "images/Emojione_274C.svg" %}" title="Delete annotation" alt="Delete annotation" /></td>
                 					    </form></tr>
                                     {% endif %}
                                 {% endif %}
                             {% endfor %}
                         </table>
-                    </div>
-
             </div>
 
         {% endif %}
-
+		</div>
     </body>
 
 </html>
