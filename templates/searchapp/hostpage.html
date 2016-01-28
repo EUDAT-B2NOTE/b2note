@@ -6,11 +6,11 @@
 	<meta charset="UTF-8">
 
 	{% load staticfiles %}
-	<link rel='stylesheet' type='text/css'
-		href="{% static 'css/bootstrap.min.css' %}" />
+
 	<link rel='stylesheet' type='text/css'
 		href="{% static 'css/style.css' %}" />
-
+	<link rel='stylesheet' type='text/css'
+		href="{% static 'css/bootstrap.min.css' %}" />
 	<script src="{% static 'js/utils.js' %}"></script>
 
 	<title>B2Note service demo</title>
@@ -46,31 +46,41 @@
 		by the B2Note service, allowing later retrieval and processing.
 	</p>
 
+    <hr>
+
 	<h3>The list of files:</h3>
 
-	{% for file_info in buttons_info %}
+	<table>
+		{% for file_info in buttons_info %}
+			<form action="interface_main" method="post" target="b2note_iframe">
+			{% csrf_token %}
+				<tr class="row1" colspan="2">
+					<td></td>
+				</tr>
+				<tr class="row2">
+					<td><input type="hidden" name="subject_tofeed"
+						value="{{ file_info.file_url }}" class="field left"
+						readonly="readonly" /> <a href="{{ file_info.file_url }}"
+						target="_blank">{{ file_info.link_label }}</a> <input type="hidden"
+						name="pid_tofeed" value="{{ file_info.file_pid }}"
+						class="field left" readonly="readonly" /></td>
+					<td rowspan="2"><input type="submit"
+						id="{{ file_info.button_n }}" value="Create Annotation"
+						title="Click to annotate hyperlink using B2Note." /></td>
+				</tr>
+				<tr class="row3">
+					<td>{{ file_info.file_pid }}</td>
+				</tr>
+				<tr class="row4" colspan="2">
+					<td> </td>
+					<td> </td>
+				</tr>
+			</form>
+		{% endfor %}
+	</table>
 
-	<form action="interface_main" method="post" target="b2note_iframe">
-		{% csrf_token %}
-		<table>
-			<tr>
-				<td><input type="hidden" name="subject_tofeed"
-					value="{{ file_info.file_url }}" class="field left"
-					readonly="readonly" /> <a href="{{ file_info.file_url }}"
-					target="_blank">{{ file_info.link_label }}</a> <input type="hidden"
-					name="pid_tofeed" value="{{ file_info.file_pid }}"
-					class="field left" readonly="readonly" /></td>
-				<td rowspan="2"><input type="submit"
-					id="{{ file_info.button_n }}" value="Create Annotation"
-					title="Click to annotate hyperlink using B2Note." /></td>
-			</tr>
-			<tr>
-				<td>{{ file_info.file_pid }}</td>
-			</tr>
-		</table>
-	</form>
 
-	<br> {% endfor %}
+    <hr>
 
 	<h3>Some extra explaining:</h3>
 

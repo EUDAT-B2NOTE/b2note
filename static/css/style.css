@@ -11,30 +11,60 @@
 
 #hostpage input {
 	white-space: normal;
-	width: 90px;
+	width: 102px;
+	font-weight: bold;
+	color: #ff7300;
+	padding: 0px;
+	padding-top: 2px;
+	padding-bottom: 2px;
 }
+
 
 #hostpage h1 {
 	padding-top: 10px;
+	width: 625px;
 	text-align: center;
+}
+
+#hostpage h3 {
+	padding-top: 10px;
+}
+
+#hostpage p {
+    width:625px;
+    text-align: justify;
 }
 
 #hostpage table,
 #hostpage tr,
 #hostpage td {
-	border: 0px;
+    border: 0px;
 }
 
 #hostpage tr,
 #hostpage td {
 	padding: 1px;
+	padding-left:10px;
 	text-align: left;
 }
 
+#hostpage tr.row1:not(:first-child) {
+    height: 10px;
+    border-top:1px solid #eeeeee;
+}
+
+#hostpage tr.row4 {
+    height:10px;
+}
+
+
 #b2note_iframe {
+    visibility: hidden;
 	float: right;
-	border: none;
+	margin: 5px;
+	border: 2px solid gray;
 	overflow: hidden;
+	border-radius: 20px;
 }
 
 #interface_main {
@@ -48,6 +78,7 @@
 	float: right;
 	height: 30px;
 	margin: 10px;
+    border-radius: 5px;
 }
 
 #top_buttons table,
@@ -56,6 +87,8 @@
 	border: 0px;
 	padding: 2px 4px;
 }
+
+
 
 #section_title {
 	float: right;
@@ -119,6 +152,8 @@
 #section_existing table {
 	border: 1px solid black;
 	width: 100%;
+	max-height: 50px;
+	margin-bottom: 10px;
 }
 
 #section_existing table,

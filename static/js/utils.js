@@ -25,10 +25,14 @@ function load_iframe(subject){
 }
 
 function show_iframe() {
-	window.parent.document.getElementById('b2note_iframe').style.visibility="visible";
+	window.parent.document.getElementById('b2note_iframe').style.visibility = "visible";
+	window.parent.document.getElementById('b2note_iframe').style.width = "350px";
+	window.parent.document.getElementById('b2note_iframe').style.border = "2px solid gray";
 }
 
 // http://stackoverflow.com/questions/6754935/how-to-close-an-iframe-within-iframe-itself
 function hide_iframe() {
-	window.parent.document.getElementById('b2note_iframe').style.visibility="hidden";
+	window.parent.document.getElementById('b2note_iframe').style.width = "0px";
+	window.parent.document.getElementById('b2note_iframe').style.border = "0px";
+	window.parent.document.getElementById('b2note_iframe').style.visibility = "hidden";
 }
