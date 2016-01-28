@@ -1,10 +1,27 @@
 
 
+// helper function which returns the higher value of the document height
+function getDocHeight(doc) {
+    doc = doc || document;
+    // stackoverflow.com/questions/1145850/
+    var body = doc.body, html = doc.documentElement;
+    var height = Math.max( body.scrollHeight, body.offsetHeight, 
+        html.clientHeight, html.scrollHeight, html.offsetHeight );
+    return height;
+}
+
+
 // Defines the height of the iframe in the onload event
 function load_iframe(subject){
-	elem = document.getElementById("b2note_iframe");
-	elem.style.height = (elem.contentWindow.document.body.scrollHeight) + 'px';
-	elem.subject_tofeed=subject;
+	var iframe = window.parent.document.getElementById("b2note_iframe");
+	var doc = iframe.contentDocument? iframe.contentDocument: 
+        iframe.contentWindow.document;
+	iframe.style.visibility = 'hidden';
+	iframe.style.height = "10px"; // reset to minimal height ...
+	// IE opt. for bing/msn needs a bit added or scrollbar appears
+	iframe.style.height = getDocHeight( doc ) + 4 + "px";
+	iframe.style.visibility = 'visible';
+	iframe.subject_tofeed=subject;
 }
 
 function show_iframe() {

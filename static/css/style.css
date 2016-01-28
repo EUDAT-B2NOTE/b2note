@@ -34,6 +34,7 @@
 #b2note_iframe {
 	float: right;
 	border: none;
+	overflow: hidden;
 }
 
 #interface_main {
@@ -73,8 +74,18 @@
 	border-bottom: thin solid lightgrey;
 }
 
-#section_subject p {
+#section_subject th {
+	text-align: center;
+}
+
+
+#section_subject td {
+	text-align: center;
 	font-size: 8px;
+}
+
+#section_subject a {
+	font-size: 14px;
 }
 
 #section_create {
@@ -93,7 +104,7 @@
 	float: right;
 	height: 200px;
 	width: 100%;
-	overflow: auto;
+	/*overflow: auto;*/
 	padding: 10px;
 }
 
@@ -107,6 +118,7 @@
 */
 #section_existing table {
 	border: 1px solid black;
+	width: 100%;
 }
 
 #section_existing table,
