@@ -3,9 +3,12 @@
 <html lang="en">
 
     <head>
+
     	<meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     	{% load staticfiles %}
+
         <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.css' %}" />
         <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
         <link rel='stylesheet' type='text/css' href="{% static 'css/dashboard.css' %}" />
@@ -36,74 +39,105 @@
         {% else %}
 
             <script>show_iframe();</script>
-        <div id="iframe_content">
-            <div id="top_buttons">
 
-                <table>
-					<tr>
-                    <td>
-                        <form action="export_annotations" method="post">
-                            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-                            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-                            <input type="Submit" value="Export" title="All your annotations as JSON"/>
-                        </form>
-                    </td>
+            <!-- https://www.youtube.com/watch?v=qpWlaOeGZ_4#t=586.470113308 -->
+            <div class="navbar navbar-default navbar-static-top">
 
-                    <td>
-                        <form action="publish_annotations" method="post">
-                            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-                            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-                            <input type="Submit" value = "Publish" title = "Make annotations available to SPARQL queries"/>
-                        </form>
-                    </td>
+                <div class="container">
 
-                    <td>
-                        <form action="settings" method="post">
-                            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-                            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-                            <input type="Submit" value = "Settings" title = "Manage source ontologies"/>
-                        </form>
-                    </td>
+                    <div class="navbar-brand">B2Note interface</div>
 
-                    <td><input class = question name="Close" type ="button" value = "x" title = "Close B2Note interface" onClick = "hide_iframe()" /></td>
-					</tr>
-                </table>
+                    <button class = "navbar-toggle" data-toggle = "collapse" data-target = ".navHeaderCollapse">
+
+                        <span class = "icon-bar"></span>
+                        <span class = "icon-bar"></span>
+                        <span class = "icon-bar"></span>
+
+                    </button>
+
+                    <div class = "collapse navbar-collapse navHeaderCollapse">
+
+                        <ul class = "nav navbar-nav navbar-right">
+
+                            <li>
+
+                                <form action="export_annotations" method="post">
+
+                                    <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                                    <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+                                    <input type="Submit" class="btn btn-link" value="Export" title="All your annotations as JSON" />
+                                    <!-- http://stackoverflow.com/questions/19981949/how-to-make-a-button-in-bootstrap-look-like-a-normal-link-in-nav-tabs -->
+
+                                </form>
+
+                            </li>
+
+                            <li>
+
+                                <form action="publish_annotations" method="post">
+
+                                    <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                                    <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+                                    <input type="Submit" class="btn btn-link" value = "Publish" title = "Make annotations available to SPARQL queries"/>
+
+                                </form>
+
+                            </li>
+
+                            <li>
+
+                                <form action="settings" method="post">
+
+                                    <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                                    <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+                                    <input type="Submit" class="btn btn-link" value = "Settings" title = "Manage source ontologies"/>
+
+                                </form>
+
+                            </li>
+
+                            <li>
+
+                                <!-- http://stackoverflow.com/questions/11828829/twitter-bootstrap-how-to-get-rid-of-underlined-button-text-when-hovering-over-a -->
+                                <a href = "#" class = "btn btn-link" value = "Close" title = "Close B2Note interface" onClick = "hide_iframe()">Close</a>
+
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
 
             </div>
-			
-			<div id="section_title">
-
-                <h2>B2Note interface</h2>
-
-			</div>
 
             <div id="section_subject">
 
                 <h3>Subject</h3>
 
-            	<table class="table-responsive">
+                <table class="table-responsive">
 
-                	<tr>
+                    <tr>
 
-                		<td>URL:</td>
+                        <td>URL:</td>
 
-                		<td><strong><a href="{{subject_tofeed}}" target="_blank">{{subject_tofeed}}</a></strong></td>
+                        <td><strong><a href="{{subject_tofeed}}" target="_blank">{{subject_tofeed}}</a></strong></td>
 
-                	</tr>
+                    </tr>
 
-		{% if pid_tofeed != "" %}
+                    {% if pid_tofeed != "" %}
 
-                	<tr>
+                        <tr>
 
-                		<td>PID:</td>
+                            <td>PID:</td>
 
-                		<td>{{ pid_tofeed }}</td>
+                            <td><a href="{{pid_tofeed}}" target="_blank" class="pid_link">{{ pid_tofeed }}</a></td>
 
-                	</tr>
+                        </tr>
 
-		{% endif %}
+                    {% endif %}
 
-				</table>
+                </table>
 
             </div>
 
@@ -111,42 +145,70 @@
 
                 <h3>Create annotation</h3>
 
-		   <div class="form-group">
-                       <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"  placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" />
-		   </div>
+                <!-- http://stackoverflow.com/questions/18036315/centering-bootstrap-input-fields -->
+
+
+                <div class="form-group">
+
+                    <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"  placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" />
+
+                </div>
 
             </div>
 
             <div id="section_existing">
 
                 <h3>Existing annotations</h3>
-                        <table>
-                            {% for annotation in annotation_list %}
-                                {% if subject_tofeed in annotation.triple.subject.iri %}
-                                    {% if annotation.triple.object.label != "" %}
-                                        <tr><form action="delete_annotation" method="post">
-                                           <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
-                                           <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-                                           <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+
+                <table>
+
+                    {% for annotation in annotation_list %}
+
+                        {% if subject_tofeed in annotation.triple.subject.iri %}
+
+                            {% if annotation.triple.object.label != "" %}
+
+                                <tr>
+                                    <form action="delete_annotation" method="post">
+
+                                        <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
+                                        <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                                        <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+
                                         {% if "http://" in annotation.triple.object.iri %}
+
                                             <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
                                             <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
                                             <td id="objectLabel"><a target="_blank" href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></td>
+
                                         {% else %}
+
                                             <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
                                             <td id="objectLabel">{{annotation.triple.object.label}}</td>
+
                                         {% endif %}
-                                        <!-- https://commons.wikimedia.org/wiki/File:Emojione_274C.svg -->
-                                        <td id="delAnnotation"><input type="image" src="{% static "images/Emojione_274C.svg" %}" title="Delete annotation" alt="Delete annotation" /></td>
-                					    </form></tr>
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
-                        </table>
+
+                                            <!-- https://commons.wikimedia.org/wiki/File:Emojione_274C.svg -->
+                                            <td id="delAnnotation"><input type="image" src="{% static "images/Emojione_274C.svg" %}" title="Delete annotation" alt="Delete annotation" /></td>
+
+                                    </form>
+
+                                </tr>
+
+                            {% endif %}
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                </table>
+
             </div>
 
         {% endif %}
+
 		</div>
+
     </body>
 
 </html>

@@ -24,7 +24,7 @@ def export_annotations(request):
         pid_tofeed = request.POST.get('pid_tofeed')
 
     text = """
-    This functionality will provide a json serialization of available annotations to the user.
+    This functionality will provide a serialization of available annotations to the user in JSON, RDF, XML and other formats.
     """
     return render(request, 'searchapp/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 
@@ -41,7 +41,7 @@ def publish_annotations(request):
         pid_tofeed = request.POST.get('pid_tofeed')
 
     text = """
-    This functionality will publish selected annotations to a triplestore.
+    This functionality will publish selected annotations to a triplestore making them accessible to SPARQL queries.
     """
     return render(request, 'searchapp/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 
@@ -58,7 +58,7 @@ def settings(request):
         pid_tofeed = request.POST.get('pid_tofeed')
 
     text = """
-    This functionality will allow the user to select the domains from which to retrieve the concepts used for annotations in the main interface.
+    This functionality will allow the user to select the ontologies from which to retrieve the concepts used for creating annotations.
     """
     return render(request, 'searchapp/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 

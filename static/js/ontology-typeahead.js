@@ -22,7 +22,7 @@ $(document).ready( function() {
                         label : suggestionSet.labels,
                         ontology_name : suggestionSet.ontology_name,
                         short_form : suggestionSet.short_form,
-			json_document: suggestionSet
+			            json_document: suggestionSet
                     };
                 });
             }
@@ -39,6 +39,13 @@ $(document).ready( function() {
     if (elem) {
     	subject = elem.getElementsByTagName("a")[0].innerHTML;
     }
+    // abremaud@esciencefactory.com, 20160129
+    // gets the pid selected to provide the pid_tofeed field
+    var pid = "test";
+    if (elem) {
+    	pid = elem.getElementsByTagName("a")[1].innerHTML;
+    }
+
 
     // selects the html element where the suggestion takes places
     $('#id_q').typeahead({
@@ -77,7 +84,8 @@ $(document).ready( function() {
             $.redirect('create_annotation',
 	    	    {
 		    	ontology_json: JSON.stringify(data.json_document),
-		    	subject_tofeed: subject
+		    	subject_tofeed: subject,
+		    	pid_tofeed: pid,
 		    });
     });
 });
