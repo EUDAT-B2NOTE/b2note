@@ -106,7 +106,7 @@
 
 #top_buttons {
 	float: right;
-	height: 30px;
+	/*height: 30px;*/
 	margin: 10px;
     border-radius: 5px;
 }
@@ -127,14 +127,23 @@
     text-align: center;
 }
 
+#section_title h2 {
+    margin: 10px 5px;
+    font-weight: bold;
+}
+
 #section_subject {
 	float: right;
 	/*height: 120px;*/
 	width: 100%;
 	text-align: center;
-	padding: 30px 10px 10px 10px;
+	padding: 5px 5px 10px 5px;
 	border-top: thin solid lightgrey;
 	border-bottom: thin solid lightgrey;
+}
+
+#section_subject h3 {
+    margin: 5px;
 }
 
 #section_subject th {
@@ -142,22 +151,30 @@
 }
 
 
+#section_subject table{
+    border: 0px;
+}
+
 #section_subject td {
 	text-align: center;
-	font-size: 8px;
+	font-size: 9px;
 }
 
 #section_subject a {
-	font-size: 14px;
+	font-size: 12px;
 }
 
 #section_create {
 	float: right;
 	/*height: 160px;*/
 	width: 100%;
-	padding: 10px;
+	padding: 5px;
 	border-bottom: thin solid lightgrey;
 	text-align: center;
+}
+
+#section_create h3{
+    margin: 5px 5px 10px 5px;
 }
 
 #section_create input {
@@ -169,10 +186,13 @@
 	/*height: 200px;*/
 	width: 100%;
 	/*overflow: auto;*/
-	padding: 10px;
+	padding: 5px;
 	text-align: center;
 }
 
+#section_existing h3 {
+    margin: 5px 5px 10px 5px;
+}
 
 #section_existing input {
 	width: 8px;

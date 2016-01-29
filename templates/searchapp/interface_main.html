@@ -36,7 +36,7 @@
         {% else %}
 
             <script>show_iframe();</script>
-		<div id="iframe_content">
+        <div id="iframe_content">
             <div id="top_buttons">
 
                 <table>
@@ -72,23 +72,39 @@
             </div>
 			
 			<div id="section_title">
-            <h2>B2Note interface</h2>
+
+                <h2>B2Note interface</h2>
+
 			</div>
 
             <div id="section_subject">
+
                 <h3>Subject</h3>
+
             	<table class="table-responsive">
+
                 	<tr>
-                		<td>url:</td>
+
+                		<td>URL:</td>
+
                 		<td><strong><a href="{{subject_tofeed}}" target="_blank">{{subject_tofeed}}</a></strong></td>
+
                 	</tr>
+
 		{% if pid_tofeed != "" %}
+
                 	<tr>
-                		<td>pid:</td>
+
+                		<td>PID:</td>
+
                 		<td>{{ pid_tofeed }}</td>
+
                 	</tr>
+
 		{% endif %}
+
 				</table>
+
             </div>
 
             <div id="section_create">
