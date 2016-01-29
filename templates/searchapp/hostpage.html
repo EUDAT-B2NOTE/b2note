@@ -18,12 +18,19 @@
 </head>
 
 <body id="hostpage">
-
+	<header>
+		<div id="header-top">
+			<a href="http://www.eudat.eu">GO TO EUDAT WEBSITE</a>
+		</div>
+		<div id="header">
+			<img alt="B2NOTE" title="B2NOTE" src="{% static 'images/B2NOTE-logo.png' %}" />
+		</div>
+	</header>
+	<div id="content">
 	<!-- http://stackoverflow.com/questions/12102464/how-do-i-make-iframes-load-only-on-a-button-click -->
 	<iframe id="b2note_iframe" name="b2note_iframe" src="interface_main"
 		width={{iframe_on}} onload="load_iframe('{{ subject_tofeed }}')"
 		scrolling="no"></iframe>
-
 	<h1>B2Note service prototype</h1>
 
 	<h3>Some explaining:</h3>
@@ -95,6 +102,16 @@
 		<li>The hyperlink address (optional).</li>
 		<li>A human-readable label for the hyperlink (optional).</li>
 	</ul>
+	</div>
+	<footer>
+		<div id="footer-content">
+			<img alt="CE logo" title="CE logo" src="{% static 'images/logo_ce.jpg' %}" />
+			<p>
+				EUDAT receives funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No. 654065.
+				<a href="http://www.eudat.eu/legal-notice">Legal Notice</a>
+			</p>
+		</div>
+	</footer>
 
 </body>
 

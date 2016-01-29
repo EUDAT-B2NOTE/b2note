@@ -6,7 +6,6 @@
 #hostpage {
 	background-color: #f9f9f9;
 	font-size: 14px;
-	margin-left: 10px;
 }
 
 #hostpage input {
@@ -57,6 +56,31 @@
     height:10px;
 }
 
+#header-top {
+	background: #f45d00 none repeat scroll 0 0;
+	padding: 5px 0; 
+}
+
+#header-top a {
+	color: white;
+	padding-left: 100px;
+	font-size: 12px;
+}
+
+#header {
+	background: #fff url("../images/decor-header.png") no-repeat scroll right top;
+	height: 100px;
+	text-align: center;
+}
+
+#header img {
+	padding: 5px;
+}
+
+#content {
+	margin-left: 20px;
+	margin-bottom: 50px;
+}
 
 #b2note_iframe {
     visibility: hidden;
@@ -186,3 +210,31 @@
 #delAnnotation {
 	width: 5%;
 }
+
+footer {
+	height: 70px;
+	background: transparent url("../images/decor-footer.png") no-repeat scroll right bottom;
+	background-color: #dddddd;
+	padding: 10px 40px;
+}
+
+#footer-content {
+	display: table;
+	margin: 0 auto;
+	padding-top: 10px;
+}
+
+#footer-content img {
+	float: left;
+	margin-right: 10px;
+	
+}
+#footer-content p {
+	font-size: 10px;
+	width: 100%;
+}
+
+#footer-content a {
+	color: #e5601e;
+}
+
