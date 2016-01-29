@@ -36,7 +36,7 @@
         {% else %}
 
             <script>show_iframe();</script>
-		<div id="iframe_content">
+        <div id="iframe_content">
             <div id="top_buttons">
 
                 <table>
@@ -72,23 +72,39 @@
             </div>
 			
 			<div id="section_title">
-            <h2>B2Note interface</h2>
+
+                <h2>B2Note interface</h2>
+
 			</div>
 
             <div id="section_subject">
-            	<table>
-            		<tr><th colspan="2">Subject</th></tr>
+
+                <h3>Subject</h3>
+
+            	<table class="table-responsive">
+
                 	<tr>
-                		<td>url:</td>
+
+                		<td>URL:</td>
+
                 		<td><strong><a href="{{subject_tofeed}}" target="_blank">{{subject_tofeed}}</a></strong></td>
+
                 	</tr>
+
 		{% if pid_tofeed != "" %}
+
                 	<tr>
-                		<td>pid:</td>
+
+                		<td>PID:</td>
+
                 		<td>{{ pid_tofeed }}</td>
+
                 	</tr>
+
 		{% endif %}
+
 				</table>
+
             </div>
 
             <div id="section_create">
@@ -113,7 +129,7 @@
                                            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
                                            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
                                         {% if "http://" in annotation.triple.object.iri %}
-                                            <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
+                                            <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
                                             <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
                                             <td id="objectLabel"><a target="_blank" href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></td>
                                         {% else %}

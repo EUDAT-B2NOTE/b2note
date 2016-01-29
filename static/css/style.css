@@ -4,15 +4,18 @@
 }
 
 #hostpage {
-	background-color: #f9f9f9;
+    background: -webkit-gradient(linear, left top, left center, from(#FFFFFF), to(#FFFFFF)) fixed;
+    background: -webkit-gradient(linear, left center, left bottom, from(#FFFFFF), to(#D5D5D5)) fixed;
+	/*background-color: #f9f9f9;*/
 	font-size: 14px;
 }
+
 
 #hostpage input {
 	white-space: normal;
 	width: 102px;
 	font-weight: bold;
-	color: #ff7300;
+	color: #FF7300;
 	padding: 0px;
 	padding-top: 2px;
 	padding-bottom: 2px;
@@ -22,6 +25,7 @@
 #hostpage h1 {
 	padding-top: 10px;
 	width: 625px;
+	font-weight: bold;
 	text-align: center;
 }
 
@@ -89,18 +93,20 @@
 	border: 2px solid gray;
 	overflow: hidden;
 	border-radius: 20px;
+	text-align: center;
 }
 
 #interface_main {
 	padding: 0;
 	margin: 0;
 	height: 100%;
+    background: rgba(255,255,255,0.5);
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
 #top_buttons {
 	float: right;
-	height: 30px;
+	/*height: 30px;*/
 	margin: 10px;
     border-radius: 5px;
 }
@@ -113,22 +119,31 @@
 }
 
 
-
 #section_title {
 	float: right;
-	height: 65px;
+	/*height: 65px;*/
+	padding: 5px;
 	width: 100%;
-	text-align: center;
+    text-align: center;
+}
+
+#section_title h2 {
+    margin: 10px 5px;
+    font-weight: bold;
 }
 
 #section_subject {
 	float: right;
-	height: 120px;
+	/*height: 120px;*/
 	width: 100%;
 	text-align: center;
-	padding: 30px 10px 10px 10px;
+	padding: 5px 5px 10px 5px;
 	border-top: thin solid lightgrey;
 	border-bottom: thin solid lightgrey;
+}
+
+#section_subject h3 {
+    margin: 5px;
 }
 
 #section_subject th {
@@ -136,21 +151,30 @@
 }
 
 
+#section_subject table{
+    border: 0px;
+}
+
 #section_subject td {
 	text-align: center;
-	font-size: 8px;
+	font-size: 9px;
 }
 
 #section_subject a {
-	font-size: 14px;
+	font-size: 12px;
 }
 
 #section_create {
 	float: right;
-	height: 160px;
+	/*height: 160px;*/
 	width: 100%;
-	padding: 10px;
+	padding: 5px;
 	border-bottom: thin solid lightgrey;
+	text-align: center;
+}
+
+#section_create h3{
+    margin: 5px 5px 10px 5px;
 }
 
 #section_create input {
@@ -159,10 +183,15 @@
 
 #section_existing {
 	float: right;
-	height: 200px;
+	/*height: 200px;*/
 	width: 100%;
 	/*overflow: auto;*/
-	padding: 10px;
+	padding: 5px;
+	text-align: center;
+}
+
+#section_existing h3 {
+    margin: 5px 5px 10px 5px;
 }
 
 #section_existing input {
@@ -195,7 +224,8 @@
 }
 
 #section_existing tr:nth-child(2n) {
-	background: #fffffe;
+    background: rgba(255,255,254,0.5);
+	/*background: #fffffe;*/
 }
 
 #predicateLabel {
@@ -237,4 +267,3 @@ footer {
 #footer-content a {
 	color: #e5601e;
 }
-
