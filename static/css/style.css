@@ -58,12 +58,11 @@
 
 #header-top {
 	background: #f45d00 none repeat scroll 0 0;
-	padding: 5px 0; 
+	padding: 5px 100px; 
 }
 
 #header-top a {
 	color: white;
-	padding-left: 100px;
 	font-size: 12px;
 }
 
@@ -75,6 +74,7 @@
 
 #header img {
 	padding: 5px;
+	margin-right: 50px;
 }
 
 #content {
