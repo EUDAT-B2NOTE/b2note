@@ -38,57 +38,77 @@
 
 	<h3>Some explaining:</h3>
 
-	<p>
-		This page emulates the <strong>outcome of a search</strong> performed
-		by a user of EUDAT services such as B2Share. <br> Thus, it
-		displays a list of hyperlinks pointing to <strong>files stored
-			by EUDAT</strong>.
-	</p>
-	<p>
-		Next to each hyperlink stands a "Create Annotation" button. <br />
-		Clicking one of these buttons <strong>triggers the B2Note
-			interface</strong>.
-	</p>
-	<p>
-		The B2note interface allows the user to <strong>select
-			semantic concepts </strong> for describing the corresponding file. <br /> The
-		semantic relations created in the process are <strong>stored</strong>
-		by the B2Note service, allowing later retrieval and processing.
-	</p>
+	<div class = "container">
+
+		<p>This page emulates the <strong>outcome of a search</strong> performed by a user of EUDAT services such as B2Share.</p>
+
+		<p>Thus, it displays a list of hyperlinks pointing to <strong>files stored by EUDAT</strong>.</p>
+
+        <br>
+
+		<p>Next to each hyperlink stands a "Create Annotation" button.</p>
+
+		<p>Clicking one of these buttons <strong>triggers the B2Note interface</strong>.</p>
+
+        <br>
+
+		<p>The B2note interface allows the user to <strong>select semantic concepts </strong> for describing the corresponding file.</p>
+
+		<p>The semantic relations created in the process are <strong>stored</strong> by the B2Note service, allowing later retrieval and processing.</p>
+
+	</div>
 
     <hr>
 
 	<h3>The list of files:</h3>
 
 	<table>
-		{% for file_info in buttons_info %}
-			<form action="interface_main" method="post" target="b2note_iframe">
-			{% csrf_token %}
-				<tr class="row1" colspan="2">
-					<td></td>
-				</tr>
-				<tr class="row2">
-					<td><input type="hidden" name="subject_tofeed"
-						value="{{ file_info.file_url }}" class="field left"
-						readonly="readonly" /> <a href="{{ file_info.file_url }}"
-						target="_blank">{{ file_info.link_label }}</a> <input type="hidden"
-						name="pid_tofeed" value="{{ file_info.file_pid }}"
-						class="field left" readonly="readonly" /></td>
-					<td rowspan="2"><input type="submit"
-						id="{{ file_info.button_n }}" value="Create Annotation"
-						title="Click to annotate hyperlink using B2Note." /></td>
-				</tr>
-				<tr class="row3">
-					<td>{{ file_info.file_pid }}</td>
-				</tr>
-				<tr class="row4" colspan="2">
-					<td> </td>
-					<td> </td>
-				</tr>
-			</form>
-		{% endfor %}
-	</table>
 
+		{% for file_info in buttons_info %}
+
+			<form action="interface_main" method="post" target="b2note_iframe">
+
+			{% csrf_token %}
+
+				<tr class="row1" colspan="2">
+
+					<td></td>
+
+				</tr>
+
+				<tr class="row2">
+
+					<td>
+
+                        <input type="hidden" name="subject_tofeed" value="{{ file_info.file_url }}" class="field left" readonly="readonly" />
+                        <a href="{{ file_info.file_url }}" target="_blank">{{ file_info.link_label }}</a>
+                        <input type="hidden" name="pid_tofeed" value="{{ file_info.file_pid }}" class="field left" readonly="readonly" />
+
+                    </td>
+
+					<td rowspan="2">
+
+                        <input type="submit" id="{{ file_info.button_n }}" value="Create Annotation" title="Click to annotate hyperlink using B2Note." /></td>
+				</tr>
+
+				<tr class="row3">
+
+					<td>{{ file_info.file_pid }}</td>
+
+				</tr>
+
+				<tr class="row4" colspan="2">
+
+					<td> </td>
+					<td> </td>
+
+				</tr>
+
+			</form>
+
+		{% endfor %}
+
+	</table>
 
     <hr>
 

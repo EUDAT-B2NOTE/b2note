@@ -30,7 +30,7 @@
 }
 
 #hostpage h3 {
-	padding-top: 10px;
+	/*padding-top: 10px;*/
 }
 
 #hostpage p {
@@ -73,7 +73,7 @@
 #header {
 	background: #fff url("../images/decor-header.png") no-repeat scroll right top;
 	height: 100px;
-	text-align: center;
+s	text-align: center;
 }
 
 #header img {
@@ -94,6 +94,8 @@
 	overflow: hidden;
 	border-radius: 20px;
 	text-align: center;
+	position: fixed;
+	right: 5px;
 }
 
 #interface_main {
@@ -103,7 +105,6 @@
     background: rgba(255,255,255,0.5);
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
-
 
 
 #section_subject {
