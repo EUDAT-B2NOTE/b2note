@@ -107,7 +107,7 @@ s	text-align: center;
 }
 
 #interface_main .navbar {
-    margin: 5px;
+    margin: 0px;
 }
 
 #interface_main h3 {
@@ -203,10 +203,6 @@ s	text-align: center;
 	text-align: center;
 }
 
-#section_existing tr:nth-child(2n) {
-    background: rgba(255,255,254,0.66);
-	/*background: #fffffe;*/
-}
 
 #predicateLabel {
 	width: 20%;

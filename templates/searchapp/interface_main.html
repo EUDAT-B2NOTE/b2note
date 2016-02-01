@@ -121,6 +121,7 @@
 
                         <td>URL:</td>
 
+                        <!-- http://stackoverflow.com/questions/19819322/preselect-text-input-on-page-load -->
                         <td><strong><a href="{{subject_tofeed}}" target="_blank">{{subject_tofeed}}</a></strong></td>
 
                     </tr>
@@ -160,7 +161,7 @@
 
                 <h3>Existing annotations</h3>
 
-                <table>
+                <table class="table table-responsive table-striped">
 
                     {% for annotation in annotation_list %}
 
