@@ -103,6 +103,9 @@ s	text-align: center;
 	margin: 0;
 	height: 100%;
     background: rgba(255,255,255,0.97);
+}
+
+#interface_main * {
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
