@@ -161,48 +161,53 @@
 
                 <h3>Existing annotations</h3>
 
-                <table class="table table-responsive table-striped">
+                <div class="container" id="container_table_existing">
 
-                    {% for annotation in annotation_list %}
+                    <table class="table table-responsive table-striped">
 
-                        {% if subject_tofeed in annotation.triple.subject.iri %}
+                        {% for annotation in annotation_list %}
 
-                            {% if annotation.triple.object.label != "" %}
+                            {% if subject_tofeed in annotation.triple.subject.iri %}
 
-                                <tr>
-                                    <form action="delete_annotation" method="post">
+                                {% if annotation.triple.object.label != "" %}
 
-                                        <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
-                                        <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-                                        <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+                                    <tr>
 
-                                        {% if "http://" in annotation.triple.object.iri %}
+                                        <form action="delete_annotation" method="post">
 
-                                            <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
-                                            <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
-                                            <td id="objectLabel"><a target="_blank" href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></td>
+                                            <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
+                                            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                                            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
 
-                                        {% else %}
+                                            {% if "http://" in annotation.triple.object.iri %}
 
-                                            <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
-                                            <td id="objectLabel">{{annotation.triple.object.label}}</td>
+                                                <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
+                                                <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
+                                                <td id="objectLabel"><a target="_blank" href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></td>
 
-                                        {% endif %}
+                                            {% else %}
 
-                                            <!-- "Octicons-trashcan" by GitHub - https://github.com/github/octicons. Licensed under MIT via Wikimedia Commons - https://commons.wikimedia.org/wiki/File:Octicons-trashcan.svg#/media/File:Octicons-trashcan.svg -->
-                                            <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" title="Delete annotation" alt="Delete annotation" /></td>
+                                                <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
+                                                <td id="objectLabel">{{annotation.triple.object.label}}</td>
 
-                                    </form>
+                                            {% endif %}
 
-                                </tr>
+                                                <!-- "Octicons-trashcan" by GitHub - https://github.com/github/octicons. Licensed under MIT via Wikimedia Commons - https://commons.wikimedia.org/wiki/File:Octicons-trashcan.svg#/media/File:Octicons-trashcan.svg -->
+                                                <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" title="Delete annotation" alt="Delete annotation" /></td>
+
+                                        </form>
+
+                                    </tr>
+
+                                {% endif %}
 
                             {% endif %}
 
-                        {% endif %}
+                        {% endfor %}
 
-                    {% endfor %}
+                    </table>
 
-                </table>
+                </div>
 
             </div>
 

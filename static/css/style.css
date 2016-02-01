@@ -81,6 +81,10 @@ s	text-align: center;
 	margin-right: 50px;
 }
 
+#.clear{
+    clear: both;
+}
+
 #content {
 	margin-left: 20px;
 	margin-bottom: 50px;
@@ -89,7 +93,7 @@ s	text-align: center;
 #b2note_iframe {
     visibility: hidden;
 	float: right;
-	margin: 5px;
+	margin: 5px 5px 15px 5px;
 	border: 2px solid gray;
 	overflow: hidden;
 	border-radius: 20px;
@@ -102,7 +106,7 @@ s	text-align: center;
 	padding: 0;
 	margin: 0;
 	height: 100%;
-    background: rgba(255,255,255,0.97);
+    background: rgba(255,255,255,0.95);
 }
 
 #interface_main * {
@@ -168,11 +172,15 @@ s	text-align: center;
 
 #section_existing {
 	float: right;
-	/*height: 200px;*/
 	width: 100%;
-	/*overflow: auto;*/
 	padding: 5px;
 	text-align: center;
+}
+
+
+#container_table_existing {
+    height: 150px;
+    overflow: scroll;
 }
 
 #section_existing input {
