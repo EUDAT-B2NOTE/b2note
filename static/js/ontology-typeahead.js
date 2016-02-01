@@ -14,7 +14,7 @@ $(document).ready( function() {
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         remote: {
-            url: 'http://opseudat03.bsc.es:8983/solr/b2note_index/select?q=%QUERY&wt=json&indent=true',
+            url: 'https://opseudat03.bsc.es:8983/solr/b2note_index/select?q=%QUERY&wt=json&indent=true',
             wildcard: '%QUERY',
             filter: function (data) {
                 return $.map(data.response.docs, function (suggestionSet) {
