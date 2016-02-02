@@ -18,114 +18,172 @@
 </head>
 
 <body id="hostpage">
+
 	<header>
+
 		<div id="header-top">
+
 			<a href="http://www.eudat.eu" target="_blank">GO TO EUDAT WEBSITE</a>
+
 		</div>
-		<div id="header">
-			<img alt="EUDAT" title="EUDAT" src="{% static 'images/EUDAT-logo_3.png' %}" />
-			<img alt="B2NOTE" title="B2NOTE" src="{% static 'images/B2NOTE-logo.png' %}" />
+
+		<div class = "container" id="header">
+
+            <section class="row">
+
+                <div class="col-xs-8 col-sm-4 col-md-2">
+
+                    <img alt="EUDAT" title="EUDAT" src="{% static 'images/EUDAT-logo_3.png' %}" />
+
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-md-2">
+
+    			    <img alt="B2NOTE" title="B2NOTE" src="{% static 'images/B2NOTE-logo.png' %}" />
+
+                </div>
+
+                <div class="clear"> </div>
+
+            </section>
+
 		</div>
+
+        <div class="clear"> </div>
+
 	</header>
-	<div id="content">
 
-	<!-- http://stackoverflow.com/questions/12102464/how-do-i-make-iframes-load-only-on-a-button-click -->
-	<iframe id="b2note_iframe" name="b2note_iframe" src="interface_main"
-		width={{iframe_on}} onload="load_iframe('{{ subject_tofeed }}')"
-		scrolling="no"></iframe>
+	<div class = "container" id="content">
 
-	<h1>B2Note service prototype</h1>
+        <div class="clear"> </div>
 
-	<h3>Some explaining:</h3>
+        <div class = "container">
 
-	<div class = "container">
+            <div class="clear"> </div>
 
-		<p>This page emulates the <strong>outcome of a search</strong> performed by a user of EUDAT services such as B2Share.</p>
+            <!-- http://stackoverflow.com/questions/12102464/how-do-i-make-iframes-load-only-on-a-button-click -->
+            <iframe id="b2note_iframe" name="b2note_iframe" src="interface_main"
+                width={{iframe_on}} onload="load_iframe('{{ subject_tofeed }}')"
+                scrolling="no"></iframe>
 
-		<p>Thus, it displays a list of hyperlinks pointing to <strong>files stored by EUDAT</strong>.</p>
+        </div>
 
-        <br>
+        <div class = "container">
 
-		<p>Next to each hyperlink stands a "Create Annotation" button.</p>
+            <h1>B2Note service prototype</h1>
 
-		<p>Clicking one of these buttons <strong>triggers the B2Note interface</strong>.</p>
+        </div>
 
-        <br>
+        <div class = "container">
 
-		<p>The B2note interface allows the user to <strong>select semantic concepts </strong> for describing the corresponding file.</p>
+            <h3>Some explaining:</h3>
 
-		<p>The semantic relations created in the process are <strong>stored</strong> by the B2Note service, allowing later retrieval and processing.</p>
+        </div>
+
+        <div class = "container">
+
+            <div class="clear"> </div>
+
+            <p>This page emulates the <strong>outcome of a search</strong> performed by a user of EUDAT services such as B2Share.</p>
+
+            <p>Thus, it displays a list of hyperlinks pointing to <strong>files stored by EUDAT</strong>.</p>
+
+            <br>
+
+            <p>Next to each hyperlink stands a "Create Annotation" button.</p>
+
+            <p>Clicking one of these buttons <strong>triggers the B2Note interface</strong>.</p>
+
+            <br>
+
+            <p>The B2note interface allows the user to <strong>select semantic concepts </strong> for describing the corresponding file.</p>
+
+            <p>The semantic relations created in the process are <strong>stored</strong> by the B2Note service, allowing later retrieval and processing.</p>
+
+        </div>
+
+        <hr>
+
+        <div class = "container">
+
+            <h3>The list of files:</h3>
+
+            <table>
+
+                {% for file_info in buttons_info %}
+
+                    <form action="interface_main" method="post" target="b2note_iframe">
+
+                    {% csrf_token %}
+
+                        <tr class="row1" colspan="2">
+
+                            <td></td>
+
+                        </tr>
+
+                        <tr class="row2">
+
+                            <td>
+
+                                <input type="hidden" name="subject_tofeed" value="{{ file_info.file_url }}" class="field left" readonly="readonly" />
+                                <a href="{{ file_info.file_url }}" target="_blank">{{ file_info.link_label }}</a>
+                                <input type="hidden" name="pid_tofeed" value="{{ file_info.file_pid }}" class="field left" readonly="readonly" />
+
+                            </td>
+
+                            <td rowspan="2">
+
+                                <input type="submit" id="{{ file_info.button_n }}" value="Create Annotation" title="Click to annotate hyperlink using B2Note." /></td>
+                        </tr>
+
+                        <tr class="row3">
+
+                            <td>{{ file_info.file_pid }}</td>
+
+                        </tr>
+
+                        <tr class="row4" colspan="2">
+
+                            <td> </td>
+                            <td> </td>
+
+                        </tr>
+
+                    </form>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
+
+        <hr>
+
+        <div class = "container">
+
+            <h3>Some extra explaining:</h3>
+
+            <p>
+                The necessary information was collected by hand for a small subset of
+                files. <br /> However, it is expected that the information can easily
+                be gathered in an automated way by the actual file-hosting service.
+            </p>
+
+            <p>This information includes:</p>
+
+            <ul>
+
+                <li>The pid of the file (required).</li>
+                <li>The hyperlink address (optional).</li>
+                <li>A human-readable label for the hyperlink (optional).</li>
+
+            </ul>
+
+        </div>
 
 	</div>
 
-    <hr>
-
-	<h3>The list of files:</h3>
-
-	<table>
-
-		{% for file_info in buttons_info %}
-
-			<form action="interface_main" method="post" target="b2note_iframe">
-
-			{% csrf_token %}
-
-				<tr class="row1" colspan="2">
-
-					<td></td>
-
-				</tr>
-
-				<tr class="row2">
-
-					<td>
-
-                        <input type="hidden" name="subject_tofeed" value="{{ file_info.file_url }}" class="field left" readonly="readonly" />
-                        <a href="{{ file_info.file_url }}" target="_blank">{{ file_info.link_label }}</a>
-                        <input type="hidden" name="pid_tofeed" value="{{ file_info.file_pid }}" class="field left" readonly="readonly" />
-
-                    </td>
-
-					<td rowspan="2">
-
-                        <input type="submit" id="{{ file_info.button_n }}" value="Create Annotation" title="Click to annotate hyperlink using B2Note." /></td>
-				</tr>
-
-				<tr class="row3">
-
-					<td>{{ file_info.file_pid }}</td>
-
-				</tr>
-
-				<tr class="row4" colspan="2">
-
-					<td> </td>
-					<td> </td>
-
-				</tr>
-
-			</form>
-
-		{% endfor %}
-
-	</table>
-
-    <hr>
-
-	<h3>Some extra explaining:</h3>
-
-	<p>
-		The necessary information was collected by hand for a small subset of
-		files. <br /> However, it is expected that the information can easily
-		be gathered in an automated way by the actual file-hosting service.
-	</p>
-	<p>This information includes:</p>
-	<ul>
-		<li>The pid of the file (required).</li>
-		<li>The hyperlink address (optional).</li>
-		<li>A human-readable label for the hyperlink (optional).</li>
-	</ul>
-	</div>
 	<footer>
 		<div id="footer-content">
 			<img alt="CE logo" title="CE logo" src="{% static 'images/logo_ce.jpg' %}" />

@@ -1,5 +1,7 @@
 from django.db import models
 from djangotoolbox.fields import EmbeddedModelField
+from django_mongodb_engine.contrib import MongoDBManager
+
 
 class TripleElement(models.Model):
 	iri 			= models.CharField( max_length = 4096 )
@@ -29,4 +31,6 @@ class Provenance(models.Model):
 class Annotation(models.Model):
 	triple 		= EmbeddedModelField( 'Triple' )
 	provenance 	= EmbeddedModelField( 'Provenance' )
+	# http://stackoverflow.com/questions/23546480/no-raw-query-method-in-my-django-object
+	objects     = MongoDBManager()
 
