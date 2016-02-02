@@ -115,30 +115,42 @@
 
                 <h3>Subject</h3>
 
-                <table class="table-responsive">
+                <div class="table-responsive">
 
-                    <tr>
+                   <div class="row">
 
-                        <td>URL:</td>
+                       <div class="col-md-6" id="col_table">
 
-                        <!-- http://stackoverflow.com/questions/19819322/preselect-text-input-on-page-load -->
-                        <td><strong><a href="{{subject_tofeed}}" target="_blank">{{subject_tofeed}}</a></strong></td>
+                           <table class="table table-condensed">
 
-                    </tr>
+                               <tr>
 
-                    {% if pid_tofeed != "" %}
+                                   <td>URL:</td>
 
-                        <tr>
+                                   <!-- http://stackoverflow.com/questions/19819322/preselect-text-input-on-page-load -->
+                                   <td><strong><a href="{{subject_tofeed}}" target="_blank">{{subject_tofeed}}</a></strong></td>
 
-                            <td>PID:</td>
+                               </tr>
 
-                            <td><a href="{{pid_tofeed}}" target="_blank" class="pid_link">{{ pid_tofeed }}</a></td>
+                               {% if pid_tofeed != "" %}
 
-                        </tr>
+                                <tr>
 
-                    {% endif %}
+                                    <td>PID:</td>
 
-                </table>
+                                    <td><a href="{{pid_tofeed}}" target="_blank" class="pid_link">{{ pid_tofeed }}</a></td>
+
+                                </tr>
+
+                               {% endif %}
+
+                           </table>
+
+                       </div>
+
+                   </div>
+
+                </div>
 
             </div>
 
