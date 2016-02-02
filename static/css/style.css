@@ -192,6 +192,15 @@
     margin-right: auto;
 }
 
+#section_create .tt-menu {
+	width: 290px;
+	margin-left: -20px;
+}
+
+#section_create .tt-menu * {
+	font-size: 14px;	
+}
+
 #section_existing {
 	float: right;
 	width: 100%;
