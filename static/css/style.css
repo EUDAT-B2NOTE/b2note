@@ -6,8 +6,7 @@
 #hostpage {
     background: -webkit-gradient(linear, left top, left center, from(#FFFFFF), to(#FFFFFF)) fixed;
     background: -webkit-gradient(linear, left center, left bottom, from(#FFFFFF), to(#D5D5D5)) fixed;
-	/*background-color: #f9f9f9;*/
-	font-size: 14px;
+    font-size: 14px;
 }
 
 
@@ -73,7 +72,7 @@
 #header {
 	background: #fff url("../images/decor-header.png") no-repeat scroll right top;
 	height: 100px;
-s	text-align: center;
+	text-align: center;
 }
 
 #header img {
@@ -81,7 +80,7 @@ s	text-align: center;
 	margin-right: 50px;
 }
 
-#.clear{
+.clear{
     clear: both;
 }
 
@@ -110,17 +109,40 @@ s	text-align: center;
 }
 
 #interface_main * {
-	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-family: Raleway.sans-serif,"Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 14px;
+}
+
+#interface_main .navbar-brand  {
+    font-size: 16px;
+    padding-left: 5px;
 }
 
 #interface_main .navbar {
     margin: 0px;
 }
 
+#interface_main .navbar-nav {
+	margin: 7.5px 0px 7.5px -15px;
+}
+
+#interface_main .navbar-nav>li>a {
+	padding-left: 30px;
+}
+
+#interface_main .navbar-toggle {
+    margin-right: 0px;
+}
+
+#interface_main .navbar-nav *  {
+    font-size: 12px;
+}
+
 #interface_main h3 {
     text-align: center;
     margin: 5px 2px 10px 2px;
     padding: 2px;
+    font-weight: bold;
 }
 
 #section_subject {
@@ -168,6 +190,15 @@ s	text-align: center;
     width: 250px;
     margin-left: auto;
     margin-right: auto;
+}
+
+#section_create .tt-menu {
+	width: 290px;
+	margin-left: -20px;
+}
+
+#section_create .tt-menu * {
+	font-size: 14px;	
 }
 
 #section_existing {
