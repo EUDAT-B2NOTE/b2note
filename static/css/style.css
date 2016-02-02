@@ -6,8 +6,7 @@
 #hostpage {
     background: -webkit-gradient(linear, left top, left center, from(#FFFFFF), to(#FFFFFF)) fixed;
     background: -webkit-gradient(linear, left center, left bottom, from(#FFFFFF), to(#D5D5D5)) fixed;
-	/*background-color: #f9f9f9;*/
-	font-size: 14px;
+    font-size: 14px;
 }
 
 
@@ -110,11 +109,28 @@ s	text-align: center;
 }
 
 #interface_main * {
-	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-family: Raleway.sans-serif,"Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 14px;
+}
+
+#interface_main .navbar-brand  {
+    font-size: 16px;
 }
 
 #interface_main .navbar {
     margin: 0px;
+}
+
+#interface_main .navbar-nav {
+	margin: 7.5px 0px 7.5px -15px;
+}
+
+#interface_main .navbar-toggle {
+    margin-right: 0px;
+}
+
+#interface_main .navbar-nav *  {
+    font-size: 12px;
 }
 
 #interface_main h3 {
