@@ -73,11 +73,12 @@
 	background: #fff url("../images/decor-header.png") no-repeat scroll right top;
 	height: 100px;
 	text-align: center;
+	width: 100%;
 }
 
 #header img {
 	padding: 5px;
-	margin-right: 50px;
+	margin-leftt: 50px;
 }
 
 .clear{
@@ -211,7 +212,7 @@
 
 #container_table_existing {
     height: 150px;
-    overflow: scroll;
+    overflow: auto;
 }
 
 #section_existing input {

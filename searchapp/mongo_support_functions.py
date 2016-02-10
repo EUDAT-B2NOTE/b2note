@@ -6,6 +6,17 @@ from .models import *
 
 
 def DeleteFromPOSTinfo( db_id ):
+    """
+      Function: DeleteFromPOSTinfo
+      ----------------------------
+        Removes an annotation from MongoDB.
+        
+        params:
+            db_id (str): ID of the document to remove.
+        
+        returns:
+            bool: True if successful, False otherwise.
+    """
     del_flag = False
     try:
         if db_id and type(db_id) is unicode and len(db_id)>0:
@@ -25,6 +36,18 @@ def DeleteFromPOSTinfo( db_id ):
 
 
 def CreateFromPOSTinfo( subject_url, object_json ):
+    """
+      Function: CreateFromPOSTinfo
+      ----------------------------
+        Creates an annotation in MongoDB.
+        
+        params:
+            subject_url (str): URL of the annotation to create.
+            object_json (str): JSON of the annotation provided by SOLR
+        
+        returns:
+            bool: True if successful, False otherwise.
+    """
     object_uri   = ""
     object_label = ""
 

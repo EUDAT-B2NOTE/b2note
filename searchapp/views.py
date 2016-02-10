@@ -15,6 +15,17 @@ def index(request):
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
 def export_annotations(request):
+    """
+      Function: export_annotations
+      ----------------------------
+        Export all annotations in JSON format.
+        
+        params:
+            request (object): context of the petition.
+        
+        returns:
+            object: HttpResponse with the result of the request.
+    """
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
         subject_tofeed = request.POST.get('subject_tofeed')
@@ -32,6 +43,17 @@ def export_annotations(request):
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
 def publish_annotations(request):
+    """
+      Function: publish_annotations
+      ----------------------------
+        Make annotations available to SPARQL queries.
+        
+        params:
+            request (object): context of the petition.
+        
+        returns:
+            object: HttpResponse with the result of the request.
+    """
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
         subject_tofeed = request.POST.get('subject_tofeed')
@@ -49,6 +71,17 @@ def publish_annotations(request):
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
 def settings(request):
+    """
+      Function: settings
+      ----------------------------
+        Select the source of ontologies.
+        
+        params:
+            request (object): context of the petition.
+        
+        returns:
+            object: HttpResponse with the result of the request.
+    """
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
         subject_tofeed = request.POST.get('subject_tofeed')
@@ -64,6 +97,17 @@ def settings(request):
 
 
 def hostpage(request):
+    """
+      Function: hostpage
+      ----------------------------
+        Displays the initial page of the site.
+        
+        params:
+            request (object): context of the petition.
+        
+        returns:
+            object: HttpResponse with the initial host page.
+    """
 
     buttons_info_text = """
 http://hdl.handle.net/11304/31c0d886-b988-11e3-8cd7-14feb57d12b9
@@ -117,6 +161,17 @@ Influence of smoking and obesity in sperm quality
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
 def delete_annotation(request):
+    """
+      Function: delete_annotation
+      ----------------------------
+        Calls DeleteFromPOSTinfo function for removing an annotation.
+        
+        params:
+            request (object): context of the petition.
+        
+        returns:
+            object: HttpResponse with the remaining annotations.
+    """
 
     if request.POST.get('db_id'):
         DeleteFromPOSTinfo( request.POST.get('db_id') )
@@ -145,6 +200,17 @@ def delete_annotation(request):
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
 def create_annotation(request):
+    """
+      Function: create_annotation
+      ----------------------------
+        Calls CreateFromPOSTinfo function for creating a new annotation.
+        
+        params:
+            request (object): context of the petition.
+        
+        returns:
+            object: HttpResponse with the annotations.
+    """
 
     if request.POST.get('ontology_json'):
         CreateFromPOSTinfo( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
@@ -173,6 +239,17 @@ def create_annotation(request):
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
 def interface_main(request):
+    """
+      Function: interface_main
+      ----------------------------
+        Displays the iframe with the annotations.
+        
+        params:
+            request (object): context of the petition.
+        
+        returns:
+            object: HttpResponse with the iframe.
+    """
 
     pid_tofeed = ""
     if request.POST.get('pid_tofeed')!=None:
