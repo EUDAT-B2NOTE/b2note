@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+    	<meta charset="UTF-8">
+
+    	{% load staticfiles %}
+        <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
+		<link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
+
+        <title>B2Note annotations export</title>
+
+    </head>
+
+    <body id="export">
+
+        <h1>B2Note exports annotations in json.</h1>
+
+        <br>
+
+        <form action="interface_main" method="post">
+            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+            <input type="Submit" value="Back" title="Back to main interface"/>
+        </form>
+
+        <br><hr>
+
+        <p>
+            {{ annotations_json }}
+        </p>
+
+    </body>
+
+</html>
