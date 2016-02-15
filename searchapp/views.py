@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .mongo_support_functions import CreateFromPOSTinfo, DeleteFromPOSTinfo
 from .models import Annotation
 
-
+import json
 
 def index(request):
     return HttpResponse("replace me with index text")
@@ -37,7 +37,16 @@ def export_annotations(request):
     text = """
     This functionality will provide a serialization of available annotations to the user in JSON, RDF, XML and other formats.
     """
-    return render(request, 'searchapp/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+    response = []
+    annotation_list = Annotation.objects.raw_query({'triple.subject.iri': subject_tofeed})
+    annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.provenance.createdOn, reverse=True)
+    for annotation in annotation_list:
+        response.append({'id': annotation.id,
+                         'iri': annotation.triple.predicate.iri,
+                         'label': annotation.triple.object.label
+                         })
+    return HttpResponse(json.dumps(response), content_type="application/json")
+    #return render(request, 'searchapp/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 
 
 # forbidden CSRF verification failed. Request aborted.
