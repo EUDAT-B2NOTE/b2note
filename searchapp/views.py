@@ -34,9 +34,6 @@ def export_annotations(request):
     if request.POST.get('pid_tofeed')!=None:
         pid_tofeed = request.POST.get('pid_tofeed')
 
-    text = """
-    This functionality will provide a serialization of available annotations to the user in JSON, RDF, XML and other formats.
-    """
     response = []
     annotation_list = Annotation.objects.raw_query({'triple.subject.iri': subject_tofeed})
     annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.provenance.createdOn, reverse=True)
@@ -45,8 +42,9 @@ def export_annotations(request):
                          'iri': annotation.triple.predicate.iri,
                          'label': annotation.triple.object.label
                          })
-    return HttpResponse(json.dumps(response), content_type="application/json")
-    #return render(request, 'searchapp/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+#     return HttpResponse(json.dumps(response), content_type="application/json")
+    return render(request, 'searchapp/export.html', {'annotations_json': json.dumps(response),"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+
 
 
 # forbidden CSRF verification failed. Request aborted.

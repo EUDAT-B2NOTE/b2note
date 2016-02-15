@@ -100,7 +100,7 @@
 	right: 5px;
 }
 
-#interface_main {
+#interface_main, #export {
 	padding: 0;
 	margin: 0;
 	height: 100%;
@@ -261,4 +261,21 @@ footer {
 
 #footer-content a {
 	color: #e5601e;
+}
+
+#export h1 {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 18px;
+	text-align: center;
+}
+
+#export form {
+	float: right;
+	margin-right: 15px;
+}
+
+#export p {
+	height: 300px;
+	overflow: auto;
+	padding: 10px;
 }
