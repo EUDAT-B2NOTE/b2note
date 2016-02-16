@@ -263,8 +263,11 @@ footer {
 	color: #e5601e;
 }
 
-#export h1 {
+#export * {
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+#export h1 {
 	font-size: 18px;
 	text-align: center;
 }

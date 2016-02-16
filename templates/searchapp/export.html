@@ -28,7 +28,11 @@
         <br><hr>
 
         <p>
-            {{ annotations_json }}
+        	[ <br />
+            {% for annotation in annotations_json %}
+            	{{ annotation }} ,<br />
+             {% endfor %}
+            ]
         </p>
 
     </body>

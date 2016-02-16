@@ -43,7 +43,7 @@ def export_annotations(request):
                          'label': annotation.triple.object.label
                          })
 #     return HttpResponse(json.dumps(response), content_type="application/json")
-    return render(request, 'searchapp/export.html', {'annotations_json': json.dumps(response),"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+    return render(request, 'searchapp/export.html', {'annotations_json': response,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 
 
 
