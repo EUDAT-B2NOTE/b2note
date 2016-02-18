@@ -179,9 +179,9 @@
 
                         {% for annotation in annotation_list %}
 
-                            {% if subject_tofeed in annotation.triple.subject.iri %}
+                            {% if subject_tofeed in annotation.target %}
 
-                                {% if annotation.triple.object.label != "" %}
+                                {% if annotation.body != "" %}
 
                                     <tr>
 
@@ -191,16 +191,20 @@
                                             <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
                                             <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
 
-                                            {% if "http://" in annotation.triple.object.iri %}
+                                            {% if "http://" in annotation.body %}
 
+                                                <!--
                                                 <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
+                                                -->
                                                 <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
-                                                <td id="objectLabel"><a target="_blank" href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></td>
+                                                <td id="objectLabel"><a target="_blank" href={{annotation.body}}>{{annotation.body}}</a></td>
 
                                             {% else %}
 
+                                                <!--
                                                 <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
-                                                <td id="objectLabel">{{annotation.triple.object.label}}</td>
+                                                -->
+                                                <td id="objectLabel">{{annotation.body}}</td>
 
                                             {% endif %}
 

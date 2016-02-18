@@ -40,24 +40,39 @@ def CreateFromPOSTinfo( subject_url, object_json ):
 
                 print object_label, " ", object_uri
 
-                ann = Annotation(\
-                        triple=Triple(\
-                                subject=TripleElement(iri=subject_url,label="", definition="",curation_status="", ontology_iri="",ontology_shortname="",ontology_version="",),\
-                                predicate=TripleElement(iri="http://purl.obolibrary.org/obo/IAO_0000136",label="is about",definition="Is_about is a (currently) primitive relation that relates an information artifact to an entity.",curation_status="pending final vetting",ontology_iri="http://purl.obolibrary.org/obo/iao.owl",ontology_shortname="IAO",ontology_version="2015,02,23",),\
-                                object=TripleElement(\
-                                        iri     =   object_uri,\
-                                        label   =   object_label,\
-                                        definition = "",\
-                                        curation_status = "",\
-                                        ontology_iri = "",\
-                                        ontology_shortname= "",\
-                                        ontology_version= "",\
-                                ),\
-                        ),\
-                        provenance=Provenance(\
-                                createdBy="abremaud@esciencefactory.com",
-                        ),\
+                ann = Annotation(
+                    jsonld_id   = "https://b2note.bsc.es/annotation/temporary_id",
+                    jsonld_type = "Annotation",
+                    body        = object_uri,
+                    target      = subject_url,
                 ).save()
+
+                anns = Annotation.objects.filter( body = object_uri )
+
+                for ann in anns:
+                    if ann.jsonld_id[-len("temporary_id"):] == "temporary_id":
+                        ann.jsonld_id = "https://b2note.bsc.es/annotation/" + ann.id
+                        ann.save()
+                        #ann.update( jsonld_id = "https://b2note.bsc.es/annotation/" + ann.id )
+
+                # ann = Annotation(\
+                #         triple=Triple(\
+                #                 subject=TripleElement(iri=subject_url,label="", definition="",curation_status="", ontology_iri="",ontology_shortname="",ontology_version="",),\
+                #                 predicate=TripleElement(iri="http://purl.obolibrary.org/obo/IAO_0000136",label="is about",definition="Is_about is a (currently) primitive relation that relates an information artifact to an entity.",curation_status="pending final vetting",ontology_iri="http://purl.obolibrary.org/obo/iao.owl",ontology_shortname="IAO",ontology_version="2015,02,23",),\
+                #                 object=TripleElement(\
+                #                         iri     =   object_uri,\
+                #                         label   =   object_label,\
+                #                         definition = "",\
+                #                         curation_status = "",\
+                #                         ontology_iri = "",\
+                #                         ontology_shortname= "",\
+                #                         ontology_version= "",\
+                #                 ),\
+                #         ),\
+                #         provenance=Provenance(\
+                #                 createdBy="abremaud@esciencefactory.com",
+                #         ),\
+                # ).save()
 
     except ValueError:
 

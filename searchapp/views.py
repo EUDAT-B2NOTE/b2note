@@ -129,9 +129,12 @@ def delete_annotation(request):
     if request.POST.get('pid_tofeed')!=None:
         pid_tofeed = request.POST.get('pid_tofeed')
 
-    #annotation_list = Annotation.objects.all()
-    annotation_list = Annotation.objects.raw_query({'triple.subject.iri': subject_tofeed})
-    annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.provenance.createdOn, reverse=True)
+    try:
+        annotation_list = Annotation.objects.filter( target = subject_tofeed )
+    except Annotation.DoesNotExist:
+        annotation_list = []
+
+    #annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.provenance.createdOn, reverse=True)
 
     context = RequestContext(request, {
         'annotation_list': annotation_list,
@@ -157,9 +160,12 @@ def create_annotation(request):
     if request.POST.get('pid_tofeed')!=None:
         pid_tofeed = request.POST.get('pid_tofeed')
 
-    #annotation_list = Annotation.objects.all()
-    annotation_list = Annotation.objects.raw_query({'triple.subject.iri': subject_tofeed})
-    annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.provenance.createdOn, reverse=True)
+    try:
+        annotation_list = Annotation.objects.filter( target = subject_tofeed )
+    except Annotation.DoesNotExist:
+        annotation_list = []
+
+    #annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.provenance.createdOn, reverse=True)
 
     context = RequestContext(request, {
         'annotation_list': annotation_list,
@@ -182,9 +188,13 @@ def interface_main(request):
     if request.POST.get('subject_tofeed')!=None:
         subject_tofeed = request.POST.get('subject_tofeed')
 
-    #annotation_list = Annotation.objects.all()
-    annotation_list = Annotation.objects.raw_query({'triple.subject.iri': subject_tofeed})
-    annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.provenance.createdOn, reverse=True)
+    #http://stackoverflow.com/questions/5508888/matching-query-does-not-exist-error-in-django
+    try:
+        annotation_list = Annotation.objects.filter( target = subject_tofeed )
+    except Annotation.DoesNotExist:
+        annotation_list = []
+
+    #annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.provenance.createdOn, reverse=True)
 
     context = RequestContext(request, {
         'annotation_list': annotation_list,
