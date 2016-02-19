@@ -8,6 +8,9 @@
     	{% load staticfiles %}
         <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
 		<link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
+		
+		<script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+		<script src="{% static 'js/utils.js' %}"></script>
 
         <title>B2Note annotations export</title>
 
@@ -15,26 +18,28 @@
 
     <body id="export">
 
-        <h1>B2Note exports annotations in json.</h1>
-
-        <br>
-
-        <form action="interface_main" method="post">
-            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-            <input type="Submit" value="Back" title="Back to main interface"/>
-        </form>
-
-        <br><hr>
-
-        <p>
-        	[ <br />
-            {% for annotation in annotations_json %}
-            	{{ annotation }} ,<br />
-             {% endfor %}
-            ]
-        </p>
-
+		<div id="export-top">
+	        <h1>B2Note exports annotations in json.</h1>
+	
+	        <form action="interface_main" method="post">
+	            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+	            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+	            <input type="Submit" value="Back" title="Back to main interface"/>
+	        </form>
+		</div>
+		<hr />
+		<div id="export-download"> 		
+		<a href="{% url 'searchapp.views.download_json' %}">download</a>
+		</div>
+		<div id="export-content">
+	        <p>
+	        	[ <br />
+	            {% for annotation in annotations_json %}
+	            	{{ annotation }} ,<br />
+	             {% endfor %}
+	            ]
+	        </p>
+		</div>
     </body>
 
 </html>

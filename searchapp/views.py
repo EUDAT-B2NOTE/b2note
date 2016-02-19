@@ -42,10 +42,27 @@ def export_annotations(request):
                          'iri': annotation.triple.predicate.iri,
                          'label': annotation.triple.object.label
                          })
-#     return HttpResponse(json.dumps(response), content_type="application/json")
+    
+    # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
+    json_data = HttpResponse(json.dumps(response), mimetype= 'application/json')
+    json_data['Content-Disposition'] = 'attachment; filename=annotations.json'
+    download_json.file_data = json_data
+    
     return render(request, 'searchapp/export.html', {'annotations_json': response,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 
-
+def download_json(request):
+    """
+      Function: download_json
+      ----------------------------
+        Download a json file with the annotations 
+        
+        params:
+            request (object): context of the petition.
+        
+        returns:
+            object: HttpResponse with the file to download.
+    """
+    return download_json.file_data
 
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt

@@ -5,13 +5,6 @@ from django.conf.urls import patterns, include, url
 # admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'b2note_devel.views.home', name='home'),
-    # url(r'^b2note_devel/', include('b2note_devel.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'searchapp.views.hostpage', name='index'),
@@ -20,6 +13,7 @@ urlpatterns = patterns('',
     url(r'^create_annotation', 'searchapp.views.create_annotation'),
     url(r'^delete_annotation', 'searchapp.views.delete_annotation'),
     url(r'^export', 'searchapp.views.export_annotations'),
+    url(r'^download_json', 'searchapp.views.download_json'),
     url(r'^publish', 'searchapp.views.publish_annotations'),
     url(r'^settings', 'searchapp.views.settings'),
 )
