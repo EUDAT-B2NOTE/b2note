@@ -24,10 +24,9 @@
 	        <form action="interface_main" method="post">
 	            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
 	            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-	            <input type="Submit" value="Back" title="Back to main interface"/>
+	            <input class="btn btn-link" type="Submit" value="Back" title="Back to main interface"/>
 	        </form>
 		</div>
-		<hr />
 		<div id="export-download"> 		
 		<a href="{% url 'searchapp.views.download_json' %}">download</a>
 		</div>
