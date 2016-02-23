@@ -134,7 +134,7 @@ def delete_annotation(request):
     except Annotation.DoesNotExist:
         annotation_list = []
 
-    #annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.provenance.createdOn, reverse=True)
+    annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.created, reverse=True)
 
     context = RequestContext(request, {
         'annotation_list': annotation_list,
@@ -165,7 +165,7 @@ def create_annotation(request):
     except Annotation.DoesNotExist:
         annotation_list = []
 
-    #annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.provenance.createdOn, reverse=True)
+    annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.created, reverse=True)
 
     context = RequestContext(request, {
         'annotation_list': annotation_list,
@@ -194,7 +194,7 @@ def interface_main(request):
     except Annotation.DoesNotExist:
         annotation_list = []
 
-    #annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.provenance.createdOn, reverse=True)
+    annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.created, reverse=True)
 
     context = RequestContext(request, {
         'annotation_list': annotation_list,
