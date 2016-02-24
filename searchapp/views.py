@@ -2,6 +2,7 @@ from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
+from django_mongodb_engine.query import A
 
 from .mongo_support_functions import CreateFromPOSTinfo, DeleteFromPOSTinfo
 from .models import Annotation
@@ -130,7 +131,7 @@ def delete_annotation(request):
         pid_tofeed = request.POST.get('pid_tofeed')
 
     try:
-        annotation_list = Annotation.objects.filter( target = subject_tofeed )
+        annotation_list = Annotation.objects.filter( target = A('jsonld_id', subject_tofeed) )
     except Annotation.DoesNotExist:
         annotation_list = []
 
@@ -161,7 +162,7 @@ def create_annotation(request):
         pid_tofeed = request.POST.get('pid_tofeed')
 
     try:
-        annotation_list = Annotation.objects.filter( target = subject_tofeed )
+        annotation_list = Annotation.objects.filter( target = A('jsonld_id', subject_tofeed) )
     except Annotation.DoesNotExist:
         annotation_list = []
 
@@ -190,7 +191,12 @@ def interface_main(request):
 
     #http://stackoverflow.com/questions/5508888/matching-query-does-not-exist-error-in-django
     try:
-        annotation_list = Annotation.objects.filter( target = subject_tofeed )
+        # https://blog.scrapinghub.com/2013/05/13/mongo-bad-for-scraped-data/
+        #annotation_list = Annotation.objects.filter( target__contains = { "_model" : "Body", "_module" : "searchapp.models", "jsonld_id" : subject_tofeed } )
+        # https://github.com/aparo/django-mongodb-engine/blob/master/docs/embedded-objects.rst
+        annotation_list = Annotation.objects.filter( target = A('jsonld_id', subject_tofeed) )
+        #annotation_list = Annotation.objects.raw_query( {"target": [ { "_model" : "Body", "_module" : "searchapp.models", "jsonld_id" : subject_tofeed } ] } )
+        print "==>", type(annotation_list), len(annotation_list)
     except Annotation.DoesNotExist:
         annotation_list = []
 
