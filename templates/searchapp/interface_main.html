@@ -181,10 +181,10 @@
 
                             {% for target in annotation.target %}
 
-                                {% if target.jsonld_id %}
+                                {% if target.jsonld_id or target.source.jsonld_id %}
 
                                     <!-- http://stackoverflow.com/questions/1275735/how-to-access-dictionary-element-in-django-template -->
-                                    {% if target.jsonld_id == subject_tofeed %}
+                                    {% if target.jsonld_id == subject_tofeed or target.source.jsonld_id == subject_tofeed %}
 
                                         {% for body in annotation.body %}
 

@@ -58,11 +58,17 @@ def CreateFromPOSTinfo( subject_url, object_json ):
                     homepage	= ["https://b2note.bsc.es/devel"],
                 )
 
+                source = ExternalResource(
+                    jsonld_id   = subject_url,
+                    jsonld_type = ["dctypes:Text"],
+                )
+
                 ann = Annotation(
                     jsonld_id   = ["https://b2note.bsc.es/annotation/temporary_id"],
                     jsonld_type = ["oa:Annotation"],
-                    body        = [TextualBody( jsonld_id = object_uri, jsonld_type = "oa:TextualBody", text = object_label, language = ["en"], role = "oa:tagging" )],
+                    body        = [TextualBody( jsonld_id = object_uri, jsonld_type = ["oa:TextualBody"], text = object_label, language = ["en"], role = "oa:tagging" )],
                     target      = [ExternalResource( jsonld_id = subject_url, language = ["en"], creator = [creator] )],
+                    #target      = [SpecificResource( jsonld_type = "oa:SpecificResource", source = source )],
                     creator     = [creator],
                     generator   = [generator],
                     motivation  = ["oa:tagging"],
