@@ -40,20 +40,40 @@ def CreateFromPOSTinfo( subject_url, object_json ):
 
                 print object_label, " ", object_uri
 
+                creator = Agent(
+                    jsonld_id 	= "http://example.com/user1",
+                    jsonld_type	= ["foaf:Person"],
+                    name		= "Ludwig Combi Van",
+                    account	    = "Ludo99",
+                    email		= ["lcombivan@esciencedatalab.com"],
+                    homepage	= ["http://example.com/LudwigCombiVan_homepage"],
+                )
+
+                generator = Agent(
+                    jsonld_id 	= "http://example.com/agent1",
+                    jsonld_type	= ["prov:SoftwareAgent"],
+                    name		= "B2Note annotator",
+                    account	    = "B2Note v1.0",
+                    email		= ["abremaud@esciencedatalab.com"],
+                    homepage	= ["https://b2note.bsc.es/devel"],
+                )
+
                 ann = Annotation(
-                    jsonld_id   = "https://b2note.bsc.es/annotation/temporary_id",
-                    jsonld_type = "Annotation",
-                    body        = object_uri,
-                    target      = subject_url,
+                    jsonld_id   = ["https://b2note.bsc.es/annotation/temporary_id"],
+                    jsonld_type = ["oa:Annotation"],
+                    body        = [TextualBody( jsonld_id = object_uri, jsonld_type = "oa:TextualBody", text = object_label, language = ["en"], role = "oa:tagging" )],
+                    target      = [ExternalResource( jsonld_id = subject_url, language = ["en"], creator = [creator] )],
+                    creator     = [creator],
+                    generator   = [generator],
+                    motivation  = ["oa:tagging"],
                 ).save()
 
-                anns = Annotation.objects.filter( body = object_uri )
+                anns = Annotation.objects.filter( jsonld_id = ["https://b2note.bsc.es/annotation/temporary_id"] )
 
                 for ann in anns:
-                    if ann.jsonld_id[-len("temporary_id"):] == "temporary_id":
-                        ann.jsonld_id = "https://b2note.bsc.es/annotation/" + ann.id
-                        ann.save()
-                        #ann.update( jsonld_id = "https://b2note.bsc.es/annotation/" + ann.id )
+                    ann.jsonld_id = ["https://b2note.bsc.es/annotation/" + ann.id]
+                    ann.save()
+                    #ann.update( jsonld_id = "https://b2note.bsc.es/annotation/" + ann.id )
 
                 # ann = Annotation(\
                 #         triple=Triple(\

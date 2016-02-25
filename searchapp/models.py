@@ -21,6 +21,12 @@ class Agent(models.Model):
 	homepage	= ListField( models.CharField(max_length = 4096), null=True ) #foaf:homepage
 
 
+class SpecificResource(models.Model):
+	jsonld_id 	= models.CharField( max_length = 4096, null=True )
+	jsonld_type	= models.CharField( max_length = 64, null=True ) # (rdf:type) oa:SpecificResource
+	source		= EmbeddedModelField() # (oa:hasSource)
+
+
 class TextualBody(models.Model):
 	jsonld_id 	= models.CharField( max_length = 4096, null=True ) #"https://b2note.bsc.es/textualbody/" + mongo_uid
 	jsonld_type	= ListField( models.CharField( max_length = 64 ), null=True ) # rdf:type; oa:TextualBody
@@ -28,11 +34,11 @@ class TextualBody(models.Model):
 	language 	= ListField( models.CharField( max_length = 256 ), null=True )  # dc:language, [rfc5646]
 	format		= ListField( models.CharField( max_length = 256 ), null=True )  # dc:format, [rfc6838]
 	BOOKMARKING     = "bookmarking"
-	CLASSIFYING     = "classifing"
+	CLASSIFYING     = "classifying"
 	COMMENTING      = "commenting"
 	DESCRIBING      = "describing"
 	EDITING         = "editing"
-	HIGHLIGHTING    = "highlighting"
+	HIGHLIGHTING	= "highlighting"
 	IDENTIFYING     = "identifying"
 	LINKING         = "linking"
 	MODERATING      = "moderating"
@@ -82,7 +88,7 @@ class ExternalResource(models.Model):
 
 class Annotation(models.Model):
 	jsonld_id   = ListField( models.CharField( max_length = 4096, null = True ) )
-	jsonld_type = ListField( models.CharField( max_length = 256 ) )
+	jsonld_type = ListField( models.CharField( max_length = 256 ) )		# (rdf:type) oa:Annotation and others
 	body        = ListField( EmbeddedModelField(), null=True )          # CharField( max_length = 4096, null = True )
 	target      = ListField( EmbeddedModelField() )                     # models.CharField( max_length = 4096 )
 	language 	= models.CharField( max_length = 256, null=True )       # dc:language, [rfc5646]
