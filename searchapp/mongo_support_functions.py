@@ -89,3 +89,18 @@ def CreateFromPOSTinfo( subject_url, object_json ):
 
     print "Created an Annotation"
     return True
+
+#http://stackoverflow.com/questions/23285558/datetime-date2014-4-25-is-not-json-serializable-in-django
+def date_handler(obj):
+    """
+      Function: date_handler
+      ----------------------------
+        Converts a JSON serialized date to iso format.
+        
+        params:
+            obj (object): Date JSON coded.
+        
+        returns:
+            object: the date in iso format.
+    """
+    return obj.isoformat() if hasattr(obj, 'isoformat') else obj

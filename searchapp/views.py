@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 
-from .mongo_support_functions import CreateFromPOSTinfo, DeleteFromPOSTinfo
+from .mongo_support_functions import *
 from .models import Annotation
 
 import json
@@ -20,10 +20,10 @@ def export_annotations(request):
       ----------------------------
         Export all annotations in JSON format.
         
-        params:
+        input:
             request (object): context of the petition.
         
-        returns:
+        output:
             object: HttpResponse with the result of the request.
     """
     subject_tofeed = ""
@@ -35,12 +35,47 @@ def export_annotations(request):
         pid_tofeed = request.POST.get('pid_tofeed')
 
     response = []
-    annotation_list = Annotation.objects.raw_query({'triple.subject.iri': subject_tofeed})
+    # filter by subject_tofeed:
+    #annotation_list = Annotation.objects.raw_query({'triple.subject.iri': subject_tofeed})
+    annotation_list = Annotation.objects.raw_query({})
     annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.provenance.createdOn, reverse=True)
+    
     for annotation in annotation_list:
         response.append({'id': annotation.id,
-                         'iri': annotation.triple.predicate.iri,
-                         'label': annotation.triple.object.label
+                         'triple': {
+                                    'subject': {
+                                                'iri': annotation.triple.subject.iri,
+                                                'label': annotation.triple.subject.label,
+                                                'definition': annotation.triple.subject.definition,
+                                                'curation_status': annotation.triple.subject.curation_status,
+                                                'ontology_iri': annotation.triple.subject.ontology_iri,
+                                                'ontology_shortname': annotation.triple.subject.ontology_shortname,
+                                                'ontology_version': annotation.triple.subject.ontology_version 
+                                                 },
+                                    'predicate': {
+                                                'iri': annotation.triple.predicate.iri,
+                                                'label': annotation.triple.predicate.label,
+                                                'definition': annotation.triple.predicate.definition,
+                                                'curation_status': annotation.triple.predicate.curation_status,
+                                                'ontology_iri': annotation.triple.predicate.ontology_iri,
+                                                'ontology_shortname': annotation.triple.predicate.ontology_shortname,
+                                                'ontology_version': annotation.triple.predicate.ontology_version 
+                                                 },
+                                    'object': {
+                                                'iri': annotation.triple.object.iri,
+                                                'label': annotation.triple.object.label,
+                                                'definition': annotation.triple.object.definition,
+                                                'curation_status': annotation.triple.object.curation_status,
+                                                'ontology_iri': annotation.triple.object.ontology_iri,
+                                                'ontology_shortname': annotation.triple.object.ontology_shortname,
+                                                'ontology_version': annotation.triple.object.ontology_version 
+                                               }
+                                    },
+                         'provenance': {
+                                        'createdBy': annotation.provenance.createdBy,
+                                        'createdOn': json.dumps(annotation.provenance.createdOn, default=date_handler),
+                                        'modifiedOn': json.dumps(annotation.provenance.modifiedOn, default=date_handler),
+                                        }
                          })
     
     # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
@@ -56,10 +91,10 @@ def download_json(request):
       ----------------------------
         Download a json file with the annotations 
         
-        params:
+        input:
             request (object): context of the petition.
         
-        returns:
+        output:
             object: HttpResponse with the file to download.
     """
     return download_json.file_data
@@ -72,10 +107,10 @@ def publish_annotations(request):
       ----------------------------
         Make annotations available to SPARQL queries.
         
-        params:
+        input:
             request (object): context of the petition.
         
-        returns:
+        output:
             object: HttpResponse with the result of the request.
     """
     subject_tofeed = ""
@@ -100,10 +135,10 @@ def settings(request):
       ----------------------------
         Select the source of ontologies.
         
-        params:
+        input:
             request (object): context of the petition.
         
-        returns:
+        output:
             object: HttpResponse with the result of the request.
     """
     subject_tofeed = ""
@@ -126,10 +161,10 @@ def hostpage(request):
       ----------------------------
         Displays the initial page of the site.
         
-        params:
+        input:
             request (object): context of the petition.
         
-        returns:
+        output:
             object: HttpResponse with the initial host page.
     """
 
@@ -190,10 +225,10 @@ def delete_annotation(request):
       ----------------------------
         Calls DeleteFromPOSTinfo function for removing an annotation.
         
-        params:
+        input:
             request (object): context of the petition.
         
-        returns:
+        output:
             object: HttpResponse with the remaining annotations.
     """
 
@@ -229,10 +264,10 @@ def create_annotation(request):
       ----------------------------
         Calls CreateFromPOSTinfo function for creating a new annotation.
         
-        params:
+        input:
             request (object): context of the petition.
         
-        returns:
+        output:
             object: HttpResponse with the annotations.
     """
 
@@ -268,10 +303,10 @@ def interface_main(request):
       ----------------------------
         Displays the iframe with the annotations.
         
-        params:
+        input:
             request (object): context of the petition.
         
-        returns:
+        output:
             object: HttpResponse with the iframe.
     """
 
