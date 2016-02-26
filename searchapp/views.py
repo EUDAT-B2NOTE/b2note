@@ -9,6 +9,56 @@ from .models import Annotation
 
 import json
 
+
+
+import bson
+from django.core.serializers.json import DjangoJSONEncoder
+from bson import objectid, json_util
+
+class MongoAwareEncoder(DjangoJSONEncoder):
+    """JSON encoder class that adds support for Mongo objectids."""
+    #http://stackoverflow.com/questions/4404742/how-do-i-turn-mongodb-query-into-a-json
+    def default(self, o):
+        if isinstance(o, objectid.ObjectId):
+            return str(o)
+        else:
+            return super(MongoAwareEncoder, self).default(o)
+
+
+def SerAsJ( o_in ):
+
+    o_out = None
+
+    try:
+        if type(o_in) is unicode: o_in = str(o_in)
+        o_out = json.dumps( o_in, ensure_ascii=False )
+        #print "Dump:", o_in
+        #print ">>>"
+    except:
+        pass
+    if not o_out:
+        if type(o_in) is tuple:
+            o_out = ()
+            for item in o_in:
+                o_out += ( SerAsJ( item ), )
+            print "Tuple:", o_in, " >> ", o_out
+        elif type(o_in) is list or type(o_in) is set:
+            o_out = []
+            for item in o_in:
+                o_out.append( SerAsJ( item ) )
+            print "List or Set:", o_in, " >> ", o_out
+        elif type(o_in) is dict:
+            o_out = {}
+            for k in o_in.keys():
+                o_out[k] = SerAsJ( o_in[k] )
+            print "Dict:", o_in, " >> ", o_out
+        else:
+            o_out = str( o_in )
+            print "Str:", o_in, ">>", o_out
+    return o_out
+
+
+
 def index(request):
     return HttpResponse("replace me with index text")
 
@@ -38,46 +88,60 @@ def export_annotations(request):
     response = []
     # filter by subject_tofeed:
     #annotation_list = Annotation.objects.raw_query({'triple.subject.iri': subject_tofeed})
-    annotation_list = Annotation.objects.raw_query({})
-    annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.provenance.createdOn, reverse=True)
+    #annotation_list = Annotation.objects.raw_query({})
+    #annotation_list = Annotation.objects.all()
+    #annotation_list = annotation_list.to_json()
+    annotation_list = [dict(item) for item in Annotation.objects.all().values()]
+    #annotation_list = [str(obj) for obj in Annotation.objects.values()]
+    #annotation_list = list(Annotation.objects.all().values())
+    # http://stackoverflow.com/questions/6255387/mongodb-object-serialized-as-json
+    #annotation_list = json.dumps(list(Annotation.objects.all().values()), cls=MongoAwareEncoder)
+    #annotation_list = bson.json_util.dumps(list(Annotation.objects.all()))
+    #annotation_list = Annotation.to_json()
+
+    annotation_list = SerAsJ( annotation_list )
+    print "==>", type(annotation_list), "\n", annotation_list
+    response = annotation_list
+
+    #annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.provenance.createdOn, reverse=True)
     
-    for annotation in annotation_list:
-        response.append({'id': annotation.id,
-                         'triple': {
-                                    'subject': {
-                                                'iri': annotation.triple.subject.iri,
-                                                'label': annotation.triple.subject.label,
-                                                'definition': annotation.triple.subject.definition,
-                                                'curation_status': annotation.triple.subject.curation_status,
-                                                'ontology_iri': annotation.triple.subject.ontology_iri,
-                                                'ontology_shortname': annotation.triple.subject.ontology_shortname,
-                                                'ontology_version': annotation.triple.subject.ontology_version 
-                                                 },
-                                    'predicate': {
-                                                'iri': annotation.triple.predicate.iri,
-                                                'label': annotation.triple.predicate.label,
-                                                'definition': annotation.triple.predicate.definition,
-                                                'curation_status': annotation.triple.predicate.curation_status,
-                                                'ontology_iri': annotation.triple.predicate.ontology_iri,
-                                                'ontology_shortname': annotation.triple.predicate.ontology_shortname,
-                                                'ontology_version': annotation.triple.predicate.ontology_version 
-                                                 },
-                                    'object': {
-                                                'iri': annotation.triple.object.iri,
-                                                'label': annotation.triple.object.label,
-                                                'definition': annotation.triple.object.definition,
-                                                'curation_status': annotation.triple.object.curation_status,
-                                                'ontology_iri': annotation.triple.object.ontology_iri,
-                                                'ontology_shortname': annotation.triple.object.ontology_shortname,
-                                                'ontology_version': annotation.triple.object.ontology_version 
-                                               }
-                                    },
-                         'provenance': {
-                                        'createdBy': annotation.provenance.createdBy,
-                                        'createdOn': json.dumps(annotation.provenance.createdOn, default=date_handler),
-                                        'modifiedOn': json.dumps(annotation.provenance.modifiedOn, default=date_handler),
-                                        }
-                         })
+    # for annotation in annotation_list:
+    #     response.append({'id': annotation.id,
+    #                      'triple': {
+    #                                 'subject': {
+    #                                             'iri': annotation.triple.subject.iri,
+    #                                             'label': annotation.triple.subject.label,
+    #                                             'definition': annotation.triple.subject.definition,
+    #                                             'curation_status': annotation.triple.subject.curation_status,
+    #                                             'ontology_iri': annotation.triple.subject.ontology_iri,
+    #                                             'ontology_shortname': annotation.triple.subject.ontology_shortname,
+    #                                             'ontology_version': annotation.triple.subject.ontology_version
+    #                                              },
+    #                                 'predicate': {
+    #                                             'iri': annotation.triple.predicate.iri,
+    #                                             'label': annotation.triple.predicate.label,
+    #                                             'definition': annotation.triple.predicate.definition,
+    #                                             'curation_status': annotation.triple.predicate.curation_status,
+    #                                             'ontology_iri': annotation.triple.predicate.ontology_iri,
+    #                                             'ontology_shortname': annotation.triple.predicate.ontology_shortname,
+    #                                             'ontology_version': annotation.triple.predicate.ontology_version
+    #                                              },
+    #                                 'object': {
+    #                                             'iri': annotation.triple.object.iri,
+    #                                             'label': annotation.triple.object.label,
+    #                                             'definition': annotation.triple.object.definition,
+    #                                             'curation_status': annotation.triple.object.curation_status,
+    #                                             'ontology_iri': annotation.triple.object.ontology_iri,
+    #                                             'ontology_shortname': annotation.triple.object.ontology_shortname,
+    #                                             'ontology_version': annotation.triple.object.ontology_version
+    #                                            }
+    #                                 },
+    #                      'provenance': {
+    #                                     'createdBy': annotation.provenance.createdBy,
+    #                                     'createdOn': json.dumps(annotation.provenance.createdOn, default=date_handler),
+    #                                     'modifiedOn': json.dumps(annotation.provenance.modifiedOn, default=date_handler),
+    #                                     }
+    #                      })
     
     # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
     json_data = HttpResponse(json.dumps(response), mimetype= 'application/json')
@@ -85,6 +149,7 @@ def export_annotations(request):
     download_json.file_data = json_data
     
     return render(request, 'searchapp/export.html', {'annotations_json': response,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+
 
 def download_json(request):
     """
