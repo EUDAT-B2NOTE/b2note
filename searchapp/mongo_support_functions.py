@@ -6,6 +6,17 @@ from .models import *
 
 
 def DeleteFromPOSTinfo( db_id ):
+    """
+      Function: DeleteFromPOSTinfo
+      ----------------------------
+        Removes an annotation from MongoDB.
+        
+        params:
+            db_id (str): ID of the document to remove.
+        
+        returns:
+            bool: True if successful, False otherwise.
+    """
     del_flag = False
     try:
         if db_id and type(db_id) is unicode and len(db_id)>0:
@@ -25,6 +36,18 @@ def DeleteFromPOSTinfo( db_id ):
 
 
 def CreateFromPOSTinfo( subject_url, object_json ):
+    """
+      Function: CreateFromPOSTinfo
+      ----------------------------
+        Creates an annotation in MongoDB.
+        
+        params:
+            subject_url (str): URL of the annotation to create.
+            object_json (str): JSON of the annotation provided by SOLR
+        
+        returns:
+            bool: True if successful, False otherwise.
+    """
     object_uri   = ""
     object_label = ""
 
@@ -107,3 +130,18 @@ def CreateFromPOSTinfo( subject_url, object_json ):
 
     print "Created an Annotation"
     return True
+
+#http://stackoverflow.com/questions/23285558/datetime-date2014-4-25-is-not-json-serializable-in-django
+def date_handler(obj):
+    """
+      Function: date_handler
+      ----------------------------
+        Converts a JSON serialized date to iso format.
+        
+        params:
+            obj (object): Date JSON coded.
+        
+        returns:
+            object: the date in iso format.
+    """
+    return obj.isoformat() if hasattr(obj, 'isoformat') else obj

@@ -4,9 +4,8 @@
 }
 
 #hostpage {
-    background: -webkit-gradient(linear, left top, left center, from(#FFFFFF), to(#FFFFFF)) fixed;
+    background: -moz-linear-gradient(90deg, #D5D5D5, #FFFFFF 60%) fixed;
     background: -webkit-gradient(linear, left center, left bottom, from(#FFFFFF), to(#D5D5D5)) fixed;
-	/*background-color: #f9f9f9;*/
 	font-size: 14px;
 }
 
@@ -69,15 +68,16 @@
 #header {
 	background: #fff url("../images/decor-header.png") no-repeat scroll right top;
 	height: 100px;
-s	text-align: center;
+	text-align: center;
+	width: 100%;
 }
 
 #header img {
 	padding: 5px;
-	margin-right: 50px;
+	margin-leftt: 50px;
 }
 
-#.clear{
+.clear{
     clear: both;
 }
 
@@ -100,7 +100,7 @@ s	text-align: center;
 	right: 5px;
 }
 
-#interface_main {
+#interface_main, #export {
 	padding: 0;
 	margin: 0;
 	height: 100%;
@@ -202,7 +202,7 @@ s	text-align: center;
 #container_table_existing {
     padding: 2px;
     height: 150px;
-    overflow: scroll;
+    overflow: auto;
 }
 
 #section_existing input {
@@ -261,4 +261,46 @@ footer {
 
 #footer-content a {
 	color: #e5601e;
+}
+
+#export * {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+#export-top {
+	width: 100%;
+	height: 75px;
+	background-color: #F8F8F8;
+	border-bottom: thin solid lightgrey;
+}
+
+#export-top h1 {
+	margin: 0;
+	padding: 10px;
+	font-size: 18px;
+	text-align: center;
+	color: #777;
+}
+
+#export-top form {
+	float: right;
+	margin-right: 15px;
+}
+
+#export-top .btn-link {
+	color: #777;
+}
+
+#export-top .btn-link:hover {
+	color: #333;
+}
+
+#export-download {
+	padding: 10px 10px 0px 10px;
+}
+
+#export-content {
+	height: 300px;
+	overflow: auto;
+	padding: 10px;
 }

@@ -4,10 +4,10 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from django_mongodb_engine.query import A
 
-from .mongo_support_functions import CreateFromPOSTinfo, DeleteFromPOSTinfo
+from .mongo_support_functions import *
 from .models import Annotation
 
-
+import json
 
 def index(request):
     return HttpResponse("replace me with index text")
@@ -16,6 +16,17 @@ def index(request):
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
 def export_annotations(request):
+    """
+      Function: export_annotations
+      ----------------------------
+        Export all annotations in JSON format.
+        
+        input:
+            request (object): context of the petition.
+        
+        output:
+            object: HttpResponse with the result of the request.
+    """
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
         subject_tofeed = request.POST.get('subject_tofeed')
@@ -24,15 +35,85 @@ def export_annotations(request):
     if request.POST.get('pid_tofeed')!=None:
         pid_tofeed = request.POST.get('pid_tofeed')
 
-    text = """
-    This functionality will provide a serialization of available annotations to the user in JSON, RDF, XML and other formats.
-    """
-    return render(request, 'searchapp/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+    response = []
+    # filter by subject_tofeed:
+    #annotation_list = Annotation.objects.raw_query({'triple.subject.iri': subject_tofeed})
+    annotation_list = Annotation.objects.raw_query({})
+    annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.provenance.createdOn, reverse=True)
+    
+    for annotation in annotation_list:
+        response.append({'id': annotation.id,
+                         'triple': {
+                                    'subject': {
+                                                'iri': annotation.triple.subject.iri,
+                                                'label': annotation.triple.subject.label,
+                                                'definition': annotation.triple.subject.definition,
+                                                'curation_status': annotation.triple.subject.curation_status,
+                                                'ontology_iri': annotation.triple.subject.ontology_iri,
+                                                'ontology_shortname': annotation.triple.subject.ontology_shortname,
+                                                'ontology_version': annotation.triple.subject.ontology_version 
+                                                 },
+                                    'predicate': {
+                                                'iri': annotation.triple.predicate.iri,
+                                                'label': annotation.triple.predicate.label,
+                                                'definition': annotation.triple.predicate.definition,
+                                                'curation_status': annotation.triple.predicate.curation_status,
+                                                'ontology_iri': annotation.triple.predicate.ontology_iri,
+                                                'ontology_shortname': annotation.triple.predicate.ontology_shortname,
+                                                'ontology_version': annotation.triple.predicate.ontology_version 
+                                                 },
+                                    'object': {
+                                                'iri': annotation.triple.object.iri,
+                                                'label': annotation.triple.object.label,
+                                                'definition': annotation.triple.object.definition,
+                                                'curation_status': annotation.triple.object.curation_status,
+                                                'ontology_iri': annotation.triple.object.ontology_iri,
+                                                'ontology_shortname': annotation.triple.object.ontology_shortname,
+                                                'ontology_version': annotation.triple.object.ontology_version 
+                                               }
+                                    },
+                         'provenance': {
+                                        'createdBy': annotation.provenance.createdBy,
+                                        'createdOn': json.dumps(annotation.provenance.createdOn, default=date_handler),
+                                        'modifiedOn': json.dumps(annotation.provenance.modifiedOn, default=date_handler),
+                                        }
+                         })
+    
+    # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
+    json_data = HttpResponse(json.dumps(response), mimetype= 'application/json')
+    json_data['Content-Disposition'] = 'attachment; filename=annotations.json'
+    download_json.file_data = json_data
+    
+    return render(request, 'searchapp/export.html', {'annotations_json': response,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 
+def download_json(request):
+    """
+      Function: download_json
+      ----------------------------
+        Download a json file with the annotations 
+        
+        input:
+            request (object): context of the petition.
+        
+        output:
+            object: HttpResponse with the file to download.
+    """
+    return download_json.file_data
 
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
 def publish_annotations(request):
+    """
+      Function: publish_annotations
+      ----------------------------
+        Make annotations available to SPARQL queries.
+        
+        input:
+            request (object): context of the petition.
+        
+        output:
+            object: HttpResponse with the result of the request.
+    """
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
         subject_tofeed = request.POST.get('subject_tofeed')
@@ -50,6 +131,17 @@ def publish_annotations(request):
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
 def settings(request):
+    """
+      Function: settings
+      ----------------------------
+        Select the source of ontologies.
+        
+        input:
+            request (object): context of the petition.
+        
+        output:
+            object: HttpResponse with the result of the request.
+    """
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
         subject_tofeed = request.POST.get('subject_tofeed')
@@ -65,6 +157,17 @@ def settings(request):
 
 
 def hostpage(request):
+    """
+      Function: hostpage
+      ----------------------------
+        Displays the initial page of the site.
+        
+        input:
+            request (object): context of the petition.
+        
+        output:
+            object: HttpResponse with the initial host page.
+    """
 
     buttons_info_text = """
 http://hdl.handle.net/11304/31c0d886-b988-11e3-8cd7-14feb57d12b9
@@ -118,6 +221,17 @@ Influence of smoking and obesity in sperm quality
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
 def delete_annotation(request):
+    """
+      Function: delete_annotation
+      ----------------------------
+        Calls DeleteFromPOSTinfo function for removing an annotation.
+        
+        input:
+            request (object): context of the petition.
+        
+        output:
+            object: HttpResponse with the remaining annotations.
+    """
 
     if request.POST.get('db_id'):
         DeleteFromPOSTinfo( request.POST.get('db_id') )
@@ -149,6 +263,17 @@ def delete_annotation(request):
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
 def create_annotation(request):
+    """
+      Function: create_annotation
+      ----------------------------
+        Calls CreateFromPOSTinfo function for creating a new annotation.
+        
+        input:
+            request (object): context of the petition.
+        
+        output:
+            object: HttpResponse with the annotations.
+    """
 
     if request.POST.get('ontology_json'):
         CreateFromPOSTinfo( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
@@ -180,6 +305,17 @@ def create_annotation(request):
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
 def interface_main(request):
+    """
+      Function: interface_main
+      ----------------------------
+        Displays the iframe with the annotations.
+        
+        input:
+            request (object): context of the petition.
+        
+        output:
+            object: HttpResponse with the iframe.
+    """
 
     pid_tofeed = ""
     if request.POST.get('pid_tofeed')!=None:

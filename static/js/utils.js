@@ -1,6 +1,10 @@
 
 
-// helper function which returns the higher value of the document height
+/**
+ * Helper function which returns the higher value of the document height.
+ * @param {Object} doc 
+ * @return {Number} height
+ */
 function getDocHeight(doc) {
     doc = doc || document;
     // stackoverflow.com/questions/1145850/
@@ -10,8 +14,11 @@ function getDocHeight(doc) {
     return height;
 }
 
-
-// Defines the height of the iframe in the onload event
+/**
+ * Defines the height of the iframe in the onload event.
+ * @param {String} subject
+ * @return None
+ */
 function load_iframe(subject){
 	var iframe = window.parent.document.getElementById("b2note_iframe");
 	var doc = iframe.contentDocument? iframe.contentDocument: 
@@ -24,6 +31,10 @@ function load_iframe(subject){
 	iframe.subject_tofeed=subject;
 }
 
+/**
+ * Shows the iframe.
+ * @return None
+ */
 function show_iframe() {
 	window.parent.document.getElementById('b2note_iframe').style.visibility = "visible";
 	window.parent.document.getElementById('b2note_iframe').style.width = "350px";
@@ -31,6 +42,10 @@ function show_iframe() {
 }
 
 // http://stackoverflow.com/questions/6754935/how-to-close-an-iframe-within-iframe-itself
+/**
+ * Hides the iframe.
+ * @return None
+ */
 function hide_iframe() {
 	window.parent.document.getElementById('b2note_iframe').style.width = "0px";
 	window.parent.document.getElementById('b2note_iframe').style.border = "0px";
