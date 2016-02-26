@@ -21,6 +21,21 @@ class Agent(models.Model):
 	homepage	= SetField( models.CharField(max_length = 4096), null=True ) #foaf:homepage
 
 
+class List(models.Model):
+	jsonld_type	= models.CharField( max_length = 32, choices = (("List multiplicity construct","oa:List"),) )
+	members		= ListField( EmbeddedModelField() ) # oa:memberList
+
+
+class Composite(models.Model):
+	jsonld_type	= models.CharField( max_length = 32, choices = (("Composite multiplicity construct","oa:Composite"),) )
+	item		= ListField( EmbeddedModelField() ) # oa:item
+
+
+class Choice(models.Model):
+	jsonld_type	= models.CharField( max_length = 32, choices = (("Choice multiplicity construct","oa:Choice"),) )
+	members		= ListField( EmbeddedModelField() ) # oa:memberList
+
+
 class CssStyleSheet(models.Model):
 	jsonld_id 		= models.CharField( max_length = 4096, null=True )
 	CSS 			= "CSS style sheet"
