@@ -145,3 +145,43 @@ def date_handler(obj):
             object: the date in iso format.
     """
     return obj.isoformat() if hasattr(obj, 'isoformat') else obj
+
+
+def model_class_as_string( o_in ):
+    """
+      Function: model_class_as_string
+      ----------------------------
+        Export all annotations in JSON format.
+
+        input:
+            request (object): context of the petition.
+
+        output:
+            object: HttpResponse with the result of the request.
+    """
+
+    o_out = None
+
+    try:
+        if type(o_in) is tuple:
+            o_out = ()
+            for item in o_in:
+                o_out += ( model_class_as_string( item ), )
+            #print "Tuple:", o_in, " >> ", o_out
+        elif type(o_in) is list or type(o_in) is set:
+            o_out = []
+            for item in o_in:
+                o_out.append( model_class_as_string( item ) )
+            #print "List or Set:", o_in, " >> ", o_out
+        elif type(o_in) is dict:
+            o_out = {}
+            for k in o_in.keys():
+                o_out[k] = model_class_as_string( o_in[k] )
+            #print "Dict:", o_in, " >> ", o_out
+        else:
+            o_out = str( o_in )
+            #print "Str:", o_in, ">>", o_out
+    except:
+        pass
+
+    return o_out

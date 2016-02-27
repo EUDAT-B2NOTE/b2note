@@ -11,6 +11,7 @@
 		
 		<script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
 		<script src="{% static 'js/utils.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
 
         <title>B2Note annotations export</title>
 
@@ -18,27 +19,87 @@
 
     <body id="export">
 
-		<div id="export-top">
-	        <h1>B2Note exports annotations in json.</h1>
-	
-	        <form action="interface_main" method="post">
-	            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-	            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-	            <input class="btn btn-link" type="Submit" value="Back" title="Back to main interface"/>
-	        </form>
+		<div class="navbar navbar-default navbar-static-top">
+
+			<div class="container">
+
+				<div class="navbar-brand">B2Note interface</div>
+
+				<button class = "navbar-toggle" data-toggle = "collapse" data-target = ".navHeaderCollapse">
+
+					<span class = "icon-bar"></span>
+					<span class = "icon-bar"></span>
+					<span class = "icon-bar"></span>
+
+				</button>
+
+				<div class = "collapse navbar-collapse navHeaderCollapse">
+
+					<ul class = "nav navbar-nav navbar-right">
+
+						<li>
+
+							<form action="interface_main" method="post">
+
+								<input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+								<input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+								<input class="btn btn-link" type="Submit" value="Back" title="Back to main interface"/>
+
+							</form>
+
+						</li>
+
+						<li>
+
+							<form action="publish_annotations" method="post">
+
+								<input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+								<input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+								<input type="Submit" class="btn btn-link" value = "Publish" title = "Make annotations available to SPARQL queries"/>
+
+							</form>
+
+						</li>
+
+						<li>
+
+							<form action="settings" method="post">
+
+								<input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+								<input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+								<input type="Submit" class="btn btn-link" value = "Settings" title = "Manage source ontologies"/>
+
+							</form>
+
+						</li>
+
+						<li>
+
+							<!-- http://stackoverflow.com/questions/11828829/twitter-bootstrap-how-to-get-rid-of-underlined-button-text-when-hovering-over-a -->
+							<a href = "#" class = "btn btn-link" value = "Close" title = "Close B2Note interface" onClick = "hide_iframe()">Close</a>
+
+						</li>
+
+					</ul>
+
+				</div>
+
+			</div>
+
 		</div>
-		<div id="export-download"> 		
-		<a href="{% url 'searchapp.views.download_json' %}">download</a>
+
+		<div class = "container" id = "export-download">
+
+			<a href="{% url 'searchapp.views.download_json' %}" class="btn btn-default btn-block">Download this JSON</a>
+
 		</div>
-		<div id="export-content">
-	        <p>
-	        	[ <br />
-	            {% for annotation in annotations_json %}
-	            	{{ annotation }} ,<br />
-	             {% endfor %}
-	            ]
-	        </p>
+
+		<div class = "container" id = "export-content">
+
+	        <p class="small"> {{annotations_json}} </p>
+
 		</div>
+
     </body>
 
 </html>

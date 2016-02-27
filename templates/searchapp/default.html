@@ -8,44 +8,83 @@
     	{% load staticfiles %}
         <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
 		<link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
-        <style>
 
-/*             * {
-                font-size: 14px;
-                font-family:'Verdana', Arial, Sans-Serif;
-                box-sizing: border-box;
-                margin-left: 5px;
-                text-align: left;
-            } */
-
-            p {
-                padding: 10px;
-
-            }
-
-        </style>
+		<script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+		<script src="{% static 'js/utils.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
 
         <title>B2Note dump some text page</title>
 
     </head>
 
-    <body id="default">
+    <body id="export">
 
-        <h1>B2Note work in progress page.</h1>
+		<div class="navbar navbar-default navbar-static-top">
 
-        <br>
+			<div class="container">
 
-        <form action="interface_main" method="post">
-            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-            <input type="Submit" value="Back" title="Back to main interface"/>
-        </form>
+				<div class="navbar-brand">B2Note interface</div>
 
-        <br><hr>
+				<button class = "navbar-toggle" data-toggle = "collapse" data-target = ".navHeaderCollapse">
 
-        <p>
-            {{ text }}
-        </p>
+					<span class = "icon-bar"></span>
+					<span class = "icon-bar"></span>
+					<span class = "icon-bar"></span>
+
+				</button>
+
+				<div class = "collapse navbar-collapse navHeaderCollapse">
+
+					<ul class = "nav navbar-nav navbar-right">
+
+						<li>
+
+							<form action="interface_main" method="post">
+
+								<input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+								<input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+								<input class="btn btn-link" type="Submit" value="Back" title="Back to main interface"/>
+
+							</form>
+
+						</li>
+
+						<li>
+
+							<!-- http://stackoverflow.com/questions/11828829/twitter-bootstrap-how-to-get-rid-of-underlined-button-text-when-hovering-over-a -->
+							<a href = "#" class = "btn btn-link" value = "Close" title = "Close B2Note interface" onClick = "hide_iframe()">Close</a>
+
+						</li>
+
+					</ul>
+
+				</div>
+
+			</div>
+
+		</div>
+
+        <div class = "container" id = "back-shortcut">
+
+            <div class = "container">
+
+                <form action="interface_main" method="post">
+                    <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                    <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+                    <input type="Submit" value="Back" title="Back to main interface" class="btn btn-default btn-block"/>
+                </form>
+
+            </div>
+
+            <div class = "container" id = "text-content">
+
+                <h3>Work in progress page</h3>
+
+                <p> {{ text }} </p>
+
+            </div>
+
+        </div>
 
     </body>
 

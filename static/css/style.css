@@ -115,7 +115,8 @@
     margin: 0px;
 }
 
-#interface_main .btn-link {
+#interface_main .btn-link,
+#export .btn-link {
     padding: 2px;
     text-align: left;
 }
