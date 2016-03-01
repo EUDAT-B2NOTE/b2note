@@ -1,8 +1,8 @@
-import json, bson
-
-
+from pymongo import MongoClient
 
 from .models import *
+
+import os, datetime, json
 
 
 def DeleteFromPOSTinfo( db_id ):
@@ -90,17 +90,36 @@ def CreateFromPOSTinfo( subject_url, object_json ):
     print "Created an Annotation"
     return True
 
-#http://stackoverflow.com/questions/23285558/datetime-date2014-4-25-is-not-json-serializable-in-django
-def date_handler(obj):
+def ExtractAllDocuments():
     """
-      Function: date_handler
+      Function: ExtractAllDocuments
       ----------------------------
-        Converts a JSON serialized date to iso format.
+        Extracts all annotations from MongoDB to Django.
         
         params:
-            obj (object): Date JSON coded.
+            none
         
         returns:
-            object: the date in iso format.
+            documents (list): A list of all documents stored in the collection searchapp_annotation.
     """
-    return obj.isoformat() if hasattr(obj, 'isoformat') else obj
+    import urllib
+    
+    pwd = urllib.quote_plus(os.environ['MONGODB_PWD'])
+    uri = "mongodb://" + os.environ['MONGODB_USR'] + ":" + pwd + "@127.0.0.1/" + os.environ['MONGODB_NAME'] + "?authMechanism=SCRAM-SHA-1"
+    client = MongoClient(uri)
+    db = client[os.environ['MONGODB_NAME']]
+    
+    collection = db["searchapp_annotation"]
+    documents = []
+    for doc in collection.find():
+         documents.append(doc)
+    
+    # http://stackoverflow.com/questions/455580/json-datetime-between-python-and-javascript
+    date_handler = lambda obj: (
+                                obj.isoformat()
+                                if isinstance(obj, datetime.datetime)
+                                or isinstance(obj, datetime.date)
+                                else str(obj)
+                                )
+    return json.dumps(documents, default=date_handler)
+

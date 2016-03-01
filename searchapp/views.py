@@ -4,9 +4,8 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 
 from .mongo_support_functions import *
-from .models import Annotation
+from .models import *
 
-import json
 
 def index(request):
     return HttpResponse("replace me with index text")
@@ -33,53 +32,10 @@ def export_annotations(request):
     pid_tofeed = ""
     if request.POST.get('pid_tofeed')!=None:
         pid_tofeed = request.POST.get('pid_tofeed')
-
-    response = []
-    # filter by subject_tofeed:
-    #annotation_list = Annotation.objects.raw_query({'triple.subject.iri': subject_tofeed})
-    annotation_list = Annotation.objects.raw_query({})
-    annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.provenance.createdOn, reverse=True)
-    
-    for annotation in annotation_list:
-        response.append({'id': annotation.id,
-                         'triple': {
-                                    'subject': {
-                                                'iri': annotation.triple.subject.iri,
-                                                'label': annotation.triple.subject.label,
-                                                'definition': annotation.triple.subject.definition,
-                                                'curation_status': annotation.triple.subject.curation_status,
-                                                'ontology_iri': annotation.triple.subject.ontology_iri,
-                                                'ontology_shortname': annotation.triple.subject.ontology_shortname,
-                                                'ontology_version': annotation.triple.subject.ontology_version 
-                                                 },
-                                    'predicate': {
-                                                'iri': annotation.triple.predicate.iri,
-                                                'label': annotation.triple.predicate.label,
-                                                'definition': annotation.triple.predicate.definition,
-                                                'curation_status': annotation.triple.predicate.curation_status,
-                                                'ontology_iri': annotation.triple.predicate.ontology_iri,
-                                                'ontology_shortname': annotation.triple.predicate.ontology_shortname,
-                                                'ontology_version': annotation.triple.predicate.ontology_version 
-                                                 },
-                                    'object': {
-                                                'iri': annotation.triple.object.iri,
-                                                'label': annotation.triple.object.label,
-                                                'definition': annotation.triple.object.definition,
-                                                'curation_status': annotation.triple.object.curation_status,
-                                                'ontology_iri': annotation.triple.object.ontology_iri,
-                                                'ontology_shortname': annotation.triple.object.ontology_shortname,
-                                                'ontology_version': annotation.triple.object.ontology_version 
-                                               }
-                                    },
-                         'provenance': {
-                                        'createdBy': annotation.provenance.createdBy,
-                                        'createdOn': json.dumps(annotation.provenance.createdOn, default=date_handler),
-                                        'modifiedOn': json.dumps(annotation.provenance.modifiedOn, default=date_handler),
-                                        }
-                         })
     
     # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
-    json_data = HttpResponse(json.dumps(response), mimetype= 'application/json')
+    response = ExtractAllDocuments()
+    json_data = HttpResponse(response, mimetype= 'application/json')
     json_data['Content-Disposition'] = 'attachment; filename=annotations.json'
     download_json.file_data = json_data
     
