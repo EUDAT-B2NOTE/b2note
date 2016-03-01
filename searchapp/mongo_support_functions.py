@@ -66,10 +66,10 @@ def CreateFromPOSTinfo( subject_url, object_json ):
                 creator = Agent(
                     jsonld_id 	= "http://example.com/user1",
                     jsonld_type	= ["foaf:Person"],
-                    name		= "Ludwig Combi Van",
-                    account	    = "Ludo99",
-                    email		= ["lcombivan@esciencedatalab.com"],
-                    homepage	= ["http://example.com/LudwigCombiVan_homepage"],
+                    name		= "Default Anonymous",
+                    account	    = "default_anonymous",
+                    email		= ["danonymous@esciencedatalab.com"],
+                    homepage	= ["http://example.com/DAnonymous_homepage"],
                 )
 
                 generator = Agent(
@@ -151,13 +151,19 @@ def model_class_as_string( o_in ):
     """
       Function: model_class_as_string
       ----------------------------
-        Export all annotations in JSON format.
+
+        Recursively convert embedded custom model class objects to string.
 
         input:
-            request (object): context of the petition.
+            o_in (object): In nesting order, Django queryset values
+                list then tuple or list or set or dict or out-of-scope
+                object.
 
         output:
-            object: HttpResponse with the result of the request.
+            o_out: None (execution failed) or list of native python
+                objects, where each out-of-scope object was replaced
+                by its "string-ified" avatar, designed for subsequent
+                JSON-ification.
     """
 
     o_out = None
@@ -182,6 +188,7 @@ def model_class_as_string( o_in ):
             o_out = str( o_in )
             #print "Str:", o_in, ">>", o_out
     except:
+        o_out = None
         pass
 
     return o_out

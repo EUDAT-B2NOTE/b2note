@@ -238,5 +238,5 @@ class Annotation(models.Model):
 	motivation	= SetField( models.CharField( max_length = 256, choices=MOTIVATION_CHOICES ), null=True )
 	# oa:motivatedBy = [oa:Motivation]
 	stylesheet	= EmbeddedModelField( "CssStyleSheet", null=True ) #oa:styledBy
-	#objects     = MongoDBManager()
+	objects     = MongoDBManager()
     # http://stackoverflow.com/questions/23546480/no-raw-query-method-in-my-django-object

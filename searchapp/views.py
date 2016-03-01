@@ -38,9 +38,6 @@ def export_annotations(request):
         pid_tofeed = request.POST.get('pid_tofeed')
 
     response = []
-    # filter by subject_tofeed:
-    #annotation_list = Annotation.objects.raw_query({'triple.subject.iri': subject_tofeed})
-    #annotation_list = Annotation.objects.raw_query({})
     annotation_list = [dict(item) for item in Annotation.objects.all().values()]
 
     #annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.created, reverse=True)
@@ -215,7 +212,7 @@ def delete_annotation(request):
         pid_tofeed = request.POST.get('pid_tofeed')
 
     try:
-        annotation_list = Annotation.objects.filter( target = A('jsonld_id', subject_tofeed) )
+        annotation_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
     except Annotation.DoesNotExist:
         annotation_list = []
 
@@ -257,7 +254,7 @@ def create_annotation(request):
         pid_tofeed = request.POST.get('pid_tofeed')
 
     try:
-        annotation_list = Annotation.objects.filter( target = A('jsonld_id', subject_tofeed) )
+        annotation_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
     except Annotation.DoesNotExist:
         annotation_list = []
 
@@ -299,7 +296,7 @@ def interface_main(request):
     try:
         # https://blog.scrapinghub.com/2013/05/13/mongo-bad-for-scraped-data/
         # https://github.com/aparo/django-mongodb-engine/blob/master/docs/embedded-objects.rst
-        annotation_list = Annotation.objects.filter( target = A('jsonld_id', subject_tofeed) )
+        annotation_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
         #print "==>", type(annotation_list), len(annotation_list)
     except Annotation.DoesNotExist:
         annotation_list = []
@@ -312,3 +309,4 @@ def interface_main(request):
         'pid_tofeed': pid_tofeed,
     })
     return render_to_response('searchapp/interface_main.html', context)
+
