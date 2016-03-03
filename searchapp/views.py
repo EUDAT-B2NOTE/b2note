@@ -1,13 +1,15 @@
+import os
+import json
+
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
-from django_mongodb_engine.query import A
+
+from collections import OrderedDict
 
 from .mongo_support_functions import *
 from .models import Annotation
-
-import json
 
 
 
@@ -37,12 +39,22 @@ def export_annotations(request):
     if request.POST.get('pid_tofeed')!=None:
         pid_tofeed = request.POST.get('pid_tofeed')
 
-    response = []
     annotation_list = [dict(item) for item in Annotation.objects.all().values()]
 
     #annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.created, reverse=True)
 
-    response = model_class_as_string( annotation_list )
+    """
+    abremaud@esciencedatala.com, 20160303
+    Upon testing on json-ld online playground, none of the URLs provided in current
+     web annotation specification document allowed the context to be retrieved
+     with likely origin of trouble being CORS.
+    As a consequence we resort here to embedding rather than linking to the context.
+    """
+    context_str = open(os.getcwd()+'/static/anno.jsonld', 'r').read()
+
+    response = {"@context": json.loads( context_str, object_pairs_hook=OrderedDict ) }
+
+    response["@graph"] = readyQuerySetValuesForDumpAsJSONLD( annotation_list )
 
     # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
     json_data = HttpResponse(json.dumps(response), mimetype= 'application/json')

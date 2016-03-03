@@ -1,3 +1,4 @@
+import re, datetime
 import json, bson
 
 
@@ -65,42 +66,42 @@ def CreateFromPOSTinfo( subject_url, object_json ):
 
                 creator = Agent(
                     jsonld_id 	= "http://example.com/user1",
-                    jsonld_type	= ["foaf:Person"],
+                    jsonld_type	= ["Person"],
                     name		= "Default Anonymous",
-                    account	    = "default_anonymous",
-                    email		= ["danonymous@esciencedatalab.com"],
+                    nick	    = "default_anonymous",
+                    email		= ["danonymous@example.com"],
                     homepage	= ["http://example.com/DAnonymous_homepage"],
                 )
 
                 generator = Agent(
                     jsonld_id 	= "http://example.com/agent1",
-                    jsonld_type	= ["prov:SoftwareAgent"],
-                    name		= "B2Note annotator",
-                    account	    = "B2Note v1.0",
+                    jsonld_type	= ["Software"],
+                    name		= "B2Note semantic annotator prototype",
+                    nick	    = "B2Note v0.5",
                     email		= ["abremaud@esciencedatalab.com"],
                     homepage	= ["https://b2note.bsc.es/devel"],
                 )
 
                 source = ExternalResource(
                     jsonld_id   = subject_url,
-                    jsonld_type = ["dctypes:Text"],
+                    jsonld_type = ["Text"],
                 )
 
                 ann = Annotation(
-                    jsonld_id   = ["https://b2note.bsc.es/annotation/temporary_id"],
-                    jsonld_type = ["oa:Annotation"],
-                    body        = [TextualBody( jsonld_id = object_uri, jsonld_type = ["oa:TextualBody"], text = object_label, language = ["en"], role = "oa:tagging" )],
+                    jsonld_id   = "https://b2note.bsc.es/annotation/temporary_id",
+                    jsonld_type = ["Annotation"],
+                    body        = [TextualBody( jsonld_id = object_uri, jsonld_type = ["TextualBody"], text = object_label, language = ["en"], role = "tagging", creator = [creator] )],
                     target      = [ExternalResource( jsonld_id = subject_url, language = ["en"], creator = [creator] )],
                     #target      = [SpecificResource( jsonld_type = "oa:SpecificResource", source = source )],
                     creator     = [creator],
                     generator   = [generator],
-                    motivation  = ["oa:tagging"],
+                    motivation  = ["tagging"],
                 ).save()
 
-                anns = Annotation.objects.filter( jsonld_id = ["https://b2note.bsc.es/annotation/temporary_id"] )
+                anns = Annotation.objects.filter( jsonld_id = "https://b2note.bsc.es/annotation/temporary_id" )
 
                 for ann in anns:
-                    ann.jsonld_id = ["https://b2note.bsc.es/annotation/" + ann.id]
+                    ann.jsonld_id = "https://b2note.bsc.es/annotation/" + ann.id
                     ann.save()
                     #ann.update( jsonld_id = "https://b2note.bsc.es/annotation/" + ann.id )
 
@@ -147,17 +148,20 @@ def date_handler(obj):
     return obj.isoformat() if hasattr(obj, 'isoformat') else obj
 
 
-def model_class_as_string( o_in ):
+def readyQuerySetValuesForDumpAsJSONLD( o_in ):
     """
-      Function: model_class_as_string
-      ----------------------------
+      Function: readyQuerySetValuesForDumpAsJSONLD
+      --------------------------------------------
 
-        Recursively convert embedded custom model class objects to string.
+        Recursively drops embedded custom model class objects and model
+         class field names beginning with "jsonld_whatever" to "@whatever",
+         while avoiding returning fields with no content and making
+         datetimes to xsd:datetime strings.
 
         input:
             o_in (object): In nesting order, Django queryset values
-                list then tuple or list or set or dict or out-of-scope
-                object.
+                list then tuple or list or set or dict or datetime or
+                out-of-scope object.
 
         output:
             o_out: None (execution failed) or list of native python
@@ -172,21 +176,27 @@ def model_class_as_string( o_in ):
         if type(o_in) is tuple:
             o_out = ()
             for item in o_in:
-                o_out += ( model_class_as_string( item ), )
-            #print "Tuple:", o_in, " >> ", o_out
+                if item and readyQuerySetValuesForDumpAsJSONLD( item ):
+                    o_out += ( readyQuerySetValuesForDumpAsJSONLD( item ), )
         elif type(o_in) is list or type(o_in) is set:
             o_out = []
             for item in o_in:
-                o_out.append( model_class_as_string( item ) )
-            #print "List or Set:", o_in, " >> ", o_out
+                if item and readyQuerySetValuesForDumpAsJSONLD( item ):
+                    o_out.append( readyQuerySetValuesForDumpAsJSONLD( item ) )
         elif type(o_in) is dict:
             o_out = {}
             for k in o_in.keys():
-                o_out[k] = model_class_as_string( o_in[k] )
-            #print "Dict:", o_in, " >> ", o_out
-        else:
-            o_out = str( o_in )
-            #print "Str:", o_in, ">>", o_out
+                if o_in[k] and readyQuerySetValuesForDumpAsJSONLD( o_in[k] ) and k != "id":
+                    newkey = k
+                    m = re.match(r'^jsonld_(.*)', k)
+                    if m:
+                        newkey = "@{0}".format(m.group(1))
+                    o_out[newkey] = readyQuerySetValuesForDumpAsJSONLD( o_in[k] )
+        elif isinstance(o_in, datetime.datetime) or isinstance(o_in, datetime.datetime):
+            o_out = o_in.isoformat()
+        elif o_in and o_in != "None" and not re.match(r'^<class (.*)>', o_in):
+            o_out = str(o_in)
+        #if len(o_out) <= 0: o_out = None
     except:
         o_out = None
         pass
