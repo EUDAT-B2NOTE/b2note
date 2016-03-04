@@ -1,16 +1,16 @@
-import os
 import json
+import os
 
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings as global_settings
 
 from collections import OrderedDict
 
 from .mongo_support_functions import *
-from .models import Annotation
-
+from .models import *
 
 
 def index(request):
@@ -50,11 +50,13 @@ def export_annotations(request):
      with likely origin of trouble being CORS.
     As a consequence we resort here to embedding rather than linking to the context.
     """
-    context_str = open(os.getcwd()+'/static/anno.jsonld', 'r').read()
+    context_str = open(os.path.join(global_settings.STATIC_PATH, 'files/anno_context.jsonld'), 'r').read()
+    
 
     response = {"@context": json.loads( context_str, object_pairs_hook=OrderedDict ) }
 
     response["@graph"] = readyQuerySetValuesForDumpAsJSONLD( annotation_list )
+
 
     # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
     json_data = HttpResponse(json.dumps(response), mimetype= 'application/json')
@@ -132,6 +134,7 @@ def settings(request):
     text = """
     This functionality will allow the user to select the ontologies from which to retrieve the concepts used for creating annotations.
     """
+    
     return render(request, 'searchapp/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 
 
