@@ -178,41 +178,58 @@
 
                         {% for annotation in annotation_list %}
 
-                            {% if subject_tofeed in annotation.triple.subject.iri %}
+                            {% for target in annotation.target %}
 
-                                {% if annotation.triple.object.label != "" %}
+                                {% if target.jsonld_id or target.source.jsonld_id %}
 
-                                    <tr>
+                                    <!-- http://stackoverflow.com/questions/1275735/how-to-access-dictionary-element-in-django-template -->
+                                    {% if target.jsonld_id == subject_tofeed or target.source.jsonld_id == subject_tofeed %}
 
-                                        <form action="delete_annotation" method="post">
+                                        {% for body in annotation.body %}
 
-                                            <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
-                                            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-                                            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+                                            {% if body.jsonld_id and body.text %}
 
-                                            {% if "http://" in annotation.triple.object.iri %}
+                                                <tr>
 
-                                                <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
-                                                <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
-                                                <td id="objectLabel"><a target="_blank" href={{annotation.triple.object.iri}}>{{annotation.triple.object.label}}</a></td>
+                                                    <form action="delete_annotation" method="post">
 
-                                            {% else %}
+                                                        <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
+                                                        <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                                                        <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
 
-                                                <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
-                                                <td id="objectLabel">{{annotation.triple.object.label}}</td>
+                                                        {% if "http://" in body.jsonld_id %}
+
+                                                            <!--
+                                                            <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
+                                                            -->
+                                                            <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
+                                                            <td id="objectLabel"><a target="_blank" href={{body.jsonld_id}}>{{body.text}}</a></td>
+
+                                                        {% else %}
+
+                                                            <!--
+                                                            <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
+                                                            -->
+                                                            <td id="objectLabel">{{body.text}}</td>
+
+                                                        {% endif %}
+
+                                                            <!-- "Octicons-trashcan" by GitHub - https://github.com/github/octicons. Licensed under MIT via Wikimedia Commons - https://commons.wikimedia.org/wiki/File:Octicons-trashcan.svg#/media/File:Octicons-trashcan.svg -->
+                                                            <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" title="Delete annotation" alt="Delete annotation" /></td>
+
+                                                    </form>
+
+                                                </tr>
 
                                             {% endif %}
 
-                                                <!-- "Octicons-trashcan" by GitHub - https://github.com/github/octicons. Licensed under MIT via Wikimedia Commons - https://commons.wikimedia.org/wiki/File:Octicons-trashcan.svg#/media/File:Octicons-trashcan.svg -->
-                                                <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" title="Delete annotation" alt="Delete annotation" /></td>
+                                        {% endfor %}
 
-                                        </form>
-
-                                    </tr>
+                                    {% endif %}
 
                                 {% endif %}
 
-                            {% endif %}
+                            {% endfor %}
 
                         {% endfor %}
 

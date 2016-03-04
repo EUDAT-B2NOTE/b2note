@@ -1,4 +1,5 @@
-from pymongo import MongoClient
+import re, datetime
+import json, bson
 
 from .models import *
 
@@ -63,24 +64,65 @@ def CreateFromPOSTinfo( subject_url, object_json ):
 
                 print object_label, " ", object_uri
 
-                ann = Annotation(\
-                        triple=Triple(\
-                                subject=TripleElement(iri=subject_url,label="", definition="",curation_status="", ontology_iri="",ontology_shortname="",ontology_version="",),\
-                                predicate=TripleElement(iri="http://purl.obolibrary.org/obo/IAO_0000136",label="is about",definition="Is_about is a (currently) primitive relation that relates an information artifact to an entity.",curation_status="pending final vetting",ontology_iri="http://purl.obolibrary.org/obo/iao.owl",ontology_shortname="IAO",ontology_version="2015,02,23",),\
-                                object=TripleElement(\
-                                        iri     =   object_uri,\
-                                        label   =   object_label,\
-                                        definition = "",\
-                                        curation_status = "",\
-                                        ontology_iri = "",\
-                                        ontology_shortname= "",\
-                                        ontology_version= "",\
-                                ),\
-                        ),\
-                        provenance=Provenance(\
-                                createdBy="abremaud@esciencefactory.com",
-                        ),\
+                creator = Agent(
+                    jsonld_id 	= "http://example.com/user1",
+                    jsonld_type	= ["Person"],
+                    name		= "Default Anonymous",
+                    nick	    = "default_anonymous",
+                    email		= ["danonymous@example.com"],
+                    homepage	= ["http://example.com/DAnonymous_homepage"],
+                )
+
+                generator = Agent(
+                    jsonld_id 	= "http://example.com/agent1",
+                    jsonld_type	= ["Software"],
+                    name		= "B2Note semantic annotator prototype",
+                    nick	    = "B2Note v0.5",
+                    email		= ["abremaud@esciencedatalab.com"],
+                    homepage	= ["https://b2note.bsc.es/devel"],
+                )
+
+                source = ExternalResource(
+                    jsonld_id   = subject_url,
+                    jsonld_type = ["Text"],
+                )
+
+                ann = Annotation(
+                    jsonld_id   = "https://b2note.bsc.es/annotation/temporary_id",
+                    jsonld_type = ["Annotation"],
+                    body        = [TextualBody( jsonld_id = object_uri, jsonld_type = ["TextualBody"], text = object_label, language = ["en"], role = "tagging", creator = [creator] )],
+                    target      = [ExternalResource( jsonld_id = subject_url, language = ["en"], creator = [creator] )],
+                    #target      = [SpecificResource( jsonld_type = "oa:SpecificResource", source = source )],
+                    creator     = [creator],
+                    generator   = [generator],
+                    motivation  = ["tagging"],
                 ).save()
+
+                anns = Annotation.objects.filter( jsonld_id = "https://b2note.bsc.es/annotation/temporary_id" )
+
+                for ann in anns:
+                    ann.jsonld_id = "https://b2note.bsc.es/annotation/" + ann.id
+                    ann.save()
+                    #ann.update( jsonld_id = "https://b2note.bsc.es/annotation/" + ann.id )
+
+                # ann = Annotation(\
+                #         triple=Triple(\
+                #                 subject=TripleElement(iri=subject_url,label="", definition="",curation_status="", ontology_iri="",ontology_shortname="",ontology_version="",),\
+                #                 predicate=TripleElement(iri="http://purl.obolibrary.org/obo/IAO_0000136",label="is about",definition="Is_about is a (currently) primitive relation that relates an information artifact to an entity.",curation_status="pending final vetting",ontology_iri="http://purl.obolibrary.org/obo/iao.owl",ontology_shortname="IAO",ontology_version="2015,02,23",),\
+                #                 object=TripleElement(\
+                #                         iri     =   object_uri,\
+                #                         label   =   object_label,\
+                #                         definition = "",\
+                #                         curation_status = "",\
+                #                         ontology_iri = "",\
+                #                         ontology_shortname= "",\
+                #                         ontology_version= "",\
+                #                 ),\
+                #         ),\
+                #         provenance=Provenance(\
+                #                 createdBy="abremaud@esciencefactory.com",
+                #         ),\
+                # ).save()
 
     except ValueError:
 
@@ -90,36 +132,58 @@ def CreateFromPOSTinfo( subject_url, object_json ):
     print "Created an Annotation"
     return True
 
-def ExtractAllDocuments():
-    """
-      Function: ExtractAllDocuments
-      ----------------------------
-        Extracts all annotations from MongoDB to Django.
-        
-        params:
-            none
-        
-        returns:
-            documents (list): A list of all documents stored in the collection searchapp_annotation.
-    """
-    import urllib
-    
-    pwd = urllib.quote_plus(os.environ['MONGODB_PWD'])
-    uri = "mongodb://" + os.environ['MONGODB_USR'] + ":" + pwd + "@127.0.0.1/" + os.environ['MONGODB_NAME'] + "?authMechanism=SCRAM-SHA-1"
-    client = MongoClient(uri)
-    db = client[os.environ['MONGODB_NAME']]
-    
-    collection = db["searchapp_annotation"]
-    documents = []
-    for doc in collection.find():
-         documents.append(doc)
-    
-    # http://stackoverflow.com/questions/455580/json-datetime-between-python-and-javascript
-    date_handler = lambda obj: (
-                                obj.isoformat()
-                                if isinstance(obj, datetime.datetime)
-                                or isinstance(obj, datetime.date)
-                                else str(obj)
-                                )
-    return json.dumps(documents, default=date_handler)
 
+def readyQuerySetValuesForDumpAsJSONLD( o_in ):
+    """
+      Function: readyQuerySetValuesForDumpAsJSONLD
+      --------------------------------------------
+
+        Recursively drops embedded custom model class objects and model
+         class field names beginning with "jsonld_whatever" to "@whatever",
+         while avoiding returning fields with no content and making
+         datetimes to xsd:datetime strings.
+
+        input:
+            o_in (object): In nesting order, Django queryset values
+                list then tuple or list or set or dict or datetime or
+                out-of-scope object.
+
+        output:
+            o_out: None (execution failed) or list of native python
+                objects, where each out-of-scope object was replaced
+                by its "string-ified" avatar, designed for subsequent
+                JSON-ification.
+    """
+
+    o_out = None
+
+    try:
+        if type(o_in) is tuple:
+            o_out = ()
+            for item in o_in:
+                if item and readyQuerySetValuesForDumpAsJSONLD( item ):
+                    o_out += ( readyQuerySetValuesForDumpAsJSONLD( item ), )
+        elif type(o_in) is list or type(o_in) is set:
+            o_out = []
+            for item in o_in:
+                if item and readyQuerySetValuesForDumpAsJSONLD( item ):
+                    o_out.append( readyQuerySetValuesForDumpAsJSONLD( item ) )
+        elif type(o_in) is dict:
+            o_out = {}
+            for k in o_in.keys():
+                if o_in[k] and readyQuerySetValuesForDumpAsJSONLD( o_in[k] ) and k != "id":
+                    newkey = k
+                    m = re.match(r'^jsonld_(.*)', k)
+                    if m:
+                        newkey = "@{0}".format(m.group(1))
+                    o_out[newkey] = readyQuerySetValuesForDumpAsJSONLD( o_in[k] )
+        elif isinstance(o_in, datetime.datetime) or isinstance(o_in, datetime.datetime):
+            o_out = o_in.isoformat()
+        elif o_in and o_in != "None" and not re.match(r'^<class (.*)>', o_in):
+            o_out = str(o_in)
+        #if len(o_out) <= 0: o_out = None
+    except:
+        o_out = None
+        pass
+
+    return o_out
