@@ -51,7 +51,6 @@ def export_annotations(request):
     As a consequence we resort here to embedding rather than linking to the context.
     """
     context_str = open(os.path.join(global_settings.STATIC_PATH, 'files/anno_context.jsonld'), 'r').read()
-    
 
     response = {"@context": json.loads( context_str, object_pairs_hook=OrderedDict ) }
 
