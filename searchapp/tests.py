@@ -6,53 +6,61 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
+from searchapp.models import Annotation
+from django.core.urlresolvers import reverse
+from django.conf import settings
 
-
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 2, 2)
-
-
-
-#coding: utf-8
-from nose.plugins.skip import SkipTest
-
-from mongoengine.python_support import PY3
-from mongoengine import connect
-
-try:
-    from django.test import TestCase
-    from django.conf import settings
-except Exception as err:
-    if PY3:
-        from unittest import TestCase
-        # Dummy value so no error
-        class settings:
-            MONGO_DATABASE_NAME = 'dummy'
-    else:
-        raise err
-
-
-class MongoTestCase(TestCase):
-
-    def setUp(self):
-        if PY3:
-            raise SkipTest('django does not have Python 3 support')
-
+class SearchappTest(TestCase):
     """
-    TestCase class that clear the collection between the tests
+        TestCase class that clear the collection between the tests
     """
-    db_name = 'test_%s' % settings.MONGO_DATABASE_NAME
-    def __init__(self, methodName='runtest'):
-        self.db = connect(self.db_name).get_db()
-        super(MongoTestCase, self).__init__(methodName)
+    mongodb_name = 'test_%s' % settings.MONGO_DATABASE_NAME
+    
+    def _pre_setup(self):
+        from mongoengine.connection import connect, disconnect
+        disconnect()
+        connect(self.mongodb_name)
+        super(SearchappTest, self)._pre_setup()
 
     def _post_teardown(self):
-        super(MongoTestCase, self)._post_teardown()
-        for collection in self.db.collection_names():
-            if collection == 'system.indexes':
-                continue
-            self.db.drop_collection(collection)
+        from mongoengine.connection import get_connection, disconnect
+        connection = get_connection()
+        connection.drop_database(self.mongodb_name)
+        disconnect()
+        super(SearchappTest, self)._post_teardown()
+        
+    def create_annotation(self, jsonld_id="test", jsonld_type=["others"]):
+        return Annotation.objects.create(jsonld_id=jsonld_id, jsonld_type=jsonld_type)
+    
+    def test_annotation_creation(self):
+        a = self.create_annotation()
+        self.assertTrue(isinstance(a, Annotation))
+        self.assertEqual(a.jsonld_id, "test")
+        
+    def test_interface_main_view(self):
+        a = self.create_annotation()
+        url = reverse("searchapp.views.interface_main")
+        resp = self.client.get(url)
+        
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn(a.jsonld_id, "test")
+
+    def test_create_annotation_view(self):
+        a = self.create_annotation()
+        url = reverse("searchapp.views.create_annotation")
+        resp = self.client.get(url)
+        
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn(a.jsonld_id, "test")
+        
+    def test_delete_annotation_view(self):
+        a = self.create_annotation()
+        url = reverse("searchapp.views.delete_annotation")
+        resp = self.client.get(url)
+        
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn(a.jsonld_id, "test")
+        
+
+
+
