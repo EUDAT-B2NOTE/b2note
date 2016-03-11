@@ -7,11 +7,12 @@
 
 	{% load staticfiles %}
 
-	<link rel='stylesheet' type='text/css'
-		href="{% static 'css/style.css' %}" />
-	<link rel='stylesheet' type='text/css'
-		href="{% static 'css/bootstrap.min.css' %}" />
-	<script src="{% static 'js/utils.js' %}"></script>
+    <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
+
+    <script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/utils.js' %}"></script>
 
 	<title>B2Note service demo</title>
 
@@ -55,11 +56,7 @@
 
 	<div class = "container" id="content">
 
-        <div class="clear"> </div>
-
         <div class = "container">
-
-            <div class="clear"> </div>
 
             <!-- http://stackoverflow.com/questions/12102464/how-do-i-make-iframes-load-only-on-a-button-click -->
             <iframe id="b2note_iframe" name="b2note_iframe" src="interface_main"
@@ -76,39 +73,37 @@
 
         <div class = "container">
 
-            <h3>Some explaining:</h3>
+            <h3>
+
+                <a class="btn btn-info" data-toggle="collapse" href="#collapse1"><strong>Some explaining</strong></a>
+
+                <a href="https://86.50.168.182/record/9" class="btn btn-warning" title="Click to be directed to B2Share integration demo." target="_blank"/>Click for B2Share integration demo instead</a>
+
+            </h3>
+
+            <div id="collapse1" class="panel-collapse collapse">
+
+                <p>This page emulates the <strong>outcome of a search</strong> performed by a user of EUDAT services such as B2Share.</p>
+
+                <p>Thus, it displays a list of hyperlinks pointing to <strong>files stored by EUDAT</strong>.</p>
+
+                <br>
+
+                <p>Next to each hyperlink stands a "Create Annotation" button.</p>
+
+                <p>Clicking one of these buttons <strong>triggers the B2Note interface</strong>.</p>
+
+                <br>
+
+                <p>The B2note interface allows the user to <strong>select semantic concepts </strong> for describing the corresponding file.</p>
+
+                <p>The semantic relations created in the process are <strong>stored</strong> by the B2Note service, allowing later retrieval and processing.</p>
+
+            </div>
 
         </div>
 
-        <div class = "container">
-
-            <div class="clear"> </div>
-
-            <p>This page emulates the <strong>outcome of a search</strong> performed by a user of EUDAT services such as B2Share.</p>
-
-            <p>Thus, it displays a list of hyperlinks pointing to <strong>files stored by EUDAT</strong>.</p>
-
-            <br>
-
-            <p>Next to each hyperlink stands a "Create Annotation" button.</p>
-
-            <p>Clicking one of these buttons <strong>triggers the B2Note interface</strong>.</p>
-
-            <br>
-
-            <p>The B2note interface allows the user to <strong>select semantic concepts </strong> for describing the corresponding file.</p>
-
-            <p>The semantic relations created in the process are <strong>stored</strong> by the B2Note service, allowing later retrieval and processing.</p>
-
-        </div>
-
-        <br>
-
-        <div class = "container">
-
-            <p><a href="https://86.50.168.182/record/9" class="btn btn-warning" title="Click to be directed to B2Share integration demo." target="_blank"/><strong>Click for B2Share integration demo instead</strong></a></p>
-
-        </div>
+        <hr>
 
         <div class = "container">
 
@@ -168,23 +163,33 @@
 
         <div class = "container">
 
-            <h3>Some extra explaining:</h3>
+            <a class="btn btn-info" data-toggle="collapse" href="#collapse2"><strong>Some extra explaining</strong></a>
 
-            <p>
-                The necessary information was collected by hand for a small subset of
-                files. <br /> However, it is expected that the information can easily
-                be gathered in an automated way by the actual file-hosting service.
-            </p>
+            <div id="collapse2" class="panel-collapse collapse in">
 
-            <p>This information includes:</p>
+                <div class="panel-body">
 
-            <ul>
+                    <div class="clear"> </div>
 
-                <li>The pid of the file (required).</li>
-                <li>The hyperlink address (optional).</li>
-                <li>A human-readable label for the hyperlink (optional).</li>
+                    <p>
+                        The necessary information was collected by hand for a small subset of
+                        files. <br /> However, it is expected that the information can easily
+                        be gathered in an automated way by the actual file-hosting service.
+                    </p>
 
-            </ul>
+                    <p>This information includes:</p>
+
+                    <ul>
+
+                        <li>The pid of the file (required).</li>
+                        <li>The hyperlink address (optional).</li>
+                        <li>A human-readable label for the hyperlink (optional).</li>
+
+                    </ul>
+
+                </div>
+
+            </div>
 
         </div>
 
