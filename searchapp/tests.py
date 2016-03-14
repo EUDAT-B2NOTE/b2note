@@ -53,31 +53,37 @@ class SearchappTest(TestCase):
 
     def test_create_annotation_view(self):
         url = reverse("searchapp.views.create_annotation")
-        json_dict = {"ontology_json": {"ancestors": ["ancestor_test"],
-                                       "indexed_date":"2016-01-01",
-                                       "labels" : "annotation_test",
-                                       "text_auto": "annotation_test",
-                                       "uris": ["uri_test"],
-                                       "id": "id_test",
-                                       "_version_": "1"},
-                     "pid_tofeed": "pid_test",
-                     "subject_tofeed": u"subject_test"
-                    }
+        json_dict = {}
+        json_dict['pid_tofeed'] = 'pid_test'
+        json_dict['subject_tofeed'] = 'subject_test'
+        json_dict['ontology_json'] = json.dumps({'ancestors': ['ancestor_test'],
+                                                'indexed_date':'2016-01-01',
+                                                'labels' : 'annotation_test',
+                                                'text_auto': 'annotation_test',
+                                                'uris': ['uri_test'],
+                                                'id': 'id_test',
+                                                '_version_': '1'})
+
         resp = self.client.post(url, json_dict )
 
         self.assertEqual(resp.status_code, 200)
-        self.assertIn("test", resp.content)
+        self.assertIn("annotation_test", resp.content)
+        
+        # return the db_id value for deleting the annotation from DB
+        position = resp.content.find('db_id" value="') + 14
+        return resp.content[position:position+24]
+        
         
     def test_delete_annotation_view(self):
+        db_id = self.test_create_annotation_view()
         url = reverse("searchapp.views.delete_annotation")
-        
-        resp = self.client.post(url, {'pid_tofeed': 'pid_test', 'subject_tofeed': 'subject_test'})
+        resp = self.client.post(url, {'pid_tofeed': 'pid_test', 'subject_tofeed': 'subject_test', 'db_id': db_id})
         self.assertEqual(resp.status_code, 200)
-        self.assertIn("test", resp.content)
+        self.assertNotIn("annotation_test", resp.content)
         
+    
     def test_export_annotations_view(self):
-        url = reverse("searchapp.views.export_annotations")
-        
+        url = reverse("searchapp.views.export_annotations")    
         resp = self.client.post(url, {'pid_tofeed': 'pid_test', 'subject_tofeed': 'subject_test'})
         self.assertEqual(resp.status_code, 200)
         self.assertIn("test", resp.content)
