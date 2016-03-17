@@ -56,22 +56,24 @@ class SearchappTest(TestCase):
         json_dict = {}
         json_dict['pid_tofeed'] = 'pid_test'
         json_dict['subject_tofeed'] = 'subject_test'
-        json_dict['ontology_json'] = json.dumps({'ancestors': ['ancestor_test'],
-                                                'indexed_date':'2016-01-01',
-                                                'labels' : 'annotation_test',
-                                                'text_auto': 'annotation_test',
-                                                'uris': ['uri_test'],
-                                                'id': 'id_test',
-                                                '_version_': '1'})
+        json_dict['ontology_json'] = json.dumps({'labels' : 'annotation_test',
+                                                'uris': ['uri_test']})
 
+        # DB just created with no annotations in there
+        before = Annotation.objects.filter().count()
+        self.assertEqual(before, 0)
         resp = self.client.post(url, json_dict )
-
         self.assertEqual(resp.status_code, 200)
         self.assertIn("annotation_test", resp.content)
-        
+        # DB with 1 annotations created
+        after = Annotation.objects.filter().count()
+        self.assertEqual(after, 1)
+        # get the ID of the created annotation
+        db_id = Annotation.objects.filter()[0].id
+        # check that the ID is present in the response 
+        self.assertIn(db_id, resp.content)
         # return the db_id value for deleting the annotation from DB
-        position = resp.content.find('db_id" value="') + 14
-        return resp.content[position:position+24]
+        return db_id
         
         
     def test_delete_annotation_view(self):
@@ -80,14 +82,23 @@ class SearchappTest(TestCase):
         resp = self.client.post(url, {'pid_tofeed': 'pid_test', 'subject_tofeed': 'subject_test', 'db_id': db_id})
         self.assertEqual(resp.status_code, 200)
         self.assertNotIn("annotation_test", resp.content)
+        self.assertEqual(Annotation.objects.filter().count(), 0)
         
     
     def test_export_annotations_view(self):
+        db_id = self.test_create_annotation_view()
         url = reverse("searchapp.views.export_annotations")    
         resp = self.client.post(url, {'pid_tofeed': 'pid_test', 'subject_tofeed': 'subject_test'})
         self.assertEqual(resp.status_code, 200)
-        self.assertIn("test", resp.content)
+        self.assertIn("annotation_test", resp.content)
         
+    def test_download_json_view(self):
+        self.test_export_annotations_view()
+        
+        url = reverse("searchapp.views.download_json")    
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("annotation_test", resp.content)
 
 
 
