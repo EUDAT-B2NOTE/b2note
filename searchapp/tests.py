@@ -82,6 +82,7 @@ class SearchappTest(TestCase):
         resp = self.client.post(url, {'pid_tofeed': 'pid_test', 'subject_tofeed': 'subject_test', 'db_id': db_id})
         self.assertEqual(resp.status_code, 200)
         self.assertNotIn("annotation_test", resp.content)
+        # check that there is no annotations in the DB
         self.assertEqual(Annotation.objects.filter().count(), 0)
         
     
