@@ -1,0 +1,11 @@
+output_name;required_status;sparql_var;inverse_status
+Labels;mandatory;label;;preferred label;editor preferred term;preferred term
+Synonyms;optional;syn;;synonym;alternative term;alternative label
+Text definition;optional;def;;definition;text definition
+Direct parent IRI;disabled;subClassOf;;subclassOf
+Child IRI;disabled;superClassOf;inverse;subClassOf
+ancestors;disabled;;;
+descendants;disabled;;;
+OBO ID;disabled;;;
+Type;disabled;type;;type
+Indexed date;automatic;;;
