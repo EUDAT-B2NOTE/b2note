@@ -28,10 +28,10 @@ class OntologyClass(object):
         self.indexed_date       = ""
         self.text_auto          = "empty"
         # abremaud 20160427
-        self.short_form         = ""
-        self.ontology_iri       = ""
-        self.ontology_name      = []
-        self.ontology_acronym   = []    # not originally planned
+        self.short_form         = ""    # not originally included
+        self.ontology_iri       = ""    # not originally included
+        self.ontology_name      = ""    # not originally included
+        self.ontology_acronym   = ""    # not originally planned
         self.ontology_version   = ""    # not originally planned
         self.ontology_vdate     = ""    # not originally planned
 
@@ -396,7 +396,7 @@ def fillMockSparqlResultObjectWithCollectionItemInfo(coll_item=None, pids=None, 
 
                         for k in p.keys():
 
-                            if k in p.keys():
+                            if k:
 
                                 fld_ctnt = None
 
@@ -424,7 +424,7 @@ def fillMockSparqlResultObjectWithCollectionItemInfo(coll_item=None, pids=None, 
 
                         for k in p.keys():
 
-                            if k in p.keys():
+                            if k:
 
                                 fld_ctnt = None
 
@@ -753,7 +753,7 @@ def sparqlGatherPropertySetvaluesFromAllClasses( endpoint=None, pids=None, from_
 
                 if not res: res = repeatQueryInSmallerChunks( endpoint, pids, from_uri, apikey, endpoint_type )
 
-                out = buildOntoClassContainer( pids, res )
+                out = buildOntoClassContainer( res )
 
     except:
 
@@ -891,7 +891,7 @@ def gatherPropIDsFromAPIendpoint( mandatory_prop_dict=None, optional_prop_dict=N
                         if k not in joined_prop_dict.keys():
                             joined_prop_dict[k] = optional_prop_dict[k]
 
-                    for key, val in joined_prop_dict.iteritems():
+                    for key, val in joined_prop_dict.iteritems(): # from data input (i.e. parameters)
 
                         if inputStringCheck(key):
 
@@ -901,7 +901,7 @@ def gatherPropIDsFromAPIendpoint( mandatory_prop_dict=None, optional_prop_dict=N
 
                             if inputStringCheck(val):
 
-                                for prop in props:
+                                for prop in props: # from API
 
                                     if isinstance(prop, dict):
 
@@ -1169,6 +1169,58 @@ def allPropertyIDsIdentified( prop_dict ):
     return out
 
 
+def switchKeysSparql2OntoClass(pids, propsofi):
+
+    out = None
+
+    try:
+
+        if pids and propsofi:
+
+            if isinstance(pids, tuple) and isinstance(propsofi, list):
+
+                new_pids = tuple()
+
+                for p in pids:
+
+                    if isinstance(p, dict):
+
+                        switched = {}
+
+                        for key in p.keys():
+
+                            if key and isinstance(key, (str, unicode)):
+
+                                for prop in propsofi:
+
+                                    if isinstance(prop, dict):
+
+                                        if "output_name" and "sparql_var" in prop.keys():
+
+                                            if isinstance(prop["sparql_var"], (str, unicode)) and isinstance(prop["output_name"], (str, unicode)):
+
+                                                if prop["sparql_var"] == key:
+
+                                                    switched[prop["output_name"]] = key
+                                                    break
+
+                        if switched:
+
+                            new_pids += (switched,)
+
+                        else:
+
+                            new_pids += (p,)
+
+                out = new_pids
+
+    except:
+
+        print "Could not switch pids dict keys from sparql to onto_class attribute field name."
+
+    return out
+
+
 def extractPropertiesOnRequiredStatus( propsofi=None, keyword=None ):
 
     out = None
@@ -1204,6 +1256,77 @@ def extractPropertiesOnRequiredStatus( propsofi=None, keyword=None ):
     except:
 
         print "Could not extract properties based on keyword:", keyword
+
+    return out
+
+
+def reformatpidsForAPIuse(pids=None, propsofi=None):
+
+    out = None
+
+    try:
+
+        if pids and propsofi:
+
+            if isinstance(propsofi, list) and isinstance(pids, tuple):
+
+                meta_pids   = None
+
+                meta_pids   = extractPropertiesOnRequiredStatus(propsofi, "automatic")
+
+                meta_pids   = switchKeysSparql2OntoClass((meta_pids,), propsofi)
+
+                if meta_pids and isinstance(meta_pids, tuple) and len(meta_pids)==1:
+
+                    meta_pids = meta_pids[0]
+
+                else:
+
+                    meta_pids = None
+
+                pids_out    = None
+
+                pids_out    = switchKeysSparql2OntoClass(pids, propsofi)
+
+                if meta_pids and pids_out:
+
+                    if isinstance(meta_pids, dict) and isinstance(pids_out, tuple):
+
+                        for k in meta_pids.keys():
+
+                            if isinstance(k, (str, unicode)) and isinstance(meta_pids[k], (str, unicode)):
+
+                                if k and meta_pids[k]:
+
+                                    replaced = False
+
+                                    for p in pids_out:
+
+                                        if isinstance( p, dict ):
+
+                                            if k in p.keys():
+
+                                                p[k] = unicode(meta_pids[k])
+                                                replaced = True
+                                                break
+
+                                    if not replaced:
+
+                                        if len(pids_out)>0:
+
+                                            if isinstance( pids_out[1], dict ):
+
+                                                pids_out[1][k] = unicode(meta_pids[k])
+
+                                        else:
+
+                                            pids_out += ({k:unicode(meta_pids[k])},)
+
+                if pids_out: out = pids_out
+
+    except:
+
+        print "Could not reformat pids structure for API use."
 
     return out
 

@@ -4,9 +4,11 @@
 # abremaud@esciencefactory.com 20160204
 
 
+import os
+
 from solr_writer import write_to_solr
 
-from SparqlOntoParser_functions import csv2list, obtainPropertyIDs
+from SparqlOntoParser_functions import csv2list, obtainPropertyIDs, reformatpidsForAPIuse
 from SparqlOntoParser_functions import sparqlGatherPropertySetvaluesFromAllClasses
 from SparqlOntoParser_functions import apiGatherPropertySetValuesFromAllClasses
 
@@ -19,9 +21,12 @@ def sparqlontoparser_main():
 
     try:
 
-        end_list = csv2list( 'data/input_data/Endpoint2Voc.csv' )
-        voc_list = csv2list( 'data/input_data/VocabularyLocation.csv' )
-        propsofi = csv2list( 'data/input_data/PropertyHooks.csv' )
+        #http://stackoverflow.com/questions/7165749/open-file-in-a-relative-location-in-python
+        script_dir = os.path.dirname(__file__)
+
+        end_list = csv2list( script_dir + '/data/input_data/Endpoint2Voc.csv' )
+        voc_list = csv2list( script_dir + '/data/input_data/VocabularyLocation.csv' )
+        propsofi = csv2list( script_dir + '/data/input_data/PropertyHooks.csv' )
 
         if end_list and voc_list and propsofi:
 
@@ -134,10 +139,13 @@ def sparqlontoparser_main():
 
                                                                         if source_type and source_type == "api":
                                                                             # API based
-                                                                            container = apiGatherPropertySetValuesFromAllClasses(from_uri, apikey, pids)
-                                                                        else:
-                                                                            # SPARQL based
-                                                                            container = sparqlGatherPropertySetvaluesFromAllClasses(endpoint, pids, from_uri, apikey, source_type)
+                                                                            pids_swk_wmeta  = reformatpidsForAPIuse(pids, propsofi)
+
+                                                                            container = apiGatherPropertySetValuesFromAllClasses(from_uri, apikey, pids_swk_wmeta)
+
+                                                                    #     else:
+                                                                    #         # SPARQL based
+                                                                    #         container = sparqlGatherPropertySetvaluesFromAllClasses(endpoint, pids, from_uri, apikey, source_type)
 
                                                                         if container:
 
@@ -148,7 +156,10 @@ def sparqlontoparser_main():
 
                                                                                 print "\n", len(container)
 
-                                                                                write_to_solr(container, 'http://localhost:8983/solr/restest_032016/')
+                                                                                #write_to_solr(container, 'http://localhost:8983/solr/restest_032016/')
+                                                                                #http://stackoverflow.com/questions/26197494/authenticating-connection-in-pysolr
+                                                                                #http://superuser.com/questions/259481/reverse-scp-over-ssh-connection/259493#259493
+                                                                                write_to_solr(container, 'https://opseudat03.bsc.es:8983/solr/b2note_testing/')
 
                                                                                 print "\n", "# " * 15
 
@@ -158,6 +169,11 @@ def sparqlontoparser_main():
 
 
 sparqlontoparser_main()
+
+
+# http://stackoverflow.com/questions/7722508/how-to-delete-all-data-from-solr-and-hbase
+# http://localhost:8983/solr/restest_032016/update?stream.body=<delete><query>*:*</query></delete>
+# http://localhost:8983/solr/restest_032016/update?stream.body=<commit/>
 
 # from SparqlOntoParser_functions import obtainPropertyIDs
 #

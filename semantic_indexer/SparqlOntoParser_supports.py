@@ -144,21 +144,21 @@ def mergeQueryResults( res1, res2 ):
 
                                         res = None
 
-                            if res:
+                                if res:
 
-                                if "results" in res.keys() and "results" in res2.keys():
+                                    if "results" in res.keys() and "results" in res2.keys():
 
-                                    if type(res["results"]) and type(res2["results"]) is dict:
+                                        if type(res["results"]) and type(res2["results"]) is dict:
 
-                                        if "bindings" in res["results"].keys() and "bindings" in res2["results"].keys():
+                                            if "bindings" in res["results"].keys() and "bindings" in res2["results"].keys():
 
-                                            if type(res["results"]["bindings"]) and type(res2["results"]["bindings"]) is list:
+                                                if type(res["results"]["bindings"]) and type(res2["results"]["bindings"]) is list:
 
-                                                for content in res2["results"]["bindings"]:
+                                                    for content in res2["results"]["bindings"]:
 
-                                                    res["results"]["bindings"].append( content )
+                                                        res["results"]["bindings"].append( content )
 
-                                                out = res
+                                                    out = res
 
     except:
 
