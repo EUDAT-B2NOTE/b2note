@@ -14,7 +14,7 @@ $(document).ready( function() {
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         remote: {
-            url: 'https://opseudat03.bsc.es:8983/solr/b2note_index/select?q=%QUERY&wt=json&indent=true',
+            url: 'https://b2note.bsc.es/solr/b2note_index/select?q=%QUERY&wt=json&indent=true',
             wildcard: '%QUERY',
             filter: function (data) {
                 return $.map(data.response.docs, function (suggestionSet) {
@@ -30,7 +30,7 @@ $(document).ready( function() {
 
     });
 
-    // iniializes the engina
+    // initializes the engine
     engine.initialize();
 
     // gets the subject selected to provide the subject_tofeed field
