@@ -14,7 +14,7 @@ $(document).ready( function() {
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         remote: {
-            url: 'https://b2note.bsc.es/solr/b2note_index/select?q=%QUERY&wt=json&indent=true',
+            url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select?q=%QUERY&wt=json&indent=true',
             wildcard: '%QUERY',
             filter: function (data) {
                 return $.map(data.response.docs, function (suggestionSet) {
