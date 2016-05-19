@@ -324,3 +324,6 @@ def interface_main(request):
     })
     return render_to_response('searchapp/interface_main.html', context)
 
+@csrf_exempt
+def search_annotations(request):
+    return HttpResponse("Search annotations functionality is coming.")
