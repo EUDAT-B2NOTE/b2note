@@ -1,0 +1,8 @@
+vocab_acronym;vocab_uri
+ERO;http://data.bioontology.org/ontologies/ERO
+OBI;http://data.bioontology.org/ontologies/OBI
+#Agrovoc;
+#ERO;http://www.semantic-systems-biology.org/owl/ero
+#OBI;http://purl.obolibrary.org/obo/merged/OBI
+#EnvThes;urn:x-evn-pub:envthes
+#NEMO;http://bioportal.bioontology.org/ontologies/NEMO
