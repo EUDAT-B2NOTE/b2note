@@ -20,7 +20,7 @@ $(document).ready( function() {
                 return $.map(data.response.docs, function (suggestionSet) {
                     return{
                         label : suggestionSet.labels,
-                        ontology_name : suggestionSet.ontology_name,
+                        ontology_acronym : suggestionSet.ontology_acronym,
                         short_form : suggestionSet.short_form,
 			            json_document: suggestionSet
                     };
@@ -65,7 +65,7 @@ $(document).ready( function() {
                     ' -No results-',
                     '</div>'
                 ].join('\n'),
-                suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}</p>' + '  {{short_form}}   #{{ontology_name}}</p>')
+                suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}' + ' ({{ontology_acronym}}:{{short_form}})</p>')
             },
             engine: Handlebars
 	// defines the event 'onclick'
