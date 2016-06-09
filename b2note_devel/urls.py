@@ -16,4 +16,5 @@ urlpatterns = patterns('',
     url(r'^download_json', 'searchapp.views.download_json'),
     url(r'^publish', 'searchapp.views.publish_annotations'),
     url(r'^settings', 'searchapp.views.settings'),
+    url(r'^search', 'searchapp.views.search_annotations'),
 )
