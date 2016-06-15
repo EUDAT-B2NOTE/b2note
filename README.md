@@ -31,6 +31,7 @@ With the addition that the **name of the worked-on fork-branch** eventually subm
 > _contributor_short_id_ (optional) **_** _#issue_reference_number_ **_** _Code_change_description_ (omitting spaces)
 
 In short:
+
 1. Log an **issue** on source repository: [EUDAT-B2NOTE/b2note](https://github.com/EUDAT-B2NOTE/b2note/issues/new).
     1. Describe contribution objectives.
 2. **Fork** branch of interest (or update fork if previously forked).
