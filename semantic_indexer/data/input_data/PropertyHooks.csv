@@ -1,0 +1,20 @@
+output_name;required_status;sparql_var;inverse_status
+labels;mandatory;label;;preferred label;editor preferred term;preferred term
+synonyms;optional;syn;;synonym;alternative term;alternative label
+description;optional;def;;definition;text definition
+direct_parents;disabled;subClassOf;;subclassOf
+direct_children;disabled;superClassOf;inverse;subClassOf
+ancestors;disabled;;;
+obo_id;disabled;;;
+type;disabled;type;;type
+descendants;disabled;;;
+indexed_date;automatic;;;
+ontology_iri;automatic;ontology;;
+ontology_name;automatic;name;;
+ontology_acronym;automatic;acronym;;
+ontology_vdate;automatic;released;;
+ontology_version;automatic;version;;
+labels;automatic;prefLabel;;
+synonyms;automatic;synonym;;
+description;automatic;definition;;
+uris;automatic;@id;;
