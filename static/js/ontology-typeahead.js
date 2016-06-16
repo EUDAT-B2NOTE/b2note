@@ -55,9 +55,11 @@ $(document).ready( function() {
         },
         {
             name: 'engine',
-	    display: 'label',
+	        display: 'label',
 
             source: engine.ttAdapter(),
+
+            limit: 10000,
 
             templates: {
                 empty: [
