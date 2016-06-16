@@ -14,7 +14,7 @@ $(document).ready( function() {
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         remote: {
-            url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select?q=%QUERY&wt=json&indent=true',
+            url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select?q=%QUERY&wt=json&indent=true&rows=10000',
             wildcard: '%QUERY',
             filter: function (data) {
                 return $.map(data.response.docs, function (suggestionSet) {
@@ -55,9 +55,11 @@ $(document).ready( function() {
         },
         {
             name: 'engine',
-	    display: 'label',
+	        display: 'label',
 
             source: engine.ttAdapter(),
+
+            limit: 10000,
 
             templates: {
                 empty: [
