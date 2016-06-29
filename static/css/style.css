@@ -189,6 +189,9 @@
 }
 
 #section_create .tt-menu * {
+    /* http://stackoverflow.com/questions/23981704/typeahead-always-shows-only-5-suggestions-maximum*/
+    max-height: 150px;
+    overflow-y: auto;
 	font-size: 14px;
 }
 
