@@ -14,7 +14,8 @@ $(document).ready( function() {
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         remote: {
-            url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select?q=%QUERY&wt=json&indent=true&rows=10000',
+            // What may be a relevant size of class subset for the user to select from VS. transaction size x user population?
+            url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select?q=%QUERY&wt=json&indent=true&rows=1000',
             wildcard: '%QUERY',
             filter: function (data) {
                 return $.map(data.response.docs, function (suggestionSet) {
@@ -59,7 +60,8 @@ $(document).ready( function() {
 
             source: engine.ttAdapter(),
 
-            limit: 10000,
+            // Fix from: https://github.com/twitter/typeahead.js/issues/1232
+            limit: Infinity,
 
             templates: {
                 empty: [
