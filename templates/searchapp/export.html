@@ -107,8 +107,14 @@
 
 	<div class="container" id="export-content">
 
-		<p class="small">{{annotations_json}}</p>
+		{% if annotations_json %}
+
+			<pre id="ann_json">{{annotations_json|safe}}</pre>
+
+		{% endif %}
 
 	</div>
+
 </body>
+
 </html>
