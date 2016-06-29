@@ -52,7 +52,7 @@ $(document).ready( function() {
     $('#id_q').typeahead({
             hint: true,
             highlight: true,
-            minLength: 3,
+            minLength: 1,
         },
         {
             name: 'engine',
