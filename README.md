@@ -11,6 +11,12 @@ The B2Note prototype service allows terms defined in controlled vocabularies, on
 
 The data model used in B2Note is based on the [W3C web annotation data model](http://www.w3.org/TR/annotation-model/).
 
+ Branch | Status
+-----|-----
+Master | [![Build Status](https://travis-ci.org/EUDAT-B2NOTE/b2note.svg?branch=master)](https://travis-ci.org/EUDAT-B2NOTE/b2note)
+Development | [![Build Status](https://travis-ci.org/EUDAT-B2NOTE/b2note.svg?branch=development)](https://travis-ci.org/EUDAT-B2NOTE/b2note)
+
+
 ##Contributors
 
  Name  |  Affiliation | Contact
