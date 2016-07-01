@@ -58,11 +58,11 @@ def export_annotations(request):
 
 
     # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
-    json_data = HttpResponse(json.dumps(response), mimetype= 'application/json')
+    json_data = HttpResponse(json.dumps(response, indent=2), mimetype= 'application/json')
     json_data['Content-Disposition'] = 'attachment; filename=annotations.json'
     download_json.file_data = json_data
     
-    return render(request, 'searchapp/export.html', {'annotations_json': json.dumps(response),"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+    return render(request, 'searchapp/export.html', {'annotations_json': json.dumps(response, indent=2),"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 
 
 def download_json(request):
