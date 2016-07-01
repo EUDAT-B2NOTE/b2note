@@ -190,6 +190,7 @@
 
 #section_create .tt-menu * {
 	font-size: 14px;
+	word-break: break-all;
 }
 
 #section_existing {
