@@ -193,6 +193,7 @@
     max-height: 150px;
     overflow-y: auto;
 	font-size: 14px;
+	word-break: break-all;
 }
 
 #section_existing {
