@@ -47,10 +47,21 @@ In short:
     1. May require preemptive alignment to target branch latest code.
 
 
-##License
+##Copyright
 
-Copyright (c) 2014, EUDAT project funded from the European Union under grant agreement n.283304.
+Copyright © e-Science Data Factory, 2015-2016
 
-Copyright (c) 2015, EUDAT2020 project funded from the European Union under grant agreement n.654065.
+Copyright © Barcelona Supercomputing Center, 2015-2016
 
-All rights reserved.
+
+This software may not be used, sold, licensed, transferred, copied or reproduced in whole or in part in any manner or form or in or on any media by any person other than in accordance with the terms of the Licence Agreement supplied with the software, or otherwise without the prior written consent of the copyright owners.
+
+This software is distributed WITHOUT ANY WARRANTY, express or implied relating to MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, except where stated in the Licence Agreement supplied with the software.
+
+>     Created By:    Yann Le Franc (PhD),          e-Science Data Factory;
+>                    Antoine Brémaud (PhD),        e-Science Data Factory;
+>                    Pablo Ródenas Barquero (BSc), Barcelona Supercomputing Center.
+>
+>     Created for Project:    EUDAT2020
+
+EUDAT receives funding from the European Union's Horizon 2020 programme - DG CONNECT e-Infrastructures. Contract No. 654065
