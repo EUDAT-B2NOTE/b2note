@@ -22,24 +22,6 @@ class Agent(models.Model):
 	homepage	= SetField( models.CharField(max_length = 4096), null=True ) #foaf:homepage
 
 
-class ResourceSet(models.Model):
-	id  		= models.CharField( max_length = 4096, null=True )
-	type		= models.CharField( max_length = 32,
-									   choices = (("Holistic set of resources", "Composite"),
-												  ("Ordered list of resources", "List"),
-												  ("Set of independent resources", "Independents"),
-												  )
-									)
-	items		= ListField( EmbeddedModelField() ) # oa:item
-
-
-class Choice(models.Model):
-	id  		= models.CharField( max_length = 4096, null=True )
-	type		= models.CharField( max_length = 32,\
-									   choices = (("Ordered list to pick one from", "Choice"),) )	# oa:Choice
-	items		= ListField( EmbeddedModelField() ) # oa:memberList
-
-
 class CssStyleSheet(models.Model):
 	id  		= models.CharField( max_length = 4096, null=True )
 	CSS 			= "CSS style sheet"
@@ -148,6 +130,24 @@ class SpecificResource(models.Model):
 	scope		= ListField( EmbeddedModelField(), null=True )	# oa:hasScope
 
 
+class ResourceSet(models.Model):
+	id  		= models.CharField( max_length = 4096, null=True )
+	type		= models.CharField( max_length = 32,
+									   choices = (
+										   ("Holistic set of resources", "Composite"),
+										   ("Ordered list of resources", "List"),
+										   ("Set of independent resources", "Independents"),
+									   ))
+	items		= ListField( EmbeddedModelField() ) # oa:item
+
+
+class Choice(models.Model):
+	id  		= models.CharField( max_length = 4096, null=True )
+	type		= models.CharField( max_length = 32,\
+									   choices = (("Ordered list to pick one from", "Choice"),) )	# oa:Choice
+	items		= ListField( EmbeddedModelField() ) # oa:memberList
+
+
 class TextualBody(models.Model):
 	id  		= models.CharField( max_length = 4096, null=True )				#"https://b2note.bsc.es/textualbody/" + mongo_uid
 	type		= SetField( models.CharField( max_length = 64 ), null=True )	# rdf:type; oa:TextualBody
@@ -239,9 +239,10 @@ class Annotation(models.Model):
 	language 	= models.CharField( max_length = 256, null=True )       # dc:language, [rfc5646]
 	format		= models.CharField( max_length = 256, null=True )       # dc:format, [rfc6838]
 	creator 	= ListField( EmbeddedModelField("Agent"), null=True )   # dcterms:creator
-	created 	= models.DateTimeField( auto_now_add=True, null=True )  # dcterms:created MUST xsd:dateTime SHOULD timezone.
+	created 	= models.DateTimeField( auto_now_add=True, null=True )  # dcterms:created MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	generator 	= ListField( EmbeddedModelField("Agent"), null=True )   # prov:wasGeneratedBy
-	generated 	= models.DateTimeField( auto_now=True, null=True )      # prov:generatedAtTime MUST xsd:dateTime SHOULD timezone.
+	generated 	= models.DateTimeField( auto_now_add=True, null=True )  # prov:generatedAtTime MUST xsd:dateTime with the UTC timezone expressed as "Z".
+	modified	= models.DateTimeField( auto_now=True, null=True )		# MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	BOOKMARKING     = "bookmarking"
 	CLASSIFYING     = "classifing"
 	COMMENTING      = "commenting"
