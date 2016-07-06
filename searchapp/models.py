@@ -35,9 +35,10 @@ class Composite(models.Model):
 
 
 class Choice(models.Model):
+	id  		= models.CharField( max_length = 4096, null=True )
 	type		= models.CharField( max_length = 32,\
-									   choices = (("Choice multiplicity construct","Choice"),) )	# oa:Choice
-	members		= ListField( EmbeddedModelField() ) # oa:memberList
+									   choices = (("Ordered list of resources","Choice"),) )	# oa:Choice
+	items		= ListField( EmbeddedModelField() ) # oa:memberList
 
 
 class CssStyleSheet(models.Model):
