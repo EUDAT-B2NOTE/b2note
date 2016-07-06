@@ -22,22 +22,21 @@ class Agent(models.Model):
 	homepage	= SetField( models.CharField(max_length = 4096), null=True ) #foaf:homepage
 
 
-class List(models.Model):
-	type		= models.CharField( max_length = 32, \
-									   choices = (("List multiplicity construct","List"),) )	# oa:List
-	members		= ListField( EmbeddedModelField() ) # oa:memberList
-
-
-class Composite(models.Model):
-	type		= models.CharField( max_length = 32,\
-									   choices = (("Composite multiplicity construct","Composite"),) )	# oa:Composite
-	item		= ListField( EmbeddedModelField() ) # oa:item
+class ResourceSet(models.Model):
+	id  		= models.CharField( max_length = 4096, null=True )
+	type		= models.CharField( max_length = 32,
+									   choices = (("Holistic set of resources", "Composite"),
+												  ("Ordered list of resources", "List"),
+												  ("Set of independent resources", "Independents"),
+												  )
+									)
+	items		= ListField( EmbeddedModelField() ) # oa:item
 
 
 class Choice(models.Model):
 	id  		= models.CharField( max_length = 4096, null=True )
 	type		= models.CharField( max_length = 32,\
-									   choices = (("Ordered list of resources","Choice"),) )	# oa:Choice
+									   choices = (("Ordered list to pick one from", "Choice"),) )	# oa:Choice
 	items		= ListField( EmbeddedModelField() ) # oa:memberList
 
 
