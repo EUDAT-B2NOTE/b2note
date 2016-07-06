@@ -1,5 +1,5 @@
 from django.db import models
-from djangotoolbox.fields import ListField, SetField, EmbeddedModelField
+from djangotoolbox.fields import ListField, SetField, DictField, EmbeddedModelField
 from django_mongodb_engine.contrib import MongoDBManager
 
 
@@ -12,7 +12,7 @@ class CssStyleSheet(models.Model):
 		(CSS, 		"CssStylesheet"),	# oa:CssStyle
 		(EMBEDDED,	"EmbeddedContent"),	# oa:EmbeddedContent
 	)
-	type		= SetField( models.CharField( max_length = 32, choices=CLASS_CHOICE) ) # oa:CssStyle
+	type		= ListField( models.CharField( max_length = 32, choices=CLASS_CHOICE) ) # oa:CssStyle
 	value		= models.TextField() # rdf:value
 	format		= SetField( models.CharField( max_length = 256 ), null=True )  # dc:format, [rfc6838]
 
@@ -44,7 +44,7 @@ class SvgSelector(models.Model):
 		(SVG, 		"SvgSelector"),		# oa:SvgSelector
 		(EMBEDDED,	"EmbeddedContent"),	# oa:EmbeddedContent
 	)
-	type		= SetField( models.CharField( max_length = 32, choices = SVG_SELECTOR_TYPE ) )
+	type		= ListField( models.CharField( max_length = 32, choices = SVG_SELECTOR_TYPE ) )
 	text		= models.TextField( null=True ) # oa:text
 	format		= models.CharField( max_length = 32,\
 									  choices = (("SVG media-type","image/svg+xml"),), null=True ) # dc:format
@@ -112,8 +112,14 @@ class SpecificResource(models.Model):
 	scope		= ListField( EmbeddedModelField(), null=True )	# oa:hasScope
 
 
+class Audience(models.Model):
+	id  		= models.CharField( max_length=4096, null=True )
+	type		= ListField( models.CharField( max_length = 256 ), null=True )	# SHOULD come from the schema.org class structure.
+	props 		= DictField( null=True )										# prefixed schema.org's Audience classes
+
+
 class Agent(models.Model):
-	id  		= models.CharField( max_length = 4096, null=True ) # "https://b2note.bsc.es/agent/" + mongo_uid
+	id  		= models.CharField( max_length = 4096, null=True )
 	PERSON          = 'Human agent'
 	ORGANISATION    = 'Organization agent'
 	SOFTWARE        = 'Software agent'
@@ -122,7 +128,7 @@ class Agent(models.Model):
         (ORGANISATION,	'Organization'),	# foaf:Organization
         (SOFTWARE, 		'Software'),		# prov:SoftwareAgent
     )
-	type		= SetField( models.CharField( max_length = 32,\
+	type		= ListField( models.CharField( max_length = 32,\
 												 choices=AGENT_CHOICES), null=True )
 	name		= ListField( models.CharField( max_length = 2048 ), null=True )			# foaf:name
 	nickname    = models.CharField( max_length = 2048, null=True )						# foaf:nick
@@ -151,10 +157,10 @@ class Choice(models.Model):
 
 class TextualBody(models.Model):
 	id  		= models.CharField( max_length = 4096, null=True )				#"https://b2note.bsc.es/textualbody/" + mongo_uid
-	type		= SetField( models.CharField( max_length = 64 ), null=True )	# rdf:type; oa:TextualBody
+	type		= ListField( models.CharField( max_length = 64 ), null=True )	# rdf:type; oa:TextualBody
 	value       = models.TextField() 											# oa:text
-	language 	= SetField( models.CharField( max_length = 256 ), null=True )	# dc:language, [rfc5646]
-	format		= SetField( models.CharField( max_length = 256 ), null=True )	# dc:format, [rfc6838]
+	language 	= ListField( models.CharField( max_length = 256 ), null=True )	# dc:language, [rfc5646]
+	format		= ListField( models.CharField( max_length = 256 ), null=True )	# dc:format, [rfc6838]
 	processingLanguage = models.CharField( max_length = 256, null=True )		#
 	LTR 	= "ltr"
 	RTL 	= "rtl"
@@ -165,35 +171,35 @@ class TextualBody(models.Model):
 		(AUTO,	"auto"),
 	)
 	textDirection = models.CharField( max_length = 32, choices=TEXT_DIRECTION_CHOICES, null=True )
-	BOOKMARKING     = "bookmarking"
-	CLASSIFYING     = "classifying"
-	COMMENTING      = "commenting"
-	DESCRIBING      = "describing"
-	EDITING         = "editing"
-	HIGHLIGHTING	= "highlighting"
-	IDENTIFYING     = "identifying"
-	LINKING         = "linking"
-	MODERATING      = "moderating"
-	QUESTIONING     = "questioning"
-	REPLYING        = "replying"
-	REVIEWING       = "reviewing"
-	TAGGING         = "tagging"
+	ASSESSING = "assessing"
+	BOOKMARKING = "bookmarking"
+	CLASSIFYING = "classifing"
+	COMMENTING = "commenting"
+	DESCRIBING = "describing"
+	EDITING = "editing"
+	HIGHLIGHTING = "highlighting"
+	IDENTIFYING = "identifying"
+	LINKING = "linking"
+	MODERATING = "moderating"
+	QUESTIONING = "questioning"
+	REPLYING = "replying"
+	TAGGING = "tagging"
 	MOTIVATION_CHOICES = (
-        (BOOKMARKING,   "bookmarking"), #oa:bookmarking
-        (CLASSIFYING,   "classifying"), #oa:classifying
-        (COMMENTING,    "commenting"),  #oa:commenting
-        (DESCRIBING,    "describing"),  #oa:describing
-        (EDITING,       "editing"),     #oa:editing
-        (HIGHLIGHTING,  "highlighting"),    #oa:highlighting
-        (IDENTIFYING,   "identifying"), #oa:identifying
-        (LINKING,       "linking"),     #oa:linking
-        (MODERATING,    "moderating"),  #oa:moderating
-        (QUESTIONING,   "questioning"), #oa:questioning
-        (REPLYING,      "replying"),    #oa:replying
-        (REVIEWING,     "reviewing"),   #oa:reviewing
-        (TAGGING,       "tagging"),     #oa:tagging
-    )
-	role		= models.CharField( max_length = 256, choices=MOTIVATION_CHOICES, null=True )
+		(ASSESSING, "assessing"),  # oa:assessing
+		(BOOKMARKING, "bookmarking"),  # oa:bookmarking
+		(CLASSIFYING, "classifying"),  # oa:classifying
+		(COMMENTING, "commenting"),  # oa:commenting
+		(DESCRIBING, "describing"),  # oa:describing
+		(EDITING, "editing"),  # oa:editing
+		(HIGHLIGHTING, "highlighting"),  # oa:highlighting
+		(IDENTIFYING, "identifying"),  # oa:identifying
+		(LINKING, "linking"),  # oa:linking
+		(MODERATING, "moderating"),  # oa:moderating
+		(QUESTIONING, "questioning"),  # oa:questioning
+		(REPLYING, "replying"),  # oa:replying
+		(TAGGING, "tagging"),  # oa:tagging
+	)
+	purpose		= models.CharField( max_length = 256, choices=MOTIVATION_CHOICES, null=True )
 	creator		= ListField( EmbeddedModelField("Agent"), null=True )   # dcterms:creator
 	created		= models.DateTimeField( auto_now_add=True, null=True )  # dcterms:created MUST xsd:dateTime SHOULD timezone.
 	# oa:hasRole = oa:Motivation
@@ -213,7 +219,7 @@ class ExternalResource(models.Model):
         (SOUND,     "Audio"),	# dctypes:Sound
         (TEXT,      "Text"),	# dctypes:Text
     )
-	type	    = SetField( models.CharField( max_length = 64, choices=RESOURCE_TYPE_CHOICES), null=True ) #rdf:class
+	type	    = ListField( models.CharField( max_length = 64, choices=RESOURCE_TYPE_CHOICES), null=True ) #rdf:class
 	format		= ListField( models.CharField( max_length = 256 ), null=True )  # dc:format, [rfc6838]
 	language 	= ListField( models.CharField( max_length = 256 ), null=True )  # dc:language, [bcp47]
 	processingLanguage = models.CharField( max_length = 256, null=True )		#
@@ -222,9 +228,10 @@ class ExternalResource(models.Model):
 		(RTL, "rtl"),
 		(AUTO, "auto")
 	)
-	textDirection = models.CharField( max_length = 32, choices=TEXT_DIRECTION_CHOICES, null=True )
-	creator 	= ListField( EmbeddedModelField("Agent"), null=True )   		# dcterms:creator
-	created 	= models.DateTimeField( auto_now_add=True, null=True )  		# dcterms:created MUST xsd:dateTime SHOULD timezone.
+	textDirection	= models.CharField( max_length = 32, choices=TEXT_DIRECTION_CHOICES, null=True )
+	accessibility	= ListField( models.CharField( max_length = 256 ), null=True )	# enumerated list of schema.org accessibilityFeature property
+	creator			= ListField( EmbeddedModelField("Agent"), null=True )			# dcterms:creator
+	created			= models.DateTimeField( auto_now_add=True, null=True )			# dcterms:created MUST xsd:dateTime SHOULD timezone.
 
 
 class Annotation(models.Model):
@@ -234,7 +241,7 @@ class Annotation(models.Model):
 																		# to be string when alone. How compatibility of Django data model
 																		# declaration with specification can be obtained is unclear at this point.
 	id          = models.CharField( max_length = 4096 )
-	type        = SetField( models.CharField( max_length = 256 ) )		# (rdf:type) oa:Annotation and others
+	type        = ListField( models.CharField( max_length = 256 ) )		# (rdf:type) oa:Annotation and others
 	body        = ListField( EmbeddedModelField(), null=True )          # CharField( max_length = 4096, null = True )
 	target      = ListField( EmbeddedModelField() )                     # models.CharField( max_length = 4096 )
 	language 	= models.CharField( max_length = 256, null=True )       # dc:language, [rfc5646]
@@ -244,6 +251,8 @@ class Annotation(models.Model):
 	generator 	= ListField( EmbeddedModelField("Agent"), null=True )   # prov:wasGeneratedBy
 	generated 	= models.DateTimeField( auto_now_add=True, null=True )  # prov:generatedAtTime MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	modified	= models.DateTimeField( auto_now=True, null=True )		# MUST xsd:dateTime with the UTC timezone expressed as "Z".
+	audience	= ListField( EmbeddedModelField("Audience"), null=True )
+	ASSESSING		= "assessing"
 	BOOKMARKING     = "bookmarking"
 	CLASSIFYING     = "classifing"
 	COMMENTING      = "commenting"
@@ -255,25 +264,23 @@ class Annotation(models.Model):
 	MODERATING      = "moderating"
 	QUESTIONING     = "questioning"
 	REPLYING        = "replying"
-	REVIEWING       = "reviewing"
 	TAGGING         = "tagging"
 	MOTIVATION_CHOICES = (
-        (BOOKMARKING,   "bookmarking"), #oa:bookmarking
-        (CLASSIFYING,   "classifying"), #oa:classifying
-        (COMMENTING,    "commenting"),  #oa:commenting
-        (DESCRIBING,    "describing"),  #oa:describing
-        (EDITING,       "editing"),     #oa:editing
-        (HIGHLIGHTING,  "highlighting"),    #oa:highlighting
-        (IDENTIFYING,   "identifying"), #oa:identifying
-        (LINKING,       "linking"),     #oa:linking
-        (MODERATING,    "moderating"),  #oa:moderating
-        (QUESTIONING,   "questioning"), #oa:questioning
-        (REPLYING,      "replying"),    #oa:replying
-        (REVIEWING,     "reviewing"),   #oa:reviewing
-        (TAGGING,       "tagging"),     #oa:tagging
+		(ASSESSING, 	"assessing"),  		# oa:assessing
+        (BOOKMARKING,   "bookmarking"),		#oa:bookmarking
+        (CLASSIFYING,   "classifying"),		#oa:classifying
+        (COMMENTING,    "commenting"),		#oa:commenting
+        (DESCRIBING,    "describing"),		#oa:describing
+        (EDITING,       "editing"),			#oa:editing
+        (HIGHLIGHTING,  "highlighting"),	#oa:highlighting
+        (IDENTIFYING,   "identifying"),		#oa:identifying
+        (LINKING,       "linking"),			#oa:linking
+        (MODERATING,    "moderating"),		#oa:moderating
+        (QUESTIONING,   "questioning"),		#oa:questioning
+        (REPLYING,      "replying"),		#oa:replying
+        (TAGGING,       "tagging"),			#oa:tagging
     )
-	motivation	= SetField( models.CharField( max_length = 256, choices=MOTIVATION_CHOICES ), null=True )
-	# oa:motivatedBy = [oa:Motivation]
+	motivation	= ListField( models.CharField( max_length = 256, choices=MOTIVATION_CHOICES ), null=True )	# oa:motivatedBy = [oa:Motivation]
 	stylesheet	= EmbeddedModelField( "CssStyleSheet", null=True ) #oa:styledBy
 	objects     = MongoDBManager()
     # http://stackoverflow.com/questions/23546480/no-raw-query-method-in-my-django-object
