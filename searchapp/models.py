@@ -189,7 +189,7 @@ class TextualBody(models.Model):
 
 
 class ExternalResource(models.Model):
-	id  	    = models.CharField( max_length = 4096, null=True )
+	id  	    = models.CharField( max_length = 4096 )
 	DATASET = "dataset"
 	IMAGE   = "image"
 	VIDEO   = "video"
@@ -203,10 +203,17 @@ class ExternalResource(models.Model):
         (TEXT,      "Text"),	# dctypes:Text
     )
 	type	    = SetField( models.CharField( max_length = 64, choices=RESOURCE_TYPE_CHOICES), null=True ) #rdf:class
-	language 	= ListField( models.CharField( max_length = 256 ), null=True )  # dc:language, [rfc5646]
 	format		= ListField( models.CharField( max_length = 256 ), null=True )  # dc:format, [rfc6838]
-	creator 	= ListField( EmbeddedModelField("Agent"), null=True )   # dcterms:creator
-	created 	= models.DateTimeField( auto_now_add=True, null=True )  # dcterms:created MUST xsd:dateTime SHOULD timezone.
+	language 	= ListField( models.CharField( max_length = 256 ), null=True )  # dc:language, [bcp47]
+	processingLanguage = models.CharField( max_length = 256, null=True )		#
+	TEXT_DIRECTION_CHOICES = (
+		(LTR, "ltr"),
+		(RTL, "rtl"),
+		(AUTO, "auto")
+	)
+	textDirection = models.CharField( max_length = 32, choices=TEXT_DIRECTION_CHOICES, null=True )
+	creator 	= ListField( EmbeddedModelField("Agent"), null=True )   		# dcterms:creator
+	created 	= models.DateTimeField( auto_now_add=True, null=True )  		# dcterms:created MUST xsd:dateTime SHOULD timezone.
 
 
 class Annotation(models.Model):
