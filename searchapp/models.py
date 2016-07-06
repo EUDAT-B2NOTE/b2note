@@ -149,11 +149,18 @@ class SpecificResource(models.Model):
 
 
 class TextualBody(models.Model):
-	id  		= models.CharField( max_length = 4096, null=True ) #"https://b2note.bsc.es/textualbody/" + mongo_uid
-	type		= SetField( models.CharField( max_length = 64 ), null=True ) # rdf:type; oa:TextualBody
-	text        = models.TextField() # oa:text
-	language 	= SetField( models.CharField( max_length = 256 ), null=True )  # dc:language, [rfc5646]
-	format		= SetField( models.CharField( max_length = 256 ), null=True )  # dc:format, [rfc6838]
+	id  		= models.CharField( max_length = 4096, null=True )				#"https://b2note.bsc.es/textualbody/" + mongo_uid
+	type		= SetField( models.CharField( max_length = 64 ), null=True )	# rdf:type; oa:TextualBody
+	value       = models.TextField() 											# oa:text
+	language 	= SetField( models.CharField( max_length = 256 ), null=True )	# dc:language, [rfc5646]
+	format		= SetField( models.CharField( max_length = 256 ), null=True )	# dc:format, [rfc6838]
+	processingLanguage = models.CharField( max_length = 256, null=True )		#
+	TEXT_DIRECTION_CHOICES = (
+		(LTR,	"ltr" ),
+		(RTL,	"rtl" ),
+		(AUTO,	"auto"),
+	)
+	textDirection = models.CharField( max_length = 32, choices=TEXT_DIRECTION_CHOICES, null=True )
 	BOOKMARKING     = "bookmarking"
 	CLASSIFYING     = "classifying"
 	COMMENTING      = "commenting"
@@ -189,7 +196,7 @@ class TextualBody(models.Model):
 
 
 class ExternalResource(models.Model):
-	id  	    = models.CharField( max_length = 4096 )
+	id  	    = models.CharField( max_length = 4096 )					# can be IRI with fragment component
 	DATASET = "dataset"
 	IMAGE   = "image"
 	VIDEO   = "video"
