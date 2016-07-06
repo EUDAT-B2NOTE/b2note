@@ -202,6 +202,7 @@ class TextualBody(models.Model):
 	purpose		= models.CharField( max_length = 256, choices=MOTIVATION_CHOICES, null=True )
 	creator		= ListField( EmbeddedModelField("Agent"), null=True )   # dcterms:creator
 	created		= models.DateTimeField( auto_now_add=True, null=True )  # dcterms:created MUST xsd:dateTime SHOULD timezone.
+	modified 	= models.DateTimeField(auto_now=True, null=True)  		# MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	# oa:hasRole = oa:Motivation
 
 
@@ -230,8 +231,13 @@ class ExternalResource(models.Model):
 	)
 	textDirection	= models.CharField( max_length = 32, choices=TEXT_DIRECTION_CHOICES, null=True )
 	accessibility	= ListField( models.CharField( max_length = 256 ), null=True )	# enumerated list of schema.org accessibilityFeature property
-	creator			= ListField( EmbeddedModelField("Agent"), null=True )			# dcterms:creator
-	created			= models.DateTimeField( auto_now_add=True, null=True )			# dcterms:created MUST xsd:dateTime SHOULD timezone.
+	creator 		= ListField( EmbeddedModelField("Agent"), null=True )  			# dcterms:creator
+	created 		= models.DateTimeField( auto_now_add=True, null=True )  		# dcterms:created MUST xsd:dateTime SHOULD timezone.
+	modified		= models.DateTimeField( auto_now=True, null=True )				# MUST xsd:dateTime with the UTC timezone expressed as "Z".
+	rights			= ListField(models.CharField( max_length=4096 ), null=True )  	# MAY be then MUST be an IRI
+	canonical 		= models.CharField( max_length=4096, null=True )  				# IRI
+	via 			= ListField( models.CharField( max_length=4096, null=True ))  	# IRIs
+
 
 
 class Annotation(models.Model):
@@ -252,6 +258,9 @@ class Annotation(models.Model):
 	generated 	= models.DateTimeField( auto_now_add=True, null=True )  # prov:generatedAtTime MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	modified	= models.DateTimeField( auto_now=True, null=True )		# MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	audience	= ListField( EmbeddedModelField("Audience"), null=True )
+	rights		= ListField( models.CharField( max_length = 4096 ), null=True )	# MAY be then MUST be an IRI
+	canonical	= models.CharField( max_length = 4096, null=True )				# IRI
+	via			= ListField( models.CharField( max_length = 4096, null=True ) )	# IRIs
 	ASSESSING		= "assessing"
 	BOOKMARKING     = "bookmarking"
 	CLASSIFYING     = "classifing"
