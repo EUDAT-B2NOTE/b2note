@@ -4,24 +4,6 @@ from django_mongodb_engine.contrib import MongoDBManager
 
 
 
-class Agent(models.Model):
-	id  		= models.CharField( max_length = 4096, null=True ) #"https://b2note.bsc.es/agent/" + mongo_uid
-	PERSON          = 'Human agent'
-	ORGANISATION    = 'Organization agent'
-	SOFTWARE        = 'Software agent'
-	AGENT_CHOICES = (
-        (PERSON, 		'Person'),			# foaf:Person
-        (ORGANISATION,	'Organization'),	# foaf:Organization
-        (SOFTWARE, 		'Software'),		# prov:SoftwareAgent
-    )
-	type		= SetField( models.CharField( max_length = 32,\
-												 choices=AGENT_CHOICES), null=True )
-	name		= models.CharField( max_length = 2048, null=True ) #foaf:name
-	nick	    = models.CharField( max_length = 2048, null=True ) #foaf:nick
-	email		= SetField( models.CharField(max_length = 2048), null=True ) #foaf:mbox
-	homepage	= SetField( models.CharField(max_length = 4096), null=True ) #foaf:homepage
-
-
 class CssStyleSheet(models.Model):
 	id  		= models.CharField( max_length = 4096, null=True )
 	CSS 			= "CSS style sheet"
@@ -128,6 +110,25 @@ class SpecificResource(models.Model):
 	selector	= EmbeddedModelField( null=True )				# oa:hasSelector
 	styleClass	= ListField( models.TextField(), null=True )	# oa:StyleClass
 	scope		= ListField( EmbeddedModelField(), null=True )	# oa:hasScope
+
+
+class Agent(models.Model):
+	id  		= models.CharField( max_length = 4096, null=True ) # "https://b2note.bsc.es/agent/" + mongo_uid
+	PERSON          = 'Human agent'
+	ORGANISATION    = 'Organization agent'
+	SOFTWARE        = 'Software agent'
+	AGENT_CHOICES = (
+        (PERSON, 		'Person'),			# foaf:Person
+        (ORGANISATION,	'Organization'),	# foaf:Organization
+        (SOFTWARE, 		'Software'),		# prov:SoftwareAgent
+    )
+	type		= SetField( models.CharField( max_length = 32,\
+												 choices=AGENT_CHOICES), null=True )
+	name		= ListField( models.CharField( max_length = 2048 ), null=True )			# foaf:name
+	nickname    = models.CharField( max_length = 2048, null=True )						# foaf:nick
+	email		= ListField( models.CharField(max_length = 2048), null=True )			# foaf:mbox
+	email_sha1	= ListField( models.CharField(max_length = 2048), null=True )			# sha1 of "mailto:"+foaf:mbox
+	homepage	= ListField( models.CharField(max_length = 4096), null=True )			# foaf:homepage
 
 
 class ResourceSet(models.Model):
