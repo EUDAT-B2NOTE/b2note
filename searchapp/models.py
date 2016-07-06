@@ -215,7 +215,7 @@ class Annotation(models.Model):
 																		# Should allow list of which link string would be one item, however needs
 																		# to be string when alone. How compatibility of Django data model
 																		# declaration with specification can be obtained is unclear at this point.
-	id          = models.CharField( max_length = 4096, null = True )
+	id          = models.CharField( max_length = 4096 )
 	type        = SetField( models.CharField( max_length = 256 ) )		# (rdf:type) oa:Annotation and others
 	body        = ListField( EmbeddedModelField(), null=True )          # CharField( max_length = 4096, null = True )
 	target      = ListField( EmbeddedModelField() )                     # models.CharField( max_length = 4096 )
