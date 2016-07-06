@@ -155,6 +155,9 @@ class TextualBody(models.Model):
 	language 	= SetField( models.CharField( max_length = 256 ), null=True )	# dc:language, [rfc5646]
 	format		= SetField( models.CharField( max_length = 256 ), null=True )	# dc:format, [rfc6838]
 	processingLanguage = models.CharField( max_length = 256, null=True )		#
+	LTR 	= "ltr"
+	RTL 	= "rtl"
+	AUTO	= "auto"
 	TEXT_DIRECTION_CHOICES = (
 		(LTR,	"ltr" ),
 		(RTL,	"rtl" ),
