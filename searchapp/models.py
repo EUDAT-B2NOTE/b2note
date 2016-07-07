@@ -7,7 +7,7 @@ from django_mongodb_engine.contrib import MongoDBManager
 class CssStyleSheet(models.Model):
 	type		= models.CharField( max_length = 32,
 									choices=(("CSS style sheet", "CssStylesheet"),), null=True )
-	value		= models.TextField() # rdf:value
+	value		= models.TextField( null= True )
 
 
 class RequestHeaderState(models.Model):
@@ -127,6 +127,7 @@ class SpecificResource(models.Model):
 	selector	= ListField( EmbeddedModelField(), null=True )  # oa:hasSelector
 	state		= ListField( EmbeddedModelField(), null=True ) 	# oa:hasState
 	styleClass	= ListField( models.TextField(),   null=True )	# oa:StyleClass
+	renderedVia	= ListField( EmbeddedModelField(), null=True )	# Examples show as if "Audience" class can be used as a placeholder here.
 	scope		= ListField( EmbeddedModelField(), null=True )	# oa:hasScope
 
 
@@ -156,7 +157,7 @@ class Agent(models.Model):
 
 
 class ResourceSet(models.Model):
-	jsonld_id  		= models.CharField( max_length = 4096, null=True )
+	jsonld_id  	= models.CharField( max_length = 4096, null=True )
 	type		= models.CharField( max_length = 32,
 									   choices = (
 										   ("Holistic set of resources", "Composite"),
@@ -167,7 +168,7 @@ class ResourceSet(models.Model):
 
 
 class Choice(models.Model):
-	jsonld_id  		= models.CharField( max_length = 4096, null=True )
+	jsonld_id  	= models.CharField( max_length = 4096, null=True )
 	type		= models.CharField( max_length = 32,
 									   choices = (("Ordered list to pick one from", "Choice"),) )	# oa:Choice
 	items		= ListField( EmbeddedModelField() ) # oa:memberList
@@ -310,5 +311,5 @@ class Annotation(models.Model):
     )
 	motivation	= ListField( models.CharField( max_length = 256, choices=MOTIVATION_CHOICES ), null=True )	# oa:motivatedBy = [oa:Motivation]
 	stylesheet	= EmbeddedModelField( "CssStyleSheet", null=True ) #oa:styledBy
-	objects     = MongoDBManager()
-    # http://stackoverflow.com/questions/23546480/no-raw-query-method-in-my-django-object
+	objects     = MongoDBManager()	# http://stackoverflow.com/questions/23546480/no-raw-query-method-in-my-django-object
+
