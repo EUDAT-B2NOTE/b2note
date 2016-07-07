@@ -68,16 +68,16 @@ class TextQuoteSelector(models.Model):
 
 class FragmentSelector(models.Model):
 	type		= models.CharField( max_length = 32,\
-									   choices = (("Fragment selector","FragmentSelector"),), null=True )	# oa:FragmentSelector
-	value		= models.CharField( max_length = 4096 )	# rdf:value
-	conformsTo	= models.CharField( max_length = 256 )	# dcterms:conformsTo
+									   choices = (("Fragment selector","FragmentSelector"),))	# oa:FragmentSelector
+	value		= models.CharField( max_length = 4096 )				# rdf:value
+	conformsTo	= models.CharField( max_length = 256, null=True )	# dcterms:conformsTo
 
 
 class SpecificResource(models.Model):
 	id  		= models.CharField( max_length = 4096, null=True )
-	type		= models.CharField( max_length = 64, null=True ) # (rdf:type) oa:SpecificResource
-	source		= EmbeddedModelField("ExternalResource") # (oa:hasSource)
-	ASSESSING 	= "assessing"
+	type		= models.CharField( max_length = 256,  null=True )	# (rdf:type) oa:SpecificResource
+	source		= EmbeddedModelField("ExternalResource") 			# (oa:hasSource)
+	ASSESSING 		= "assessing"
 	BOOKMARKING 	= "bookmarking"
 CLASSIFYING 		= "classifing"
 	COMMENTING 		= "commenting"
@@ -106,7 +106,7 @@ CLASSIFYING 		= "classifing"
 		(TAGGING, 		"tagging"),			# oa:tagging
 	)
 	purpose		= models.CharField( max_length = 256, choices=MOTIVATION_CHOICES, null=True )
-	selector	= EmbeddedModelField(null=True)  				# oa:hasSelector
+	selector	= EmbeddedModelField( null=True )  				# oa:hasSelector
 	state		= ListField( EmbeddedModelField(), null=True ) 	# oa:hasState
 	styleClass	= ListField( models.TextField(), null=True )	# oa:StyleClass
 	scope		= ListField( EmbeddedModelField(), null=True )	# oa:hasScope
@@ -157,7 +157,7 @@ class Choice(models.Model):
 
 class TextualBody(models.Model):
 	id  		= models.CharField( max_length = 4096, null=True )				#"https://b2note.bsc.es/textualbody/" + mongo_uid
-	type		= ListField( models.CharField( max_length = 64 ), null=True )	# rdf:type; oa:TextualBody
+	type		= ListField( models.CharField( max_length = 64 ),  null=True )	# rdf:type; oa:TextualBody
 	value       = models.TextField() 											# oa:text
 	language 	= ListField( models.CharField( max_length = 256 ), null=True )	# dc:language, [rfc5646]
 	format		= ListField( models.CharField( max_length = 256 ), null=True )	# dc:format, [rfc6838]
@@ -208,11 +208,11 @@ class TextualBody(models.Model):
 
 class ExternalResource(models.Model):
 	id  	    = models.CharField( max_length = 4096 )					# can be IRI with fragment component
-	DATASET = "dataset"
-	IMAGE   = "image"
-	VIDEO   = "video"
-	SOUND   = "sound"
-	TEXT    = "text"
+	DATASET 	= "dataset"
+	IMAGE   	= "image"
+	VIDEO   	= "video"
+	SOUND   	= "sound"
+	TEXT    	= "text"
 	RESOURCE_TYPE_CHOICES = (
         (DATASET,   "Dataset"),	# dctypes:Dataset
         (IMAGE,     "Image"),	# dctypes:StillImage
