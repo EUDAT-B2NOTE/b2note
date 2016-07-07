@@ -66,6 +66,12 @@ class TextQuoteSelector(models.Model):
 	suffix		= models.CharField( max_length = 2048, null=True )	# oa:suffix
 
 
+class XPathSelector(models.Model):
+	type		= models.CharField(max_length=32,
+								   choices=(("XPath selector", "XPathSelector"),))
+	value		= models.CharField( max_length = 4096 )
+
+
 class CssSelector(models.Model):
 	type		= models.CharField( max_length = 32,
 									choices = (("CSS selector", "CssSelector"),))
