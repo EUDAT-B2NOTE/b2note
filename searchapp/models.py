@@ -5,16 +5,9 @@ from django_mongodb_engine.contrib import MongoDBManager
 
 
 class CssStyleSheet(models.Model):
-	jsonld_id  		= models.CharField( max_length = 4096, null=True )
-	CSS 			= "CSS style sheet"
-	EMBEDDED		= "Embedded content"
-	CLASS_CHOICE	= (
-		(CSS, 		"CssStylesheet"),	# oa:CssStyle
-		(EMBEDDED,	"EmbeddedContent"),	# oa:EmbeddedContent
-	)
-	type		= ListField( models.CharField( max_length = 32, choices=CLASS_CHOICE) ) # oa:CssStyle
+	type		= models.CharField( max_length = 32,
+									choices=(("CSS style sheet", "CssStylesheet"),), null=True )
 	value		= models.TextField() # rdf:value
-	format		= SetField( models.CharField( max_length = 256 ), null=True )  # dc:format, [rfc6838]
 
 
 class RequestHeaderState(models.Model):
