@@ -296,20 +296,30 @@ class Annotation(models.Model):
 	TAGGING         = "tagging"
 	MOTIVATION_CHOICES = (
 		(ASSESSING, 	"assessing"),  		# oa:assessing
-        (BOOKMARKING,   "bookmarking"),		#oa:bookmarking
-        (CLASSIFYING,   "classifying"),		#oa:classifying
-        (COMMENTING,    "commenting"),		#oa:commenting
-        (DESCRIBING,    "describing"),		#oa:describing
-        (EDITING,       "editing"),			#oa:editing
-        (HIGHLIGHTING,  "highlighting"),	#oa:highlighting
-        (IDENTIFYING,   "identifying"),		#oa:identifying
-        (LINKING,       "linking"),			#oa:linking
-        (MODERATING,    "moderating"),		#oa:moderating
-        (QUESTIONING,   "questioning"),		#oa:questioning
-        (REPLYING,      "replying"),		#oa:replying
-        (TAGGING,       "tagging"),			#oa:tagging
+        (BOOKMARKING,   "bookmarking"),		# oa:bookmarking
+        (CLASSIFYING,   "classifying"),		# oa:classifying
+        (COMMENTING,    "commenting"),		# oa:commenting
+        (DESCRIBING,    "describing"),		# oa:describing
+        (EDITING,       "editing"),			# oa:editing
+        (HIGHLIGHTING,  "highlighting"),	# oa:highlighting
+        (IDENTIFYING,   "identifying"),		# oa:identifying
+        (LINKING,       "linking"),			# oa:linking
+        (MODERATING,    "moderating"),		# oa:moderating
+        (QUESTIONING,   "questioning"),		# oa:questioning
+        (REPLYING,      "replying"),		# oa:replying
+        (TAGGING,       "tagging"),			# oa:tagging
     )
 	motivation	= ListField( models.CharField( max_length = 256, choices=MOTIVATION_CHOICES ), null=True )	# oa:motivatedBy = [oa:Motivation]
 	stylesheet	= EmbeddedModelField( "CssStyleSheet", null=True ) #oa:styledBy
 	objects     = MongoDBManager()	# http://stackoverflow.com/questions/23546480/no-raw-query-method-in-my-django-object
+
+
+class AnnotationCollection(models.Model):
+	jsonld_context	= ListField( models.CharField(max_length=256) )		# "http://www.w3.org/ns/anno.jsonld"
+	jsonld_id		= models.CharField( max_length = 4096 )
+	type			= ListField( models.CharField(max_length=256) )		# MUST AnnotationCollection, class for ordered Collections of Annotations.
+	label			= ListField( models.CharField(max_length=4096) )
+	total			= models.PositiveIntegerField()						# [0:2147483647]
+	first			= EmbeddedModelField("AnnotationPage")				# MUST if total>0
+	last			= EmbeddedModelField("AnnotationPage")				# MUST if total>0
 
