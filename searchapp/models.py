@@ -68,7 +68,7 @@ class TextQuoteSelector(models.Model):
 
 class XPathSelector(models.Model):
 	type		= models.CharField(max_length=32,
-								   choices=(("XPath selector", "XPathSelector"),))
+								   choices=(("XPath selector", "XPathSelector"),) )
 	value		= models.CharField( max_length = 4096 )
 
 
@@ -236,10 +236,13 @@ class ExternalResource(models.Model):
 	format		= ListField( models.CharField( max_length = 256 ), null=True )  # dc:format, [rfc6838]
 	language 	= ListField( models.CharField( max_length = 256 ), null=True )  # dc:language, [bcp47]
 	processingLanguage = models.CharField( max_length = 256, null=True )		#
+	LTR 	= "ltr"
+	RTL 	= "rtl"
+	AUTO	= "auto"
 	TEXT_DIRECTION_CHOICES = (
-		(LTR, "ltr"),
-		(RTL, "rtl"),
-		(AUTO, "auto")
+		(LTR,	"ltr"),
+		(RTL,	"rtl"),
+		(AUTO,	"auto"),
 	)
 	textDirection	= models.CharField( max_length = 32, choices=TEXT_DIRECTION_CHOICES, null=True )
 	accessibility	= ListField( models.CharField( max_length = 256 ), null=True )	# enumerated list of schema.org accessibilityFeature property
