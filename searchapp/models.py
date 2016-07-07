@@ -24,10 +24,13 @@ class RequestHeaderState(models.Model):
 
 
 class TimeState(models.Model):
-	type		= models.CharField( max_length = 32,
-									   choices = (("Time state","TimeState"),) )	# oa:TimeState
-	sourceDate	= SetField( models.DateTimeField(), null=True ) # oa:sourceDate, MUST xsd:dateTime SHOULD timezone.
-	cached		= SetField( models.CharField( max_length = 4096 ), null=True ) # oa:cachedSource
+	type			= models.CharField( max_length = 32,
+										choices = (("Time state","TimeState"),) )	# oa:TimeState
+	sourceDate		= ListField( models.DateTimeField(), null=True )	# If provided then MUST NOT sourceDateStart nor sourceDateEnd.
+	sourceDateStart	= models.DateTimeField( null=True )	# MUST NOT if sourceDate, if provided then MUST sourceDateEnd.
+	sourceDateEnd	= models.DateTimeField( null=True )	# If provided then MUST sourceDateStart.
+	# MUST be expressed in the xsd:dateTime format, MUST use the UTC timezone expressed as "Z".
+	cached			= ListField( models.CharField( max_length = 4096 ), null=True ) # oa:cachedSource
 
 
 class RangeSelector(models.Model):
@@ -128,7 +131,7 @@ class SpecificResource(models.Model):
 	purpose		= models.CharField( max_length = 256, choices=MOTIVATION_CHOICES, null=True )
 	selector	= ListField( EmbeddedModelField(), null=True )  # oa:hasSelector
 	state		= ListField( EmbeddedModelField(), null=True ) 	# oa:hasState
-	styleClass	= ListField( models.TextField(), null=True )	# oa:StyleClass
+	styleClass	= ListField( models.TextField(),   null=True )	# oa:StyleClass
 	scope		= ListField( EmbeddedModelField(), null=True )	# oa:hasScope
 
 
