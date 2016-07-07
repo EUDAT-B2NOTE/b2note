@@ -126,7 +126,7 @@ class SpecificResource(models.Model):
 		(TAGGING, 		"tagging"),			# oa:tagging
 	)
 	purpose		= models.CharField( max_length = 256, choices=MOTIVATION_CHOICES, null=True )
-	selector	= EmbeddedModelField( null=True )  				# oa:hasSelector
+	selector	= ListField( EmbeddedModelField(), null=True )  # oa:hasSelector
 	state		= ListField( EmbeddedModelField(), null=True ) 	# oa:hasState
 	styleClass	= ListField( models.TextField(), null=True )	# oa:StyleClass
 	scope		= ListField( EmbeddedModelField(), null=True )	# oa:hasScope
