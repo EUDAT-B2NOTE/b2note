@@ -53,9 +53,9 @@ class SvgSelector(models.Model):
 class TextPositionSelector(models.Model):
 	type		= models.CharField( max_length = 32,
 									   choices = (("Text position selector","TextPositionSelector"),) )	# oa:TextPositionSelector
-	start		= models.PositiveIntegerField() # oa:start
-	# [0:2147483647] i.e. with upper-limit 16 bytes per character, max file size of 17179869176 bytes ~ 17 Gb
+	start		= models.PositiveIntegerField()	# oa:start
 	end			= models.PositiveIntegerField()	# oa:end
+	# [0:2147483647] i.e. with upper-limit 16 bytes per character, max file size of 17179869176 bytes ~ 17 Gb
 
 
 class TextQuoteSelector(models.Model):
