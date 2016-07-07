@@ -18,20 +18,20 @@ class CssStyleSheet(models.Model):
 
 
 class RequestHeaderState(models.Model):
-	type		= models.CharField( max_length = 32,\
+	type		= models.CharField( max_length = 32,
 									   choices = (("HTTP request state","HttpState"),) )	# oa:HttpRequestState
 	value		= models.TextField() # rdf:value
 
 
 class TimeState(models.Model):
-	type		= models.CharField( max_length = 32,\
+	type		= models.CharField( max_length = 32,
 									   choices = (("Time state","TimeState"),) )	# oa:TimeState
 	sourceDate	= SetField( models.DateTimeField(), null=True ) # oa:sourceDate, MUST xsd:dateTime SHOULD timezone.
 	cached		= SetField( models.CharField( max_length = 4096 ), null=True ) # oa:cachedSource
 
 
 class DataPositionSelector(models.Model):
-	type		= models.CharField( max_length = 32,\
+	type		= models.CharField( max_length = 32,
 									   choices = (("Data position selector","DataPositionSelector"),) )	# oa:DataPositionSelector
 	start		= models.PositiveIntegerField() # oa:start
 	end			= models.PositiveIntegerField()	# oa:end
@@ -46,12 +46,12 @@ class SvgSelector(models.Model):
 	)
 	type		= ListField( models.CharField( max_length = 32, choices = SVG_SELECTOR_TYPE ) )
 	text		= models.TextField( null=True ) # oa:text
-	format		= models.CharField( max_length = 32,\
+	format		= models.CharField( max_length = 32,
 									  choices = (("SVG media-type","image/svg+xml"),), null=True ) # dc:format
 
 
 class TextPositionSelector(models.Model):
-	type		= models.CharField( max_length = 32,\
+	type		= models.CharField( max_length = 32,
 									   choices = (("Text position selector","TextPositionSelector"),) )	# oa:TextPositionSelector
 	start		= models.PositiveIntegerField() # oa:start
 	# [0:2147483647] i.e. with upper-limit 16 bytes per character, max file size of 17179869176 bytes ~ 17 Gb
@@ -59,15 +59,21 @@ class TextPositionSelector(models.Model):
 
 
 class TextQuoteSelector(models.Model):
-	type		= models.CharField( max_length = 32,\
+	type		= models.CharField( max_length = 32,
 									   choices = (("Text quote selector","TextQuoteSelector"),) )	# oa:TextQuoteSelector
-	exact		= models.TextField() # oa:exact
-	prefix		= models.CharField( max_length = 2048, null=True ) # oa:prefix
-	suffix		= models.CharField( max_length = 2048, null=True ) # oa:suffix
+	exact		= models.TextField() 								# oa:exact
+	prefix		= models.CharField( max_length = 2048, null=True )	# oa:prefix
+	suffix		= models.CharField( max_length = 2048, null=True )	# oa:suffix
+
+
+class CssSelector(models.Model):
+	type		= models.CharField( max_length = 32,
+									choices = (("CSS selector", "CssSelector"),))
+	value		= models.CharField( max_length = 4096 )				# CSS selection path to the Segment
 
 
 class FragmentSelector(models.Model):
-	type		= models.CharField( max_length = 32,\
+	type		= models.CharField( max_length = 32,
 									   choices = (("Fragment selector","FragmentSelector"),))	# oa:FragmentSelector
 	value		= models.CharField( max_length = 4096 )				# rdf:value
 	conformsTo	= models.CharField( max_length = 256, null=True )	# dcterms:conformsTo
@@ -79,7 +85,7 @@ class SpecificResource(models.Model):
 	source		= EmbeddedModelField("ExternalResource") 			# (oa:hasSource)
 	ASSESSING 		= "assessing"
 	BOOKMARKING 	= "bookmarking"
-CLASSIFYING 		= "classifing"
+	CLASSIFYING 	= "classifing"
 	COMMENTING 		= "commenting"
 	DESCRIBING 		= "describing"
 	EDITING 		= "editing"
@@ -128,7 +134,7 @@ class Agent(models.Model):
         (ORGANISATION,	'Organization'),	# foaf:Organization
         (SOFTWARE, 		'Software'),		# prov:SoftwareAgent
     )
-	type		= ListField( models.CharField( max_length = 32,\
+	type		= ListField( models.CharField( max_length = 32,
 												 choices=AGENT_CHOICES), null=True )
 	name		= ListField( models.CharField( max_length = 2048 ), null=True )			# foaf:name
 	nickname    = models.CharField( max_length = 2048, null=True )						# foaf:nick
@@ -150,7 +156,7 @@ class ResourceSet(models.Model):
 
 class Choice(models.Model):
 	id  		= models.CharField( max_length = 4096, null=True )
-	type		= models.CharField( max_length = 32,\
+	type		= models.CharField( max_length = 32,
 									   choices = (("Ordered list to pick one from", "Choice"),) )	# oa:Choice
 	items		= ListField( EmbeddedModelField() ) # oa:memberList
 
@@ -171,33 +177,33 @@ class TextualBody(models.Model):
 		(AUTO,	"auto"),
 	)
 	textDirection = models.CharField( max_length = 32, choices=TEXT_DIRECTION_CHOICES, null=True )
-	ASSESSING = "assessing"
-	BOOKMARKING = "bookmarking"
-	CLASSIFYING = "classifing"
-	COMMENTING = "commenting"
-	DESCRIBING = "describing"
-	EDITING = "editing"
-	HIGHLIGHTING = "highlighting"
-	IDENTIFYING = "identifying"
-	LINKING = "linking"
-	MODERATING = "moderating"
-	QUESTIONING = "questioning"
-	REPLYING = "replying"
-	TAGGING = "tagging"
+	ASSESSING		= "assessing"
+	BOOKMARKING		= "bookmarking"
+	CLASSIFYING		= "classifing"
+	COMMENTING		= "commenting"
+	DESCRIBING		= "describing"
+	EDITING			= "editing"
+	HIGHLIGHTING	= "highlighting"
+	IDENTIFYING		= "identifying"
+	LINKING			= "linking"
+	MODERATING		= "moderating"
+	QUESTIONING		= "questioning"
+	REPLYING		= "replying"
+	TAGGING			= "tagging"
 	MOTIVATION_CHOICES = (
-		(ASSESSING, "assessing"),  # oa:assessing
-		(BOOKMARKING, "bookmarking"),  # oa:bookmarking
-		(CLASSIFYING, "classifying"),  # oa:classifying
-		(COMMENTING, "commenting"),  # oa:commenting
-		(DESCRIBING, "describing"),  # oa:describing
-		(EDITING, "editing"),  # oa:editing
-		(HIGHLIGHTING, "highlighting"),  # oa:highlighting
-		(IDENTIFYING, "identifying"),  # oa:identifying
-		(LINKING, "linking"),  # oa:linking
-		(MODERATING, "moderating"),  # oa:moderating
-		(QUESTIONING, "questioning"),  # oa:questioning
-		(REPLYING, "replying"),  # oa:replying
-		(TAGGING, "tagging"),  # oa:tagging
+		(ASSESSING,		"assessing"),		# oa:assessing
+		(BOOKMARKING,	"bookmarking"),		# oa:bookmarking
+		(CLASSIFYING,	"classifying"),		# oa:classifying
+		(COMMENTING,	"commenting"),		# oa:commenting
+		(DESCRIBING,	"describing"),		# oa:describing
+		(EDITING,		"editing"),			# oa:editing
+		(HIGHLIGHTING,	"highlighting"),	# oa:highlighting
+		(IDENTIFYING,	"identifying"),		# oa:identifying
+		(LINKING,		"linking"),			# oa:linking
+		(MODERATING,	"moderating"),		# oa:moderating
+		(QUESTIONING,	"questioning"),		# oa:questioning
+		(REPLYING,		"replying"),		# oa:replying
+		(TAGGING,		"tagging"),			# oa:tagging
 	)
 	purpose		= models.CharField( max_length = 256, choices=MOTIVATION_CHOICES, null=True )
 	creator		= ListField( EmbeddedModelField("Agent"), null=True )   # dcterms:creator
