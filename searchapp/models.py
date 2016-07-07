@@ -31,16 +31,9 @@ class TimeState(models.Model):
 
 
 class SvgSelector(models.Model):
-	SVG 		= "SVG selector"
-	EMBEDDED	= "Embedded content"
-	SVG_SELECTOR_TYPE = (
-		(SVG, 		"SvgSelector"),		# oa:SvgSelector
-		(EMBEDDED,	"EmbeddedContent"),	# oa:EmbeddedContent
-	)
-	type		= ListField( models.CharField( max_length = 32, choices = SVG_SELECTOR_TYPE ) )
-	text		= models.TextField( null=True ) # oa:text
-	format		= models.CharField( max_length = 32,
-									  choices = (("SVG media-type","image/svg+xml"),), null=True ) # dc:format
+	type		= models.CharField( max_length = 32,
+									choices = (("SVG selector","SvgSelector"),) )
+	value		= models.TextField( null=True )	# MAY be exactly 1 then MUST be well formed SVG XML.
 
 
 class DataPositionSelector(models.Model):
