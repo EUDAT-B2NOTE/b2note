@@ -30,13 +30,6 @@ class TimeState(models.Model):
 	cached		= SetField( models.CharField( max_length = 4096 ), null=True ) # oa:cachedSource
 
 
-class DataPositionSelector(models.Model):
-	type		= models.CharField( max_length = 32,
-									   choices = (("Data position selector","DataPositionSelector"),) )	# oa:DataPositionSelector
-	start		= models.PositiveIntegerField() # oa:start
-	end			= models.PositiveIntegerField()	# oa:end
-
-
 class SvgSelector(models.Model):
 	SVG 		= "SVG selector"
 	EMBEDDED	= "Embedded content"
@@ -48,6 +41,13 @@ class SvgSelector(models.Model):
 	text		= models.TextField( null=True ) # oa:text
 	format		= models.CharField( max_length = 32,
 									  choices = (("SVG media-type","image/svg+xml"),), null=True ) # dc:format
+
+
+class DataPositionSelector(models.Model):
+	type		= models.CharField( max_length = 32,
+									   choices = (("Data position selector","DataPositionSelector"),) )	# oa:DataPositionSelector
+	start		= models.PositiveIntegerField() # oa:start
+	end			= models.PositiveIntegerField()	# oa:end
 
 
 class TextPositionSelector(models.Model):
