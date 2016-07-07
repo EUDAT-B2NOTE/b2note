@@ -35,12 +35,14 @@ class RangeSelector(models.Model):
 									   choices=(("Range selector", "RangeSelector"),))  # oa:DataPositionSelector
 	startSelector 	= EmbeddedModelField()  # Must be exactly 1 inclusive starting point
 	endSelector		= EmbeddedModelField()  # Must be exactly 1 exclusive ending point of same class as startSelector
+	refinedBy		= ListField( EmbeddedModelField(), null=True )
 
 
 class SvgSelector(models.Model):
 	type		= models.CharField( max_length = 32,
 									choices = (("SVG selector","SvgSelector"),) )
 	value		= models.TextField( null=True )	# MAY be exactly 1 then MUST be well formed SVG XML.
+	refinedBy	= ListField( EmbeddedModelField(), null=True )
 
 
 class DataPositionSelector(models.Model):
@@ -48,6 +50,7 @@ class DataPositionSelector(models.Model):
 									   choices = (("Data position selector","DataPositionSelector"),) )	# oa:DataPositionSelector
 	start		= models.PositiveIntegerField() # oa:start
 	end			= models.PositiveIntegerField()	# oa:end
+	refinedBy	= ListField( EmbeddedModelField(), null=True )
 
 
 class TextPositionSelector(models.Model):
@@ -56,6 +59,7 @@ class TextPositionSelector(models.Model):
 	start		= models.PositiveIntegerField()	# oa:start
 	end			= models.PositiveIntegerField()	# oa:end
 	# [0:2147483647] i.e. with upper-limit 16 bytes per character, max file size of 17179869176 bytes ~ 17 Gb
+	refinedBy	= ListField( EmbeddedModelField(), null=True )
 
 
 class TextQuoteSelector(models.Model):
@@ -64,18 +68,21 @@ class TextQuoteSelector(models.Model):
 	exact		= models.TextField() 								# oa:exact
 	prefix		= models.CharField( max_length = 2048, null=True )	# oa:prefix
 	suffix		= models.CharField( max_length = 2048, null=True )	# oa:suffix
+	refinedBy	= ListField( EmbeddedModelField(), null=True )
 
 
 class XPathSelector(models.Model):
 	type		= models.CharField(max_length=32,
 								   choices=(("XPath selector", "XPathSelector"),) )
 	value		= models.CharField( max_length = 4096 )
+	refinedBy	= ListField( EmbeddedModelField(), null=True )
 
 
 class CssSelector(models.Model):
 	type		= models.CharField( max_length = 32,
 									choices = (("CSS selector", "CssSelector"),))
 	value		= models.CharField( max_length = 4096 )				# CSS selection path to the Segment
+	refinedBy	= ListField( EmbeddedModelField(), null=True )
 
 
 class FragmentSelector(models.Model):
@@ -83,6 +90,7 @@ class FragmentSelector(models.Model):
 									   choices = (("Fragment selector","FragmentSelector"),))	# oa:FragmentSelector
 	value		= models.CharField( max_length = 4096 )				# rdf:value
 	conformsTo	= models.CharField( max_length = 256, null=True )	# dcterms:conformsTo
+	refinedBy	= ListField( EmbeddedModelField(), null=True )
 
 
 class SpecificResource(models.Model):
