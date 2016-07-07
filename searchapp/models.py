@@ -77,37 +77,37 @@ class SpecificResource(models.Model):
 	id  		= models.CharField( max_length = 4096, null=True )
 	type		= models.CharField( max_length = 64, null=True ) # (rdf:type) oa:SpecificResource
 	source		= EmbeddedModelField("ExternalResource") # (oa:hasSource)
-	BOOKMARKING     = "bookmarking"
-	CLASSIFYING     = "classifying"
-	COMMENTING      = "commenting"
-	DESCRIBING      = "describing"
-	EDITING         = "editing"
-	HIGHLIGHTING	= "highlighting"
-	IDENTIFYING     = "identifying"
-	LINKING         = "linking"
-	MODERATING      = "moderating"
-	QUESTIONING     = "questioning"
-	REPLYING        = "replying"
-	REVIEWING       = "reviewing"
-	TAGGING         = "tagging"
+	ASSESSING 	= "assessing"
+	BOOKMARKING 	= "bookmarking"
+CLASSIFYING 		= "classifing"
+	COMMENTING 		= "commenting"
+	DESCRIBING 		= "describing"
+	EDITING 		= "editing"
+	HIGHLIGHTING 	= "highlighting"
+	IDENTIFYING 	= "identifying"
+	LINKING 		= "linking"
+	MODERATING 		= "moderating"
+	QUESTIONING 	= "questioning"
+	REPLYING 		= "replying"
+	TAGGING 		= "tagging"
 	MOTIVATION_CHOICES = (
-        (BOOKMARKING,   "bookmarking"), #oa:bookmarking
-        (CLASSIFYING,   "classifying"), #oa:classifying
-        (COMMENTING,    "commenting"),  #oa:commenting
-        (DESCRIBING,    "describing"),  #oa:describing
-        (EDITING,       "editing"),     #oa:editing
-        (HIGHLIGHTING,  "highlighting"),    #oa:highlighting
-        (IDENTIFYING,   "identifying"), #oa:identifying
-        (LINKING,       "linking"),     #oa:linking
-        (MODERATING,    "moderating"),  #oa:moderating
-        (QUESTIONING,   "questioning"), #oa:questioning
-        (REPLYING,      "replying"),    #oa:replying
-        (REVIEWING,     "reviewing"),   #oa:reviewing
-        (TAGGING,       "tagging"),     #oa:tagging
-    )
-	role		= models.CharField( max_length = 256, choices=MOTIVATION_CHOICES, null=True ) # oa:hasRole
+		(ASSESSING, 	"assessing"),		# oa:assessing
+		(BOOKMARKING, 	"bookmarking"),		# oa:bookmarking
+		(CLASSIFYING, 	"classifying"),		# oa:classifying
+		(COMMENTING, 	"commenting"),		# oa:commenting
+		(DESCRIBING, 	"describing"),		# oa:describing
+		(EDITING, 		"editing"),			# oa:editing
+		(HIGHLIGHTING, 	"highlighting"),	# oa:highlighting
+		(IDENTIFYING, 	"identifying"),		# oa:identifying
+		(LINKING, 		"linking"),			# oa:linking
+		(MODERATING, 	"moderating"),		# oa:moderating
+		(QUESTIONING, 	"questioning"),		# oa:questioning
+		(REPLYING, 		"replying"),		# oa:replying
+		(TAGGING, 		"tagging"),			# oa:tagging
+	)
+	purpose		= models.CharField( max_length = 256, choices=MOTIVATION_CHOICES, null=True )
+	selector	= EmbeddedModelField(null=True)  				# oa:hasSelector
 	state		= ListField( EmbeddedModelField(), null=True ) 	# oa:hasState
-	selector	= EmbeddedModelField( null=True )				# oa:hasSelector
 	styleClass	= ListField( models.TextField(), null=True )	# oa:StyleClass
 	scope		= ListField( EmbeddedModelField(), null=True )	# oa:hasScope
 
