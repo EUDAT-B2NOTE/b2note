@@ -21,6 +21,7 @@ class RequestHeaderState(models.Model):
 	type		= models.CharField( max_length = 32,
 									   choices = (("HTTP request state","HttpRequestState"),) )
 	value		= models.TextField() # MUST have exactly 1 HTTP request headers in a single, complete string.
+	refinedBy	= ListField(EmbeddedModelField(), null=True)  # MAY be 1 or more State or Selector.
 
 
 class TimeState(models.Model):
@@ -31,6 +32,7 @@ class TimeState(models.Model):
 	sourceDateEnd	= models.DateTimeField( null=True )	# If provided then MUST sourceDateStart.
 	# MUST be expressed in the xsd:dateTime format, MUST use the UTC timezone expressed as "Z".
 	cached			= ListField( models.CharField( max_length = 4096 ), null=True ) # oa:cachedSource
+	refinedBy 		= ListField( EmbeddedModelField(), null=True )	# MAY be 1 or more State or Selector.
 
 
 class RangeSelector(models.Model):
