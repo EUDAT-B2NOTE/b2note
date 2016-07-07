@@ -67,20 +67,20 @@ class TextQuoteSelector(models.Model):
 
 
 class XPathSelector(models.Model):
-	type		= models.CharField( max_length=32,
-								   choices=(("XPath selector", "XPathSelector"),) )
+	type		= models.CharField(max_length=32,
+								   choices=(("XPath selector", "XPathSelector"),))
 	value		= models.CharField( max_length = 4096 )
 
 
 class CssSelector(models.Model):
 	type		= models.CharField( max_length = 32,
-									choices = (("CSS selector", "CssSelector"),) )
+									choices = (("CSS selector", "CssSelector"),))
 	value		= models.CharField( max_length = 4096 )				# CSS selection path to the Segment
 
 
 class FragmentSelector(models.Model):
 	type		= models.CharField( max_length = 32,
-									   choices = (("Fragment selector", "FragmentSelector"),) )	# oa:FragmentSelector
+									   choices = (("Fragment selector","FragmentSelector"),))	# oa:FragmentSelector
 	value		= models.CharField( max_length = 4096 )				# rdf:value
 	conformsTo	= models.CharField( max_length = 256, null=True )	# dcterms:conformsTo
 
