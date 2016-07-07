@@ -30,6 +30,13 @@ class TimeState(models.Model):
 	cached		= SetField( models.CharField( max_length = 4096 ), null=True ) # oa:cachedSource
 
 
+class RangeSelector(models.Model):
+	type 			= models.CharField(max_length=32,
+									   choices=(("Range selector", "RangeSelector"),))  # oa:DataPositionSelector
+	startSelector 	= EmbeddedModelField()  # Must be exactly 1 inclusive starting point
+	endSelector		= EmbeddedModelField()  # Must be exactly 1 exclusive ending point of same class as startSelector
+
+
 class SvgSelector(models.Model):
 	type		= models.CharField( max_length = 32,
 									choices = (("SVG selector","SvgSelector"),) )
