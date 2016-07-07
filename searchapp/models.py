@@ -5,7 +5,7 @@ from django_mongodb_engine.contrib import MongoDBManager
 
 
 class CssStyleSheet(models.Model):
-	id  		= models.CharField( max_length = 4096, null=True )
+	jsonld_id  		= models.CharField( max_length = 4096, null=True )
 	CSS 			= "CSS style sheet"
 	EMBEDDED		= "Embedded content"
 	CLASS_CHOICE	= (
@@ -19,8 +19,8 @@ class CssStyleSheet(models.Model):
 
 class RequestHeaderState(models.Model):
 	type		= models.CharField( max_length = 32,
-									   choices = (("HTTP request state","HttpState"),) )	# oa:HttpRequestState
-	value		= models.TextField() # rdf:value
+									   choices = (("HTTP request state","HttpRequestState"),) )
+	value		= models.TextField() # MUST have exactly 1 HTTP request headers in a single, complete string.
 
 
 class TimeState(models.Model):
@@ -97,7 +97,7 @@ class FragmentSelector(models.Model):
 
 
 class SpecificResource(models.Model):
-	id  		= models.CharField( max_length = 4096, null=True )
+	jsonld_id  	= models.CharField( max_length = 4096, null=True )
 	type		= models.CharField( max_length = 256,  null=True )	# (rdf:type) oa:SpecificResource
 	source		= EmbeddedModelField("ExternalResource") 			# (oa:hasSource)
 	ASSESSING 		= "assessing"
@@ -136,13 +136,13 @@ class SpecificResource(models.Model):
 
 
 class Audience(models.Model):
-	id  		= models.CharField( max_length=4096, null=True )
+	jsonld_id  	= models.CharField( max_length=4096, null=True )
 	type		= ListField( models.CharField( max_length = 256 ), null=True )	# SHOULD come from the schema.org class structure.
 	props 		= DictField( null=True )										# prefixed schema.org's Audience classes
 
 
 class Agent(models.Model):
-	id  		= models.CharField( max_length = 4096, null=True )
+	jsonld_id  		= models.CharField( max_length = 4096, null=True )
 	PERSON          = 'Human agent'
 	ORGANISATION    = 'Organization agent'
 	SOFTWARE        = 'Software agent'
@@ -161,7 +161,7 @@ class Agent(models.Model):
 
 
 class ResourceSet(models.Model):
-	id  		= models.CharField( max_length = 4096, null=True )
+	jsonld_id  		= models.CharField( max_length = 4096, null=True )
 	type		= models.CharField( max_length = 32,
 									   choices = (
 										   ("Holistic set of resources", "Composite"),
@@ -172,14 +172,14 @@ class ResourceSet(models.Model):
 
 
 class Choice(models.Model):
-	id  		= models.CharField( max_length = 4096, null=True )
+	jsonld_id  		= models.CharField( max_length = 4096, null=True )
 	type		= models.CharField( max_length = 32,
 									   choices = (("Ordered list to pick one from", "Choice"),) )	# oa:Choice
 	items		= ListField( EmbeddedModelField() ) # oa:memberList
 
 
 class TextualBody(models.Model):
-	id  		= models.CharField( max_length = 4096, null=True )				#"https://b2note.bsc.es/textualbody/" + mongo_uid
+	jsonld_id  	= models.CharField( max_length = 4096, null=True )				#"https://b2note.bsc.es/textualbody/" + mongo_uid
 	type		= ListField( models.CharField( max_length = 64 ),  null=True )	# rdf:type; oa:TextualBody
 	value       = models.TextField() 											# oa:text
 	language 	= ListField( models.CharField( max_length = 256 ), null=True )	# dc:language, [rfc5646]
@@ -193,7 +193,7 @@ class TextualBody(models.Model):
 		(RTL,	"rtl" ),
 		(AUTO,	"auto"),
 	)
-	textDirection = models.CharField( max_length = 32, choices=TEXT_DIRECTION_CHOICES, null=True )
+	textDirection	= models.CharField( max_length = 32, choices=TEXT_DIRECTION_CHOICES, null=True )
 	ASSESSING		= "assessing"
 	BOOKMARKING		= "bookmarking"
 	CLASSIFYING		= "classifing"
@@ -229,7 +229,7 @@ class TextualBody(models.Model):
 
 
 class ExternalResource(models.Model):
-	id  	    = models.CharField( max_length = 4096 )					# can be IRI with fragment component
+	jsonld_id	= models.CharField( max_length = 4096 )					# can be IRI with fragment component
 	DATASET 	= "dataset"
 	IMAGE   	= "image"
 	VIDEO   	= "video"
@@ -270,7 +270,7 @@ class Annotation(models.Model):
 																		# Should allow list of which link string would be one item, however needs
 																		# to be string when alone. How compatibility of Django data model
 																		# declaration with specification can be obtained is unclear at this point.
-	id          = models.CharField( max_length = 4096 )
+	jsonld_id	= models.CharField( max_length = 4096 )
 	type        = ListField( models.CharField( max_length = 256 ) )		# (rdf:type) oa:Annotation and others
 	body        = ListField( EmbeddedModelField(), null=True )          # CharField( max_length = 4096, null = True )
 	target      = ListField( EmbeddedModelField() )                     # models.CharField( max_length = 4096 )
