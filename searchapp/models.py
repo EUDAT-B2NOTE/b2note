@@ -314,6 +314,17 @@ class Annotation(models.Model):
 	objects     = MongoDBManager()	# http://stackoverflow.com/questions/23546480/no-raw-query-method-in-my-django-object
 
 
+class AnnotationPage(models.Model):
+	jsonld_context	= ListField( models.CharField(max_length=256) )		# "http://www.w3.org/ns/anno.jsonld"
+	jsonld_id		= models.CharField( max_length = 4096 )
+	type			= ListField( models.CharField(max_length=256) )		# MUST AnnotationPage, class of Annotation pages.
+	partOf			= models.CharField( max_length=4096, null=True )
+	items			= ListField( EmbeddedModelField("Annotation") )
+	next			= models.CharField( max_length=4096, null=True )	# MUST if not last page
+	prev			= models.CharField( max_length=4096, null=True )	# MUST if not first page
+	startIndex		= models.PositiveIntegerField( null=True )			# [0:2147483647]
+
+
 class AnnotationCollection(models.Model):
 	jsonld_context	= ListField( models.CharField(max_length=256) )		# "http://www.w3.org/ns/anno.jsonld"
 	jsonld_id		= models.CharField( max_length = 4096 )
