@@ -329,8 +329,8 @@ class AnnotationCollection(models.Model):
 	jsonld_context	= ListField( models.CharField(max_length=256) )		# "http://www.w3.org/ns/anno.jsonld"
 	jsonld_id		= models.CharField( max_length = 4096 )
 	type			= ListField( models.CharField(max_length=256) )		# MUST AnnotationCollection, class for ordered Collections of Annotations.
-	label			= ListField( models.CharField(max_length=4096) )
-	total			= models.PositiveIntegerField()						# [0:2147483647]
-	first			= EmbeddedModelField("AnnotationPage")				# MUST if total>0
-	last			= EmbeddedModelField("AnnotationPage")				# MUST if total>0
+	label			= ListField( models.CharField(max_length=4096), null=True )
+	total			= models.PositiveIntegerField( null=True )			# [0:2147483647]
+	first			= models.CharField( max_length=4096, null=True )	# MUST if total>0
+	last			= models.CharField( max_length=4096, null=True )	# MUST if total>0
 
