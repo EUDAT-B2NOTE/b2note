@@ -1,9 +1,14 @@
 language: python
+services:
+  - mongodb
 python:
   - "2.7"
 # command to install dependencies
-#install:
-#  - pip install -r requirements.txt
+install:
+  - pip install -r requirements.txt
+  - pip install git+http://github.com/django-nonrel/django@nonrel-1.5
+  - pip install git+http://github.com/django-nonrel/django-dbindexer@master
+  - pip install git+http://github.com/django-nonrel/djangotoolbox@master
 # command to run tests
 script:
-  - python tests_tmp.py
+  - python manage.py test searchapp
