@@ -56,7 +56,9 @@ $(document).ready( function() {
         },
         {
             name: 'engine',
-	        display: 'label',
+	        display: function(data) {
+                return data.label + '  (' + data.ontology_acronym + ':' + data.short_form + ')';
+            },
 
             source: engine.ttAdapter(),
 
