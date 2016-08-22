@@ -159,7 +159,7 @@ def sparqlontoparser_main():
                                                                                 #write_to_solr(container, 'http://localhost:8983/solr/restest_032016/')
                                                                                 #http://stackoverflow.com/questions/26197494/authenticating-connection-in-pysolr
                                                                                 #http://superuser.com/questions/259481/reverse-scp-over-ssh-connection/259493#259493
-                                                                                write_to_solr(container, 'https://opseudat03.bsc.es:8983/solr/b2note_testing/')
+                                                                                write_to_solr(container, 'https://b2note.bsc.es/solr/b2note_testing/')
 
                                                                                 print "\n", "# " * 15
 
