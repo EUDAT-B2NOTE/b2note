@@ -13,8 +13,8 @@ The data model used in B2Note is based on the [W3C web annotation data model](ht
 
  Branch | Status
 -----|-----
-Master | [![Build Status](https://travis-ci.org/EUDAT-B2NOTE/b2note.svg?branch=master)](https://travis-ci.org/EUDAT-B2NOTE/b2note)
-Development | [![Build Status](https://travis-ci.org/EUDAT-B2NOTE/b2note.svg?branch=development)](https://travis-ci.org/EUDAT-B2NOTE/b2note)
+Master | [![Build Status](https://travis-ci.org/PabloRodenas/b2note.svg?branch=master)](https://travis-ci.org/PabloRodenas/b2note)
+Development | [![Build Status](https://travis-ci.org/PabloRodenas/b2note.svg?branch=development)](https://travis-ci.org/PabloRodenas/b2note)
 
 
 ##Contributors
