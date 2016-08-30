@@ -10,5 +10,8 @@ install:
   - pip install git+http://github.com/django-nonrel/django-dbindexer@master
   - pip install git+http://github.com/django-nonrel/djangotoolbox@master
 # command to run tests
+#
+before_script:
+  - python manage.py syncdb –migrate –noinput
 script:
   - python manage.py test searchapp
