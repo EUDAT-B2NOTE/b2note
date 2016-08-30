@@ -23,7 +23,7 @@ class SearchappTest(TestCase):
         from mongoengine.connection import connect, disconnect
         disconnect()
         
-        connect(self.mongodb_name)
+        connect(self.mongodb_name, username="b2note", password="abc123")
         super(SearchappTest, self)._pre_setup()
 
     def _post_teardown(self):
