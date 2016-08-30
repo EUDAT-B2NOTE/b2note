@@ -23,4 +23,4 @@ before_script:
   - sleep 15
   - mongo test_b2note_mongodb --eval 'db.createUser({"user":"b2note","pwd":"abc123", roles:["readWrite"]});'
 script:
-  - python manage.py test searchapp
+  - export MONGODB_USR="b2note" && export MONGODB_PWD="abc123" && python manage.py test searchapp
