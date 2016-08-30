@@ -22,7 +22,6 @@ class SearchappTest(TestCase):
         from mongoengine.connection import connect, disconnect
         disconnect()
         import urllib, os
-        print "SETTING UP MONGODB"
         pwd = urllib.quote_plus(os.environ['MONGODB_PWD'])
         uri = "mongodb://" + os.environ['MONGODB_USR'] + ":" + pwd + "@127.0.0.1/" + self.mongodb_name + "?authMechanism=SCRAM-SHA-1"
         

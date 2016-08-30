@@ -13,7 +13,7 @@ install:
 #
 before_script:
   - sleep 15
-  - mongo mydb_test --eval 'db.addUser("travis", "test");'
+  - mongo test_$MONGODB_NAME --eval "db.createUser({'user': $MONGODB_USR, 'pwd' : $MONGODB_PWD, roles:['readWrite']});"
     #  - python manage.py syncdb
 script:
   - python manage.py test searchapp
