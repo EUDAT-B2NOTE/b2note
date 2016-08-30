@@ -16,14 +16,17 @@ class SearchappTest(TestCase):
     """
         TestCase class that clear the collection between the tests
     """
-#    mongodb_name = 'test_%s' % settings.MONGO_DATABASE_NAME
-    mongodb_name="test_b2note_mongodb"
+    mongodb_name = 'test_%s' % settings.MONGO_DATABASE_NAME
 
     def _pre_setup(self):
         from mongoengine.connection import connect, disconnect
         disconnect()
         
-        connect(self.mongodb_name, username="b2note", password="eudat_2015;")
+
+        import urllib, os
+        pwd = urllib.quote_plus(os.environ['MONGODB_PWD'])
+        uri = "mongodb://" + os.environ['MONGODB_USR'] + ":" + pwd + "@127.0.0.1/" + self.mongodb_name + "?authMechanism=SCRAM-SHA-1"
+        connect(self.mongodb_name)
         super(SearchappTest, self)._pre_setup()
 
     def _post_teardown(self):
