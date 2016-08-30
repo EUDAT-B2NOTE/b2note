@@ -24,9 +24,9 @@ class SearchappTest(TestCase):
         
 
         import urllib, os
-        pwd = urllib.quote_plus(os.environ['MONGODB_PWD'])
-        uri = "mongodb://" + os.environ['MONGODB_USR'] + ":" + pwd + "@127.0.0.1/" + self.mongodb_name + "?authMechanism=SCRAM-SHA-1"
-        connect(self.mongodb_name)
+        pwd = urllib.quote_plus(os.environ['TEST_MONGODB_PWD'])
+        uri = "mongodb://" + os.environ['TEST_MONGODB_USR'] + ":abc123"  + "@127.0.0.1/" + self.mongodb_name + "?authMechanism=SCRAM-SHA-1"
+        connect(self.mongodb_name, host=uri)
         super(SearchappTest, self)._pre_setup()
 
     def _post_teardown(self):
