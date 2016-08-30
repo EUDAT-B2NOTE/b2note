@@ -5,12 +5,12 @@ python:
   - "2.7"
 # command to install dependencies
 install:
-  - pip install -r requirements.txt
   - pip install git+http://github.com/django-nonrel/django@nonrel-1.5
   - pip install git+http://github.com/django-nonrel/django-dbindexer@master
   - pip install git+http://github.com/django-nonrel/djangotoolbox@master
+  - pip install git+https://github.com/django-nonrel/mongodb-engine
+  - pip install -r requirements.txt
 # command to run tests
- 
 before_script:
   - sleep 15
   - mongo test_b2note_mongodb --eval 'db.addUser({"user":"b2note", "pwd":"abc123", roles:["readWrite"]});'
