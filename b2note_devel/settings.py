@@ -25,10 +25,13 @@ DATABASES = {
         'NAME': os.environ['MONGODB_NAME'],                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': os.environ['MONGODB_USR'],
-        'PASSWORD' : '',
-#        'PASSWORD': os.environ['MONGODB_PWD'],
+        'PASSWORD': os.environ['MONGODB_PWD'],
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
+        'TEST' : {
+            'USER':'b2note',
+            'PASSWORD':'abc123',
+            }
     }
 }
 
