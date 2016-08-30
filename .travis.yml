@@ -10,7 +10,7 @@ addons:
      - mongodb-3.0-precise
      packages:
      - mongodb-org-server
-     - mongodb-org
+     - mongodb-org-shell
 # command to install dependencies
 install:
   - pip install git+http://github.com/django-nonrel/django@nonrel-1.5
