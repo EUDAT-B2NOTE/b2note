@@ -28,12 +28,12 @@ DATABASES = {
         'PASSWORD': os.environ['MONGODB_PWD'],
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
-        'TEST' : {
+#        'TEST' : {
 #            'ENGINE': 'django_mongodb_engine',
 #            'NAME':'test_b2note_mongodb',
 #            'USER':'b2note',
-            'PASSWORD':'abc123',
-            }
+#            'PASSWORD':'abc123',
+#            }
     }
 }
 
