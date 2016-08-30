@@ -13,7 +13,6 @@ install:
  
 before_script:
   - sleep 15
-  - mongo mydb_test --eval 'db.addUser("travis", "test");'
-#  - mongo test_b2note_mongodb --eval 'db.createUser({"user": "b2note", roles:["readWrite"]});'
+  - mongo test_b2note_mongodb --eval 'db.addUser({"user":"b2note", roles:["readWrite"]});'
 script:
   - python manage.py test searchapp
