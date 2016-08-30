@@ -10,10 +10,14 @@ install:
   - pip install git+http://github.com/django-nonrel/django-dbindexer@master
   - pip install git+http://github.com/django-nonrel/djangotoolbox@master
 # command to run tests
-#
+env:
+  - MONGODB_NAME="test_b2note_mongodb"
+  - MONGODB_USR="b2note"
+  - B2NOTE_SECRET_KEY='ner-x(&1032%5gpx7wc*+(kh6+3!+qxt(t@8!^ky5t5w=@_g0j'
+ 
 before_script:
   - sleep 15
-  - mongo test_$MONGODB_NAME --eval "db.createUser({'user': $MONGODB_USR, 'pwd' : $MONGODB_PWD, roles:['readWrite']});"
-    #  - python manage.py syncdb
+  - mongo test_b2note_mongodb --eval "db.addUser({'user': b2note, roles:['readWrite']});"
+#  - python manage.py syncdb
 script:
   - python manage.py test searchapp
