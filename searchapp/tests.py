@@ -22,12 +22,8 @@ class SearchappTest(TestCase):
     def _pre_setup(self):
         from mongoengine.connection import connect, disconnect
         disconnect()
-        import urllib, os
-#        pwd = urllib.quote_plus(os.environ['MONGODB_PWD'])
-#        uri = "mongodb://" + os.environ['MONGODB_USR'] + ":" + pwd + "@127.0.0.1/" + self.mongodb_name + "?authMechanism=SCRAM-SHA-1"
-        uri = "mongodb://" + "b2note:abc123" + "@127.0.0.1/" + self.mongodb_name # + "?authMechanism=SCRAM-SHA-1"
         
-        connect(self.mongodb_name, host=uri)
+        connect(self.mongodb_name)
         super(SearchappTest, self)._pre_setup()
 
     def _post_teardown(self):
