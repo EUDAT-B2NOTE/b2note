@@ -32,7 +32,7 @@ DATABASES = {
             'ENGINE': 'django_mongodb_engine',
             'NAME':'test_b2note_mongodb',
             'USER':'b2note',
-            'PASSWORD':'',
+            'PASSWORD':'abc123',
             }
     }
 }
