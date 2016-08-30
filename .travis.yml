@@ -12,6 +12,8 @@ install:
 # command to run tests
 #
 before_script:
-  - python manage.py syncdb –migrate –noinput
+  - sleep 15
+  - mongo mydb_test --eval 'db.addUser("travis", "test");'
+  - python manage.py syncdb
 script:
   - python manage.py test searchapp
