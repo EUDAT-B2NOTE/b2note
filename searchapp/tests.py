@@ -16,8 +16,9 @@ class SearchappTest(TestCase):
     """
         TestCase class that clear the collection between the tests
     """
-    mongodb_name = 'test_%s' % settings.MONGO_DATABASE_NAME
-    
+#    mongodb_name = 'test_%s' % settings.MONGO_DATABASE_NAME
+    mongodb_name="test_b2note_mongodb"
+
     def _pre_setup(self):
         from mongoengine.connection import connect, disconnect
         disconnect()
