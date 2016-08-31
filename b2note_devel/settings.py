@@ -139,7 +139,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'django_mongodb_engine',
     'djangotoolbox',
-    'searchapp',
+    'b2note_app',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
