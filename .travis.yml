@@ -1,9 +1,26 @@
 language: python
 python:
-    - "2.7"
+  - "2.7"
+sudo: false
+services:
+  - mongodb
+addons:
+  apt:
+    sources:
+    - mongodb-3.2-precise
+    packages:
+    - mongodb-org-server
+    - mongodb-org-shell
 # command to install dependencies
-#install:
-#  - pip install -r requirements.txt
+install:
+  - pip install git+http://github.com/django-nonrel/django@nonrel-1.5
+  - pip install git+http://github.com/django-nonrel/django-dbindexer@master
+  - pip install git+http://github.com/django-nonrel/djangotoolbox@master
+  - pip install git+https://github.com/django-nonrel/mongodb-engine
+  - pip install -r requirements.txt
 # command to run tests
+before_script:
+  - sleep 15
+  - mongo test_database --eval 'db.createUser({"user":"tester","pwd":"abc123", roles:["readWrite"]});'
 script:
-    - python tests_tmp.py
+  - python manage.py test searchapp
