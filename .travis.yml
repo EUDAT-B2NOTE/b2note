@@ -21,6 +21,6 @@ install:
 # command to run tests
 before_script:
   - sleep 15
-  - mongo test_b2note_mongodb --eval 'db.createUser({"user":"test","pwd":"abc123", roles:["readWrite"]});'
+  - mongo test_database --eval 'db.createUser({"user":"tester","pwd":"abc123", roles:["readWrite"]});'
 script:
-  - export MONGODB_USR="test" && export MONGODB_PWD="abc123" && python manage.py test searchapp
+  - python manage.py test searchapp
