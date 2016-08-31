@@ -35,6 +35,120 @@ def DeleteFromPOSTinfo( db_id ):
     print "Could not remove from DB"
     return False
 
+def CreateSemanticTag( subject_url, object_json ):
+    """
+      Function: CreateSemanticTag
+      ----------------------------
+        Creates an annotation in MongoDB.
+        
+        params:
+            subject_url (str): URL of the annotation to create.
+            object_json (str): JSON of the annotation provided by SOLR
+        
+        returns:
+            bool: True if successful, False otherwise.
+    """
+    object_uri   = ""
+    object_label = ""
+    
+    my_id = CreateAnnotation(subject_url)
+    
+    if my_id == None:
+        print "Could not save semantic tag to DB"
+        return False
+    
+    try:
+        o = json.loads(object_json)
+
+        if "uris" in o.keys():
+            object_uri = o["uris"]
+            if "labels" in o.keys(): object_label = o["labels"]
+
+            print object_label, " ", object_uri        
+            
+            annotation = Annotation.objects.get(id=my_id)
+            annotation.body = [TextualBody( jsonld_id = object_uri, type = ["TextualBody"], value = object_label )]
+            annotation.save()
+        else:
+            print "The object does not contain URI as a key."
+            return False
+
+    except ValueError:
+        print "Could not save to DB a semantic tag"
+        return False
+
+    print "Created semantic tag annotation"
+    return True
+
+def CreateFreeText( subject_url, text ):
+    """
+      Function: CreateFreeText
+      ----------------------------
+        Creates an annotation in MongoDB.
+        
+        params:
+            subject_url (str): URL of the annotation to create.
+            text (str): Free text introduced by the user
+        
+        returns:
+            bool: True if successful, False otherwise.
+    """
+    my_id = CreateAnnotation(subject_url)
+    
+    if my_id == None:
+        print "Could not save free text to DB"
+        return False
+    
+    try:
+        if type(text) is unicode and len(text)>0: 
+            annotation = Annotation.objects.get(id=my_id)
+            annotation.body = [TextualBody( type = ["TextualBody"], value = text )]
+            annotation.save()
+        else:
+            print "Wrong text codification or empty text"
+            return False
+
+    except ValueError:
+        print "Could not save to DB a free text"
+        return False
+
+    print "Created free text annotation"
+    return True
+
+
+def CreateAnnotation(target):
+    """
+      Function: CreateAnnotation
+      ----------------------------
+        Creates an annotation in MongoDB.
+        
+        params:
+            target (str): URL of the annotation to create.
+        
+        returns:
+            int: id of the document created.
+    """
+    try:
+        if target and type(target) is unicode and len(target)>0:
+            ann = Annotation(
+                jsonld_context  = ["http://www.w3.org/ns/anno.jsonld"],
+                type         = ["Annotation"],
+                target       = [ExternalResource( jsonld_id = target )]
+                )
+            ann.save()
+            ann = Annotation.objects.get(id=ann.id)
+            ann.jsonld_id = "https://b2note.bsc.es/annotation/" + ann.id
+            ann.save()
+            print "CreateAnnotation with id: " + str(ann.id)
+            return ann.id
+        else:
+            print "Bad target for CreateAnnotation"
+            return None
+    
+    except ValueError:
+        print "Could not save to DB"
+        return None
+        
 
 def CreateFromPOSTinfo( subject_url, object_json ):
     """
@@ -102,8 +216,7 @@ def CreateFromPOSTinfo( subject_url, object_json ):
                     jsonld_context  = ["http://www.w3.org/ns/anno.jsonld"],
                     jsonld_id       = "https://b2note.bsc.es/annotation/temporary_id",
                     type            = ["Annotation"],
-                    target          = [ExternalResource( jsonld_id = subject_url, language = ["en"] )],
-                    body            = [TextualBody(jsonld_id=object_uri, type=["TextualBody"], value=object_label)]
+                    target          = [ExternalResource( jsonld_id = subject_url )]
                 ).save()
 
                 anns = Annotation.objects.filter( jsonld_id = "https://b2note.bsc.es/annotation/temporary_id" )

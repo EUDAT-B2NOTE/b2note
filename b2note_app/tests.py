@@ -10,9 +10,35 @@ from b2note_app.models import Annotation
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db import connections
+from b2note_app.mongo_support_functions import *
 import json
 
-class SearchappTest(TestCase):
+#class B2noteappFailTest(TestCase):
+    #"""
+        #TestCase class that  the collection between the tests
+    #"""
+    #def _pre_setup(self):
+        #from mongoengine.connection import connect, disconnect
+        #disconnect()
+        #import urllib, os
+        #pwd = urllib.quote_plus(os.environ['MONGODB_PWD'])
+        #uri = "mongodb://" + os.environ['MONGODB_USR'] + ":" + pwd + "@127.0.0.1/" + self.mongodb_name + "?authMechanism=SCRAM-SHA-1"
+        
+        #connect(self.mongodb_name, host=uri)
+        #super(B2noteappTest, self)._pre_setup()
+
+    #def _post_teardown(self):
+        #from mongoengine.connection import get_connection, disconnect
+        #connection = get_connection()
+        #connection.drop_database(self.mongodb_name)
+        #disconnect()
+        #super(B2noteappTest, self)._post_teardown()
+    
+    #def test_dont_create_annotation(self):
+        #a = CreateAnnotation(u"test_target")
+        #self.assertEqual(a, None)
+
+class B2noteappTest(TestCase):
     """
         TestCase class that clear the collection between the tests
     """
@@ -26,14 +52,14 @@ class SearchappTest(TestCase):
         uri = "mongodb://" + os.environ['MONGODB_USR'] + ":" + pwd + "@127.0.0.1/" + self.mongodb_name + "?authMechanism=SCRAM-SHA-1"
         
         connect(self.mongodb_name, host=uri)
-        super(SearchappTest, self)._pre_setup()
+        super(B2noteappTest, self)._pre_setup()
 
     def _post_teardown(self):
         from mongoengine.connection import get_connection, disconnect
         connection = get_connection()
         connection.drop_database(self.mongodb_name)
         disconnect()
-        super(SearchappTest, self)._post_teardown()
+        super(B2noteappTest, self)._post_teardown()
         
     def create_annotation(self, jsonld_id="test", type=["others"]):
         return Annotation.objects.create(jsonld_id=jsonld_id, type=type)
@@ -42,6 +68,38 @@ class SearchappTest(TestCase):
         a = self.create_annotation()
         self.assertTrue(isinstance(a, Annotation))
         self.assertEqual(a.jsonld_id, "test")
+        
+    def test_create_annotation(self):
+        a = CreateAnnotation(u"test_target")
+        self.assertTrue(type(a) is unicode and len(a)>0)
+        
+    def test_dont_create_annotation(self):
+        a = CreateAnnotation(1234)
+        self.assertEqual(a,None)
+        a = CreateAnnotation("")
+        self.assertEqual(a,None)
+        #a = CreateAnnotation(u"test_target")
+        #self.assertEqual(a, None)
+        
+    def test_create_semantic_tag(self):
+        a = CreateSemanticTag(u"https://b2share.eudat.eu/record/30", '{"uris":"test_uri", "labels": "test_label"}')
+        self.assertTrue(a)
+        
+    def test_dont_create_semantic_tag(self):
+        a = CreateSemanticTag(1234, '{"uris":"test_uri", "labels": "test_label"}')
+        self.assertTrue(not a)
+        a = CreateSemanticTag(u"https://b2share.eudat.eu/record/30", '{"labels": "test_label"}')
+        self.assertTrue(not a)
+        
+    def test_create_free_text(self):
+        a = CreateFreeText(u"https://b2share.eudat.eu/record/30", u"testing free text")
+        self.assertTrue(a)
+        
+    def test_dont_create_free_text(self):
+        a = CreateFreeText(u"https://b2share.eudat.eu/record/30", 1234)
+        self.assertTrue(not a)
+        a = CreateFreeText(u"https://b2share.eudat.eu/record/30", "")
+        self.assertTrue(not a)
         
     def test_interface_main_view(self):
         a = self.create_annotation()
@@ -57,7 +115,7 @@ class SearchappTest(TestCase):
         json_dict['pid_tofeed'] = 'pid_test'
         json_dict['subject_tofeed'] = 'subject_test'
         json_dict['ontology_json'] = json.dumps({'labels' : 'annotation_test',
-                                                'uris': ['uri_test']})
+                                                'uris': 'uri_test'})
 
         # DB just created with no annotations in there
         before = Annotation.objects.filter().count()
