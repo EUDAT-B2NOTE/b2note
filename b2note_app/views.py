@@ -62,7 +62,7 @@ def export_annotations(request):
     json_data['Content-Disposition'] = 'attachment; filename=annotations.json'
     download_json.file_data = json_data
     
-    return render(request, 'searchapp/export.html', {'annotations_json': json.dumps(response, indent=2),"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+    return render(request, 'b2note_app/export.html', {'annotations_json': json.dumps(response, indent=2),"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 
 
 def download_json(request):
@@ -105,7 +105,7 @@ def publish_annotations(request):
     text = """
     This functionality will publish selected annotations to a triplestore making them accessible to SPARQL queries.
     """
-    return render(request, 'searchapp/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+    return render(request, 'b2note_app/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 
 
 # forbidden CSRF verification failed. Request aborted.
@@ -134,7 +134,7 @@ def settings(request):
     This functionality will allow the user to select the ontologies from which to retrieve the concepts used for creating annotations.
     """
     
-    return render(request, 'searchapp/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+    return render(request, 'b2note_app/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 
 
 def hostpage(request):
@@ -195,7 +195,7 @@ Influence of smoking and obesity in sperm quality
         elif line != "":
             link_label = line
 
-    return render(request, 'searchapp/hostpage.html', {'iframe_on': 350, 'buttons_info':buttons_info})
+    return render(request, 'b2note_app/hostpage.html', {'iframe_on': 350, 'buttons_info':buttons_info})
 
 
 
@@ -237,7 +237,7 @@ def delete_annotation(request):
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
     })
-    return render_to_response('searchapp/interface_main.html', context)
+    return render_to_response('b2note_app/interface_main.html', context)
 
 
 
@@ -279,7 +279,7 @@ def create_annotation(request):
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
     })
-    return render_to_response('searchapp/interface_main.html', context)
+    return render_to_response('b2note_app/interface_main.html', context)
 
 
 
@@ -322,7 +322,7 @@ def interface_main(request):
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
     })
-    return render_to_response('searchapp/interface_main.html', context)
+    return render_to_response('b2note_app/interface_main.html', context)
 
 @csrf_exempt
 def search_annotations(request):

@@ -6,7 +6,7 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
-from searchapp.models import Annotation
+from b2note_app.models import Annotation
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db import connections
@@ -35,8 +35,8 @@ class SearchappTest(TestCase):
         disconnect()
         super(SearchappTest, self)._post_teardown()
         
-    def create_annotation(self, jsonld_id="test", jsonld_type=["others"]):
-        return Annotation.objects.create(jsonld_id=jsonld_id, jsonld_type=jsonld_type)
+    def create_annotation(self, jsonld_id="test", type=["others"]):
+        return Annotation.objects.create(jsonld_id=jsonld_id, type=type)
     
     def test_annotation_creation(self):
         a = self.create_annotation()
@@ -45,14 +45,14 @@ class SearchappTest(TestCase):
         
     def test_interface_main_view(self):
         a = self.create_annotation()
-        url = reverse("searchapp.views.interface_main")
+        url = reverse("b2note_app.views.interface_main")
         resp = self.client.post(url, {'pid_tofeed': 'pid_test', 'subject_tofeed': 'subject_test'} )
         self.assertEqual(resp.status_code, 200)
         self.assertIn("subject_test", resp.content)
 
 
     def test_create_annotation_view(self):
-        url = reverse("searchapp.views.create_annotation")
+        url = reverse("b2note_app.views.create_annotation")
         json_dict = {}
         json_dict['pid_tofeed'] = 'pid_test'
         json_dict['subject_tofeed'] = 'subject_test'
@@ -78,7 +78,7 @@ class SearchappTest(TestCase):
         
     def test_delete_annotation_view(self):
         db_id = self.test_create_annotation_view()
-        url = reverse("searchapp.views.delete_annotation")
+        url = reverse("b2note_app.views.delete_annotation")
         resp = self.client.post(url, {'pid_tofeed': 'pid_test', 'subject_tofeed': 'subject_test', 'db_id': db_id})
         self.assertEqual(resp.status_code, 200)
         self.assertNotIn("annotation_test", resp.content)
@@ -88,7 +88,7 @@ class SearchappTest(TestCase):
     
     def test_export_annotations_view(self):
         db_id = self.test_create_annotation_view()
-        url = reverse("searchapp.views.export_annotations")    
+        url = reverse("b2note_app.views.export_annotations")    
         resp = self.client.post(url, {'pid_tofeed': 'pid_test', 'subject_tofeed': 'subject_test'})
         self.assertEqual(resp.status_code, 200)
         self.assertIn("annotation_test", resp.content)
@@ -96,7 +96,7 @@ class SearchappTest(TestCase):
     def test_download_json_view(self):
         self.test_export_annotations_view()
         
-        url = reverse("searchapp.views.download_json")    
+        url = reverse("b2note_app.views.download_json")    
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertIn("annotation_test", resp.content)
