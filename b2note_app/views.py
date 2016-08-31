@@ -247,7 +247,7 @@ def create_annotation(request):
     """
       Function: create_annotation
       ----------------------------
-        Calls CreateFromPOSTinfo function for creating a new annotation.
+        Calls CreateSemanticTag function for creating a new annotation.
         
         input:
             request (object): context of the petition.
@@ -257,7 +257,7 @@ def create_annotation(request):
     """
 
     if request.POST.get('ontology_json'):
-        CreateFromPOSTinfo( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
+        CreateSemanticTag( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
 
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
