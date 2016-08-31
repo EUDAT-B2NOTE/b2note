@@ -8,7 +8,7 @@ addons:
   apt:
     sources:
     - mongodb-3.2-precise
-  packages:
+    packages:
     - mongodb-org-server
     - mongodb-org-shell
 # command to install dependencies
