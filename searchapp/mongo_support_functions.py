@@ -64,38 +64,46 @@ def CreateFromPOSTinfo( subject_url, object_json ):
 
                 print object_label, " ", object_uri
 
-                creator = Agent(
-                    jsonld_id 	= "http://example.com/user1",
-                    jsonld_type	= ["Person"],
-                    name		= "Default Anonymous",
-                    nick	    = "default_anonymous",
-                    email		= ["danonymous@example.com"],
-                    homepage	= ["http://example.com/DAnonymous_homepage"],
-                )
-
-                generator = Agent(
-                    jsonld_id 	= "http://example.com/agent1",
-                    jsonld_type	= ["Software"],
-                    name		= "B2Note semantic annotator prototype",
-                    nick	    = "B2Note v0.5",
-                    email		= ["abremaud@esciencedatalab.com"],
-                    homepage	= ["https://b2note.bsc.es/devel"],
-                )
-
-                source = ExternalResource(
-                    jsonld_id   = subject_url,
-                    jsonld_type = ["Text"],
-                )
+                # creator = Agent(
+                #     jsonld_id 	= "http://example.com/user1",
+                #     jsonld_type	= ["Person"],
+                #     name		= "Default Anonymous",
+                #     nick	    = "default_anonymous",
+                #     email		= ["danonymous@example.com"],
+                #     homepage	= ["http://example.com/DAnonymous_homepage"],
+                # )
+                #
+                # generator = Agent(
+                #     jsonld_id 	= "http://example.com/agent1",
+                #     jsonld_type	= ["Software"],
+                #     name		= "B2Note semantic annotator prototype",
+                #     nick	    = "B2Note v0.5",
+                #     email		= ["abremaud@esciencedatalab.com"],
+                #     homepage	= ["https://b2note.bsc.es/devel"],
+                # )
+                #
+                # source = ExternalResource(
+                #     jsonld_id   = subject_url,
+                #     jsonld_type = ["Text"],
+                # )
+                #
+                # ann = Annotation(
+                #     jsonld_id   = "https://b2note.bsc.es/annotation/temporary_id",
+                #     jsonld_type = ["Annotation"],
+                #     body        = [TextualBody( jsonld_id = object_uri, jsonld_type = ["TextualBody"], text = object_label, language = ["en"], role = "tagging", creator = [creator] )],
+                #     target      = [ExternalResource( jsonld_id = subject_url, language = ["en"], creator = [creator] )],
+                #     #target      = [SpecificResource( jsonld_type = "oa:SpecificResource", source = source )],
+                #     creator     = [creator],
+                #     generator   = [generator],
+                #     motivation  = ["tagging"],
+                # ).save()
 
                 ann = Annotation(
-                    jsonld_id   = "https://b2note.bsc.es/annotation/temporary_id",
-                    jsonld_type = ["Annotation"],
-                    body        = [TextualBody( jsonld_id = object_uri, jsonld_type = ["TextualBody"], text = object_label, language = ["en"], role = "tagging", creator = [creator] )],
-                    target      = [ExternalResource( jsonld_id = subject_url, language = ["en"], creator = [creator] )],
-                    #target      = [SpecificResource( jsonld_type = "oa:SpecificResource", source = source )],
-                    creator     = [creator],
-                    generator   = [generator],
-                    motivation  = ["tagging"],
+                    jsonld_context  = ["http://www.w3.org/ns/anno.jsonld"],
+                    jsonld_id       = "https://b2note.bsc.es/annotation/temporary_id",
+                    type            = ["Annotation"],
+                    target          = [ExternalResource( jsonld_id = subject_url, language = ["en"] )],
+                    body            = [TextualBody(jsonld_id=object_uri, type=["TextualBody"], value=object_label)]
                 ).save()
 
                 anns = Annotation.objects.filter( jsonld_id = "https://b2note.bsc.es/annotation/temporary_id" )
@@ -105,24 +113,6 @@ def CreateFromPOSTinfo( subject_url, object_json ):
                     ann.save()
                     #ann.update( jsonld_id = "https://b2note.bsc.es/annotation/" + ann.id )
 
-                # ann = Annotation(\
-                #         triple=Triple(\
-                #                 subject=TripleElement(iri=subject_url,label="", definition="",curation_status="", ontology_iri="",ontology_shortname="",ontology_version="",),\
-                #                 predicate=TripleElement(iri="http://purl.obolibrary.org/obo/IAO_0000136",label="is about",definition="Is_about is a (currently) primitive relation that relates an information artifact to an entity.",curation_status="pending final vetting",ontology_iri="http://purl.obolibrary.org/obo/iao.owl",ontology_shortname="IAO",ontology_version="2015,02,23",),\
-                #                 object=TripleElement(\
-                #                         iri     =   object_uri,\
-                #                         label   =   object_label,\
-                #                         definition = "",\
-                #                         curation_status = "",\
-                #                         ontology_iri = "",\
-                #                         ontology_shortname= "",\
-                #                         ontology_version= "",\
-                #                 ),\
-                #         ),\
-                #         provenance=Provenance(\
-                #                 createdBy="abremaud@esciencefactory.com",
-                #         ),\
-                # ).save()
 
     except ValueError:
 

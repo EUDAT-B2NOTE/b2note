@@ -261,7 +261,7 @@ class ExternalResource(models.Model):
 
 
 class Annotation(models.Model):
-	jsonld_context = models.CharField( max_length = 256 ) 				# "http://www.w3.org/ns/anno.jsonld"
+	jsonld_context = ListField( models.CharField( max_length = 4096 ) )	# ["http://www.w3.org/ns/anno.jsonld"]
 																		# 20160706, abremaud@esciencefactory.com
 																		# Should allow list of which link string would be one item, however needs
 																		# to be string when alone. How compatibility of Django data model
