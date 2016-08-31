@@ -35,8 +35,8 @@ class SearchappTest(TestCase):
         disconnect()
         super(SearchappTest, self)._post_teardown()
         
-    def create_annotation(self, jsonld_id="test", jsonld_type=["others"]):
-        return Annotation.objects.create(jsonld_id=jsonld_id, jsonld_type=jsonld_type)
+    def create_annotation(self, jsonld_id="test", type=["others"]):
+        return Annotation.objects.create(jsonld_id=jsonld_id, type=type)
     
     def test_annotation_creation(self):
         a = self.create_annotation()
