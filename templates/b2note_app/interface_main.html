@@ -158,14 +158,21 @@
                 <h3>Create annotation</h3>
 
                 <!-- http://stackoverflow.com/questions/18036315/centering-bootstrap-input-fields -->
-
-
-                <div class="form-group">
-
-                    <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"  placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
-
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#keyword">keyword</a></li>
+                    <li><a data-toggle="tab" href="#comment">comment</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="keyword" class="tab-pane fade in active form-group">
+                        <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"  placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
+                    </div>
+                    <div id="comment" class="tab-pane fade form-group">
+                        <div class="input-group">
+                            <textarea class="form-control custom-control" rows="2" id="free-text" placeholder="Type a comment"></textarea>
+                            <span class="input-group-addon btn btn-primary" onClick="get_free_text()">Send</span>
+                        </div>
+                    </div>
                 </div>
-
             </div>
 
             <div class="container" id="section_existing">
@@ -187,7 +194,7 @@
 
                                         {% for body in annotation.body %}
 
-                                            {% if body.jsonld_id and body.value %}
+                                            {% if body.jsonld_id or body.value %}
 
                                                 <tr>
 
