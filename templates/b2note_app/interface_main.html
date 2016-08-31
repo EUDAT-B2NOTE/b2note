@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+    	<meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    	{% load staticfiles %}
+
+        <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.css' %}" />
+        <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
+        <link rel='stylesheet' type='text/css' href="{% static 'css/dashboard.css' %}" />
+        <link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
+
+        <script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+        <script src="{% static 'js/bloodhound.js' %}"></script>
+        <script src="{% static 'js/handlebars-v4.0.0.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/ontology-typeahead.js' %}"></script>
+        <script src="{% static 'js/underscore-min.js' %}"></script>
+        <script src="{% static 'js/typeahead.min.js' %}"></script>
+        <script src="{% static 'js/jquery.redirect.js' %}"></script>
+    	<script src="{% static 'js/utils.js' %}"></script>
+
+
+	    <title>B2Note prototype interface</title>
+
+    </head>
+
+    <body id="interface_main">
+
+        {% if subject_tofeed|length = 0 %}
+
+            <script>hide_iframe();</script>
+
+        {% else %}
+
+            <script>show_iframe();</script>
+
+            <!-- https://www.youtube.com/watch?v=qpWlaOeGZ_4#t=586.470113308 -->
+            <div class="navbar navbar-default navbar-static-top">
+
+                <div class="container">
+
+                    <div class="navbar-brand">B2Note interface</div>
+
+                    <button class = "navbar-toggle" data-toggle = "collapse" data-target = ".navHeaderCollapse">
+
+                        <span class = "icon-bar"></span>
+                        <span class = "icon-bar"></span>
+                        <span class = "icon-bar"></span>
+
+                    </button>
+
+                    <div class = "collapse navbar-collapse navHeaderCollapse">
+
+                        <ul class = "nav navbar-nav navbar-right">
+
+                            <li>
+
+                                <form action="export_annotations" method="post">
+
+                                    <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                                    <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+                                    <input type="Submit" class="btn btn-link" value="Export" title="All your annotations as JSON" />
+                                    <!-- http://stackoverflow.com/questions/19981949/how-to-make-a-button-in-bootstrap-look-like-a-normal-link-in-nav-tabs -->
+
+                                </form>
+
+                            </li>
+
+                            <li>
+
+                                <form action="publish_annotations" method="post">
+
+                                    <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                                    <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+                                    <input type="Submit" class="btn btn-link" value = "Publish" title = "Make annotations available to SPARQL queries"/>
+
+                                </form>
+
+                            </li>
+
+                            <li>
+
+                                <form action="settings" method="post">
+
+                                    <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                                    <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+                                    <input type="Submit" class="btn btn-link" value = "Settings" title = "Manage source ontologies"/>
+
+                                </form>
+
+                            </li>
+
+                            <li>
+
+                                <!-- http://stackoverflow.com/questions/11828829/twitter-bootstrap-how-to-get-rid-of-underlined-button-text-when-hovering-over-a -->
+                                <a href = "#" class = "btn btn-link" value = "Close" title = "Close B2Note interface" onClick = "hide_iframe()">Close</a>
+
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="container" id="section_subject">
+
+                <h3>Subject</h3>
+
+                <div class="table-responsive">
+
+                   <div class="row">
+
+                       <div class="col-md-6" id="col_table">
+
+                           <table class="table table-condensed">
+
+                               <tr>
+
+                                   <td>URL:</td>
+
+                                   <!-- http://stackoverflow.com/questions/19819322/preselect-text-input-on-page-load -->
+                                   <td><strong><a href="{{subject_tofeed}}" target="_blank">{{subject_tofeed}}</a></strong></td>
+
+                               </tr>
+
+                               {% if pid_tofeed != "" %}
+
+                                <tr>
+
+                                    <td>PID:</td>
+
+                                    <td><a href="{{pid_tofeed}}" target="_blank" class="pid_link">{{ pid_tofeed }}</a></td>
+
+                                </tr>
+
+                               {% endif %}
+
+                           </table>
+
+                       </div>
+
+                   </div>
+
+                </div>
+
+            </div>
+
+            <div class="container" id="section_create">
+
+                <h3>Create annotation</h3>
+
+                <!-- http://stackoverflow.com/questions/18036315/centering-bootstrap-input-fields -->
+
+
+                <div class="form-group">
+
+                    <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"  placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
+
+                </div>
+
+            </div>
+
+            <div class="container" id="section_existing">
+
+                <h3>Existing annotations</h3>
+
+                <div class="container" id="container_table_existing">
+
+                    <table class="table table-responsive table-striped">
+
+                        {% for annotation in annotation_list %}
+
+                            {% for target in annotation.target %}
+
+                                {% if target.jsonld_id or target.source.jsonld_id %}
+
+                                    <!-- http://stackoverflow.com/questions/1275735/how-to-access-dictionary-element-in-django-template -->
+                                    {% if target.jsonld_id == subject_tofeed or target.source.jsonld_id == subject_tofeed %}
+
+                                        {% for body in annotation.body %}
+
+                                            {% if body.jsonld_id and body.value %}
+
+                                                <tr>
+
+                                                    <form action="delete_annotation" method="post">
+
+                                                        <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
+                                                        <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                                                        <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+
+                                                        {% if "http://" in body.jsonld_id %}
+
+                                                            <!--
+                                                            <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
+                                                            -->
+                                                            <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
+                                                            <td id="objectLabel"><a target="_blank" href={{body.jsonld_id}}>{{body.value}}</a></td>
+
+                                                        {% else %}
+
+                                                            <!--
+                                                            <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
+                                                            -->
+                                                            <td id="objectLabel">{{body.value}}</td>
+
+                                                        {% endif %}
+
+                                                            <!-- "Octicons-trashcan" by GitHub - https://github.com/github/octicons. Licensed under MIT via Wikimedia Commons - https://commons.wikimedia.org/wiki/File:Octicons-trashcan.svg#/media/File:Octicons-trashcan.svg -->
+                                                            <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" title="Delete annotation" alt="Delete annotation" /></td>
+
+                                                    </form>
+
+                                                </tr>
+
+                                            {% endif %}
+
+                                        {% endfor %}
+
+                                    {% endif %}
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        {% endfor %}
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+		</div>
+
+    </body>
+
+</html>
