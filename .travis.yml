@@ -20,7 +20,7 @@ install:
   - pip install -r requirements.txt
 # command to run tests
 before_script:
-  - sleep 15
-  - mongo test_database --eval 'db.createUser({"user":"tester","pwd":"abc123", roles:["readWrite"]});'
+   - sleep 15
+   - mongo test_database --eval 'db.createUser({"user":"tester","pwd":"abc123", roles:["readWrite"]});'
 script:
-  - python manage.py test searchapp
+   - python manage.py test searchapp
