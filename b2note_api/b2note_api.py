@@ -10,7 +10,8 @@ app = Eve(settings=mongo_settings)
 def post_to_django():
     pid = request.values.get('pid_tofeed')
     subject = request.values.get('subject_tofeed')
-    url='https://b2note.bsc.es/interface_main'
+    # For the production version the url will be pointing to https://b2note.bsc.es/api/create_annotation
+    url='https://b2note-dev.bsc.es/interface_main'
     data = {"pid_tofeed": str(pid), "subject_tofeed": str(subject) }
     headers = {'Content-Type':'application/json'}
     r = requests.post(url, data=data)
