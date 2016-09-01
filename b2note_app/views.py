@@ -329,3 +329,24 @@ def interface_main(request):
 @csrf_exempt
 def search_annotations(request):
     return HttpResponse("Search annotations functionality is coming.")
+
+@csrf_exempt
+def retrieve_annotations(request):
+    """
+      Function: retrieve_annotations
+      ----------------------------
+        Retrieves a jsonld with annotations matching with the file in the request
+        
+        input:
+            request (object): context of the petition.
+        
+        output:
+            object: jsonld
+    """
+    target_id = ""
+    if request.GET.get('target_id') != None:
+        target_id = request.GET.get('target_id')
+    
+    annotations = RetrieveAnnotations(target_id)
+    
+    return HttpResponse(annotations)

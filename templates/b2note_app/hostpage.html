@@ -114,7 +114,7 @@
                 {% for file_info in buttons_info %}
 
                 <!-- For the production version the url will be pointing to https://b2note.bsc.es/api/create_annotation -->
-                <form action="https://b2note-dev.bsc.es/api/create_annotation" method="post" target="b2note_iframe">
+                <form action="/api/create_annotation" method="post" target="b2note_iframe">
 
                     {% csrf_token %}
 

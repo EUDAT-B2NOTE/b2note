@@ -69,7 +69,7 @@ function get_free_text() {
     if (elem) {
         pid = elem.getElementsByTagName("a")[1].innerHTML;
     }
-    $.redirect('create_annotation',
+    $.redirect('../create_annotation',
                {
                free_text: text,
                subject_tofeed: subject,
