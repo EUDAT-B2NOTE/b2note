@@ -87,7 +87,7 @@ $(document).ready( function() {
 	      * Code source: https://github.com/mgalante/jquery.redirect
 	      *
               */
-            $.redirect('create_annotation',
+            $.redirect('../create_annotation',
 	    	    {
 		    	ontology_json: JSON.stringify(data.json_document),
 		    	subject_tofeed: subject,
