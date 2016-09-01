@@ -255,16 +255,10 @@ def create_annotation(request):
         output:
             object: HttpResponse with the annotations.
     """
-    #import logging
-    #LOG_FILENAME = '/home/prodenas/b2note.log'
-    #logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
-
-    #logging.debug('Create annotation' + request.POST.get('free_text'))
     if request.POST.get('ontology_json'):
         CreateSemanticTag( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
     
     if request.POST.get('free_text'):
-        #logging.debug('Inside!')
         CreateFreeText( request.POST.get('subject_tofeed'), request.POST.get('free_text') )
 
     subject_tofeed = ""
