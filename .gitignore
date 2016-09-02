@@ -73,3 +73,6 @@ db.*
 
 # VI temp files
 .*.swp
+
+# Accounts DB
+*.sqlite3

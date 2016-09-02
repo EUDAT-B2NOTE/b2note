@@ -28,8 +28,20 @@ DATABASES = {
         'PASSWORD': os.environ['MONGODB_PWD'],
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
+    },
+    'users' : {
+        'ENGINE' : 'django.db.backends.sqlite3',
+        'NAME' : 'users.sqlite3',
+        'USER' : 'b2note',
+        'PASSWORD' : 'abc123',
+        'HOST' : '',
+        'PORT' : '',
     }
 }
+
+# This will substitute the default User model
+# https://docs.djangoproject.com/en/dev/topics/auth/customizing/#substituting-a-custom-user-model
+AUTH_USER_MODEL = 'accounts.UserCred'
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -140,6 +152,8 @@ INSTALLED_APPS = (
     'django_mongodb_engine',
     'djangotoolbox',
     'b2note_app',
+    'accounts',
+    'django_countries',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
