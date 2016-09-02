@@ -261,7 +261,7 @@ class ExternalResource(models.Model):
 
 
 class Annotation(models.Model):
-	jsonld_context = ListField( models.CharField( max_length = 4096 ) )	# ["http://www.w3.org/ns/anno.jsonld"]
+	context = ListField( models.CharField( max_length = 4096 ), db_column="@context" )	# ["http://www.w3.org/ns/anno.jsonld"]
 																		# 20160706, abremaud@esciencefactory.com
 																		# Should allow list of which link string would be one item, however needs
 																		# to be string when alone. How compatibility of Django data model
@@ -315,7 +315,7 @@ class Annotation(models.Model):
 
 
 class AnnotationPage(models.Model):
-	jsonld_context	= ListField( models.CharField(max_length=256) )		# "http://www.w3.org/ns/anno.jsonld"
+	context	= ListField( models.CharField(max_length=256), db_column="@context" )		# "http://www.w3.org/ns/anno.jsonld"
 	jsonld_id		= models.CharField( max_length = 4096 )
 	type			= ListField( models.CharField(max_length=256) )		# MUST AnnotationPage, class of Annotation pages.
 	partOf			= models.CharField( max_length=4096, null=True )
@@ -326,7 +326,7 @@ class AnnotationPage(models.Model):
 
 
 class AnnotationCollection(models.Model):
-	jsonld_context	= ListField( models.CharField(max_length=256) )		# "http://www.w3.org/ns/anno.jsonld"
+	context	= ListField( models.CharField(max_length=256), db_column="@context" )		# "http://www.w3.org/ns/anno.jsonld"
 	jsonld_id		= models.CharField( max_length = 4096 )
 	type			= ListField( models.CharField(max_length=256) )		# MUST AnnotationCollection, class for ordered Collections of Annotations.
 	label			= ListField( models.CharField(max_length=4096), null=True )
