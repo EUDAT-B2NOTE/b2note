@@ -1,20 +1,30 @@
 from django import forms
-from accounts.models import UserCred
+from accounts.models import UserCred, AnnotatorProfile
+from django_countries.data import COUNTRIES
+
 
 class RegistrationForm(forms.ModelForm):
     """
     Form for registering a new account.
     """
-    email = forms.EmailField(widget=forms.widgets.TextInput(), label="email")
-    password1 = forms.CharField(widget=forms.widgets.PasswordInput(),
-                                label="Password")
-    password2 = forms.CharField(widget=forms.widgets.PasswordInput(),
-                                label="Password (again)")
+    username  = forms.EmailField(widget=forms.widgets.TextInput(), label="Email")
+    password1 = forms.CharField(widget=forms.widgets.PasswordInput(), label="Password")
+    password2 = forms.CharField(widget=forms.widgets.PasswordInput(), label="Password (again)")
+
+    nickname        = forms.CharField( widget=forms.widgets.TextInput(), label="Annotator pseudonym")
+    first_name      = forms.CharField( widget=forms.widgets.TextInput(), label="First name")
+    last_name       = forms.CharField( widget=forms.widgets.TextInput(), label="Last name")
+    job_title       = forms.CharField( widget=forms.widgets.TextInput(), label="Job title")
+    organization    = forms.CharField( widget=forms.widgets.TextInput(), label="Organization")
+    country         = forms.ChoiceField( widget=forms.Select(), choices=sorted(COUNTRIES.items()) )
+    annotator_exp   = forms.ChoiceField( widget=forms.Select(), choices=[('b','Beginner'),('i','Intermediate'),('e','Expert')], label="Annotator experience")
 
 
     class Meta:
-        model = UserCred
-        fields = ['email', 'password1', 'password2']
+        model   = UserCred
+        fields  = ['username', 'password1', 'password2',
+                   'nickname', 'first_name', 'last_name',
+                   'job_title', 'organization', 'annotator_exp', 'country']
 
 
     def clean(self):
@@ -31,8 +41,12 @@ class RegistrationForm(forms.ModelForm):
 
 
     def save(self, commit=True):
+        print type(self)
         user = super(RegistrationForm, self).save(commit=False)
         user.set_password(self.cleaned_data['password1'])
         if commit:
+            ap = AnnotatorProfile(email=user.username)
+            ap.save()
+            user.annotator_id = ap
             user.save()
         return user
