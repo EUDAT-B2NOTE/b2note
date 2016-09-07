@@ -12,7 +12,8 @@ class EmailAuthBackend(object):
         Authentication method
         """
         try:
-            user = UserCred.objects.get(email=email)
+            #user = UserCred.objects.using('users').get(username=email)
+            user = UserCred.objects.get(username=email)
             if user.check_password(password):
                 return user
         except UserCred.DoesNotExist:
@@ -20,7 +21,7 @@ class EmailAuthBackend(object):
 
     def get_user(self, user_id):
         try:
-            user = UserCred.objects.get(pk=user_id)
+            user = UserCred.objects.using('users').get(pk=user_id)
             if user.is_active:
                 return user
             return None

@@ -4,9 +4,9 @@ class AuthenticationForm(forms.Form):
     """
     Login form
     """
-    email = forms.EmailField(widget=forms.widgets.TextInput, label="email")
-    password = forms.CharField(widget=forms.widgets.PasswordInput, label="password")
+    username = forms.EmailField(widget=forms.widgets.TextInput, label="Email")
+    password = forms.CharField(widget=forms.widgets.PasswordInput, label="Password")
 
     class Meta:
-        fields = ['email', 'password']
+        fields = ['username', 'password']
 
