@@ -54,55 +54,31 @@
 
 	</header>
 
-	<div class="container" id="loginform">
+	<div class="container" id="homepageform">
 
 		<h2>Homepage</h2>
 
         <br>
 
-        <div class="container">
+		<div class="container" id="profileform">
 
-			<div class="row">
-				<div class="col-sm-2">
-					<label class="control-label col-sm-2">Annotator pseudonym:</label>
+			<form action="register" method="post" class="form-horizontal">
+
+				{% for f in form %}
+
+				<div class="form-group">
+					<label class="control-label col-sm-2">{{ f.label }}:</label>
+
+					<div class="col-sm-4">
+						<input type="text" class="form-control" id="some-id" value="{{ f.value }}" readonly="readonly"/>
+					</div>
 				</div>
-				<div class="col-sm-2">
-					{{ profile.nickname }}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-2">
-					<label class="control-label col-sm-2">Annotator experience:</label>
-				</div>
-				<div class="col-sm-2">
-					{{ profile.annotator_exp }}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-2">
-					<label class="control-label col-sm-2">Job title:</label>
-				</div>
-				<div class="col-sm-2">
-					{{ profile.job_title }}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-2">
-					<label class="control-label col-sm-2">Organization:</label>
-				</div>
-				<div class="col-sm-2">
-					{{ profile.organization }}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-2">
-					<label class="control-label col-sm-2">Country:</label>
-				</div>
-				<div class="col-sm-2">
-					{{ profile.country }}
-				</div>
-			</div>
-        </div>
+
+				{% endfor %}
+
+			</form>
+
+		</div>
 
 	</div>
 
