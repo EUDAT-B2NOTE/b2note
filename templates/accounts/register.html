@@ -58,6 +58,8 @@
 
 	<div class="container" id="loginform">
 
+        <h2>Registration</h2>
+
         <br>
 
         <form action="register" method="post" class="form-horizontal">
@@ -92,12 +94,21 @@
                         </div>
                     </div>
 
+                {% elif f.id_for_label|slice:"3:-1" == "password" %}
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label}}:</label>
+                        <div class="col-sm-10">
+                            <input type="password" name='{{ f.id_for_label|slice:"3:" }}' class="form-control" id="some-id" placeholder="Enter {{ f.label|lower }}" />
+                        </div>
+                    </div>
+
                 {% else %}
 
                     <div class="form-group">
                         <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>
                         <div class="col-sm-10">
-                            <input type="{{ f.label }}" name='{{ f.id_for_label|slice:"3:" }}' class="form-control" id="some-id" placeholder="Enter {{ f.label|lower }}" />
+                            <input type="text" name='{{ f.id_for_label|slice:"3:" }}' class="form-control" id="some-id" placeholder="Enter {{ f.label|lower }}" />
                         </div>
                     </div>
 

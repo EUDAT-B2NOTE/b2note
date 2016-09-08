@@ -2,10 +2,13 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, UserManager
 from django_countries.fields import CountryField
 
+
+
 # http://blackglasses.me/2013/09/17/custom-django-user-model/
 class UserCred(AbstractBaseUser):
     user_id = models.AutoField (primary_key=True)
     username = models.EmailField(unique=True, db_index=True)
+
     pawd = models.CharField(('password'), max_length=256)
     annotator_id = models.ForeignKey('AnnotatorProfile')
 

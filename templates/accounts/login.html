@@ -56,6 +56,8 @@
 
 	<div class="container" id="loginform">
 
+        <h2>Login</h2>
+
         <br>
 
         <form action="login" method="post" class="form-horizontal">
@@ -64,27 +66,38 @@
 
             {% for f in form %}
 
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="{{ f.id_for_label|slice:'3:' }}">{{ f.label }}:</label>
-                    <div class="col-sm-10">
-                        <input type="{{ f.label|lower }}" name="{{ f.id_for_label|slice:'3:' }}" class="form-control" id="email" placeholder="Enter {{ f.label|lower }}" />
-                    </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="{{ f.id_for_label|slice:'3:' }}">{{ f.label }}:</label>
+                <div class="col-sm-10">
+                    <input type="{{ f.label|lower }}" name="{{ f.id_for_label|slice:'3:' }}" class="form-control" id="formfield" placeholder="Enter {{ f.label|lower }}" />
                 </div>
+            </div>
 
             {% endfor %}
 
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <div class="checkbox">
-                            <label><input type="checkbox" name="keeplog"> Keep me logged in.</label>
-                        </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="checkbox">
+                        <label><input type="checkbox" name="keeplog"> Keep me logged in.</label>
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-default">Submit</button>
-                    </div>
-                </div>
+            </div>
+            <div class="form-group">
+                <table class="col-sm-offset-2">
+                    <tr>
+                        <td>
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-default">Submit</button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="col-sm-20">
+                                <a href="accounts/register">New user, register.</a>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </form>
 
 	</div>

@@ -26,7 +26,6 @@ class RegistrationForm(forms.ModelForm):
                    'nickname', 'first_name', 'last_name',
                    'job_title', 'organization', 'annotator_exp', 'country']
 
-
     def clean(self):
         """
         Verifies that the values entered into the password fields match
@@ -45,8 +44,18 @@ class RegistrationForm(forms.ModelForm):
         user = super(RegistrationForm, self).save(commit=False)
         user.set_password(self.cleaned_data['password1'])
         if commit:
-            ap = AnnotatorProfile(email=user.username)
-            ap.save()
+            ap = AnnotatorProfile(
+                nickname=self.cleaned_data["nickname"],
+                first_name=self.cleaned_data["first_name"],
+                last_name=self.cleaned_data["last_name"],
+                email=self.cleaned_data["username"],
+                country=self.cleaned_data["country"],
+                organization=self.cleaned_data["organization"],
+                job_title=self.cleaned_data["job_title"],
+                annotator_exp=self.cleaned_data["annotator_exp"]
+            )
+            ap.save(using='users')
             user.annotator_id = ap
-            user.save()
+
+            user.save(using='users')
         return user

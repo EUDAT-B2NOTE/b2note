@@ -12,8 +12,7 @@ class EmailAuthBackend(object):
         Authentication method
         """
         try:
-            #user = UserCred.objects.using('users').get(username=email)
-            user = UserCred.objects.get(username=email)
+            user = UserCred.objects.using('users').get(username=email)
             if user.check_password(password):
                 return user
         except UserCred.DoesNotExist:

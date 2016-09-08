@@ -56,15 +56,53 @@
 
 	<div class="container" id="loginform">
 
+		<h2>Homepage</h2>
+
         <br>
 
-        <form action="login" method="post" class="form-horizontal">
+        <div class="container">
 
-            {% csrf_token %}
-
-            {{ user }}
-
-        </form>
+			<div class="row">
+				<div class="col-sm-2">
+					<label class="control-label col-sm-2">Annotator pseudonym:</label>
+				</div>
+				<div class="col-sm-2">
+					{{ profile.nickname }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-2">
+					<label class="control-label col-sm-2">Annotator experience:</label>
+				</div>
+				<div class="col-sm-2">
+					{{ profile.annotator_exp }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-2">
+					<label class="control-label col-sm-2">Job title:</label>
+				</div>
+				<div class="col-sm-2">
+					{{ profile.job_title }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-2">
+					<label class="control-label col-sm-2">Organization:</label>
+				</div>
+				<div class="col-sm-2">
+					{{ profile.organization }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-2">
+					<label class="control-label col-sm-2">Country:</label>
+				</div>
+				<div class="col-sm-2">
+					{{ profile.country }}
+				</div>
+			</div>
+        </div>
 
 	</div>
 
