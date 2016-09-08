@@ -5,6 +5,28 @@ from .models import *
 
 import os, datetime, json
 
+def  RetrieveAnnotations( subject_url ):
+    """
+      Function: RetrieveAnnotations
+      ----------------------------
+        Retrieves all annotations for a given file.
+        
+        params:
+            subject_url (str): ID of the file.
+        
+        returns:
+            dic: Dictionary with the values of the annotations.
+    """
+    try:        
+        annotations = Annotation.objects.raw_query({'target.jsonld_id': subject_url})
+    
+    except Annotation.DoesNotExist:
+        annotations = []
+
+    annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
+    
+    return annotations
+
 
 def DeleteFromPOSTinfo( db_id ):
     """

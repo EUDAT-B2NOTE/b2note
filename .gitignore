@@ -68,5 +68,11 @@ db.*
 # local scripts
 *.sh
 
+# local copies
+*.bk
+
 # VI temp files
 .*.swp
+
+# Accounts DB
+*.sqlite3
