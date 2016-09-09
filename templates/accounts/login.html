@@ -20,6 +20,30 @@
 
 <body id="loginpage">
 
+    {% if is_console_access %}
+
+        {% if subject_tofeed %}
+
+            <script>show_iframe();</script>
+
+        {% else %}
+
+            <script>hide_iframe();</script>
+
+        {% endif %}
+
+        <div class="navbar navbar-default navbar-static-top">
+
+            <div class="container">
+
+                <div class="navbar-brand">B2Note console</div>
+
+            </div>
+
+        </div>
+
+    {% else %}
+
 	<header>
 
 		<div id="header-top">
@@ -54,11 +78,23 @@
 
 	</header>
 
+    {% endif %}
+
 	<div class="container" id="loginform">
 
-        <h2>Login</h2>
+        {% if is_console_access %}
 
-        <br>
+            <h3>Login</h3>
+
+            <br>
+
+        {% else %}
+
+            <h2>Login</h2>
+
+            <br>
+
+        {% endif %}
 
         <form action="login" method="post" class="form-horizontal">
 
@@ -92,7 +128,11 @@
                         </td>
                         <td>
                             <div class="col-sm-20">
-                                <a href="accounts/register">New user, register.</a>
+                                {% if is_console_access %}
+                                    <a target="_blank" href="/accounts/register">New user, register.</a>
+                                {% else %}
+                                    <a href="/accounts/register">New user, register.</a>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>
@@ -101,6 +141,8 @@
         </form>
 
 	</div>
+
+    {% if not is_console_access %}
 
 	<footer>
 		<div id="footer-content">
@@ -111,6 +153,8 @@
 			</p>
 		</div>
 	</footer>
+
+    {% endif %}
 
 </body>
 

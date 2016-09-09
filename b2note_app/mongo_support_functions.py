@@ -1,11 +1,15 @@
 import re, datetime
 import json, bson
 
+from django.contrib.auth import get_user
+
 from .models import *
+from accounts.models import AnnotatorProfile
 
 import os, datetime, json
 
-def  RetrieveAnnotations( subject_url ):
+
+def RetrieveAnnotations( subject_url ):
     """
       Function: RetrieveAnnotations
       ----------------------------
@@ -57,6 +61,70 @@ def DeleteFromPOSTinfo( db_id ):
     print "Could not remove from DB"
     return False
 
+
+def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
+    """
+      Function: SetUserAsAnnotationCreator
+      ----------------------------
+        Sets annotator profile corresponding to user_id input parameter
+            as creator agent of annotation document with id matching db_id
+            input parameter.
+
+        params:
+            user_id (int): sqlite3 primary key of annotator profile model.
+            db_id (unicode): mongodb document id.
+
+        returns:
+            Annotation mongodb document id as unicode if succesful, False otherwise.
+    """
+    try:
+
+        if user_id and isinstance(user_id, int) and user_id>=0:
+
+            ap = None
+
+            ap = AnnotatorProfile.objects.using('users').get(annotator_id=user_id)
+
+            if ap and ap.nickname and isinstance(ap.nickname, (str, unicode)):
+
+                if db_id and isinstance(db_id, (str, unicode)):
+
+                    annotation = None
+
+                    annotation = Annotation.objects.get(id=db_id)
+
+                    if annotation:
+
+                        annotation.creator = [Agent(
+                            jsonld_id = models.CharField(max_length=4096, null=True),
+                            type = ['Human agent'],
+                            nickname = str(ap.nickname)
+                        )]
+                        annotation.save()
+
+                        print "User with nickname", str(ap.nickname) ,", set as annotation", annotation.id ,"creator"
+                        return annotation.id
+
+                    else:
+                        print "No annotation were found matching this id:", str(db_id)
+
+                else:
+                    print "SetCurrentUserAsAnnotationCreator function, provided parameter for annotation id invalid."
+
+            else:
+                print "SetCurrentUserAsAnnotationCreator function, no registered annotator profile with id:", user_id
+
+        else:
+            print "SetCurrentUserAsAnnotationCreator function, provided parameter for annotator profile id invalid."
+
+    except Exception:
+        print "SetCurrentUserAsAnnotationCreator function did not complete."
+        return False
+
+    print "SetCurrentUserAsAnnotationCreator function did not complete succesfully."
+    return False
+
+
 def CreateSemanticTag( subject_url, object_json ):
     """
       Function: CreateSemanticTag
@@ -89,18 +157,28 @@ def CreateSemanticTag( subject_url, object_json ):
             print object_label, " ", object_uri        
             
             annotation = Annotation.objects.get(id=my_id)
-            annotation.body = [TextualBody( jsonld_id = object_uri, type = ["TextualBody"], value = object_label )]
+            annotation.body = [TextualBody(
+                jsonld_id = object_uri,
+                type = ["TextualBody"],
+                value = object_label )]
             annotation.save()
+
+            print "Created semantic tag annotation"
+            return annotation.id
+
         else:
             print "The object does not contain URI as a key."
             return False
 
     except ValueError:
-        print "Could not save to DB a semantic tag"
+        print "CreateSemanticTag function did not complete."
         return False
 
-    print "Created semantic tag annotation"
-    return True
+    print "CreateSemanticTag function did not complete succesfully."
+    return False
+
+
+
 
 def CreateFreeText( subject_url, text ):
     """
@@ -122,20 +200,25 @@ def CreateFreeText( subject_url, text ):
         return False
     
     try:
-        if type(text) is unicode and len(text)>0: 
+        if type(text) is unicode and len(text)>0:
+
             annotation = Annotation.objects.get(id=my_id)
             annotation.body = [TextualBody( type = ["TextualBody"], value = text )]
             annotation.save()
+
+            print "Created free text annotation"
+            return annotation.id
+
         else:
             print "Wrong text codification or empty text"
             return False
 
     except ValueError:
-        print "Could not save to DB a free text"
+        print "CreateFreeText function did not complete."
         return False
 
-    print "Created free text annotation"
-    return True
+    print "CreateFreeText function did not complete succesfully."
+    return False
 
 
 def CreateAnnotation(target):

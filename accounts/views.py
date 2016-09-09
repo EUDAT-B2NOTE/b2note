@@ -12,6 +12,12 @@ def login(request):
     """
     Log in view
     """
+
+    if request.session.get("is_console_access") is not None:
+        ica = True
+    else:
+        ica = False
+
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
@@ -19,11 +25,20 @@ def login(request):
             if user is not None:
                 if user.is_active:
                     django_login(request, user)
-                    request.session["user"] = user.user_id
-                    return redirect('/profilepage')
+                    print ">>>", user.annotator_id.annotator_id
+                    request.session["user"] = user.annotator_id.annotator_id
+                    if ica:
+                        return redirect('/interface_main')
+                    else:
+                        return redirect('/profilepage')
     else:
         form = AuthenticationForm()
-    return render_to_response('accounts/login.html', {'form': form,}, context_instance=RequestContext(request))
+
+    return render_to_response('accounts/login.html',{'form': form, 'is_console_access': ica},
+                              context_instance=RequestContext(request, {
+                                  "pid_tofeed": request.session.get("pid_tofeed"),
+                                  "subject_tofeed": request.session.get("subject_tofeed")
+                              }))
 
 
 def register(request):
@@ -46,5 +61,6 @@ def logout(request):
     """
     Log out view
     """
+    request.session["is_console_access"] = False
     django_logout(request)
     return redirect('/')
