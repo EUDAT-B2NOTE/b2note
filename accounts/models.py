@@ -10,7 +10,7 @@ class UserCred(AbstractBaseUser):
     username = models.EmailField(unique=True, db_index=True)
 
     pawd = models.CharField(('password'), max_length=256)
-    annotator_id = models.ForeignKey('AnnotatorProfile')
+    annotator_id = models.ForeignKey('AnnotatorProfile', db_column='annotator_id')
 
     USERNAME_FIELD = 'user_id'
     REQUIRED_FIELDS = []

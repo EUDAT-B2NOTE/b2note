@@ -5,37 +5,16 @@ from django.shortcuts import render, render_to_response, redirect
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
 from django.conf import settings as global_settings
-from django.forms.models import model_to_dict
 
 from collections import OrderedDict
 
 from .mongo_support_functions import *
 from .models import *
 
-from accounts.models import AnnotatorProfile
-from accounts.forms import ProfileForm
-
 
 def index(request):
     return HttpResponse("replace me with index text")
-
-
-@login_required
-def profilepage(request):
-    """
-    User profile view.
-    """
-    if request.session.get("user"):
-        userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
-        form = ProfileForm(initial = model_to_dict(userprofile) )
-        print "\n" + " ### " * 30
-        print type(form)
-        print " ### " * 30 + "\n"
-        return render_to_response('b2note_app/profilepage.html', {'form': form}, context_instance=RequestContext(request))
-    else:
-        return redirect('/')
 
 
 # forbidden CSRF verification failed. Request aborted.

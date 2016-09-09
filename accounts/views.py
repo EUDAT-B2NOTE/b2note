@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
-from django.contrib.auth.decorators import login_required
+
 from accounts.forms import AuthenticationForm, RegistrationForm
 from accounts.models import AnnotatorProfile
 
@@ -20,10 +20,21 @@ def login(request):
                 if user.is_active:
                     django_login(request, user)
                     request.session["user"] = user.user_id
-                    return redirect('/profilepage')
+                    return redirect('accounts/profilepage')
     else:
         form = AuthenticationForm()
     return render_to_response('accounts/login.html', {'form': form,}, context_instance=RequestContext(request))
+
+
+def profilepage(request):
+    """
+    User profile view.
+    """
+    if request.session.get("user"):
+        userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+        return render_to_response('accounts/profilepage.html', {'profile': userprofile, }, context_instance=RequestContext(request))
+    else:
+        return redirect('/')
 
 
 def register(request):

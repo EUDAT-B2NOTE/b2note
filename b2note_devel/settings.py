@@ -17,25 +17,23 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-MONGO_DATABASE_NAME = "b2note_mongodb" #os.environ['MONGODB_NAME']
+MONGO_DATABASE_NAME = os.environ['MONGODB_NAME']
 
 DATABASES = {
     'default': {
         'ENGINE': 'django_mongodb_engine', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': "b2note_mongodb", #os.environ['MONGODB_NAME'],                      # Or path to database file if using sqlite3.
+        'NAME': os.environ['MONGODB_NAME'],                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
-        #'USER': os.environ['MONGODB_USR'],
-        #'PASSWORD': os.environ['MONGODB_PWD'],
-        #'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        #'PORT': '',                      # Set to empty string for default.
+        'USER': os.environ['MONGODB_USR'],
+        'PASSWORD': os.environ['MONGODB_PWD'],
+        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'PORT': '',                      # Set to empty string for default.
     },
     'users' : {
         'ENGINE' : 'django.db.backends.sqlite3',
-        'NAME' : 'users.sqlite3',
-        'USER' : 'b2note',
-        'PASSWORD' : 'abc123',
-        'HOST' : '',
-        'PORT' : '',
+        'NAME' : os.environ['SQLDB_NAME'],
+        'USER' : os.environ['SQLDB_USR'],
+        'PASSWORD' :  os.environ['SQLDB_PWD'],
     }
 }
 
@@ -107,7 +105,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = "secret" #os.environ['B2NOTE_SECRET_KEY']
+SECRET_KEY = os.environ['B2NOTE_SECRET_KEY']
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
