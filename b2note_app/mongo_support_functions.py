@@ -96,7 +96,6 @@ def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
                     if annotation:
 
                         annotation.creator = [Agent(
-                            jsonld_id = models.CharField(max_length=4096, null=True),
                             type = ['Human agent'],
                             nickname = str(ap.nickname)
                         )]
@@ -106,22 +105,22 @@ def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
                         return annotation.id
 
                     else:
-                        print "No annotation were found matching this id:", str(db_id)
+                        print "SetUserAsAnnotationCreator function, no annotation were found matching this id:", str(db_id)
 
                 else:
-                    print "SetCurrentUserAsAnnotationCreator function, provided parameter for annotation id invalid."
+                    print "SetUserAsAnnotationCreator function, provided parameter for annotation id invalid."
 
             else:
-                print "SetCurrentUserAsAnnotationCreator function, no registered annotator profile with id:", user_id
+                print "SetUserAsAnnotationCreator function, no registered annotator profile with id:", user_id
 
         else:
             print "SetCurrentUserAsAnnotationCreator function, provided parameter for annotator profile id invalid."
 
     except Exception:
-        print "SetCurrentUserAsAnnotationCreator function did not complete."
+        print "SetUserAsAnnotationCreator function did not complete."
         return False
 
-    print "SetCurrentUserAsAnnotationCreator function did not complete succesfully."
+    print "SetUserAsAnnotationCreator function did not complete succesfully."
     return False
 
 
