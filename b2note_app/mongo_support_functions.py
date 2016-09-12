@@ -73,13 +73,13 @@ def CreateSemanticTag( subject_url, object_json ):
     object_uri   = ""
     object_label = ""
     
-    my_id = CreateAnnotation(subject_url)
-    
-    if my_id == None:
-        print "Could not save semantic tag to DB"
-        return False
-    
     try:
+        my_id = CreateAnnotation(subject_url)
+    
+        if not my_id:
+            print "Could not save semantic tag to DB"
+            return False
+    
         o = json.loads(object_json)
 
         if "uris" in o.keys():
@@ -115,13 +115,14 @@ def CreateFreeText( subject_url, text ):
         returns:
             bool: True if successful, False otherwise.
     """
-    my_id = CreateAnnotation(subject_url)
-    
-    if my_id == None:
-        print "Could not save free text to DB"
-        return False
     
     try:
+        my_id = CreateAnnotation(subject_url)
+    
+        if not my_id:
+            print "Could not save free text to DB"
+            return False
+    
         if type(text) is unicode and len(text)>0: 
             annotation = Annotation.objects.get(id=my_id)
             annotation.body = [TextualBody( type = ["TextualBody"], value = text )]
