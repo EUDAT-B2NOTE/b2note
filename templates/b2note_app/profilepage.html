@@ -78,50 +78,83 @@
 
 	</div>
 
-
-	<div class="container", id="annotations_table">
-
-		<table>
-
-		{% for ann in annotation_list %}
-
-			<tr>
-
-				<td> {{ann.target.0.jsonld_id}} </td>
-				<td> {{ann.created}} </td>
-				<td> {{ann.body.0.jsonld_id}} </td>
-				<td> {{ann.body.0.value}} </td>
-
-			</tr>
-
-		{% endfor %}
-
-		</table>
-
-	</div>
-
-
 	<br>
 
 	<div class="container" id="homepageform">
 
-		<div class="container" id="profileform">
+		<div class="row">
 
-			<form action="register" method="post" class="form-horizontal">
+			<div class="container" id="profileform">
 
-				{% for f in form %}
+				<form action="register" method="post" class="form-horizontal">
 
-				<div class="form-group">
-					<label class="control-label col-sm-2">{{ f.label }}:</label>
+					{% for f in form %}
 
-					<div class="col-sm-4">
-						<input type="text" class="form-control" id="some-id" value="{{ f.value }}" readonly="readonly"/>
+					<div class="form-group">
+						<label class="control-label col-sm-2">{{ f.label }}:</label>
+
+						<div class="col-sm-4">
+							<input type="text" class="form-control" id="some-id" value="{{ f.value }}" readonly="readonly"/>
+						</div>
 					</div>
+
+					{% endfor %}
+
+				</form>
+
+			</div>
+
+			<div class="container" id="annotations_table">
+
+				<div class="col-sm-6">
+
+					<h3>My annotations</h3>
+
+					<table class="table table-responsive table-striped">
+
+					{% for ann in annotation_list %}
+
+						{% if ann.body.0.value %}
+
+							{% if ann.body.0.value|length > 0 %}
+
+								<tr>
+
+									<td> {{ann.target.0.jsonld_id}} </td>
+
+									{% if ann.body.0.jsonld_id %}
+
+										{% if ann.body.0.jsonld_id|length > 0 and "http://" in ann.body.0.jsonld_id %}
+
+										<td><a target="_blank" href={{ann.body.0.jsonld_id}}>{{ann.body.0.value}}</a></td>
+
+										{% else %}
+
+										<td>{{ann.body.0.value}}</td>
+
+										{% endif %}
+
+									{% else %}
+
+									<td>{{ann.body.0.value}}</td>
+
+									{% endif %}
+
+									<td> {{ann.created}} </td>
+
+								</tr>
+
+							{% endif %}
+
+						{% endif %}
+
+					{% endfor %}
+
+					</table>
+
 				</div>
 
-				{% endfor %}
-
-			</form>
+			</div>
 
 		</div>
 
