@@ -24,6 +24,7 @@ def login(request):
             user = authenticate(email=request.POST['username'], password=request.POST['password'])
             if user is not None:
                 if user.is_active:
+                    print type(user), isinstance(user, unicode), user
                     django_login(request, user)
                     print ">>>", user.annotator_id.annotator_id
                     request.session["user"] = user.annotator_id.annotator_id
