@@ -91,6 +91,8 @@ def CreateSemanticTag( subject_url, object_json ):
             annotation = Annotation.objects.get(id=my_id)
             annotation.body = [TextualBody( jsonld_id = object_uri, type = ["TextualBody"], value = object_label )]
             annotation.save()
+            print "Created semantic tag annotation"
+            return annotation.id
         else:
             print "The object does not contain URI as a key."
             return False
@@ -98,9 +100,6 @@ def CreateSemanticTag( subject_url, object_json ):
     except ValueError:
         print "Could not save to DB a semantic tag"
         return False
-
-    print "Created semantic tag annotation"
-    return True
 
 def CreateFreeText( subject_url, text ):
     """
@@ -113,7 +112,7 @@ def CreateFreeText( subject_url, text ):
             text (str): Free text introduced by the user
         
         returns:
-            bool: True if successful, False otherwise.
+            bool: id of the document created, False otherwise.
     """
     
     try:
@@ -127,6 +126,8 @@ def CreateFreeText( subject_url, text ):
             annotation = Annotation.objects.get(id=my_id)
             annotation.body = [TextualBody( type = ["TextualBody"], value = text )]
             annotation.save()
+            print "Created free text annotation"
+            return annotation.id
         else:
             print "Wrong text codification or empty text"
             return False
@@ -134,9 +135,6 @@ def CreateFreeText( subject_url, text ):
     except ValueError:
         print "Could not save to DB a free text"
         return False
-
-    print "Created free text annotation"
-    return True
 
 
 def CreateAnnotation(target):
