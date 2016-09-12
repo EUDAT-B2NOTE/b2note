@@ -75,9 +75,9 @@ class B2noteappTest(TestCase):
         
     def test_dont_create_annotation(self):
         a = CreateAnnotation(1234)
-        self.assertEqual(a,None)
+        self.assertFalse(a)
         a = CreateAnnotation("")
-        self.assertEqual(a,None)
+        self.assertFalse(a)
         #a = CreateAnnotation(u"test_target")
         #self.assertEqual(a, None)
         
