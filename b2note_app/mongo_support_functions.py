@@ -165,11 +165,11 @@ def CreateAnnotation(target):
             return ann.id
         else:
             print "Bad target for CreateAnnotation"
-            return None
+            return False
     
     except ValueError:
         print "Could not save to DB"
-        return None
+        return False
         
 
 def CreateFromPOSTinfo( subject_url, object_json ):
