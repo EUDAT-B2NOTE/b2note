@@ -18,7 +18,7 @@
 
 </head>
 
-<body id="loginpage">
+<body id="profilepage">
 
 	<header>
 
@@ -77,6 +77,29 @@
 		</div>
 
 	</div>
+
+
+	<div class="container", id="annotations_table">
+
+		<table>
+
+		{% for ann in annotation_list %}
+
+			<tr>
+
+				<td> {{ann.target.0.jsonld_id}} </td>
+				<td> {{ann.created}} </td>
+				<td> {{ann.body.0.jsonld_id}} </td>
+				<td> {{ann.body.0.value}} </td>
+
+			</tr>
+
+		{% endfor %}
+
+		</table>
+
+	</div>
+
 
 	<br>
 

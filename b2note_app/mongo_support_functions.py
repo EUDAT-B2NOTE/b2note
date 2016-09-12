@@ -9,6 +9,43 @@ from accounts.models import AnnotatorProfile
 import os, datetime, json
 
 
+
+def RetrieveAnnotations_perUsername( nickname=None ):
+    """
+      Function: RetrieveAnnotations_perUsername
+      ----------------------------
+        Retrieves all annotations having creator.nickname for a given file.
+
+        params:
+            subject_url (str): ID of the file.
+
+        returns:
+            dic: Dictionary with the values of the annotations.
+    """
+    try:
+
+        if nickname and isinstance(nickname, (str, unicode)):
+
+            annotations = Annotation.objects.raw_query({'creator.nickname': nickname})
+
+            #annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
+
+            print "RetrieveAnnotations_perUsername function, returning annotations."
+            return annotations
+
+        else:
+
+            print "RetrieveAnnotations_perUsername function, provided nickname not valid:", nickname
+            return False
+
+    except Annotation.DoesNotExist:
+        "RetrieveAnnotations_perUsername function did not complete."
+        return False
+
+    print "RetrieveAnnotations_perUsername function did not complete succesfully."
+    return False
+
+
 def RetrieveAnnotations( subject_url ):
     """
       Function: RetrieveAnnotations

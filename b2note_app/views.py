@@ -31,7 +31,12 @@ def profilepage(request):
         if request.session.get("user"):
             userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
             form = ProfileForm(initial = model_to_dict(userprofile) )
-            return render_to_response('b2note_app/profilepage.html', {'form': form}, context_instance=RequestContext(request))
+
+            annotation_list = RetrieveAnnotations_perUsername( userprofile.nickname )
+
+            context = RequestContext(request, {'annotation_list': annotation_list})
+
+            return render_to_response('b2note_app/profilepage.html', {'form': form}, context_instance=context)
         else:
             return redirect('/')
     except Exception:
