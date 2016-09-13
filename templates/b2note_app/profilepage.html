@@ -110,47 +110,65 @@
 
 					<h3>My annotations</h3>
 
-					<table class="table table-responsive table-striped">
+					{% for f in file_list %}
 
-					{% for ann in annotation_list %}
+						<table class="table table-responsive table-striped">
 
-						{% if ann.body.0.value %}
+						<tr>
+							<td colspan="3"  title="{{ f }}"><a href="{{f}}"><small><img src="{% static "images/Link_icon.svg" %}" width="20px" alt="File IRI"/>{{ f }}</small></a></td>
+						</tr>
 
-							{% if ann.body.0.value|length > 0 %}
+						{% for ann in annotation_list %}
 
-								<tr>
+							{% if ann.target.0.jsonld_id %}
 
-									<td> {{ann.target.0.jsonld_id}} </td>
+								{% if ann.target.0.jsonld_id = f %}
 
-									{% if ann.body.0.jsonld_id %}
+									{% if ann.body.0.value %}
 
-										{% if ann.body.0.jsonld_id|length > 0 and "http://" in ann.body.0.jsonld_id %}
+										{% if ann.body.0.value|length > 0 %}
 
-										<td><a target="_blank" href={{ann.body.0.jsonld_id}}>{{ann.body.0.value}}</a></td>
+										<tr>
 
-										{% else %}
+											<td></td>
 
-										<td>{{ann.body.0.value}}</td>
+											{% if ann.body.0.jsonld_id %}
+
+												{% if ann.body.0.jsonld_id|length > 0 and "http://" in ann.body.0.jsonld_id %}
+
+												<td><a target="_blank" href={{ann.body.0.jsonld_id}}>{{ann.body.0.value}}</a></td>
+
+												{% else %}
+
+												<td>{{ann.body.0.value}}</td>
+
+												{% endif %}
+
+											{% else %}
+
+											<td>{{ann.body.0.value}}</td>
+
+											{% endif %}
+
+											<td title="Created: {{ ann.created|date:"d/m/Y" }} {{ ann.created|time:"H:i" }}">
+												<p class="text-right"><small> {{ ann.created|date:"d/m/Y" }} </small></p>
+											</td>
+
+										</tr>
 
 										{% endif %}
 
-									{% else %}
-
-									<td>{{ann.body.0.value}}</td>
-
 									{% endif %}
 
-									<td> {{ann.created}} </td>
-
-								</tr>
+								{% endif %}
 
 							{% endif %}
 
-						{% endif %}
+						{% endfor %}
+
+						</table>
 
 					{% endfor %}
-
-					</table>
 
 				</div>
 

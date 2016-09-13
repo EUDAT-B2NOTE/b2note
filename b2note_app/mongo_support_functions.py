@@ -28,8 +28,6 @@ def RetrieveAnnotations_perUsername( nickname=None ):
 
             annotations = Annotation.objects.raw_query({'creator.nickname': nickname})
 
-            #annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
-
             print "RetrieveAnnotations_perUsername function, returning annotations."
             return annotations
 
