@@ -58,7 +58,7 @@ def RetrieveAnnotations( subject_url ):
         returns:
             dic: Dictionary with the values of the annotations.
     """
-    try:        
+    try:
         annotations = Annotation.objects.raw_query({'target.jsonld_id': subject_url})
     
     except Annotation.DoesNotExist:
