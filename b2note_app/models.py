@@ -2,6 +2,8 @@ from django.db import models
 from djangotoolbox.fields import ListField, SetField, DictField, EmbeddedModelField
 from django_mongodb_engine.contrib import MongoDBManager
 
+
+
 class CssStyleSheet(models.Model):
 	type		= models.CharField( max_length = 32,
 									choices=(("CSS style sheet", "CssStylesheet"),), null=True )

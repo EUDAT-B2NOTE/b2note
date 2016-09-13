@@ -60,7 +60,7 @@
 
                             <li>
 
-                                <form action="../export_annotations" method="post">
+                                <form action="export_annotations" method="post">
 
                                     <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
                                     <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
@@ -73,7 +73,7 @@
 
                             <li>
 
-                                <form action="../publish_annotations" method="post">
+                                <form action="publish_annotations" method="post">
 
                                     <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
                                     <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
@@ -85,7 +85,7 @@
 
                             <li>
 
-                                <form action="../settings" method="post">
+                                <form action="settings" method="post">
 
                                     <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
                                     <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
@@ -158,21 +158,14 @@
                 <h3>Create annotation</h3>
 
                 <!-- http://stackoverflow.com/questions/18036315/centering-bootstrap-input-fields -->
-                <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" href="#keyword">keyword</a></li>
-                    <li><a data-toggle="tab" href="#comment">comment</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div id="keyword" class="tab-pane fade in active form-group">
-                        <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"  placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
-                    </div>
-                    <div id="comment" class="tab-pane fade form-group">
-                        <div class="input-group">
-                            <textarea class="form-control custom-control" rows="2" id="free-text" placeholder="Type a comment"></textarea>
-                            <span class="input-group-addon btn btn-primary" onClick="get_free_text()">Send</span>
-                        </div>
-                    </div>
+
+
+                <div class="form-group">
+
+                    <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"  placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
+
                 </div>
+
             </div>
 
             <div class="container" id="section_existing">
@@ -194,11 +187,11 @@
 
                                         {% for body in annotation.body %}
 
-                                            {% if body.jsonld_id or body.value %}
+                                            {% if body.jsonld_id and body.value %}
 
                                                 <tr>
 
-                                                    <form action="../delete_annotation" method="post">
+                                                    <form action="delete_annotation" method="post">
 
                                                         <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
                                                         <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
