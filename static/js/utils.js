@@ -51,3 +51,28 @@ function hide_iframe() {
 	window.parent.document.getElementById('b2note_iframe').style.border = "0px";
 	window.parent.document.getElementById('b2note_iframe').style.visibility = "hidden";
 }
+
+/**
+ * Get the free text when creating a annotation
+ * 
+ */
+function get_free_text() {
+    var text = document.getElementById("free-text").value;
+    var elem = document.getElementById("section_subject");
+    var subject = "";
+    if (elem) {
+        subject = elem.getElementsByTagName("a")[0].innerHTML;
+    }
+    // abremaud@esciencefactory.com, 20160129
+    // gets the pid selected to provide the pid_tofeed field
+    var pid = "test";
+    if (elem) {
+        pid = elem.getElementsByTagName("a")[1].innerHTML;
+    }
+    $.redirect('../create_annotation',
+               {
+               free_text: text,
+               subject_tofeed: subject,
+               pid_tofeed: pid,
+               });
+}
