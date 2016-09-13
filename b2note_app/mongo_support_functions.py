@@ -177,13 +177,13 @@ def CreateSemanticTag( subject_url, object_json ):
     object_uri   = ""
     object_label = ""
     
-    my_id = CreateAnnotation(subject_url)
-    
-    if my_id == None:
-        print "Could not save semantic tag to DB"
-        return False
-    
     try:
+        my_id = CreateAnnotation(subject_url)
+    
+        if not my_id:
+            print "Could not save semantic tag to DB"
+            return False
+
         o = json.loads(object_json)
 
         if "uris" in o.keys():
@@ -202,6 +202,8 @@ def CreateSemanticTag( subject_url, object_json ):
             print "Created semantic tag annotation"
             return annotation.id
 
+            print "Created semantic tag annotation"
+            return annotation.id
         else:
             print "The object does not contain URI as a key."
             return False
@@ -227,24 +229,22 @@ def CreateFreeText( subject_url, text ):
             text (str): Free text introduced by the user
         
         returns:
-            bool: True if successful, False otherwise.
+            bool: id of the document created, False otherwise.
     """
-    my_id = CreateAnnotation(subject_url)
-    
-    if my_id == None:
-        print "Could not save free text to DB"
-        return False
-    
-    try:
-        if type(text) is unicode and len(text)>0:
 
+    try:
+        my_id = CreateAnnotation(subject_url)
+    
+        if not my_id:
+            print "Could not save free text to DB"
+            return False
+    
+        if type(text) is unicode and len(text)>0:
             annotation = Annotation.objects.get(id=my_id)
             annotation.body = [TextualBody( type = ["TextualBody"], value = text )]
             annotation.save()
-
             print "Created free text annotation"
             return annotation.id
-
         else:
             print "Wrong text codification or empty text"
             return False
@@ -284,11 +284,11 @@ def CreateAnnotation(target):
             return ann.id
         else:
             print "Bad target for CreateAnnotation"
-            return None
+            return False
     
     except ValueError:
         print "Could not save to DB"
-        return None
+        return False
         
 
 def CreateFromPOSTinfo( subject_url, object_json ):
