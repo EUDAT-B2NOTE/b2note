@@ -59,13 +59,12 @@ def RetrieveAnnotations( subject_url ):
             dic: Dictionary with the values of the annotations.
     """
     try:
-        annotations = Annotation.objects.filter(target__jsonld_id= subject_url)
-        #annotations = Annotation.objects.raw_query({'target.jsonld_id': subject_url})
+        annotations = Annotation.objects.raw_query({'target.jsonld_id': subject_url})
     
     except Annotation.DoesNotExist:
         annotations = []
 
-    #annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
+    annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
     
     return annotations
 
@@ -293,7 +292,7 @@ def CreateAnnotation(target):
     try:
         if target and isinstance(target, (str, unicode)) and len(target)>0:
             ann = Annotation(
-                context  = ["http://www.w3.org/ns/anno.jsonld"],
+                jsonld_context  = ["http://www.w3.org/ns/anno.jsonld"],
                 type         = ["Annotation"],
                 target       = [ExternalResource( jsonld_id = target )]
                 )
@@ -375,7 +374,7 @@ def CreateFromPOSTinfo( subject_url, object_json ):
                 # ).save()
 
                 ann = Annotation(
-                    context  = ["http://www.w3.org/ns/anno.jsonld"],
+                    jsonld_context  = ["http://www.w3.org/ns/anno.jsonld"],
                     jsonld_id       = "https://b2note.bsc.es/annotation/temporary_id",
                     type            = ["Annotation"],
                     target          = [ExternalResource( jsonld_id = subject_url )]

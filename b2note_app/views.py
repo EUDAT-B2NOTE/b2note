@@ -409,5 +409,5 @@ def retrieve_annotations(request):
     annotations = RetrieveAnnotations(target_id)
     
     
-    return HttpResponse(vars(annotations))
+    return HttpResponse(annotations)
 
