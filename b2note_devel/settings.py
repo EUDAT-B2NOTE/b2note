@@ -31,17 +31,16 @@ DATABASES = {
     },
     'users' : {
         'ENGINE' : 'django.db.backends.sqlite3',
-        'NAME' : 'users.sqlite3',
-        'USER' : 'b2note',
-        'PASSWORD' : 'abc123',
-        'HOST' : '',
-        'PORT' : '',
+        'NAME' : os.environ['SQLDB_NAME'],
+        'USER' : os.environ['SQLDB_USR'],
+        'PASSWORD' :  os.environ['SQLDB_PWD'],
     }
 }
 
 # This will substitute the default User model
 # https://docs.djangoproject.com/en/dev/topics/auth/customizing/#substituting-a-custom-user-model
 AUTH_USER_MODEL = 'accounts.UserCred'
+AUTHENTICATION_BACKENDS = ['accounts.backends.EmailAuthBackend', ]
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
