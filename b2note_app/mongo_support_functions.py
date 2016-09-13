@@ -5,28 +5,6 @@ from .models import *
 
 import os, datetime, json
 
-def  RetrieveAnnotations( subject_url ):
-    """
-      Function: RetrieveAnnotations
-      ----------------------------
-        Retrieves all annotations for a given file.
-        
-        params:
-            subject_url (str): ID of the file.
-        
-        returns:
-            dic: Dictionary with the values of the annotations.
-    """
-    try:        
-        annotations = Annotation.objects.raw_query({'target.jsonld_id': subject_url})
-    
-    except Annotation.DoesNotExist:
-        annotations = []
-
-    annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
-    
-    return annotations
-
 
 def DeleteFromPOSTinfo( db_id ):
     """
@@ -42,7 +20,7 @@ def DeleteFromPOSTinfo( db_id ):
     """
     del_flag = False
     try:
-        if db_id and isinstance(db_id, (str, unicode)) and len(db_id)>0:
+        if db_id and type(db_id) is unicode and len(db_id)>0:
             Annotation.objects.get(id=db_id).delete()
             del_flag = True
         else:
@@ -70,63 +48,37 @@ def CreateSemanticTag( subject_url, object_json ):
         returns:
             bool: True if successful, False otherwise.
     """
+    object_uri   = ""
+    object_label = ""
+    
+    my_id = CreateAnnotation(subject_url)
+    
+    if my_id == None:
+        print "Could not save semantic tag to DB"
+        return False
     
     try:
-        if subject_url and isinstance(subject_url, (str, unicode)):
-            my_id = None
-            my_id = CreateAnnotation(subject_url)
-    
-            if my_id:
-                if object_json and isinstance(object_json, (str, unicode)):
-                    o = None
-                    o = json.loads(object_json)
-                    
-                    if o and isinstance(o, dict):
-                        if "uris" in o.keys():
-                            if o["uris"] and isinstance(o["uris"], (str, unicode)):
-                                object_uri   = ""
-                                object_label = ""
-                                object_uri = o["uris"]
-                                
-                                if "labels" in o.keys():
-                                    if o["labels"] and isinstance(o["labels"], (str, unicode)):
-                                        object_label = o["labels"]
+        o = json.loads(object_json)
 
-                                #print object_label, " ", object_uri        
-                                
-                                annotation = None
-                                annotation = Annotation.objects.get(id=my_id)
-                                if annotation:
-                                    annotation.body = [TextualBody( jsonld_id = object_uri, type = ["TextualBody"], value = object_label )]
-                                    annotation.save()
-                                    print "Created semantic tag annotation"
-                                    return annotation.id
-                                else:
-                                    print "Could not retrieve from DB the annotation-basis with below id:"
-                                    print my_id
-                                    return False
-                            else:
-                                print "Dictionary field at key 'uris' does not resolve in a valid string."
-                                return False
-                        else:
-                            print "Dictionary does not contain a field with key 'uris'."
-                            return False
-                    else:
-                        print "Provided json does not load as a python dictionary."
-                        return False
-                else:
-                    print "Provided json object is neither string nor unicode."
-                    return False
-            else:
-                print "Internal call to CreateAnnotation function did not return an exploitable id reference."
-                return False
+        if "uris" in o.keys():
+            object_uri = o["uris"]
+            if "labels" in o.keys(): object_label = o["labels"]
+
+            print object_label, " ", object_uri        
+            
+            annotation = Annotation.objects.get(id=my_id)
+            annotation.body = [TextualBody( jsonld_id = object_uri, type = ["TextualBody"], value = object_label )]
+            annotation.save()
         else:
-            print "Provided parameter is not a valid string for subject_url."
+            print "The object does not contain URI as a key."
             return False
 
     except ValueError:
         print "Could not save to DB a semantic tag"
         return False
+
+    print "Created semantic tag annotation"
+    return True
 
 def CreateFreeText( subject_url, text ):
     """
@@ -139,22 +91,19 @@ def CreateFreeText( subject_url, text ):
             text (str): Free text introduced by the user
         
         returns:
-            bool: id of the document created, False otherwise.
+            bool: True if successful, False otherwise.
     """
+    my_id = CreateAnnotation(subject_url)
+    
+    if my_id == None:
+        print "Could not save free text to DB"
+        return False
     
     try:
-        my_id = CreateAnnotation(subject_url)
-    
-        if not my_id:
-            print "Could not save free text to DB"
-            return False
-    
-        if isinstance(text, (str, unicode)) and len(text)>0: 
+        if type(text) is unicode and len(text)>0: 
             annotation = Annotation.objects.get(id=my_id)
             annotation.body = [TextualBody( type = ["TextualBody"], value = text )]
             annotation.save()
-            print "Created free text annotation"
-            return annotation.id
         else:
             print "Wrong text codification or empty text"
             return False
@@ -162,6 +111,9 @@ def CreateFreeText( subject_url, text ):
     except ValueError:
         print "Could not save to DB a free text"
         return False
+
+    print "Created free text annotation"
+    return True
 
 
 def CreateAnnotation(target):
@@ -177,7 +129,7 @@ def CreateAnnotation(target):
             int: id of the document created.
     """
     try:
-        if target and isinstance(target, (str, unicode)) and len(target)>0:
+        if target and type(target) is unicode and len(target)>0:
             ann = Annotation(
                 jsonld_context  = ["http://www.w3.org/ns/anno.jsonld"],
                 type         = ["Annotation"],
@@ -191,11 +143,11 @@ def CreateAnnotation(target):
             return ann.id
         else:
             print "Bad target for CreateAnnotation"
-            return False
+            return None
     
     except ValueError:
         print "Could not save to DB"
-        return False
+        return None
         
 
 def CreateFromPOSTinfo( subject_url, object_json ):
@@ -216,7 +168,7 @@ def CreateFromPOSTinfo( subject_url, object_json ):
 
     try:
 
-        if subject_url and isinstance(subject_url, (str, unicode)) and len(subject_url)>0:
+        if subject_url and type(subject_url) is unicode and len(subject_url)>0:
 
             o = json.loads(object_json)
 

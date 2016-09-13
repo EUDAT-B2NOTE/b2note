@@ -1,7 +1,7 @@
 import json
 import os
 
-from django.shortcuts import render, render_to_response, redirect
+from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
@@ -255,11 +255,9 @@ def create_annotation(request):
         output:
             object: HttpResponse with the annotations.
     """
+
     if request.POST.get('ontology_json'):
         CreateSemanticTag( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
-    
-    if request.POST.get('free_text'):
-        CreateFreeText( request.POST.get('subject_tofeed'), request.POST.get('free_text') )
 
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
@@ -329,24 +327,3 @@ def interface_main(request):
 @csrf_exempt
 def search_annotations(request):
     return HttpResponse("Search annotations functionality is coming.")
-
-@csrf_exempt
-def retrieve_annotations(request):
-    """
-      Function: retrieve_annotations
-      ----------------------------
-        Retrieves a jsonld with annotations matching with the file in the request
-        
-        input:
-            request (object): context of the petition.
-        
-        output:
-            object: jsonld
-    """
-    target_id = ""
-    if request.GET.get('target_id') != None:
-        target_id = request.GET.get('target_id')
-    
-    annotations = RetrieveAnnotations(target_id)
-    
-    return HttpResponse(annotations)

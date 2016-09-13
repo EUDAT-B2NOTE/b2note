@@ -2,4 +2,3 @@ mongoengine==0.10.6
 pymongo==3.2.2
 pysolr==3.5.0
 requests==2.10.0
-django-countries==4.0
