@@ -5,20 +5,48 @@ from django.shortcuts import render, render_to_response, redirect
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from django.conf import settings as global_settings
+from django.forms.models import model_to_dict
 
 from collections import OrderedDict
 
 from .mongo_support_functions import *
 from .models import *
 
+from accounts.models import AnnotatorProfile
+from accounts.forms import ProfileForm
+
 
 def index(request):
     return HttpResponse("replace me with index text")
 
 
+@login_required
+def profilepage(request):
+    """
+    User profile view.
+    """
+    try:
+        if request.session.get("user"):
+            userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+            form = ProfileForm(initial = model_to_dict(userprofile) )
+
+            annotation_list = RetrieveAnnotations_perUsername( userprofile.nickname )
+
+            context = RequestContext(request, {'annotation_list': annotation_list})
+
+            return render_to_response('b2note_app/profilepage.html', {'form': form}, context_instance=context)
+        else:
+            return redirect('/')
+    except Exception:
+        print "Could not load or redirect from profilepage view."
+        return False
+
+
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
+@login_required
 def export_annotations(request):
     """
       Function: export_annotations
@@ -65,6 +93,7 @@ def export_annotations(request):
     return render(request, 'b2note_app/export.html', {'annotations_json': json.dumps(response, indent=2),"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 
 
+@login_required
 def download_json(request):
     """
       Function: download_json
@@ -82,6 +111,7 @@ def download_json(request):
 
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
+@login_required
 def publish_annotations(request):
     """
       Function: publish_annotations
@@ -110,6 +140,7 @@ def publish_annotations(request):
 
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
+@login_required
 def settings(request):
     """
       Function: settings
@@ -201,6 +232,7 @@ Influence of smoking and obesity in sperm quality
 
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
+@login_required
 def delete_annotation(request):
     """
       Function: delete_annotation
@@ -243,6 +275,7 @@ def delete_annotation(request):
 
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
+@login_required
 def create_annotation(request):
     """
       Function: create_annotation
@@ -255,11 +288,21 @@ def create_annotation(request):
         output:
             object: HttpResponse with the annotations.
     """
+    ann_id1 = None
+    ann_id2 = None
     if request.POST.get('ontology_json'):
-        CreateSemanticTag( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
-    
+        ann_id1 = CreateSemanticTag( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
+        if request.session.get('user'):
+            ann_id2 = SetUserAsAnnotationCreator( request.session.get('user'), ann_id1 )
+        else:
+            print "No user in session, can not attribute creator to semantic tag annotation:", ann_id1
+
     if request.POST.get('free_text'):
-        CreateFreeText( request.POST.get('subject_tofeed'), request.POST.get('free_text') )
+        ann_id1 = CreateFreeText( request.POST.get('subject_tofeed'), request.POST.get('free_text') )
+        if request.session.get('user'):
+            ann_id2 = SetUserAsAnnotationCreator(request.session.get('user'), ann_id1 )
+        else:
+            print "No user in session, can not attribute creator to free text annotation:", ann_id1
 
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
@@ -300,13 +343,25 @@ def interface_main(request):
             object: HttpResponse with the iframe.
     """
 
+    request.session["is_console_access"] = True
+
     pid_tofeed = ""
     if request.POST.get('pid_tofeed')!=None:
         pid_tofeed = request.POST.get('pid_tofeed')
+        request.session["pid_tofeed"] = pid_tofeed
+    elif request.session.get('pid_tofeed'):
+        pid_tofeed = request.session.get('pid_tofeed')
 
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
         subject_tofeed = request.POST.get('subject_tofeed')
+        request.session["subject_tofeed"] = subject_tofeed
+    elif request.session.get('subject_tofeed'):
+        subject_tofeed = request.session.get('subject_tofeed')
+
+    if not request.session.get('user'):
+        context = RequestContext(request, {"subject_tofeed":subject_tofeed, "pid_tofeed":pid_tofeed})
+        return redirect('accounts/login', context=context)
 
     #http://stackoverflow.com/questions/5508888/matching-query-does-not-exist-error-in-django
     try:
@@ -326,11 +381,15 @@ def interface_main(request):
     })
     return render_to_response('b2note_app/interface_main.html', context)
 
+
 @csrf_exempt
+@login_required
 def search_annotations(request):
     return HttpResponse("Search annotations functionality is coming.")
 
+
 @csrf_exempt
+@login_required
 def retrieve_annotations(request):
     """
       Function: retrieve_annotations

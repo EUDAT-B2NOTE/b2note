@@ -1,11 +1,52 @@
 import re, datetime
 import json, bson
 
+from django.contrib.auth import get_user
+
 from .models import *
+from accounts.models import AnnotatorProfile
 
 import os, datetime, json
 
-def  RetrieveAnnotations( subject_url ):
+
+
+def RetrieveAnnotations_perUsername( nickname=None ):
+    """
+      Function: RetrieveAnnotations_perUsername
+      ----------------------------
+        Retrieves all annotations having creator.nickname for a given file.
+
+        params:
+            subject_url (str): ID of the file.
+
+        returns:
+            dic: Dictionary with the values of the annotations.
+    """
+    try:
+
+        if nickname and isinstance(nickname, (str, unicode)):
+
+            annotations = Annotation.objects.raw_query({'creator.nickname': nickname})
+
+            #annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
+
+            print "RetrieveAnnotations_perUsername function, returning annotations."
+            return annotations
+
+        else:
+
+            print "RetrieveAnnotations_perUsername function, provided nickname not valid:", nickname
+            return False
+
+    except Annotation.DoesNotExist:
+        "RetrieveAnnotations_perUsername function did not complete."
+        return False
+
+    print "RetrieveAnnotations_perUsername function did not complete succesfully."
+    return False
+
+
+def RetrieveAnnotations( subject_url ):
     """
       Function: RetrieveAnnotations
       ----------------------------
@@ -57,6 +98,69 @@ def DeleteFromPOSTinfo( db_id ):
     print "Could not remove from DB"
     return False
 
+
+def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
+    """
+      Function: SetUserAsAnnotationCreator
+      ----------------------------
+        Sets annotator profile corresponding to user_id input parameter
+            as creator agent of annotation document with id matching db_id
+            input parameter.
+
+        params:
+            user_id (int): sqlite3 primary key of annotator profile model.
+            db_id (unicode): mongodb document id.
+
+        returns:
+            Annotation mongodb document id as unicode if succesful, False otherwise.
+    """
+    try:
+
+        if user_id and isinstance(user_id, int) and user_id>=0:
+
+            ap = None
+
+            ap = AnnotatorProfile.objects.using('users').get(annotator_id=user_id)
+
+            if ap and ap.nickname and isinstance(ap.nickname, (str, unicode)):
+
+                if db_id and isinstance(db_id, (str, unicode)):
+
+                    annotation = None
+
+                    annotation = Annotation.objects.get(id=db_id)
+
+                    if annotation:
+
+                        annotation.creator = [Agent(
+                            type = ['Human agent'],
+                            nickname = str(ap.nickname)
+                        )]
+                        annotation.save()
+
+                        print "User with nickname", str(ap.nickname) ,", set as annotation", annotation.id ,"creator"
+                        return annotation.id
+
+                    else:
+                        print "SetUserAsAnnotationCreator function, no annotation were found matching this id:", str(db_id)
+
+                else:
+                    print "SetUserAsAnnotationCreator function, provided parameter for annotation id invalid."
+
+            else:
+                print "SetUserAsAnnotationCreator function, no registered annotator profile with id:", user_id
+
+        else:
+            print "SetCurrentUserAsAnnotationCreator function, provided parameter for annotator profile id invalid."
+
+    except Exception:
+        print "SetUserAsAnnotationCreator function did not complete."
+        return False
+
+    print "SetUserAsAnnotationCreator function did not complete succesfully."
+    return False
+
+
 def CreateSemanticTag( subject_url, object_json ):
     """
       Function: CreateSemanticTag
@@ -80,20 +184,20 @@ def CreateSemanticTag( subject_url, object_json ):
                 if object_json and isinstance(object_json, (str, unicode)):
                     o = None
                     o = json.loads(object_json)
-                    
+
                     if o and isinstance(o, dict):
                         if "uris" in o.keys():
                             if o["uris"] and isinstance(o["uris"], (str, unicode)):
                                 object_uri   = ""
                                 object_label = ""
                                 object_uri = o["uris"]
-                                
+
                                 if "labels" in o.keys():
                                     if o["labels"] and isinstance(o["labels"], (str, unicode)):
                                         object_label = o["labels"]
 
-                                #print object_label, " ", object_uri        
-                                
+                                #print object_label, " ", object_uri
+
                                 annotation = None
                                 annotation = Annotation.objects.get(id=my_id)
                                 if annotation:
@@ -125,8 +229,14 @@ def CreateSemanticTag( subject_url, object_json ):
             return False
 
     except ValueError:
-        print "Could not save to DB a semantic tag"
+        print "CreateSemanticTag function did not complete."
         return False
+
+    print "CreateSemanticTag function did not complete succesfully."
+    return False
+
+
+
 
 def CreateFreeText( subject_url, text ):
     """
@@ -160,8 +270,11 @@ def CreateFreeText( subject_url, text ):
             return False
 
     except ValueError:
-        print "Could not save to DB a free text"
+        print "CreateFreeText function did not complete."
         return False
+
+    print "CreateFreeText function did not complete succesfully."
+    return False
 
 
 def CreateAnnotation(target):

@@ -16,9 +16,10 @@ class UserCred(AbstractBaseUser):
     REQUIRED_FIELDS = []
 
     objects = UserManager()
-                            
+
     def __str__(self):
-         return self.username
+         return str(self.username)
+
 
 
 class AnnotatorProfile(models.Model):
