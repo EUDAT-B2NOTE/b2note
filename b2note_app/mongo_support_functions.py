@@ -83,7 +83,7 @@ def DeleteFromPOSTinfo( db_id ):
     """
     del_flag = False
     try:
-        if db_id and type(db_id) is unicode and len(db_id)>0:
+        if db_id and isinstance(db_id, (str, unicode)) and len(db_id)>0:
             Annotation.objects.get(id=db_id).delete()
             del_flag = True
         else:
@@ -177,8 +177,7 @@ def CreateSemanticTag( subject_url, object_json ):
     object_uri   = ""
     object_label = ""
     
-    try:
-        my_id = CreateAnnotation(subject_url)
+    my_id = CreateAnnotation(subject_url)
     
         if not my_id:
             print "Could not save semantic tag to DB"
@@ -198,10 +197,6 @@ def CreateSemanticTag( subject_url, object_json ):
                 type = ["TextualBody"],
                 value = object_label )]
             annotation.save()
-
-            print "Created semantic tag annotation"
-            return annotation.id
-
             print "Created semantic tag annotation"
             return annotation.id
         else:
@@ -239,12 +234,10 @@ def CreateFreeText( subject_url, text ):
             print "Could not save free text to DB"
             return False
     
-        if type(text) is unicode and len(text)>0:
+        if isinstance(text, (str, unicode)) and len(text)>0:
             annotation = Annotation.objects.get(id=my_id)
             annotation.body = [TextualBody( type = ["TextualBody"], value = text )]
             annotation.save()
-            print "Created free text annotation"
-            return annotation.id
         else:
             print "Wrong text codification or empty text"
             return False
@@ -270,7 +263,7 @@ def CreateAnnotation(target):
             int: id of the document created.
     """
     try:
-        if target and type(target) is unicode and len(target)>0:
+        if target and isinstance(target, (str, unicode)) and len(target)>0:
             ann = Annotation(
                 jsonld_context  = ["http://www.w3.org/ns/anno.jsonld"],
                 type         = ["Annotation"],
@@ -284,11 +277,11 @@ def CreateAnnotation(target):
             return ann.id
         else:
             print "Bad target for CreateAnnotation"
-            return False
+            return None
     
     except ValueError:
         print "Could not save to DB"
-        return False
+        return None
         
 
 def CreateFromPOSTinfo( subject_url, object_json ):
@@ -309,7 +302,7 @@ def CreateFromPOSTinfo( subject_url, object_json ):
 
     try:
 
-        if subject_url and type(subject_url) is unicode and len(subject_url)>0:
+        if subject_url and isinstance(subject_url, (str, unicode)) and len(subject_url)>0:
 
             o = json.loads(object_json)
 
