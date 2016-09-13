@@ -73,3 +73,8 @@ db.*
 
 # VI temp files
 .*.swp
+# Kate temp files
+*.kate-swp
+
+# Accounts DB
+*.sqlite3
