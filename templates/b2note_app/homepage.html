@@ -54,6 +54,15 @@
 
 	</header>
 
+	<div class = "container">
+
+		<!-- http://stackoverflow.com/questions/12102464/how-do-i-make-iframes-load-only-on-a-button-click -->
+		<iframe id="b2note_iframe" name="b2note_iframe" src="interface_main"
+			width="0" onload="load_iframe()"
+			scrolling="no"></iframe>
+
+	</div>
+
 	<div class="container" id="profilepage_title">
 
 		<div class="row">
@@ -101,7 +110,24 @@
 						<table class="table table-responsive table-striped">
 
 						<tr>
-							<td colspan="4"  title="{{ f }}"><a href="{{f}}"><small><img src="{% static "images/Link_icon.svg" %}" width="20px" alt="File IRI"/>{{ f }}</small></a></td>
+
+							<td title="{{ f }}" colspan="3"><img src="{% static "images/Link_icon.svg" %}" height="24px" alt="File IRI"/><a href="{{f}}">{{ f }}</a></td>
+
+							<td>
+
+								<form action="/interface_main" method="post" target="b2note_iframe">
+
+									{% csrf_token %}
+
+									<input type="hidden" name="subject_tofeed" value="{{ f }}" class="field left" readonly="readonly" />
+    	                            <input type="hidden" name="pid_tofeed" value="unknown pid" class="field left" readonly="readonly" />
+
+									<input type="image" src="{% static "images/green_plus_sign.svg" %}" height="30px" alt="Add" title="Add annotation"/>
+
+								</form>
+
+							</td>
+
 						</tr>
 
 						{% for ann in annotation_list %}

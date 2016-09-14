@@ -48,7 +48,7 @@ def login(request):
                     if ica:
                         return redirect('/interface_main')
                     else:
-                        return redirect('/profilepage')
+                        return redirect('/homepage')
     else:
         form = AuthenticationForm()
 

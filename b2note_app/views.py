@@ -46,7 +46,7 @@ def homepage(request):
         else:
             return redirect('/accounts/logout')
     except Exception:
-        print "Could not load or redirect from profilepage view."
+        print "Could not load or redirect from homepage view."
         return False
 
 
