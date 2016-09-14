@@ -58,9 +58,9 @@
 
 		<div class="row">
 
-			<div class="col-sm-2">
+			<div class="col-sm-8">
 
-				<h2>Homepage</h2>
+				<h2>{{ userprofile.nickname }}'s homepage</h2>
 
 			</div>
 
@@ -68,9 +68,15 @@
 
 		<div class="row">
 
-			<div class="col-sm-2 col-sm-offset-2">
+			<div class="col-sm-2">
 
-				<a href="accounts/logout">Logout</a>
+				<a href="accounts/profilepage">Profile page</a>
+
+			</div>
+
+			<div class="col-sm-4 col-sm-offset-2">
+
+				<a href="accounts/logout"><p class="text-right">Logout</p></a>
 
 			</div>
 
@@ -84,38 +90,18 @@
 
 		<div class="row">
 
-			<div class="container" id="profileform">
-
-				<form action="register" method="post" class="form-horizontal">
-
-					{% for f in form %}
-
-					<div class="form-group">
-						<label class="control-label col-sm-2">{{ f.label }}:</label>
-
-						<div class="col-sm-4">
-							<input type="text" class="form-control" id="some-id" value="{{ f.value }}" readonly="readonly"/>
-						</div>
-					</div>
-
-					{% endfor %}
-
-				</form>
-
-			</div>
-
 			<div class="container" id="annotations_table">
 
-				<div class="col-sm-6">
+				<div class="col-sm-8">
 
-					<h3>My annotations</h3>
+					<h3>{{ userprofile.nickname }}'s annotations (by target file)</h3>
 
 					{% for f in file_list %}
 
 						<table class="table table-responsive table-striped">
 
 						<tr>
-							<td colspan="3"  title="{{ f }}"><a href="{{f}}"><small><img src="{% static "images/Link_icon.svg" %}" width="20px" alt="File IRI"/>{{ f }}</small></a></td>
+							<td colspan="4"  title="{{ f }}"><a href="{{f}}"><small><img src="{% static "images/Link_icon.svg" %}" width="20px" alt="File IRI"/>{{ f }}</small></a></td>
 						</tr>
 
 						{% for ann in annotation_list %}
@@ -153,6 +139,8 @@
 											<td title="Created: {{ ann.created|date:"d/m/Y" }} {{ ann.created|time:"H:i" }}">
 												<p class="text-right"><small> {{ ann.created|date:"d/m/Y" }} </small></p>
 											</td>
+
+											<td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" height="16px" title="Delete annotation" alt="Delete annotation" /></td>
 
 										</tr>
 

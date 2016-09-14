@@ -23,7 +23,7 @@ def index(request):
 
 
 @login_required
-def profilepage(request):
+def homepage(request):
     """
     User profile view.
     """
@@ -31,7 +31,6 @@ def profilepage(request):
         if request.session.get("user"):
 
             userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
-            form = ProfileForm(initial = model_to_dict(userprofile) )
 
             annotation_list = RetrieveAnnotations_perUsername( userprofile.nickname )
 
@@ -39,10 +38,13 @@ def profilepage(request):
 
             file_list = set([k.target[0].jsonld_id for k in file_list])
 
-            context = RequestContext(request, {'annotation_list': annotation_list, 'file_list': file_list})
-            return render_to_response('b2note_app/profilepage.html', {'form': form}, context_instance=context)
+            context = RequestContext(request, {
+                'userprofile': userprofile,
+                'annotation_list': annotation_list,
+                'file_list': file_list})
+            return render_to_response('b2note_app/homepage.html', context_instance=context)
         else:
-            return redirect('/')
+            return redirect('/accounts/logout')
     except Exception:
         print "Could not load or redirect from profilepage view."
         return False
