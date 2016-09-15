@@ -1,5 +1,4 @@
 {
- "@context": {
     "oa":      "http://www.w3.org/ns/oa#",
     "dc":      "http://purl.org/dc/elements/1.1/",
     "dcterms": "http://purl.org/dc/terms/",
@@ -124,5 +123,4 @@
     "end":           {"@id": "oa:end", "@type": "xsd:nonNegativeInteger"},
     "total":         {"@id": "as:totalItems", "@type": "xsd:nonNegativeInteger"},
     "startIndex":    {"@id": "as:startIndex", "@type": "xsd:nonNegativeInteger"}
-  }
 }

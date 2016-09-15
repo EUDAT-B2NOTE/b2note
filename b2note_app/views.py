@@ -7,6 +7,7 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.conf import settings as global_settings
+from django.core import serializers
 from django.forms.models import model_to_dict
 
 from collections import OrderedDict
@@ -15,7 +16,6 @@ from .mongo_support_functions import *
 from .models import *
 
 from accounts.models import AnnotatorProfile
-from accounts.forms import ProfileForm
 
 
 def index(request):
@@ -44,6 +44,7 @@ def homepage(request):
                 'file_list': file_list})
             return render_to_response('b2note_app/homepage.html', context_instance=context)
         else:
+            print "Redirecting from homepage view."
             return redirect('/accounts/logout')
     except Exception:
         print "Could not load or redirect from homepage view."
@@ -65,38 +66,48 @@ def export_annotations(request):
         output:
             object: HttpResponse with the result of the request.
     """
-    subject_tofeed = ""
-    if request.POST.get('subject_tofeed')!=None:
-        subject_tofeed = request.POST.get('subject_tofeed')
+    try:
+        subject_tofeed = ""
+        if request.POST.get('subject_tofeed')!=None:
+            subject_tofeed = request.POST.get('subject_tofeed')
 
-    pid_tofeed = ""
-    if request.POST.get('pid_tofeed')!=None:
-        pid_tofeed = request.POST.get('pid_tofeed')
+        pid_tofeed = ""
+        if request.POST.get('pid_tofeed')!=None:
+            pid_tofeed = request.POST.get('pid_tofeed')
 
-    annotation_list = [dict(item) for item in Annotation.objects.all().values()]
+        #annotation_list = [dict(item) for item in Annotation.objects.all().values()]
 
-    #annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.created, reverse=True)
+        if request.session.get("user"):
 
-    """
-    abremaud@esciencedatala.com, 20160303
-    Upon testing on json-ld online playground, none of the URLs provided in current
-     web annotation specification document allowed the context to be retrieved
-     with likely origin of trouble being CORS.
-    As a consequence we resort here to embedding rather than linking to the context.
-    """
-    context_str = open(os.path.join(global_settings.STATIC_PATH, 'files/anno_context.jsonld'), 'r').read()
+            userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
 
-    response = {"@context": json.loads( context_str, object_pairs_hook=OrderedDict ) }
+            annotation_list = RetrieveAnnotations_perUsername(userprofile.nickname)
 
-    response["@graph"] = readyQuerySetValuesForDumpAsJSONLD( annotation_list )
+            """
+            abremaud@esciencedatalab.com, 20160303
+            Upon testing on json-ld online playground, none of the URLs provided in current
+             web annotation specification document allowed the context to be retrieved
+             with likely origin of trouble being CORS.
+            As a consequence we resort here to embedding rather than linking to the context.
+            """
+            context_str = open(os.path.join(global_settings.STATIC_PATH, 'files/anno_context.jsonld'), 'r').read()
 
+            response = {"@context": json.loads( context_str, object_pairs_hook=OrderedDict ) }
 
-    # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
-    json_data = HttpResponse(json.dumps(response, indent=2), mimetype= 'application/json')
-    json_data['Content-Disposition'] = 'attachment; filename=annotations.json'
-    download_json.file_data = json_data
-    
-    return render(request, 'b2note_app/export.html', {'annotations_json': json.dumps(response, indent=2),"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+            response["@graph"] = readyQuerySetValuesForDumpAsJSONLD( annotation_list )
+
+            # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
+            json_data = HttpResponse(json.dumps(response, indent=2), mimetype= 'application/json')
+            json_data['Content-Disposition'] = 'attachment; filename=annotations.json'
+            download_json.file_data = json_data
+
+            return render(request, 'b2note_app/export.html', {'annotations_json': json.dumps(response, indent=2),"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+        else:
+            print "Redirecting from export view."
+            return redirect('/accounts/logout')
+    except Exception:
+        print "Could not export or redirect from export view."
+        return False
 
 
 @login_required
@@ -263,6 +274,10 @@ def delete_annotation(request):
     if request.POST.get('pid_tofeed')!=None:
         pid_tofeed = request.POST.get('pid_tofeed')
 
+    pagefrom = ""
+    if request.POST.get('pagefrom')!=None:
+        pagefrom = request.POST.get('pagefrom')
+
     try:
         annotation_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
     except Annotation.DoesNotExist:
@@ -275,7 +290,10 @@ def delete_annotation(request):
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
     })
-    return render_to_response('b2note_app/interface_main.html', context)
+    if pagefrom == 'homepage':
+        return redirect('/homepage')
+    else:
+        return render_to_response('b2note_app/interface_main.html', context)
 
 
 
@@ -318,6 +336,10 @@ def create_annotation(request):
     if request.POST.get('pid_tofeed')!=None:
         pid_tofeed = request.POST.get('pid_tofeed')
 
+    pagefrom = ""
+    if request.POST.get('pagefrom')!=None:
+        pagefrom = request.POST.get('pagefrom')
+
     try:
         annotation_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
     except Annotation.DoesNotExist:
@@ -330,8 +352,10 @@ def create_annotation(request):
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
     })
-    return render_to_response('b2note_app/interface_main.html', context)
-
+    if pagefrom == 'homepage':
+        return redirect('/homepage')
+    else:
+        return render_to_response('b2note_app/interface_main.html', context)
 
 
 # forbidden CSRF verification failed. Request aborted.
@@ -369,6 +393,10 @@ def interface_main(request):
         context = RequestContext(request, {"subject_tofeed":subject_tofeed, "pid_tofeed":pid_tofeed})
         return redirect('accounts/login', context=context)
 
+    pagefrom = ""
+    if request.POST.get('pagefrom')!=None:
+        pagefrom = request.POST.get('pagefrom')
+
     #http://stackoverflow.com/questions/5508888/matching-query-does-not-exist-error-in-django
     try:
         # https://blog.scrapinghub.com/2013/05/13/mongo-bad-for-scraped-data/
@@ -384,6 +412,7 @@ def interface_main(request):
         'annotation_list': annotation_list,
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
+        'pagefrom': pagefrom,
     })
     return render_to_response('b2note_app/interface_main.html', context)
 

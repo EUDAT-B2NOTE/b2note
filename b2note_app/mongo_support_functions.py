@@ -1,12 +1,10 @@
-import re, datetime
+import os, re, datetime
 import json, bson
-
-from django.contrib.auth import get_user
 
 from .models import *
 from accounts.models import AnnotatorProfile
 
-import os, datetime, json
+from django.forms.models import model_to_dict
 
 
 
@@ -27,6 +25,8 @@ def RetrieveAnnotations_perUsername( nickname=None ):
         if nickname and isinstance(nickname, (str, unicode)):
 
             annotations = Annotation.objects.raw_query({'creator.nickname': nickname})
+
+            annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
 
             print "RetrieveAnnotations_perUsername function, returning annotations."
             return annotations
@@ -296,7 +296,7 @@ def CreateAnnotation(target):
                 )
             ann.save()
             ann = Annotation.objects.get(id=ann.id)
-            ann.jsonld_id = "https://b2note.bsc.es/annotation/" + ann.id
+            ann.jsonld_id = "https://b2note.bsc.es/annotations/" + ann.id
             ann.save()
             print "CreateAnnotation with id: " + str(ann.id)
             return ann.id
@@ -420,11 +420,8 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
     o_out = None
 
     try:
-        if type(o_in) is tuple:
-            o_out = ()
-            for item in o_in:
-                if item and readyQuerySetValuesForDumpAsJSONLD( item ):
-                    o_out += ( readyQuerySetValuesForDumpAsJSONLD( item ), )
+        if type(o_in) is str or type(o_in) is unicode:
+            o_out = str(o_in)
         elif type(o_in) is list or type(o_in) is set:
             o_out = []
             for item in o_in:
@@ -438,14 +435,11 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
                     m = re.match(r'^jsonld_(.*)', k)
                     if m:
                         newkey = "@{0}".format(m.group(1))
+                    if newkey == "@id": newkey = "id"
                     o_out[newkey] = readyQuerySetValuesForDumpAsJSONLD( o_in[k] )
-        elif isinstance(o_in, datetime.datetime) or isinstance(o_in, datetime.datetime):
-            o_out = o_in.isoformat()
-        elif o_in and o_in != "None" and not re.match(r'^<class (.*)>', o_in):
-            o_out = str(o_in)
-        #if len(o_out) <= 0: o_out = None
+        elif not re.match(r'^<class (.*)>', str(o_in)):
+            o_out = readyQuerySetValuesForDumpAsJSONLD( model_to_dict(o_in) )
     except:
         o_out = None
         pass
-
     return o_out

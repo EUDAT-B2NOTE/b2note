@@ -118,41 +118,41 @@
 
                     {% csrf_token %}
 
-                        <tr class="row1" colspan="2">
+                    <tr class="row1" colspan="2">
 
-                            <td></td>
+                        <td></td>
 
-                        </tr>
+                    </tr>
 
-                        <tr class="row2">
+                    <tr class="row2">
 
-                            <td>
+                        <td>
 
-                                <input type="hidden" name="subject_tofeed" value="{{ file_info.file_url }}" class="field left" readonly="readonly" />
-                                <a href="{{ file_info.file_url }}" target="_blank">{{ file_info.link_label }}</a>
-                                <input type="hidden" name="pid_tofeed" value="{{ file_info.file_pid }}" class="field left" readonly="readonly" />
+                            <input type="hidden" name="subject_tofeed" value="{{ file_info.file_url }}" class="field left" readonly="readonly" />
+                            <a href="{{ file_info.file_url }}" target="_blank">{{ file_info.link_label }}</a>
+                            <input type="hidden" name="pid_tofeed" value="{{ file_info.file_pid }}" class="field left" readonly="readonly" />
 
-                            </td>
+                        </td>
 
-                            <td rowspan="2">
+                        <td rowspan="2">
 
-                                <input type="submit" id="{{ file_info.button_n }}" value="Create Annotation" title="Click to annotate hyperlink using B2Note." /></td>
-                        </tr>
+                            <input type="submit" id="{{ file_info.button_n }}" value="Create Annotation" title="Click to annotate hyperlink using B2Note." /></td>
+                    </tr>
 
-                        <tr class="row3">
+                    <tr class="row3">
 
-                            <td>{{ file_info.file_pid }}</td>
+                        <td>{{ file_info.file_pid }}</td>
 
-                        </tr>
+                    </tr>
 
-                        <tr class="row4" colspan="2">
+                    <tr class="row4" colspan="2">
 
-                            <td> </td>
-                            <td> </td>
+                        <td> </td>
+                        <td> </td>
 
-                        </tr>
+                    </tr>
 
-                    </form>
+                </form>
 
                 {% endfor %}
 

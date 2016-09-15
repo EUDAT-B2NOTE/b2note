@@ -50,7 +50,10 @@ def login(request):
                     else:
                         return redirect('/homepage')
     else:
-        form = AuthenticationForm()
+        if request.session.get("user"):
+            return redirect('/hostpage', context=RequestContext(request))
+        else:
+            form = AuthenticationForm()
 
     return render_to_response('accounts/login.html',{'form': form, 'is_console_access': ica},
                               context_instance=RequestContext(request, {

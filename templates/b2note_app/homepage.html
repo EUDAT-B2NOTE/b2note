@@ -54,14 +54,14 @@
 
 	</header>
 
-	<div class = "container">
+	<!--<div class = "container">
 
 		<!-- http://stackoverflow.com/questions/12102464/how-do-i-make-iframes-load-only-on-a-button-click -->
 		<iframe id="b2note_iframe" name="b2note_iframe" src="interface_main"
-			width="0" onload="load_iframe()"
+			width=0 onload="load_iframe()"
 			scrolling="no"></iframe>
 
-	</div>
+	<!--</div>-->
 
 	<div class="container" id="profilepage_title">
 
@@ -111,7 +111,10 @@
 
 						<tr>
 
-							<td title="{{ f }}" colspan="3"><img src="{% static "images/Link_icon.svg" %}" height="24px" alt="File IRI"/><a href="{{f}}">{{ f }}</a></td>
+							<td title="{{ f }}" colspan="3">
+								<img src="{% static "images/Link_icon.svg" %}" height="24px" alt="File IRI"/>
+								<a href="{{f}}" target="_blank">{{ f }}</a>
+							</td>
 
 							<td>
 
@@ -120,7 +123,8 @@
 									{% csrf_token %}
 
 									<input type="hidden" name="subject_tofeed" value="{{ f }}" class="field left" readonly="readonly" />
-    	                            <input type="hidden" name="pid_tofeed" value="unknown pid" class="field left" readonly="readonly" />
+    	                            <input type="hidden" name="pid_tofeed" value="untracked pid" class="field left" readonly="readonly" />
+									<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />
 
 									<input type="image" src="{% static "images/green_plus_sign.svg" %}" height="30px" alt="Add" title="Add annotation"/>
 
@@ -162,11 +166,22 @@
 
 											{% endif %}
 
-											<td title="Created: {{ ann.created|date:"d/m/Y" }} {{ ann.created|time:"H:i" }}">
+											<td title="Created: {{ ann.created|date:'d/m/Y' }} {{ ann.created|time:'H:i' }}">
 												<p class="text-right"><small> {{ ann.created|date:"d/m/Y" }} </small></p>
 											</td>
 
-											<td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" height="16px" title="Delete annotation" alt="Delete annotation" /></td>
+											<form action="/delete_annotation" method="post">
+
+												{% csrf_token %}
+
+												<input type="hidden" name="db_id" value="{{ann.id}}" readonly="readonly" />
+												<input type="hidden" name="subject_tofeed" value="{{ f }}" readonly="readonly" />
+												<input type="hidden" name="pid_tofeed" value="" readonly="readonly" />
+												<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />
+
+												<td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" height="16px" title="Delete annotation" alt="Delete annotation" /></td>
+
+											</form>
 
 										</tr>
 
