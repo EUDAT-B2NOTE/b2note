@@ -123,8 +123,28 @@ target = {
             }
 
 annotations = {
+                'allowed_filters': [
+                    'jsonld_id',
+                    'target.jsonld_id',
+                    'body.jsonld_id',
+                    'body.value',
+                    'creator.nickname',
+                    ],
                 'datasource' : {
-                    'source': 'b2note_app_annotation'
+                    'source': 'b2note_app_annotation',
+                    'projection': {
+                        'jsonld_id':1,
+                        'type':1,
+                        'target.jsonld_id': 1,
+                        'target.type':1,
+                        'body.jsonld_id':1,
+                        'body.type':1,
+                        'body.value':1,
+                        'created': 1,
+                        'modified': 1,
+                        'creator.nickname':1,
+                        'creator.type': 1,
+                        },
                     },
                 'schema' : {
                     '@context' : {
@@ -212,4 +232,6 @@ mongo_settings = {
         #'ALLOW_UNKNOWN' : True, # http://stackoverflow.com/questions/34666941/python-eve-get-response-does-not-contain-contents-of-resource-unless-i-specify
         'DEBUG' : True,
         'INFO'  : True,
+        
+        'ALLOWED_FILTERS' : [],
 }
