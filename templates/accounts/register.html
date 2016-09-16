@@ -68,7 +68,14 @@
 
             {% for f in form %}
 
-                {% if f.id_for_label|slice:"3:" == "country" %}
+                {% if f.id_for_label|slice:"3:" == "captcha_1" %}
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>
+                        {{ f }}
+                    </div>
+
+                {% elif f.id_for_label|slice:"3:" == "country" %}
 
                     <div class="form-group">
                         <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>

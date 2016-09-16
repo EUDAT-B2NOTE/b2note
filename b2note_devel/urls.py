@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('accounts.urls', namespace='accounts')),
     url(r'^$', 'accounts.views.login', name='index'),
     url(r'^login', 'accounts.views.login'),
+    url(r'^captcha/', include('captcha.urls')),
 
     url(r'^hostpage', 'b2note_app.views.hostpage'),
     url(r'^homepage$', 'b2note_app.views.homepage', name='homepage'),

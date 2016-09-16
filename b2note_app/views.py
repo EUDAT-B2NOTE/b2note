@@ -75,8 +75,6 @@ def export_annotations(request):
         if request.POST.get('pid_tofeed')!=None:
             pid_tofeed = request.POST.get('pid_tofeed')
 
-        #annotation_list = [dict(item) for item in Annotation.objects.all().values()]
-
         if request.session.get("user"):
 
             userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
