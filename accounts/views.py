@@ -71,7 +71,7 @@ def register(request):
         print form
         if form.is_valid():
             user = form.save()
-            return redirect('/logout')
+            return redirect('/accounts/logout')
         else:
             print form.errors
     else:

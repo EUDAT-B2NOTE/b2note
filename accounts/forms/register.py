@@ -20,7 +20,7 @@ class RegistrationForm(forms.ModelForm):
     country         = forms.ChoiceField( widget=forms.Select(), choices=sorted(COUNTRIES.items()) )
     annotator_exp   = forms.ChoiceField( widget=forms.Select(), choices=[('b','Beginner'),('i','Intermediate'),('e','Expert')], label="Annotator experience")
 
-    captcha = CaptchaField( output_format=u'%(text_field)s %(image)s %(hidden_field)s ')
+    captcha = CaptchaField()
 
     class Meta:
         model   = UserCred
