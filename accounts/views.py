@@ -2,10 +2,27 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 from django.contrib.auth.decorators import login_required
-from accounts.forms import AuthenticationForm, RegistrationForm
-from accounts.models import AnnotatorProfile
+from django.forms.models import model_to_dict
+from accounts.forms import AuthenticationForm, RegistrationForm, ProfileForm
+from accounts.models import AnnotatorProfile, UserCred
 
 # Create your views here.
+
+
+def profilepage(request):
+    """
+    User profile view.
+    """
+    try:
+        if request.session.get("user"):
+            userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+            form = ProfileForm(initial = model_to_dict(userprofile) )
+            return render_to_response('accounts/profilepage.html', {'form': form}, context_instance=RequestContext(request))
+        else:
+            return redirect('/logout')
+    except Exception:
+        print "Could not load or redirect from profilepage view."
+        return False
 
 
 def login(request):
@@ -31,9 +48,12 @@ def login(request):
                     if ica:
                         return redirect('/interface_main')
                     else:
-                        return redirect('/profilepage')
+                        return redirect('/homepage')
     else:
-        form = AuthenticationForm()
+        if request.session.get("user"):
+            return redirect('/hostpage', context=RequestContext(request))
+        else:
+            form = AuthenticationForm()
 
     return render_to_response('accounts/login.html',{'form': form, 'is_console_access': ica},
                               context_instance=RequestContext(request, {
@@ -48,9 +68,10 @@ def register(request):
     """
     if request.method == 'POST':
         form = RegistrationForm(data=request.POST)
+        print form
         if form.is_valid():
             user = form.save()
-            return redirect('/login.html')
+            return redirect('/logout')
         else:
             print form.errors
     else:
