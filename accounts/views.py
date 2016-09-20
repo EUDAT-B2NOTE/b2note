@@ -30,10 +30,9 @@ def login(request):
     Log in view
     """
 
-    if request.session.get("is_console_access") is not None:
+    ica = False
+    if request.session.get("is_console_access") is True:
         ica = True
-    else:
-        ica = False
 
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
@@ -48,6 +47,7 @@ def login(request):
                     if ica:
                         return redirect('/interface_main')
                     else:
+                        request.session["is_console_access"] = False
                         return redirect('/homepage')
     else:
         if request.session.get("user"):
@@ -71,7 +71,7 @@ def register(request):
         print form
         if form.is_valid():
             user = form.save()
-            return redirect('/logout')
+            return redirect('/accounts/logout')
         else:
             print form.errors
     else:

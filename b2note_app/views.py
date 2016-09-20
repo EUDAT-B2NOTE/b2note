@@ -75,8 +75,6 @@ def export_annotations(request):
         if request.POST.get('pid_tofeed')!=None:
             pid_tofeed = request.POST.get('pid_tofeed')
 
-        #annotation_list = [dict(item) for item in Annotation.objects.all().values()]
-
         if request.session.get("user"):
 
             userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
@@ -289,6 +287,7 @@ def delete_annotation(request):
         'annotation_list': annotation_list,
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
+        'pagefrom': pagefrom,
     })
     if pagefrom == 'homepage':
         return redirect('/homepage')
@@ -351,9 +350,10 @@ def create_annotation(request):
         'annotation_list': annotation_list,
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
+        'pagefrom': pagefrom,
     })
     if pagefrom == 'homepage':
-        return redirect('/homepage')
+        return redirect('/homepage', context_instance=context)
     else:
         return render_to_response('b2note_app/interface_main.html', context)
 
