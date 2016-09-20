@@ -60,6 +60,13 @@
 
                             <li>
 
+                                <!-- http://stackoverflow.com/questions/11828829/twitter-bootstrap-how-to-get-rid-of-underlined-button-text-when-hovering-over-a -->
+                                <a href="/homepage" target="_parent" class="btn btn-link" value="Homepage" title="User homepage">Home</a>
+
+                            </li>
+
+                            <li>
+
                                 <form action="/export_annotations" method="post">
 
                                     <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
@@ -203,6 +210,7 @@
                                                         <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
                                                         <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
                                                         <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+
 
                                                         {% if "http://" in body.jsonld_id %}
 
