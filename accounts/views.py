@@ -30,9 +30,33 @@ def login(request):
     Log in view
     """
 
-    ica = False
-    if request.session.get("is_console_access") is True:
-        ica = True
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = authenticate(email=request.POST['username'], password=request.POST['password'])
+            if user is not None:
+                if user.is_active:
+                    print type(user), isinstance(user, unicode), user
+                    django_login(request, user)
+                    print ">>>", user.annotator_id.annotator_id
+                    request.session["user"] = user.annotator_id.annotator_id
+                    return redirect('/homepage')
+    else:
+        if request.session.get("user"):
+            return redirect('/homepage', context=RequestContext(request))
+        else:
+            form = AuthenticationForm()
+
+    return render_to_response('accounts/login.html',{'form': form, 'is_console_access': False},
+                              context_instance=RequestContext(request, {
+                                  "pid_tofeed": request.session.get("pid_tofeed"),
+                                  "subject_tofeed": request.session.get("subject_tofeed")
+                              }))
+
+def consolelogin(request):
+    """
+    Log in view
+    """
 
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
@@ -44,18 +68,14 @@ def login(request):
                     django_login(request, user)
                     print ">>>", user.annotator_id.annotator_id
                     request.session["user"] = user.annotator_id.annotator_id
-                    if ica:
-                        return redirect('/interface_main')
-                    else:
-                        request.session["is_console_access"] = False
-                        return redirect('/homepage')
+                    return redirect('/interface_main')
     else:
         if request.session.get("user"):
-            return redirect('/hostpage', context=RequestContext(request))
+            return redirect('/interface_main', context=RequestContext(request))
         else:
             form = AuthenticationForm()
 
-    return render_to_response('accounts/login.html',{'form': form, 'is_console_access': ica},
+    return render_to_response('accounts/login.html',{'form': form, 'is_console_access': True},
                               context_instance=RequestContext(request, {
                                   "pid_tofeed": request.session.get("pid_tofeed"),
                                   "subject_tofeed": request.session.get("subject_tofeed")

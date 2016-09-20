@@ -8,8 +8,12 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('accounts.urls', namespace='accounts')),
-    url(r'^$', 'accounts.views.login', name='index'),
+    #url(r'^$', 'accounts.views.login', name='index'),
+    #url(r'^login', 'accounts.views.login'),
+    url(r'^$', 'b2note_app.views.hostpage', name='index'),
     url(r'^login', 'accounts.views.login'),
+    url(r'^consolelogin', 'accounts.views.consolelogin'),
+    url(r'^logout', 'accounts.views.logout'),
     url(r'^captcha/', include('captcha.urls')),
 
     url(r'^hostpage', 'b2note_app.views.hostpage'),

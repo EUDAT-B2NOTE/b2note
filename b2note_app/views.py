@@ -391,7 +391,7 @@ def interface_main(request):
 
     if not request.session.get('user'):
         context = RequestContext(request, {"subject_tofeed":subject_tofeed, "pid_tofeed":pid_tofeed})
-        return redirect('accounts/login', context=context)
+        return redirect('accounts/consolelogin', context=context)
 
     pagefrom = ""
     if request.POST.get('pagefrom')!=None:
