@@ -96,7 +96,15 @@
 
         {% endif %}
 
+        {% if is_console_access %}
+
+        <form action="consolelogin" method="post" class="form-horizontal">
+
+        {% else %}
+
         <form action="login" method="post" class="form-horizontal">
+
+        {% endif %}
 
             {% csrf_token %}
 
