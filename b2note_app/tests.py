@@ -149,7 +149,7 @@ class B2noteappTest(TestCase):
         url = reverse("b2note_app.views.export_annotations")    
         resp = self.client.post(url, {'pid_tofeed': 'pid_test', 'subject_tofeed': 'subject_test'})
         self.assertEqual(resp.status_code, 200)
-        self.assertIn("annotation_test", resp.content)
+        self.assertIn("annotation", resp.content)
         
     def test_download_json_view(self):
         self.test_export_annotations_view()
@@ -157,7 +157,7 @@ class B2noteappTest(TestCase):
         url = reverse("b2note_app.views.download_json")    
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
-        self.assertIn("annotation_test", resp.content)
+        self.assertIn("annotation", resp.content)
 
 
 
