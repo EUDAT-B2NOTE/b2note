@@ -5,6 +5,28 @@ from .models import *
 
 import os, datetime, json
 
+def RetrieveAnnotations( subject_url ):
+    """
+      Function: RetrieveAnnotations
+      ----------------------------
+        Retrieves all annotations for a given file.
+        
+        params:
+            subject_url (str): ID of the file.
+        
+        returns:
+            dic: Dictionary with the values of the annotations.
+    """
+    try:
+        annotations = Annotation.objects.raw_query({'target.jsonld_id': subject_url})
+    
+    except Annotation.DoesNotExist:
+        annotations = []
+
+    annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
+    
+    return annotations
+
 
 def DeleteFromPOSTinfo( db_id ):
     """
@@ -20,7 +42,7 @@ def DeleteFromPOSTinfo( db_id ):
     """
     del_flag = False
     try:
-        if db_id and type(db_id) is unicode and len(db_id)>0:
+        if db_id and isinstance(db_id, (str, unicode)) and len(db_id)>0:
             Annotation.objects.get(id=db_id).delete()
             del_flag = True
         else:
@@ -48,37 +70,66 @@ def CreateSemanticTag( subject_url, object_json ):
         returns:
             bool: True if successful, False otherwise.
     """
-    object_uri   = ""
-    object_label = ""
-    
-    my_id = CreateAnnotation(subject_url)
-    
-    if my_id == None:
-        print "Could not save semantic tag to DB"
-        return False
     
     try:
-        o = json.loads(object_json)
+        if subject_url and isinstance(subject_url, (str, unicode)):
+            my_id = None
+            my_id = CreateAnnotation(subject_url)
+    
+            if my_id:
+                if object_json and isinstance(object_json, (str, unicode)):
+                    o = None
+                    o = json.loads(object_json)
 
-        if "uris" in o.keys():
-            object_uri = o["uris"]
-            if "labels" in o.keys(): object_label = o["labels"]
+                    if o and isinstance(o, dict):
+                        if "uris" in o.keys():
+                            if o["uris"] and isinstance(o["uris"], (str, unicode)):
+                                object_uri   = ""
+                                object_label = ""
+                                object_uri = o["uris"]
 
-            print object_label, " ", object_uri        
-            
-            annotation = Annotation.objects.get(id=my_id)
-            annotation.body = [TextualBody( jsonld_id = object_uri, type = ["TextualBody"], value = object_label )]
-            annotation.save()
+                                if "labels" in o.keys():
+                                    if o["labels"] and isinstance(o["labels"], (str, unicode)):
+                                        object_label = o["labels"]
+
+                                #print object_label, " ", object_uri
+
+                                annotation = None
+                                annotation = Annotation.objects.get(id=my_id)
+                                if annotation:
+                                    annotation.body = [TextualBody( jsonld_id = object_uri, type = ["TextualBody"], value = object_label )]
+                                    annotation.save()
+                                    print "Created semantic tag annotation"
+                                    return annotation.id
+                                else:
+                                    print "Could not retrieve from DB the annotation-basis with below id:"
+                                    print my_id
+                                    return False
+                            else:
+                                print "Dictionary field at key 'uris' does not resolve in a valid string."
+                                return False
+                        else:
+                            print "Dictionary does not contain a field with key 'uris'."
+                            return False
+                    else:
+                        print "Provided json does not load as a python dictionary."
+                        return False
+                else:
+                    print "Provided json object is neither string nor unicode."
+                    return False
+            else:
+                print "Internal call to CreateAnnotation function did not return an exploitable id reference."
+                return False
         else:
-            print "The object does not contain URI as a key."
+            print "Provided parameter is not a valid string for subject_url."
             return False
 
     except ValueError:
-        print "Could not save to DB a semantic tag"
+        print "CreateSemanticTag function did not complete."
         return False
 
-    print "Created semantic tag annotation"
-    return True
+    print "CreateSemanticTag function did not complete succesfully."
+    return False
 
 def CreateFreeText( subject_url, text ):
     """
@@ -91,29 +142,32 @@ def CreateFreeText( subject_url, text ):
             text (str): Free text introduced by the user
         
         returns:
-            bool: True if successful, False otherwise.
+            bool: id of the document created, False otherwise.
     """
-    my_id = CreateAnnotation(subject_url)
-    
-    if my_id == None:
-        print "Could not save free text to DB"
-        return False
     
     try:
-        if type(text) is unicode and len(text)>0: 
+        my_id = CreateAnnotation(subject_url)
+    
+        if not my_id:
+            print "Could not save free text to DB"
+            return False
+    
+        if isinstance(text, (str, unicode)) and len(text)>0: 
             annotation = Annotation.objects.get(id=my_id)
             annotation.body = [TextualBody( type = ["TextualBody"], value = text )]
             annotation.save()
+            print "Created free text annotation"
+            return annotation.id
         else:
             print "Wrong text codification or empty text"
             return False
 
     except ValueError:
-        print "Could not save to DB a free text"
+        print "CreateFreeText function did not complete."
         return False
 
-    print "Created free text annotation"
-    return True
+    print "CreateFreeText function did not complete succesfully."
+    return False
 
 
 def CreateAnnotation(target):
@@ -129,7 +183,7 @@ def CreateAnnotation(target):
             int: id of the document created.
     """
     try:
-        if target and type(target) is unicode and len(target)>0:
+        if target and isinstance(target, (str, unicode)) and len(target)>0:
             ann = Annotation(
                 jsonld_context  = ["http://www.w3.org/ns/anno.jsonld"],
                 type         = ["Annotation"],
@@ -168,7 +222,7 @@ def CreateFromPOSTinfo( subject_url, object_json ):
 
     try:
 
-        if subject_url and type(subject_url) is unicode and len(subject_url)>0:
+        if subject_url and isinstance(subject_url, (str, unicode) and len(subject_url)>0:
 
             o = json.loads(object_json)
 
@@ -261,11 +315,8 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
     o_out = None
 
     try:
-        if type(o_in) is tuple:
-            o_out = ()
-            for item in o_in:
-                if item and readyQuerySetValuesForDumpAsJSONLD( item ):
-                    o_out += ( readyQuerySetValuesForDumpAsJSONLD( item ), )
+        if type(o_in) is str or type(o_in) is unicode:
+            o_out = str(o_in)
         elif type(o_in) is list or type(o_in) is set:
             o_out = []
             for item in o_in:
@@ -279,12 +330,11 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
                     m = re.match(r'^jsonld_(.*)', k)
                     if m:
                         newkey = "@{0}".format(m.group(1))
+                    if newkey == "@id": newkey = "id"
                     o_out[newkey] = readyQuerySetValuesForDumpAsJSONLD( o_in[k] )
-        elif isinstance(o_in, datetime.datetime) or isinstance(o_in, datetime.datetime):
-            o_out = o_in.isoformat()
-        elif o_in and o_in != "None" and not re.match(r'^<class (.*)>', o_in):
-            o_out = str(o_in)
-        #if len(o_out) <= 0: o_out = None
+        elif not re.match(r'^<class (.*)>', str(o_in)):
+            o_out = readyQuerySetValuesForDumpAsJSONLD( model_to_dict(o_in) )
+
     except:
         o_out = None
         pass
