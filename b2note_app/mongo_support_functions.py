@@ -168,7 +168,7 @@ def CreateFromPOSTinfo( subject_url, object_json ):
 
     try:
 
-        if subject_url and type(subject_url) is unicode and len(subject_url)>0:
+        if subject_url and isinstance(subject_url, (str, unicode)) and len(subject_url)>0:
 
             o = json.loads(object_json)
 
