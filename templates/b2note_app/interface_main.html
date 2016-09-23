@@ -218,14 +218,16 @@
                                                             <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
                                                             -->
                                                             <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
-                                                            <td id="objectLabel"><a target="_blank" href={{body.jsonld_id}}>{{body.value}}</a></td>
+                                                            <td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">
+                                                                <a target="_blank" href={{body.jsonld_id}}>{{body.value}}</a>
+                                                            </td>
 
                                                         {% else %}
 
                                                             <!--
                                                             <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
                                                             -->
-                                                            <td id="objectLabel">{{body.value}}</td>
+                                                            <td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">{{body.value}}</td>
 
                                                         {% endif %}
 
