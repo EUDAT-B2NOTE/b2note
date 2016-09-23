@@ -27,4 +27,5 @@ urlpatterns = patterns('',
     url(r'^settings', 'b2note_app.views.settings'),
     url(r'^search', 'b2note_app.views.search_annotations'),
     url(r'^retrieve_annotations', 'b2note_app.views.retrieve_annotations'),
+    url(r'^edit_annotation', 'b2note_app.views.edit_annotation'),
 )

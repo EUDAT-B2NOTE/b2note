@@ -7,8 +7,6 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.conf import settings as global_settings
-from django.core import serializers
-from django.forms.models import model_to_dict
 
 from collections import OrderedDict
 
@@ -18,8 +16,51 @@ from .models import *
 from accounts.models import AnnotatorProfile
 
 
+
 def index(request):
     return HttpResponse("replace me with index text")
+
+
+@login_required
+def edit_annotation(request):
+    A=None
+    owner=False
+    try:
+
+        if request.session.get("user"):
+
+            userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+
+            #annotation_list = RetrieveAnnotations_perUsername(userprofile.nickname)
+
+            if request.POST.get('db_id'):
+
+                if isinstance(request.POST.get('db_id'), (str, unicode)):
+
+                    #A = Annotation.objects.get(id="57e1504510d06010314becc8")
+                    #A = Annotation.objects.get(id="57dfd3fe10d0600412d056df")
+                    A = Annotation.objects.get(id=request.POST.get('db_id'))
+
+                    owner = userprofile.nickname == A.creator[0].nickname
+
+                else:
+                    print "Edit_annotation view, POST request contains object called 'db_id' that is neither str nor unicode."
+                    pass
+
+            else:
+                print "Edit_annotation view, POST request does not contain object called 'db_id'."
+                pass
+
+        else:
+            print "Edit_annotation view, unidentified user."
+            return redirect('accounts/logout')
+
+    except:
+        print "Edit_annotation view did not complete."
+        return Exception
+
+    context = RequestContext(request)
+    return render_to_response("b2note_app/edit_annotation.html", {"form":A, "owner": owner}, context_instance=context)
 
 
 @login_required
@@ -81,6 +122,8 @@ def export_annotations(request):
 
             annotation_list = RetrieveAnnotations_perUsername(userprofile.nickname)
 
+            annotation_list = annotation_list.values()
+
             """
             abremaud@esciencedatalab.com, 20160303
             Upon testing on json-ld online playground, none of the URLs provided in current
@@ -92,7 +135,7 @@ def export_annotations(request):
 
             response = {"@context": json.loads( context_str, object_pairs_hook=OrderedDict ) }
 
-            response["@graph"] = readyQuerySetValuesForDumpAsJSONLD( annotation_list )
+            response["@graph"] = readyQuerySetValuesForDumpAsJSONLD( [ann for ann in annotation_list] )
 
             # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
             json_data = HttpResponse(json.dumps(response, indent=2), mimetype= 'application/json')
@@ -402,7 +445,9 @@ def interface_main(request):
         # https://blog.scrapinghub.com/2013/05/13/mongo-bad-for-scraped-data/
         # https://github.com/aparo/django-mongodb-engine/blob/master/docs/embedded-objects.rst
         annotation_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
-        #print "==>", type(annotation_list), len(annotation_list)
+        #print "### " * 20
+        #print json.dumps(readyQuerySetValuesForDumpAsJSONLD( [item for item in annotation_list.values()] ), indent=2)
+        #print "### " * 20
     except Annotation.DoesNotExist:
         annotation_list = []
 
