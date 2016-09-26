@@ -41,16 +41,65 @@ def edit_annotation(request):
                     #A = Annotation.objects.get(id="57dfd3fe10d0600412d056df")
                     A = Annotation.objects.get(id=request.POST.get('db_id'))
 
-                    owner = userprofile.nickname == A.creator[0].nickname
+                    if A:
 
+                        owner = userprofile.nickname == A.creator[0].nickname
+
+                        if owner:
+
+                            if request.POST.get('body.change'):
+
+                                if isinstance(request.POST.get('body.change'), (str, unicode)):
+
+                                    if request.POST.get('body.change') != A.body[0].value:
+
+                                        db_id = MakeAnnotationFreeText( A.id, request.POST.get('body.change') )
+                                        A = Annotation.objects.get(id=db_id)
+
+                                    else:
+                                        print "Edit_annotation view, not editing due to no entered text identical to existing body value."
+                                        pass
+                                else:
+                                    print "Edit_annotation view, provided POST argument 'body.change' does not contain valid str or unicode."
+                                    pass
+
+                            elif request.POST.get('ontology_json'):
+
+                                db_id = MakeAnnotationSemanticTag( A.id, request.POST.get('ontology_json') )
+                                A = Annotation.objects.get(id=db_id)
+
+                            else:
+                                print "Edit_annotation view, request POST does not contain either 'body.change' or 'ontology_json' objects."
+                                pass
+
+                        else:
+
+                            db_id = None
+
+                            if A.body[0].jsonld_id:
+
+                                onto_json = json.dumps({'uris': A.body[0].jsonld_id, 'labels': A.body[0].value})
+                                db_id = CreateSemanticTag( A.target[0].jsonld_id, onto_json )
+
+                            else:
+
+                                db_id = CreateFreeText( A.target[0].jsonld_id, A.body[0].value )
+
+                            if db_id:
+
+                                db_id = SetUserAsAnnotationCreator( request.session.get('user'), db_id )
+                                A     = Annotation.objects.get( id = db_id )
+                                owner = userprofile.nickname == A.creator[0].nickname
+
+                            else:
+                                print "Edit_annotation view, annotation was not duplicated for non-owner user."
+                                pass
+                    else:
+                        print "Edit_annotation view, could not retrieve annotation with id:", str( request.POST.get('db_id') )
+                        pass
                 else:
                     print "Edit_annotation view, POST request contains object called 'db_id' that is neither str nor unicode."
                     pass
-
-            else:
-                print "Edit_annotation view, POST request does not contain object called 'db_id'."
-                pass
-
         else:
             print "Edit_annotation view, unidentified user."
             return redirect('accounts/logout')
@@ -59,8 +108,8 @@ def edit_annotation(request):
         print "Edit_annotation view did not complete."
         return Exception
 
-    context = RequestContext(request)
-    return render_to_response("b2note_app/edit_annotation.html", {"form":A, "owner": owner}, context_instance=context)
+    context = RequestContext(request, {"form": A, "owner": owner})
+    return render(request, "b2note_app/edit_annotation.html", context)
 
 
 @login_required
@@ -92,8 +141,6 @@ def homepage(request):
         return False
 
 
-# forbidden CSRF verification failed. Request aborted.
-@csrf_exempt
 @login_required
 def export_annotations(request):
     """
@@ -167,8 +214,6 @@ def download_json(request):
     return download_json.file_data
 
 
-# forbidden CSRF verification failed. Request aborted.
-@csrf_exempt
 @login_required
 def publish_annotations(request):
     """
@@ -196,8 +241,6 @@ def publish_annotations(request):
     return render(request, 'b2note_app/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 
 
-# forbidden CSRF verification failed. Request aborted.
-@csrf_exempt
 @login_required
 def settings(request):
     """
@@ -287,9 +330,6 @@ Influence of smoking and obesity in sperm quality
     return render(request, 'b2note_app/hostpage.html', {'iframe_on': 350, 'buttons_info':buttons_info})
 
 
-
-# forbidden CSRF verification failed. Request aborted.
-@csrf_exempt
 @login_required
 def delete_annotation(request):
     """
@@ -338,9 +378,6 @@ def delete_annotation(request):
         return render_to_response('b2note_app/interface_main.html', context)
 
 
-
-# forbidden CSRF verification failed. Request aborted.
-@csrf_exempt
 @login_required
 def create_annotation(request):
     """

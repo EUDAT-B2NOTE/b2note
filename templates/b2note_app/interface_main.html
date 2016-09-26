@@ -69,6 +69,8 @@
 
                                 <form action="/export_annotations" method="post">
 
+                                    {% csrf_token %}
+
                                     <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
                                     <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
                                     <input type="Submit" class="btn btn-link" value="Export" title="All your annotations as JSON" />
@@ -82,6 +84,8 @@
 
                                 <form action="/publish_annotations" method="post">
 
+                                    {% csrf_token %}
+
                                     <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
                                     <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
                                     <input type="Submit" class="btn btn-link" value = "Publish" title = "Make annotations available to SPARQL queries"/>
@@ -93,6 +97,8 @@
                             <li>
 
                                 <form action="/settings" method="post">
+
+                                    {% csrf_token %}
 
                                     <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
                                     <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
@@ -171,10 +177,12 @@
                 </ul>
                 <div class="tab-content">
                     <div id="keyword" class="tab-pane fade in active form-group">
+                        {% csrf_token %}
                         <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"  placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
                     </div>
                     <div id="comment" class="tab-pane fade form-group">
                         <div class="input-group">
+                            {% csrf_token %}
                             <textarea class="form-control custom-control" rows="2" id="free-text" placeholder="Type a comment"></textarea>
                             <span class="input-group-addon btn btn-primary" onClick="get_free_text()">Send</span>
                         </div>
@@ -206,6 +214,8 @@
                                                 <tr>
 
                                                     <form action="/delete_annotation" method="post">
+
+                                                        {% csrf_token %}
 
                                                         <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
                                                         <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />

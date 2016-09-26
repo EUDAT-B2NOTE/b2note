@@ -3,6 +3,7 @@
 <html lang="en">
 
 <head>
+
 	<meta charset="UTF-8">
 
 	{% load staticfiles %}
@@ -176,9 +177,9 @@
 
 													{% csrf_token %}
 
-													<input type="hidden" name="db_id" value="{{ann.id}}" readonly="readonly" />
+													<input type="hidden" name="db_id" value="{{ ann.id }}" readonly="readonly" />
 													<input type="hidden" name="subject_tofeed" value="{{ f }}" readonly="readonly" />
-													<input type="hidden" name="pid_tofeed" value="" readonly="readonly" />
+													<input type="hidden" name="pid_tofeed" value="untracked pid" readonly="readonly" />
 													<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />
 
 													<td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" height="16px" title="Delete annotation" alt="Delete annotation" /></td>
@@ -189,9 +190,7 @@
 
 													{% csrf_token %}
 
-													<input type="hidden" name="db_id" value="{{ann.id}}" readonly="readonly" />
-													<input type="hidden" name="subject_tofeed" value="{{ f }}" readonly="readonly" />
-													<input type="hidden" name="pid_tofeed" value="" readonly="readonly" />
+													<input type="hidden" name="db_id" value="{{ ann.id }}" readonly="readonly" />
 													<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />
 
 													<td id="editAnnotation"><input type="image" id="pen-icon" src="{% static "images/Black_pencil.svg" %}" height="16px" title="Edit annotation" alt="Edit annotation" /></td>
