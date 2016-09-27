@@ -241,8 +241,16 @@
 
                                                         {% endif %}
 
+                                                        {% if user_nickname = annotation.creator.0.nickname %}
+
                                                             <!-- "Octicons-trashcan" by GitHub - https://github.com/github/octicons. Licensed under MIT via Wikimedia Commons - https://commons.wikimedia.org/wiki/File:Octicons-trashcan.svg#/media/File:Octicons-trashcan.svg -->
                                                             <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" title="Delete annotation" alt="Delete annotation" /></td>
+
+                                                        {% else %}
+
+                                                            <td>X</td>
+
+                                                        {% endif %}
 
                                                     </form>
 

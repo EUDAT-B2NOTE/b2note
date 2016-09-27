@@ -133,14 +133,14 @@ def SetAnnotationMotivation( db_id=None, motiv=None ):
 
                                 A.save()
 
-                                print 'SetAnnotationMotivation function,"', motiv, '"set as motivation of annotation:', str(db_id)
+                                print 'SetAnnotationMotivation function, "' + motiv + '" set as motivation of annotation:', str(db_id)
                                 return A.id
 
                             else:
                                 print "SetAnnotationMotivation function, provided string parameter not part of predefined set of motivations."
                                 return False
                         else:
-                            print "SetAnnotationMotivation function, parameter provided for motivation neither strin nor unicode."
+                            print "SetAnnotationMotivation function, parameter provided for motivation neither string nor unicode."
                             return False
                     else:
                         print "SetAnnotationMotivation function, missing motivation parameter."

@@ -74,7 +74,31 @@
 
         {% else %}
 
-            <h2>Edit annotation</h2>
+            <div class="row">
+
+    			<div class="col-sm-6">
+
+                    <h2>Edit annotation</h2>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-sm-2">
+
+                    <a href="/homepage">Homepage</a>
+
+                </div>
+
+                <div class="col-sm-2 col-sm-offset-4">
+
+                    <a href="logout"><p class="text-right">Logout</p></a>
+
+                </div>
+
+            </div>
 
             <br>
 
@@ -128,15 +152,6 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="id_q">Change for:</label>
-                    <div class="col-sm-6 col-sm-offset-1">
-                        <div id="keyword" class="tab-pane fade in active form-group">
-                            <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"  placeholder="Replace keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
-                        </div>
-                    </div>
-                </div>
-
                 {% else %}
 
                 <div class="form-group">
@@ -146,21 +161,64 @@
                     </div>
                 </div>
 
+                {% endif %}
+
                 <div class="form-group">
-                    <label class="control-label col-sm-2" for="body.change">Change for:</label>
+                    <label class="control-label col-sm-2" for="body.jsonld_id">Change body:</label>
                     <div class="col-sm-6">
-                        <textarea class="form-control" rows="3" name="body.change" id="body.change">{{ form.body.0.value }}</textarea>
+                        <ul class="nav nav-tabs">
+                            {% if form.body.0.jsonld_id %}
+                            <li class="active"><a data-toggle="tab" href="#keyword">keyword</a></li>
+                            <li><a data-toggle="tab" href="#comment">comment</a></li>
+                            {% else %}
+                            <li><a data-toggle="tab" href="#keyword">keyword</a></li>
+                            <li class="active"><a data-toggle="tab" href="#comment">comment</a></li>
+                            {% endif %}
+                        </ul>
+                        <div class="tab-content col-sm-12">
+                            {% if form.body.0.jsonld_id %}
+                            <div id="keyword" class="tab-pane fade in active form-group">
+                                <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"
+                                       placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
+                            </div>
+                            <div id="comment" class="tab-pane fade form-group">
+                                <textarea class="form-control custom-control" rows="2" name="free_text" id="free_text"
+                                          placeholder="Type a comment"></textarea>
+                            </div>
+                            {% else %}
+                            <div id="keyword" class="tab-pane fade form-group">
+                                <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"
+                                       placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
+                            </div>
+                            <div id="comment" class="tab-pane fade in active form-group">
+                                <textarea class="form-control custom-control" rows="2" name="free_text" id="free_text"
+                                          placeholder="Type a comment"></textarea>
+                            </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-
-                {% endif %}
 
             {% endif %}
 
                 <div class="form-group">
-                    <label class="control-label col-sm-2" for="motivation">Motivation:</label>
+                    <label class="control-label col-sm-2" for="current_motivation">Motivation:</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control" value="{{ form.motivation.0 }}" name="form.motivation" id="motivation" readonly/>
+                        <input type="text" class="form-control" value="{{ form.motivation.0 }}" name="form.motivation" id="current_motivation" readonly/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="motivation_selection"></label>
+                    <div class="col-sm-6">
+                        <select class="form-control" name="motivation_selection" id="motivation_selection">
+                        {% for mc in motivation_choices %}
+                            <option value="None" disabled selected hidden>Change motivation...</option>
+                            {% if mc.0 != form.motivation.0 %}
+                            <option value="{{ mc.0 }}">{{ mc.0 }}</option>
+                            {% endif %}
+                        {% endfor %}
+                        </select>
                     </div>
                 </div>
 
@@ -188,13 +246,10 @@
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         {% if owner %}
-                            {% if form.body.0.jsonld_id %}
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                            {% else %}
-                            <button type="submit" class="btn btn-info">Submit</button>
-                            {% endif %}
+                        <!--<button type="submit" class="btn btn-danger">Delete</button>-->
+                        <button type="submit" class="btn btn-success">Send</button>
                         {% else %}
-                        <button type="submit" class="btn btn-info">Duplicate</button>
+                        <button type="submit" class="btn btn-success">Duplicate</button>
                         {% endif %}
                         <a href="/homepage" title="Go to homepage.">Cancel</a>
                     </div>
@@ -212,7 +267,37 @@
 
             </form>
 
+        {% if form and owner %}
+
+        <div class="container" id="extra_annotation_action_forms">
+
+            <label class="control-label col-sm-2"></label>
+
+            <div class="col-sm-2">
+                <form action="edit_annotation" method="post" class="form-horizontal">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="hidden" value="duplicate_cmd" name="duplicate_cmd" id="duplicate_cmd" readonly/>
+                        <input type="hidden" value="{{ form.id }}" name="db_id" id="db_id" readonly/>
+                        <button type="submit" class="btn btn-info">Duplicate</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-sm-2">
+                <form action="edit_annotation" method="post" class="form-horizontal">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="hidden" value="delete_cmd" name="delete_cmd" id="delete_cmd" readonly/>
+                        <input type="hidden" value="{{ form.id }}" name="db_id" id="db_id" readonly/>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
+
         </div>
+
+        {% endif %}
 
         {% if not is_console_access %}
 

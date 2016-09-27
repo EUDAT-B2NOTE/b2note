@@ -45,34 +45,7 @@ def edit_annotation(request):
 
                         owner = userprofile.nickname == A.creator[0].nickname
 
-                        if owner:
-
-                            if request.POST.get('body.change'):
-
-                                if isinstance(request.POST.get('body.change'), (str, unicode)):
-
-                                    if request.POST.get('body.change') != A.body[0].value:
-
-                                        db_id = MakeAnnotationFreeText( A.id, request.POST.get('body.change') )
-                                        A = Annotation.objects.get(id=db_id)
-
-                                    else:
-                                        print "Edit_annotation view, not editing due to no entered text identical to existing body value."
-                                        pass
-                                else:
-                                    print "Edit_annotation view, provided POST argument 'body.change' does not contain valid str or unicode."
-                                    pass
-
-                            elif request.POST.get('ontology_json'):
-
-                                db_id = MakeAnnotationSemanticTag( A.id, request.POST.get('ontology_json') )
-                                A = Annotation.objects.get(id=db_id)
-
-                            else:
-                                print "Edit_annotation view, request POST does not contain either 'body.change' or 'ontology_json' objects."
-                                pass
-
-                        else:
+                        if not owner or request.POST.get('duplicate_cmd'):
 
                             db_id = None
 
@@ -92,8 +65,58 @@ def edit_annotation(request):
                                 owner = userprofile.nickname == A.creator[0].nickname
 
                             else:
-                                print "Edit_annotation view, annotation was not duplicated for non-owner user."
+                                print "Edit_annotation view, annotation could not be duplicated."
                                 pass
+
+                        elif owner and request.POST.get('delete_cmd'):
+
+                            if request.POST.get('delete_cmd')=='delete_cmd' and request.POST.get('db_id'):
+
+                                DeleteFromPOSTinfo(request.POST.get('db_id'))
+                                return redirect('/homepage')
+
+                            else:
+                                print "Edit_annotation view, POST parameter 'db_id' is None."
+                                pass
+
+                        elif owner:
+
+                            print "==>", request.POST.get('free_text')
+
+                            if request.POST.get('ontology_json'):
+
+                                db_id = MakeAnnotationSemanticTag( A.id, request.POST.get('ontology_json') )
+                                A = Annotation.objects.get(id=db_id)
+
+                            elif request.POST.get('free_text'):
+
+                                if isinstance(request.POST.get('free_text'), (str, unicode)):
+
+                                    if request.POST.get('free_text') != A.body[0].value:
+
+                                        db_id = None
+                                        db_id = MakeAnnotationFreeText( A.id, request.POST.get('free_text') )
+
+                                        if db_id: A = Annotation.objects.get( id = db_id )
+
+                                    else:
+                                        print "Edit_annotation view, not editing due to entered text identical to existing body value."
+                                        pass
+                                else:
+                                    print "Edit_annotation view, provided POST argument 'body.change' does not contain valid str or unicode."
+                                    pass
+
+                            if request.POST.get('motivation_selection'):
+
+                                motiv = request.POST.get('motivation_selection')
+
+                                if isinstance(motiv, (str, unicode)):
+
+                                    db_id = None
+                                    db_id = SetAnnotationMotivation( A.id, motiv )
+
+                                    if db_id: A = Annotation.objects.get( id = db_id )
+
                     else:
                         print "Edit_annotation view, could not retrieve annotation with id:", str( request.POST.get('db_id') )
                         pass
@@ -108,7 +131,9 @@ def edit_annotation(request):
         print "Edit_annotation view did not complete."
         return Exception
 
-    context = RequestContext(request, {"form": A, "owner": owner})
+    motivation_choices = Annotation.MOTIVATION_CHOICES
+
+    context = RequestContext(request, {"form": A, "owner": owner, "motivation_choices": motivation_choices})
     return render(request, "b2note_app/edit_annotation.html", context)
 
 
@@ -344,8 +369,32 @@ def delete_annotation(request):
             object: HttpResponse with the remaining annotations.
     """
 
-    if request.POST.get('db_id'):
-        DeleteFromPOSTinfo( request.POST.get('db_id') )
+    user_nickname = None
+    if request.session.get("user"):
+        userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+        user_nickname = userprofile.nickname
+        if request.POST.get('db_id'):
+            if isinstance(request.POST.get('db_id'), (str, unicode)):
+                A = Annotation.objects.get(id=request.POST.get('db_id'))
+                if A:
+                    owner = userprofile.nickname == A.creator[0].nickname
+                    if owner:
+                        DeleteFromPOSTinfo( request.POST.get('db_id') )
+                    else:
+                        print "delete_annotation view, cannot delete annotation, current user is not owner."
+                        pass
+                else:
+                    print "delete_annotation view, no annotation with provided 'db_id':", str( request.POST.get('db_id') )
+                    pass
+            else:
+                print "delete_annotation view, provided parameter 'db_id' neither str nor unicode."
+                pass
+        else:
+            print "delete_annotation view, missing POST parameter 'db_id'."
+            pass
+    else:
+        print "delete_annotation view, user is not logged-in."
+        pass
 
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
@@ -366,16 +415,16 @@ def delete_annotation(request):
 
     annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.created, reverse=True)
 
-    context = RequestContext(request, {
+    data_dict = {
         'annotation_list': annotation_list,
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
         'pagefrom': pagefrom,
-    })
+        'user_nickanme': user_nickname}
     if pagefrom == 'homepage':
         return redirect('/homepage')
     else:
-        return render_to_response('b2note_app/interface_main.html', context)
+        return render(request, 'b2note_app/interface_main.html', data_dict)
 
 
 @login_required
@@ -391,21 +440,20 @@ def create_annotation(request):
         output:
             object: HttpResponse with the annotations.
     """
-    ann_id1 = None
-    ann_id2 = None
-    if request.POST.get('ontology_json'):
-        ann_id1 = CreateSemanticTag( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
-        if request.session.get('user'):
-            ann_id2 = SetUserAsAnnotationCreator( request.session.get('user'), ann_id1 )
-        else:
-            print "No user in session, can not attribute creator to semantic tag annotation:", ann_id1
+    user_nickname = None
+    if request.session.get('user')!=None:
+        userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+        user_nickname = userprofile.nickname
 
-    if request.POST.get('free_text'):
-        ann_id1 = CreateFreeText( request.POST.get('subject_tofeed'), request.POST.get('free_text') )
-        if request.session.get('user'):
+        ann_id1 = None
+        ann_id2 = None
+        if request.POST.get('ontology_json'):
+            ann_id1 = CreateSemanticTag( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
+            ann_id2 = SetUserAsAnnotationCreator( request.session.get('user'), ann_id1 )
+
+        if request.POST.get('free_text'):
+            ann_id1 = CreateFreeText( request.POST.get('subject_tofeed'), request.POST.get('free_text') )
             ann_id2 = SetUserAsAnnotationCreator(request.session.get('user'), ann_id1 )
-        else:
-            print "No user in session, can not attribute creator to free text annotation:", ann_id1
 
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
@@ -426,16 +474,16 @@ def create_annotation(request):
 
     annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.created, reverse=True)
 
-    context = RequestContext(request, {
+    data_dict = {
         'annotation_list': annotation_list,
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
         'pagefrom': pagefrom,
-    })
+        'user_nickname': user_nickname}
     if pagefrom == 'homepage':
-        return redirect('/homepage', context_instance=context)
+        return redirect('/homepage', context_instance=RequestContext(request, data_dict))
     else:
-        return render_to_response('b2note_app/interface_main.html', context)
+        return render(request, 'b2note_app/interface_main.html', data_dict)
 
 
 # forbidden CSRF verification failed. Request aborted.
@@ -469,9 +517,13 @@ def interface_main(request):
     elif request.session.get('subject_tofeed'):
         subject_tofeed = request.session.get('subject_tofeed')
 
+    user_nickname = None
     if not request.session.get('user'):
         context = RequestContext(request, {"subject_tofeed":subject_tofeed, "pid_tofeed":pid_tofeed})
         return redirect('accounts/consolelogin', context=context)
+    elif request.session.get('user')!=None:
+        userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+        user_nickname = userprofile.nickname
 
     pagefrom = ""
     if request.POST.get('pagefrom')!=None:
@@ -490,13 +542,13 @@ def interface_main(request):
 
     annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.created, reverse=True)
 
-    context = RequestContext(request, {
+    data_dict = {
         'annotation_list': annotation_list,
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
         'pagefrom': pagefrom,
-    })
-    return render_to_response('b2note_app/interface_main.html', context)
+        'user_nickname': user_nickname}
+    return render(request, 'b2note_app/interface_main.html', data_dict)
 
 
 @csrf_exempt
