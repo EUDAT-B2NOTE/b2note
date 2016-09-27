@@ -97,18 +97,18 @@ def DeleteFromPOSTinfo( db_id ):
     return False
 
 
-def SetAnnotationMotivation( db_id, motiv ):
+def SetAnnotationMotivation( db_id=None, motiv=None ):
     """
       Function: SetAnnotationMotivation
       ----------------------------
         Sets annotation motivation from existing Web Annotation set.
 
         params:
-            user_id (int): sqlite3 primary key of annotator profile model.
-            db_id (unicode): mongodb document id.
+            db_id (str): database id of the document to modify.
+            motiv (str): motivation to be attributed to annotation document and as body purpose.
 
         returns:
-            Annotation mongodb document id as unicode if succesful, False otherwise.
+            id (str): database id of the modified document if successful, False otherwise.
     """
     try:
 
@@ -116,15 +116,35 @@ def SetAnnotationMotivation( db_id, motiv ):
 
             if isinstance(db_id, (str, unicode)):
 
-                annotation = None
-                annotation = Annotation.objects.get(id=db_id)
+                A = None
+                A = Annotation.objects.get(id=db_id)
 
-                if annotation:
+                if A:
 
-                    #annotation.motivation = []
-                    print "try and change motivation"
-                    pass
+                    if motiv:
 
+                        if isinstance(motiv, (str, unicode)):
+
+                            if (motiv, motiv) in Annotation.MOTIVATION_CHOICES:
+
+                                A.motivation = [ motiv ]
+
+                                if A.body: A.purpose = motiv
+
+                                A.save()
+
+                                print 'SetAnnotationMotivation function,"', motiv, '"set as motivation of annotation:', str(db_id)
+                                return A.id
+
+                            else:
+                                print "SetAnnotationMotivation function, provided string parameter not part of predefined set of motivations."
+                                return False
+                        else:
+                            print "SetAnnotationMotivation function, parameter provided for motivation neither strin nor unicode."
+                            return False
+                    else:
+                        print "SetAnnotationMotivation function, missing motivation parameter."
+                        return False
                 else:
                     print "SetAnnotationMotivation function, no annotation wit id:", str(db_id)
                     return False
@@ -136,7 +156,7 @@ def SetAnnotationMotivation( db_id, motiv ):
             return False
 
     except ValueError:
-        print "MSetAnnotationMotivation function did not complete."
+        print "SetAnnotationMotivation function did not complete."
         return False
 
     print "SetAnnotationMotivation function did not complete succesfully."
@@ -156,7 +176,7 @@ def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
             db_id (unicode): mongodb document id.
 
         returns:
-            Annotation mongodb document id as unicode if succesful, False otherwise.
+            id (str): database id of the create document if successful, False otherwise.
     """
     try:
 
@@ -216,7 +236,7 @@ def CreateSemanticTag( subject_url=None, object_json=None ):
             object_json (str): JSON of the annotation provided by SOLR
         
         returns:
-            id (str): database id of the create document if successful, False otherwise.
+            db_id (str): database id of the modified annotation if successful, False otherwise.
     """
     try:
 
@@ -230,6 +250,8 @@ def CreateSemanticTag( subject_url=None, object_json=None ):
                 if object_json and isinstance(object_json, (str, unicode)):
 
                     db_id = MakeAnnotationSemanticTag( my_id, object_json )
+
+                    db_id = SetAnnotationMotivation( db_id, "tagging" )
 
                     print "MakeAnnotationSemanticTag function, made annotation semantic tag:", str(db_id)
                     return db_id
@@ -263,7 +285,7 @@ def CreateFreeText( subject_url=None, text=None ):
             text (str): Free text introduced by the user
         
         returns:
-            id (str): database id of the document created, False otherwise.
+            db_id (str): database id of the modified annotation if successful, False otherwise.
     """
     try:
 
@@ -277,6 +299,8 @@ def CreateFreeText( subject_url=None, text=None ):
 
                     db_id = None
                     db_id = MakeAnnotationFreeText(my_id, text)
+
+                    db_id = SetAnnotationMotivation( db_id, "commenting" )
 
                     print "CreateFreeText function, created free-text annotation:", str(db_id)
                     return db_id
@@ -310,7 +334,7 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
             object_json (str): JSON of the annotation provided by SOLR.
 
         returns:
-            id (str): database id of the modified annotation if successful, False otherwise.
+            db_id (str): database id of the modified annotation if successful, False otherwise.
     """
     try:
 
@@ -318,10 +342,10 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
 
             if isinstance(db_id, (str, unicode)):
 
-                annotation = None
-                annotation = Annotation.objects.get(id=db_id)
+                A = None
+                A = Annotation.objects.get(id=db_id)
 
-                if annotation:
+                if A:
 
                     if object_json and isinstance(object_json, (str, unicode)):
                         o = None
@@ -338,17 +362,20 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
                                         if o["labels"] and isinstance(o["labels"], (str, unicode)):
                                             object_label = o["labels"]
 
-                                    annotation.body = [
+                                    A.body = [
                                         TextualBody(
                                             jsonld_id = object_uri,
                                             type      = ["TextualBody"],
                                             value     = object_label
                                         )
                                     ]
-                                    annotation.save()
 
-                                    print "MakeAnnotationSemanticTag function, made annotation semantic tag:", str(annotation.id)
-                                    return annotation.id
+                                    A.save()
+
+                                    db_id = SetAnnotationMotivation( A.id, "tagging" )
+
+                                    print "MakeAnnotationSemanticTag function, made annotation semantic tag:", str(db_id)
+                                    return db_id
 
                                 else:
                                     print "MakeAnnotationSemanticTag function, dictionary field at key 'uris' does not resolve in a valid string."
@@ -391,7 +418,7 @@ def MakeAnnotationFreeText( db_id=None, text=None ):
             text (str): Free text introduced by the user.
 
         returns:
-            id: annotation db_id (str) if successful, False otherwise.
+            db_id (str): database id of the modified annotation if successful, False otherwise.
     """
     try:
 
@@ -399,18 +426,21 @@ def MakeAnnotationFreeText( db_id=None, text=None ):
 
             if isinstance(db_id, (str, unicode)):
 
-                annotation = None
-                annotation = Annotation.objects.get(id=db_id)
+                A = None
+                A = Annotation.objects.get(id=db_id)
 
-                if annotation:
+                if A:
 
                     if isinstance(text, (str, unicode)) and len(text) > 0:
 
-                        annotation.body = [TextualBody(type=["TextualBody"], value=text)]
-                        annotation.save()
+                        A.body = [TextualBody(type=["TextualBody"], value=text)]
 
-                        print "MakeAnnotationFreeText function, made free-text annotation:", str(annotation.id)
-                        return annotation.id
+                        A.save()
+
+                        db_id = SetAnnotationMotivation( A.id, "commenting" )
+
+                        print "MakeAnnotationFreeText function, made free-text annotation:", str(db_id)
+                        return db_id
 
                     else:
                         print "MakeAnnotationFreeText function, wrong text codification or empty text"

@@ -95,7 +95,7 @@ class SpecificResource(models.Model):
 	source		= EmbeddedModelField("ExternalResource") 			# (oa:hasSource)
 	ASSESSING 		= "assessing"
 	BOOKMARKING 	= "bookmarking"
-	CLASSIFYING 	= "classifing"
+	CLASSIFYING 	= "classifying"
 	COMMENTING 		= "commenting"
 	DESCRIBING 		= "describing"
 	EDITING 		= "editing"
@@ -190,7 +190,7 @@ class TextualBody(models.Model):
 	textDirection	= models.CharField( max_length = 32, choices=TEXT_DIRECTION_CHOICES, null=True )
 	ASSESSING		= "assessing"
 	BOOKMARKING		= "bookmarking"
-	CLASSIFYING		= "classifing"
+	CLASSIFYING		= "classifying"
 	COMMENTING		= "commenting"
 	DESCRIBING		= "describing"
 	EDITING			= "editing"
@@ -281,7 +281,7 @@ class Annotation(models.Model):
 	via			= ListField( models.CharField( max_length = 4096, null=True ) )	# IRIs
 	ASSESSING		= "assessing"
 	BOOKMARKING     = "bookmarking"
-	CLASSIFYING     = "classifing"
+	CLASSIFYING     = "classifying"
 	COMMENTING      = "commenting"
 	DESCRIBING      = "describing"
 	EDITING         = "editing"
