@@ -213,6 +213,39 @@
 
                                                 <tr>
 
+                                                {% if "http://" in body.jsonld_id %}
+
+                                                    <!--
+                                                    <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
+                                                    -->
+                                                    <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
+                                                    <td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">
+                                                        <a target="_blank" href={{body.jsonld_id}}>{{body.value}}</a>
+                                                    </td>
+
+                                                {% else %}
+
+                                                    <!--
+                                                    <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
+                                                    -->
+                                                    <td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">{{body.value}}</td>
+
+                                                {% endif %}
+
+                                                    <form action="/edit_annotation" method="post" target="_blank">
+
+                                                        {% csrf_token %}
+
+                                                        <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
+                                                        <input type="hidden" name="visu_call" value="visu_call" readonly="readonly" />
+                                                        <!--<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />-->
+
+                                                        <td id="editAnnotation"><input type="image" id="pen-icon" src="{% static "images/Black_pencil.svg" %}" height="16px" title="Edit annotation" alt="Edit annotation" /></td>
+
+                                                    </form>
+
+                                                {% if user_nickname = annotation.creator.0.nickname %}
+
                                                     <form action="/delete_annotation" method="post">
 
                                                         {% csrf_token %}
@@ -221,38 +254,19 @@
                                                         <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
                                                         <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
 
-
-                                                        {% if "http://" in body.jsonld_id %}
-
-                                                            <!--
-                                                            <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
-                                                            -->
-                                                            <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
-                                                            <td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">
-                                                                <a target="_blank" href={{body.jsonld_id}}>{{body.value}}</a>
-                                                            </td>
-
-                                                        {% else %}
-
-                                                            <!--
-                                                            <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
-                                                            -->
-                                                            <td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">{{body.value}}</td>
-
-                                                        {% endif %}
-
-                                                        {% if user_nickname = annotation.creator.0.nickname %}
-
-                                                            <!-- "Octicons-trashcan" by GitHub - https://github.com/github/octicons. Licensed under MIT via Wikimedia Commons - https://commons.wikimedia.org/wiki/File:Octicons-trashcan.svg#/media/File:Octicons-trashcan.svg -->
-                                                            <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" title="Delete annotation" alt="Delete annotation" /></td>
-
-                                                        {% else %}
-
-                                                            <td>X</td>
-
-                                                        {% endif %}
+                                                        <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" height="16px" title="Delete annotation" alt="Delete annotation" /></td>
 
                                                     </form>
+
+                                                {% else %}
+
+                                                    <!-- Empty slot for bin icon for annotations of which logged-in user is not owner. -->
+                                                    <td></td>
+
+                                                {% endif %}
+
+                                                    <!-- "Octicons-trashcan" by GitHub - https://github.com/github/octicons. Licensed under MIT via Wikimedia Commons - https://commons.wikimedia.org/wiki/File:Octicons-trashcan.svg#/media/File:Octicons-trashcan.svg
+                                                    <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" title="Delete annotation" alt="Delete annotation" /></td> -->
 
                                                 </tr>
 

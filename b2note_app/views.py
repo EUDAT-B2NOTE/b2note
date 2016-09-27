@@ -45,7 +45,7 @@ def edit_annotation(request):
 
                         owner = userprofile.nickname == A.creator[0].nickname
 
-                        if not owner or request.POST.get('duplicate_cmd'):
+                        if request.POST.get('duplicate_cmd'):
 
                             db_id = None
 
@@ -80,8 +80,6 @@ def edit_annotation(request):
                                 pass
 
                         elif owner:
-
-                            print "==>", request.POST.get('free_text')
 
                             if request.POST.get('ontology_json'):
 

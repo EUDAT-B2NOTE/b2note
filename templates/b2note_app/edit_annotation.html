@@ -208,6 +208,8 @@
                     </div>
                 </div>
 
+            {% if owner %}
+
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="motivation_selection"></label>
                     <div class="col-sm-6">
@@ -221,6 +223,8 @@
                         </select>
                     </div>
                 </div>
+
+            {% endif %}
 
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="creator.nickname">Annotator pseudonym:</label>
@@ -249,6 +253,7 @@
                         <!--<button type="submit" class="btn btn-danger">Delete</button>-->
                         <button type="submit" class="btn btn-success">Send</button>
                         {% else %}
+                        <input type="hidden" value="duplicate_cmd" name="duplicate_cmd" id="duplicate_cmd" readonly/>
                         <button type="submit" class="btn btn-success">Duplicate</button>
                         {% endif %}
                         <a href="/homepage" title="Go to homepage.">Cancel</a>
