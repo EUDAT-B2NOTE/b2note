@@ -237,7 +237,6 @@
                                                         {% csrf_token %}
 
                                                         <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
-                                                        <input type="hidden" name="visu_call" value="visu_call" readonly="readonly" />
                                                         <!--<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />-->
 
                                                         <td id="editAnnotation"><input type="image" id="pen-icon" src="{% static "images/Black_pencil.svg" %}" height="16px" title="Edit annotation" alt="Edit annotation" /></td>

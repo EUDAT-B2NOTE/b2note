@@ -1,5 +1,7 @@
 import json
 import os
+import requests
+import copy
 
 from django.shortcuts import render, render_to_response, redirect
 from django.http import HttpResponse
@@ -13,7 +15,10 @@ from collections import OrderedDict
 from .mongo_support_functions import *
 from .models import *
 
+from itertools import chain
+
 from accounts.models import AnnotatorProfile
+
 
 
 
@@ -549,10 +554,178 @@ def interface_main(request):
     return render(request, 'b2note_app/interface_main.html', data_dict)
 
 
-@csrf_exempt
 @login_required
 def search_annotations(request):
-    return HttpResponse("Search annotations functionality is coming.")
+
+    keywd_json = None
+    label_match = None
+    synonym_match = None
+
+    if request.POST.get('ontology_json'):
+
+        keywd_json = request.POST.get('ontology_json')
+
+        keywd_json = json.loads( keywd_json )
+
+        if keywd_json:
+
+            if isinstance(keywd_json, dict):
+
+                if "labels" in keywd_json.keys():
+
+                    if keywd_json["labels"]:
+
+                        if isinstance(keywd_json["labels"], (str, unicode)):
+
+                            if keywd_json["labels"].lower() != keywd_json["labels"]:
+
+                                label_match = list(chain(SearchAnnotation( keywd_json["labels"] ), SearchAnnotation( keywd_json["labels"].lower() )))
+
+                            else:
+
+                                label_match = list(chain(SearchAnnotation(keywd_json["labels"]),))
+
+                            r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=synonyms:"'+ keywd_json["labels"] +'"&fl=labels&wt=json&indent=true&rows=1000')
+
+                            r = r.json()
+
+                            if synonym_match is None: synonym_match = []
+
+                            if r:
+
+                                if isinstance(r, dict):
+
+                                    if "response" in r.keys():
+
+                                        if r["response"]:
+
+                                            if isinstance(r["response"], dict):
+
+                                                if "docs" in r["response"].keys():
+
+                                                    if isinstance(r["response"]["docs"], list):
+
+                                                        for syn_match in r["response"]["docs"]:
+
+                                                            if syn_match:
+
+                                                                if isinstance(syn_match, dict):
+
+                                                                    if "labels" in syn_match.keys():
+
+                                                                        if syn_match["labels"]:
+
+                                                                            if isinstance(syn_match["labels"], (str, unicode)):
+
+                                                                                synonym_match.append(
+                                                                                    SearchAnnotation(
+                                                                                        syn_match["labels"]))
+
+                                                                                if syn_match["labels"].lower() != syn_match["labels"]:
+
+                                                                                    synonym_match.append(
+                                                                                        SearchAnnotation(
+                                                                                            syn_match[
+                                                                                                "labels"].lower()))
+
+
+                if "synonyms" in keywd_json.keys():
+
+                    if keywd_json["synonyms"]:
+
+                        if isinstance(keywd_json["synonyms"], list):
+
+                            for syn in keywd_json["synonyms"]:
+
+                                if isinstance( syn, (str, unicode) ):
+
+                                    if synonym_match is None: synonym_match = []
+
+                                    synonym_match.append( SearchAnnotation( syn ) )
+
+                                    r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=synonyms:"' + syn + '"&fl=labels&wt=json&indent=true&rows=1000')
+
+                                    r = r.json()
+
+                                    if r:
+
+                                        if isinstance(r, dict):
+
+                                            if "response" in r.keys():
+
+                                                if r["response"]:
+
+                                                    if isinstance(r["response"], dict):
+
+                                                        if "docs" in r["response"].keys():
+
+                                                            if isinstance(r["response"]["docs"], list):
+
+                                                                for syn_match in r["response"]["docs"]:
+
+                                                                    if syn_match:
+
+                                                                        if isinstance(syn_match, dict):
+
+                                                                            if "labels" in syn_match.keys():
+
+                                                                                if syn_match["labels"]:
+
+                                                                                    if isinstance(syn_match["labels"], (str, unicode)):
+
+                                                                                        synonym_match.append(
+                                                                                            SearchAnnotation(
+                                                                                                syn_match["labels"]))
+
+                                                                                        if syn_match["labels"].lower() != syn_match[
+                                                                                                    "labels"]:
+
+                                                                                            synonym_match.append(
+                                                                                                SearchAnnotation(
+                                                                                                    syn_match[
+                                                                                                        "labels"].lower()))
+
+    # Avoid duplicate results being returned in synonym_match:
+
+    id_list = []
+
+    if label_match:
+
+        for qsv in label_match:
+
+            if qsv.jsonld_id:
+
+                if qsv.jsonld_id not in id_list:
+
+                    id_list.append(qsv.jsonld_id)
+
+    pre_synonym_match = None
+
+    if synonym_match:
+
+        pre_synonym_match = copy.deepcopy(synonym_match)
+
+        synonym_match = []
+
+    if pre_synonym_match:
+
+        for qs in pre_synonym_match:
+
+            for qsv in qs.values():
+
+                if isinstance(qsv, dict):
+
+                    if "jsonld_id" in qsv.keys():
+
+                        if qsv["jsonld_id"]:
+
+                            if qsv["jsonld_id"] not in id_list:
+
+                                id_list.append(qsv["jsonld_id"])
+
+                                synonym_match.append(qs)
+
+    return render(request, "b2note_app/searchpage.html", {'keywd_json': keywd_json,'label_match': label_match, 'synonym_match':synonym_match})
 
 
 @csrf_exempt
