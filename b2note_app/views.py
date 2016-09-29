@@ -63,19 +63,35 @@ def edit_annotation(request):
 
                         error_loc.append(7)
 
-                        if A.creator[0].nickname and userprofile.nickname:
+                        if A.creator:
 
-                            error_loc.append('7b')
+                            error_loc.append('7a')
 
-                            if isinstance(A.creator[0].nickname, (str, unicode)) and isinstance(userprofile.nickname, (str, unicode)):
+                            if isinstance(A.creator, list):
 
-                                error_loc.append('7c')
+                                error_loc.append('7b')
 
-                                if userprofile.nickname == A.creator[0].nickname:
+                                if A.creator[0]:
 
-                                    error_loc.append('7d')
+                                    error_loc.append('7c')
 
-                                    owner = True
+                                    if A.creator[0].nickname:
+
+                                        error_loc.append('7d')
+
+                                        if userprofile.nickname:
+
+                                            error_loc.append('7e')
+
+                                            if isinstance(A.creator[0].nickname, (str, unicode)) and isinstance(userprofile.nickname, (str, unicode)):
+
+                                                error_loc.append('7f')
+
+                                                if userprofile.nickname == A.creator[0].nickname:
+
+                                                    error_loc.append('7g')
+
+                                                    owner = True
 
                         error_loc.append(8)
 
