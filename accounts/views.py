@@ -64,9 +64,9 @@ def consolelogin(request):
             user = authenticate(email=request.POST['username'], password=request.POST['password'])
             if user is not None:
                 if user.is_active:
-                    print type(user), isinstance(user, unicode), user
+                    #print type(user), isinstance(user, unicode), user
                     django_login(request, user)
-                    print ">>>", user.annotator_id.annotator_id
+                    #print ">>>", user.annotator_id.annotator_id
                     request.session["user"] = user.annotator_id.annotator_id
                     return redirect('/interface_main')
     else:
@@ -88,7 +88,7 @@ def register(request):
     """
     if request.method == 'POST':
         form = RegistrationForm(data=request.POST)
-        print form
+        #print form
         if form.is_valid():
             user = form.save()
             return redirect('/accounts/logout')

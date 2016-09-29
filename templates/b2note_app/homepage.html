@@ -3,6 +3,7 @@
 <html lang="en">
 
 <head>
+
 	<meta charset="UTF-8">
 
 	{% load staticfiles %}
@@ -111,7 +112,7 @@
 
 						<tr>
 
-							<td title="{{ f }}" colspan="3">
+							<td title="{{ f }}" colspan="4">
 								<img src="{% static "images/Link_icon.svg" %}" height="24px" alt="File IRI"/>
 								<a href="{{f}}" target="_blank">{{ f }}</a>
 							</td>
@@ -170,18 +171,33 @@
 												<p class="text-right"><small> {{ ann.created|date:"d/m/Y" }} </small></p>
 											</td>
 
-											<form action="/delete_annotation" method="post">
+											<div>
 
-												{% csrf_token %}
+												<form action="/delete_annotation" method="post">
 
-												<input type="hidden" name="db_id" value="{{ann.id}}" readonly="readonly" />
-												<input type="hidden" name="subject_tofeed" value="{{ f }}" readonly="readonly" />
-												<input type="hidden" name="pid_tofeed" value="" readonly="readonly" />
-												<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />
+													{% csrf_token %}
 
-												<td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" height="16px" title="Delete annotation" alt="Delete annotation" /></td>
+													<input type="hidden" name="db_id" value="{{ ann.id }}" readonly="readonly" />
+													<input type="hidden" name="subject_tofeed" value="{{ f }}" readonly="readonly" />
+													<input type="hidden" name="pid_tofeed" value="untracked pid" readonly="readonly" />
+													<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />
 
-											</form>
+													<td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" height="16px" title="Delete annotation" alt="Delete annotation" /></td>
+
+												</form>
+
+												<form action="/edit_annotation" method="post">
+
+													{% csrf_token %}
+
+													<input type="hidden" name="db_id" value="{{ ann.id }}" readonly="readonly" />
+													<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />
+
+													<td id="editAnnotation"><input type="image" id="pen-icon" src="{% static "images/Black_pencil.svg" %}" height="16px" title="Edit annotation" alt="Edit annotation" /></td>
+
+												</form>
+
+											</div>
 
 										</tr>
 

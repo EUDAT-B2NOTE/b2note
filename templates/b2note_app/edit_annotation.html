@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        {% load staticfiles %}
+
+        <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
+        <link rel='stylesheet' type='text/css' href="{% static 'css/dashboard.css' %}" />
+        <link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
+
+        <script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+        <script src="{% static 'js/bloodhound.js' %}"></script>
+        <script src="{% static 'js/handlebars-v4.0.0.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/ontology-typeahead.js' %}"></script>
+        <script src="{% static 'js/underscore-min.js' %}"></script>
+        <script src="{% static 'js/typeahead.min.js' %}"></script>
+        <script src="{% static 'js/jquery.redirect.js' %}"></script>
+        <script src="{% static 'js/utils.js' %}"></script>
+
+        <title>B2Note service demo</title>
+
+    </head>
+
+    <body id="edit_annotation_page">
+
+        {% csrf_token %}
+
+        <header>
+
+            <div id="header-top">
+
+                <a href="http://www.eudat.eu" target="_blank">GO TO EUDAT WEBSITE</a>
+
+            </div>
+
+            <div class = "container" id="header">
+
+                <section class="row">
+
+                    <div class="col-xs-8 col-sm-4 col-md-2">
+
+                        <img alt="EUDAT" title="EUDAT" src="{% static 'images/EUDAT-logo_3.png' %}" />
+
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6 col-md-2">
+
+                        <img alt="B2NOTE" title="B2NOTE" src="{% static 'images/B2NOTE-logo.png' %}" />
+
+                    </div>
+
+                    <div class="clear"> </div>
+
+                </section>
+
+            </div>
+
+            <div class="clear"> </div>
+
+        </header>
+
+        <div class="container" id="edit_annotation_form">
+
+        {% if is_console_access %}
+
+            <h3>Edit annotation</h3>
+
+            <br>
+
+        {% else %}
+
+            <div class="row">
+
+    			<div class="col-sm-6">
+
+                    <h2>Edit annotation</h2>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-sm-2">
+
+                    <a href="/homepage">Homepage</a>
+
+                </div>
+
+                <div class="col-sm-2 col-sm-offset-4">
+
+                    <a href="logout"><p class="text-right">Logout</p></a>
+
+                </div>
+
+            </div>
+
+            <br>
+
+        {% endif %}
+
+        {% if is_console_access %}
+
+            <form action="edit_annotation" method="post" class="form-horizontal">{% csrf_token %}
+
+        {% else %}
+
+            <form action="edit_annotation" method="post" class="form-horizontal">{% csrf_token %}
+
+        {% endif %}
+
+        {% if form %}
+
+                <div class="form-group">
+                    <input type="hidden" value="{{ form.id }}" name="db_id" id="db_id" readonly/>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="jsonld_id">ID:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" name="jsonld_id" value="{{form.jsonld_id}}" id="jsonld_id" readonly/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="target.jsonld_id">Target:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" name="target.jsonld_id" value="{{ form.target.0.jsonld_id }}" id="target.jsonld_id" readonly/>
+                    </div>
+                </div>
+
+            {% if owner %}
+
+                {% if form.body.0.jsonld_id %}
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="body.jsonld_id">Body id:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" name="body.jsonld_id" value="{{ form.body.0.jsonld_id }}" id="body.jsonld_id" readonly/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="body.value">Body value:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" name="body.value" value="{{ form.body.0.value }}" id="body.value" readonly/>
+                    </div>
+                </div>
+
+                {% else %}
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="body.value">Body value:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" name="body.value" value="{{ form.body.0.value }}" id="body.value" readonly/>
+                    </div>
+                </div>
+
+                {% endif %}
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="body.jsonld_id">Change body:</label>
+                    <div class="col-sm-6">
+                        <ul class="nav nav-tabs">
+                            {% if form.body.0.jsonld_id %}
+                            <li class="active"><a data-toggle="tab" href="#keyword">keyword</a></li>
+                            <li><a data-toggle="tab" href="#comment">comment</a></li>
+                            {% else %}
+                            <li><a data-toggle="tab" href="#keyword">keyword</a></li>
+                            <li class="active"><a data-toggle="tab" href="#comment">comment</a></li>
+                            {% endif %}
+                        </ul>
+                        <div class="tab-content col-sm-12">
+                            {% if form.body.0.jsonld_id %}
+                            <div id="keyword" class="tab-pane fade in active form-group">
+                                <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"
+                                       placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
+                            </div>
+                            <div id="comment" class="tab-pane fade form-group">
+                                <textarea class="form-control custom-control" rows="2" name="free_text" id="free_text"
+                                          placeholder="Type a comment"></textarea>
+                            </div>
+                            {% else %}
+                            <div id="keyword" class="tab-pane fade form-group">
+                                <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"
+                                       placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
+                            </div>
+                            <div id="comment" class="tab-pane fade in active form-group">
+                                <textarea class="form-control custom-control" rows="2" name="free_text" id="free_text"
+                                          placeholder="Type a comment"></textarea>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            {% endif %}
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="current_motivation">Motivation:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" value="{{ form.motivation.0 }}" name="form.motivation" id="current_motivation" readonly/>
+                    </div>
+                </div>
+
+            {% if owner %}
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="motivation_selection"></label>
+                    <div class="col-sm-6">
+                        <select class="form-control" name="motivation_selection" id="motivation_selection">
+                        {% for mc in motivation_choices %}
+                            <option value="None" disabled selected hidden>Change motivation...</option>
+                            {% if mc.0 != form.motivation.0 %}
+                            <option value="{{ mc.0 }}">{{ mc.0 }}</option>
+                            {% endif %}
+                        {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+            {% endif %}
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="creator.nickname">Annotator pseudonym:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" value="{{ form.creator.0.nickname }}" name="creator.nickname" id="creator.nickname" readonly/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="date.created">Date created:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" value="{{ form.created }}" name="date.created" id="date.created" readonly/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="date.modified">Date modified:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" value="{{ form.modified }}" name="date.modified" id="date.modified" readonly/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        {% if owner %}
+                        <!--<button type="submit" class="btn btn-danger">Delete</button>-->
+                        <button type="submit" class="btn btn-success">Send</button>
+                        {% else %}
+                        <input type="hidden" value="duplicate_cmd" name="duplicate_cmd" id="duplicate_cmd" readonly/>
+                        <button type="submit" class="btn btn-success">Duplicate</button>
+                        {% endif %}
+                        <a href="/homepage" title="Go to homepage.">Cancel</a>
+                    </div>
+                </div>
+
+        {% else %}
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <a href="/homepage" title="Go to homepage.">Cancel</a>
+                    </div>
+                </div>
+
+        {% endif %}
+
+            </form>
+
+        {% if form and owner %}
+
+        <div class="container" id="extra_annotation_action_forms">
+
+            <label class="control-label col-sm-2"></label>
+
+            <div class="col-sm-2">
+                <form action="edit_annotation" method="post" class="form-horizontal">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="hidden" value="duplicate_cmd" name="duplicate_cmd" id="duplicate_cmd" readonly/>
+                        <input type="hidden" value="{{ form.id }}" name="db_id" id="db_id" readonly/>
+                        <button type="submit" class="btn btn-info">Duplicate</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-sm-2">
+                <form action="edit_annotation" method="post" class="form-horizontal">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="hidden" value="delete_cmd" name="delete_cmd" id="delete_cmd" readonly/>
+                        <input type="hidden" value="{{ form.id }}" name="db_id" id="db_id" readonly/>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        {% endif %}
+
+        {% if not is_console_access %}
+
+        <footer>
+            <div id="footer-content">
+                <img alt="CE logo" title="CE logo" src="{% static 'images/logo_ce.jpg' %}" />
+                <p>
+                    EUDAT receives funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No. 654065.
+                    <a href="http://www.eudat.eu/legal-notice" target="_blank">Legal Notice</a>
+                </p>
+            </div>
+        </footer>
+
+        {% endif %}
+
+    </body>
+
+</html>

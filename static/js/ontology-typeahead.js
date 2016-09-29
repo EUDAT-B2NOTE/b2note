@@ -37,16 +37,23 @@ $(document).ready( function() {
     // gets the subject selected to provide the subject_tofeed field
     var elem = document.getElementById("section_subject");
     var subject = "";
+    var db_id = "";
     if (elem) {
     	subject = elem.getElementsByTagName("a")[0].innerHTML;
+    } else {
+        // abremaud@esciencefactory.com, 20160922
+        // Handling typeahead from edit_annotation page
+        db_id = document.getElementById("db_id").value;
     }
     // abremaud@esciencefactory.com, 20160129
     // gets the pid selected to provide the pid_tofeed field
+    elem = document.getElementById("section_subject");
     var pid = "test";
     if (elem) {
     	pid = elem.getElementsByTagName("a")[1].innerHTML;
     }
 
+    //$.ajaxSetup({data: {csrfmiddlewaretoken: '{{ csrf_token }}' },});
 
     // selects the html element where the suggestion takes places
     $('#id_q').typeahead({
@@ -87,11 +94,26 @@ $(document).ready( function() {
 	      * Code source: https://github.com/mgalante/jquery.redirect
 	      *
               */
-            $.redirect('create_annotation',
-	    	    {
-		    	ontology_json: JSON.stringify(data.json_document),
-		    	subject_tofeed: subject,
-		    	pid_tofeed: pid,
-		    });
+
+            if (document.getElementById("section_subject")) {
+                $.redirect('create_annotation',
+                    {
+                    ontology_json: JSON.stringify(data.json_document),
+                    subject_tofeed: subject,
+                    pid_tofeed: pid,
+                    // abremaud@esciencefactory.com, 20160926
+                    // retrieve Django csrf token from html hidden input element
+                    csrfmiddlewaretoken: this.parentElement.previousElementSibling.value,
+                });
+            } else {
+                $.redirect('edit_annotation',
+                    {
+                    ontology_json: JSON.stringify(data.json_document),
+                    db_id: db_id,
+                    // abremaud@esciencefactory.com, 20160926
+                    // retrieve Django csrf token from html hidden input element
+                    csrfmiddlewaretoken: this.form.firstChild.value,
+                });
+            };
     });
 });

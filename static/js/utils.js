@@ -69,10 +69,16 @@ function get_free_text() {
     if (elem) {
         pid = elem.getElementsByTagName("a")[1].innerHTML;
     }
-    $.redirect('create_annotation',
-               {
+
+    if (document.getElementById("section_subject")) {
+        $.redirect('create_annotation',
+            {
                free_text: text,
                subject_tofeed: subject,
                pid_tofeed: pid,
-               });
+               // abremaud@esciencefactory.com, 20160926
+               // retrieve Django csrf token from html hidden input element
+               csrfmiddlewaretoken: document.getElementById('free-text').parentElement.firstChild.nextSibling.value,
+            });
+    }
 }

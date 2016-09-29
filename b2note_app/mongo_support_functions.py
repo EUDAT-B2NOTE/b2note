@@ -26,7 +26,7 @@ def RetrieveAnnotations_perUsername( nickname=None ):
 
             annotations = Annotation.objects.raw_query({'creator.nickname': nickname})
 
-            annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
+            #annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
 
             print "RetrieveAnnotations_perUsername function, returning annotations."
             return annotations
@@ -58,7 +58,7 @@ def RetrieveAnnotations( subject_url ):
     """
     try:
         annotations = Annotation.objects.raw_query({'target.jsonld_id': subject_url})
-    
+
     except Annotation.DoesNotExist:
         annotations = []
 
@@ -97,6 +97,72 @@ def DeleteFromPOSTinfo( db_id ):
     return False
 
 
+def SetAnnotationMotivation( db_id=None, motiv=None ):
+    """
+      Function: SetAnnotationMotivation
+      ----------------------------
+        Sets annotation motivation from existing Web Annotation set.
+
+        params:
+            db_id (str): database id of the document to modify.
+            motiv (str): motivation to be attributed to annotation document and as body purpose.
+
+        returns:
+            id (str): database id of the modified document if successful, False otherwise.
+    """
+    try:
+
+        if db_id:
+
+            if isinstance(db_id, (str, unicode)):
+
+                A = None
+                A = Annotation.objects.get(id=db_id)
+
+                if A:
+
+                    if motiv:
+
+                        if isinstance(motiv, (str, unicode)):
+
+                            if (motiv, motiv) in Annotation.MOTIVATION_CHOICES:
+
+                                A.motivation = [ motiv ]
+
+                                if A.body: A.purpose = motiv
+
+                                A.save()
+
+                                print 'SetAnnotationMotivation function, "' + motiv + '" set as motivation of annotation:', str(db_id)
+                                return A.id
+
+                            else:
+                                print "SetAnnotationMotivation function, provided string parameter not part of predefined set of motivations."
+                                return False
+                        else:
+                            print "SetAnnotationMotivation function, parameter provided for motivation neither string nor unicode."
+                            return False
+                    else:
+                        print "SetAnnotationMotivation function, missing motivation parameter."
+                        return False
+                else:
+                    print "SetAnnotationMotivation function, no annotation wit id:", str(db_id)
+                    return False
+            else:
+                print "SetAnnotationMotivation function, 'db_id' parameter neither str nor unicode."
+                return False
+        else:
+            print "SetAnnotationMotivation function, missing parameter called 'db_id'."
+            return False
+
+    except ValueError:
+        print "SetAnnotationMotivation function did not complete."
+        return False
+
+    print "SetAnnotationMotivation function did not complete succesfully."
+    return False
+
+
 def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
     """
       Function: SetUserAsAnnotationCreator
@@ -110,7 +176,7 @@ def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
             db_id (unicode): mongodb document id.
 
         returns:
-            Annotation mongodb document id as unicode if succesful, False otherwise.
+            id (str): database id of the create document if successful, False otherwise.
     """
     try:
 
@@ -159,7 +225,7 @@ def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
     return False
 
 
-def CreateSemanticTag( subject_url, object_json ):
+def CreateSemanticTag( subject_url=None, object_json=None ):
     """
       Function: CreateSemanticTag
       ----------------------------
@@ -170,60 +236,34 @@ def CreateSemanticTag( subject_url, object_json ):
             object_json (str): JSON of the annotation provided by SOLR
         
         returns:
-            bool: True if successful, False otherwise.
+            db_id (str): database id of the modified annotation if successful, False otherwise.
     """
-    
     try:
+
         if subject_url and isinstance(subject_url, (str, unicode)):
+
             my_id = None
             my_id = CreateAnnotation(subject_url)
     
             if my_id:
+
                 if object_json and isinstance(object_json, (str, unicode)):
-                    o = None
-                    o = json.loads(object_json)
 
-                    if o and isinstance(o, dict):
-                        if "uris" in o.keys():
-                            if o["uris"] and isinstance(o["uris"], (str, unicode)):
-                                object_uri   = ""
-                                object_label = ""
-                                object_uri = o["uris"]
+                    db_id = MakeAnnotationSemanticTag( my_id, object_json )
 
-                                if "labels" in o.keys():
-                                    if o["labels"] and isinstance(o["labels"], (str, unicode)):
-                                        object_label = o["labels"]
+                    db_id = SetAnnotationMotivation( db_id, "tagging" )
 
-                                #print object_label, " ", object_uri
+                    print "MakeAnnotationSemanticTag function, made annotation semantic tag:", str(db_id)
+                    return db_id
 
-                                annotation = None
-                                annotation = Annotation.objects.get(id=my_id)
-                                if annotation:
-                                    annotation.body = [TextualBody( jsonld_id = object_uri, type = ["TextualBody"], value = object_label )]
-                                    annotation.save()
-                                    print "Created semantic tag annotation"
-                                    return annotation.id
-                                else:
-                                    print "Could not retrieve from DB the annotation-basis with below id:"
-                                    print my_id
-                                    return False
-                            else:
-                                print "Dictionary field at key 'uris' does not resolve in a valid string."
-                                return False
-                        else:
-                            print "Dictionary does not contain a field with key 'uris'."
-                            return False
-                    else:
-                        print "Provided json does not load as a python dictionary."
-                        return False
                 else:
-                    print "Provided json object is neither string nor unicode."
+                    print "CreateSemanticTag function, provided json object is neither string nor unicode."
                     return False
             else:
-                print "Internal call to CreateAnnotation function did not return an exploitable id reference."
+                print "CreateSemanticTag function, internal call to CreateAnnotation function did not return an exploitable id reference."
                 return False
         else:
-            print "Provided parameter is not a valid string for subject_url."
+            print "CreateSemanticTag function, provided parameter is not a valid string for subject_url."
             return False
 
     except ValueError:
@@ -234,9 +274,7 @@ def CreateSemanticTag( subject_url, object_json ):
     return False
 
 
-
-
-def CreateFreeText( subject_url, text ):
+def CreateFreeText( subject_url=None, text=None ):
     """
       Function: CreateFreeText
       ----------------------------
@@ -247,24 +285,34 @@ def CreateFreeText( subject_url, text ):
             text (str): Free text introduced by the user
         
         returns:
-            bool: id of the document created, False otherwise.
+            db_id (str): database id of the modified annotation if successful, False otherwise.
     """
-    
     try:
+
         my_id = CreateAnnotation(subject_url)
-    
-        if not my_id:
-            print "Could not save free text to DB"
-            return False
-    
-        if isinstance(text, (str, unicode)) and len(text)>0: 
-            annotation = Annotation.objects.get(id=my_id)
-            annotation.body = [TextualBody( type = ["TextualBody"], value = text )]
-            annotation.save()
-            print "Created free text annotation"
-            return annotation.id
+
+        if my_id:
+
+            if isinstance( my_id, (str, unicode) ):
+
+                if isinstance(text, (str, unicode)) and len(text) > 0:
+
+                    db_id = None
+                    db_id = MakeAnnotationFreeText(my_id, text)
+
+                    db_id = SetAnnotationMotivation( db_id, "commenting" )
+
+                    print "CreateFreeText function, created free-text annotation:", str(db_id)
+                    return db_id
+
+                else:
+                    print "CreateFreeText function, wrong text codification or empty text."
+                    return False
+            else:
+                print "CreateFreeText function, 'my_id' parameter neither str nor unicode."
+                return False
         else:
-            print "Wrong text codification or empty text"
+            print "CreateFreeText function, annotation not created or id not returned."
             return False
 
     except ValueError:
@@ -275,7 +323,147 @@ def CreateFreeText( subject_url, text ):
     return False
 
 
-def CreateAnnotation(target):
+def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
+    """
+      Function: MakeAnnotationSemanticTag
+      -----------------------------------
+        Adds semantic tag body to an annotation.
+
+        params:
+            db_id (str): database id of the annotation to which the semantic tag body can be attached.
+            object_json (str): JSON of the annotation provided by SOLR.
+
+        returns:
+            db_id (str): database id of the modified annotation if successful, False otherwise.
+    """
+    try:
+
+        if db_id:
+
+            if isinstance(db_id, (str, unicode)):
+
+                A = None
+                A = Annotation.objects.get(id=db_id)
+
+                if A:
+
+                    if object_json and isinstance(object_json, (str, unicode)):
+                        o = None
+                        o = json.loads(object_json)
+
+                        if o and isinstance(o, dict):
+                            if "uris" in o.keys():
+                                if o["uris"] and isinstance(o["uris"], (str, unicode)):
+                                    object_uri = ""
+                                    object_label = ""
+                                    object_uri = o["uris"]
+
+                                    if "labels" in o.keys():
+                                        if o["labels"] and isinstance(o["labels"], (str, unicode)):
+                                            object_label = o["labels"]
+
+                                    A.body = [
+                                        TextualBody(
+                                            jsonld_id = object_uri,
+                                            type      = ["TextualBody"],
+                                            value     = object_label
+                                        )
+                                    ]
+
+                                    A.save()
+
+                                    db_id = SetAnnotationMotivation( A.id, "tagging" )
+
+                                    print "MakeAnnotationSemanticTag function, made annotation semantic tag:", str(db_id)
+                                    return db_id
+
+                                else:
+                                    print "MakeAnnotationSemanticTag function, dictionary field at key 'uris' does not resolve in a valid string."
+                                    return False
+                            else:
+                                print "MakeAnnotationSemanticTag function, dictionary does not contain a field with key 'uris'."
+                                return False
+                        else:
+                            print "MakeAnnotationSemanticTag function, provided json does not load as a python dictionary."
+                            return False
+                    else:
+                        print "MakeAnnotationSemanticTag function, provided json object is neither string nor unicode."
+                        return False
+                else:
+                    print "MakeAnnotationSemanticTag function, no annotation wit id:", str(db_id)
+                    return False
+            else:
+                print "MakeAnnotationSemanticTag function, 'db_id' parameter neither str nor unicode."
+                return False
+        else:
+            print "MakeAnnotationSemanticTag function, missing parameter called 'db_id'."
+            return False
+
+    except ValueError:
+        print "MakeAnnotationSemanticTag function did not complete."
+        return False
+
+    print "MakeAnnotationSemanticTag function did not complete succesfully."
+    return False
+
+
+def MakeAnnotationFreeText( db_id=None, text=None ):
+    """
+      Function: MakeAnnotationFreeText
+      --------------------------------
+        Makes an existing annotation document free-text comment.
+
+        params:
+            db_id (str): database id of the annotation to create.
+            text (str): Free text introduced by the user.
+
+        returns:
+            db_id (str): database id of the modified annotation if successful, False otherwise.
+    """
+    try:
+
+        if db_id:
+
+            if isinstance(db_id, (str, unicode)):
+
+                A = None
+                A = Annotation.objects.get(id=db_id)
+
+                if A:
+
+                    if isinstance(text, (str, unicode)) and len(text) > 0:
+
+                        A.body = [TextualBody(type=["TextualBody"], value=text)]
+
+                        A.save()
+
+                        db_id = SetAnnotationMotivation( A.id, "commenting" )
+
+                        print "MakeAnnotationFreeText function, made free-text annotation:", str(db_id)
+                        return db_id
+
+                    else:
+                        print "MakeAnnotationFreeText function, wrong text codification or empty text"
+                        return False
+                else:
+                    print "MakeAnnotationFreeText function, no annotation wit id:", str(db_id)
+                    return False
+            else:
+                print "MakeAnnotationFreeText function, 'db_id' parameter neither str nor unicode."
+                return False
+        else:
+            print "MakeAnnotationFreeText function, missing parameter called 'db_id'."
+            return False
+
+    except ValueError:
+        print "MakeAnnotationFreeText function did not complete."
+        return False
+
+    print "MakeAnnotationFreeText function did not complete succesfully."
+    return False
+
+
+def CreateAnnotation(target=None):
     """
       Function: CreateAnnotation
       ----------------------------
@@ -285,28 +473,42 @@ def CreateAnnotation(target):
             target (str): URL of the annotation to create.
         
         returns:
-            int: id of the document created.
+            id (str): database id of the created annotation document.
     """
     try:
-        if target and isinstance(target, (str, unicode)) and len(target)>0:
-            ann = Annotation(
-                jsonld_context  = ["http://www.w3.org/ns/anno.jsonld"],
-                type         = ["Annotation"],
-                target       = [ExternalResource( jsonld_id = target )]
-                )
-            ann.save()
-            ann = Annotation.objects.get(id=ann.id)
-            ann.jsonld_id = "https://b2note.bsc.es/annotations/" + ann.id
-            ann.save()
-            print "CreateAnnotation with id: " + str(ann.id)
-            return ann.id
+
+        if target:
+
+            if isinstance(target, (str, unicode)) and len(target)>0:
+
+                ann = Annotation(
+                    jsonld_context  = ["http://www.w3.org/ns/anno.jsonld"],
+                    type            = ["Annotation"],
+                    target          = [ExternalResource( jsonld_id = target )]
+                    )
+                ann.save()
+
+                ann = Annotation.objects.get(id=ann.id)
+                ann.jsonld_id = "https://b2note.bsc.es/annotations/" + ann.id
+                ann.save()
+
+                print "CreateAnnotation function, created annotation document with id: " + str(ann.id)
+                return ann.id
+
+            else:
+                print "CreateAnnotation function, provided 'target' argument not a valid str or unicode."
+                return False
+
         else:
-            print "Bad target for CreateAnnotation"
+            print "CreateAnnotation function, missing 'target' argument."
             return False
     
     except ValueError:
-        print "Could not save to DB"
+        print "CreateAnnotation function, did not complete."
         return False
+
+    print "CreateAnnotation function did not complete succesfully."
+    return False
         
 
 def CreateFromPOSTinfo( subject_url, object_json ):
@@ -395,7 +597,7 @@ def CreateFromPOSTinfo( subject_url, object_json ):
     return True
 
 
-def readyQuerySetValuesForDumpAsJSONLD( o_in ):
+def readyQuerySetValuesForDumpAsJSONLD2( o_in ):
     """
       Function: readyQuerySetValuesForDumpAsJSONLD
       --------------------------------------------
@@ -442,4 +644,59 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
     except:
         o_out = None
         pass
+    print "#", o_out
+    return o_out
+
+
+def readyQuerySetValuesForDumpAsJSONLD( o_in ):
+    """
+      Function: readyQuerySetValuesForDumpAsJSONLD
+      --------------------------------------------
+        Recursively drops embedded custom model class objects and model
+         class field names beginning with "jsonld_whatever" to "@whatever",
+         while avoiding returning fields with no content and making
+         datetimes to xsd:datetime strings.
+        input:
+            o_in (object): In nesting order, Django queryset values
+                list then tuple or list or set or dict or datetime or
+                out-of-scope object.
+        output:
+            o_out: None (execution failed) or list of native python
+                objects, where each out-of-scope object was replaced
+                by its "string-ified" avatar, designed for subsequent
+                JSON-ification.
+    """
+
+    o_out = None
+
+    try:
+        if type(o_in) is tuple:
+            o_out = ()
+            for item in o_in:
+                if item and readyQuerySetValuesForDumpAsJSONLD( item ):
+                    o_out += ( readyQuerySetValuesForDumpAsJSONLD( item ), )
+        elif type(o_in) is list or type(o_in) is set:
+            o_out = []
+            for item in o_in:
+                if item and readyQuerySetValuesForDumpAsJSONLD( item ):
+                    o_out.append( readyQuerySetValuesForDumpAsJSONLD( item ) )
+        elif type(o_in) is dict:
+            o_out = {}
+            for k in o_in.keys():
+                if o_in[k] and readyQuerySetValuesForDumpAsJSONLD( o_in[k] ) and k != "id":
+                    newkey = k
+                    m = re.match(r'^jsonld_(.*)', k)
+                    if m:
+                        newkey = "@{0}".format(m.group(1))
+                    if newkey=="@id": newkey="id"
+                    o_out[newkey] = readyQuerySetValuesForDumpAsJSONLD( o_in[k] )
+        elif isinstance(o_in, datetime.datetime) or isinstance(o_in, datetime.datetime):
+            o_out = o_in.isoformat()
+        elif o_in and o_in != "None" and not re.match(r'^<class (.*)>', o_in):
+            o_out = str(o_in)
+        #if len(o_out) <= 0: o_out = None
+    except:
+        o_out = None
+        pass
+
     return o_out

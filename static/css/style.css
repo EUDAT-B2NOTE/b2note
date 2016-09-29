@@ -289,3 +289,7 @@ footer {
     border: none;
     font-size: 10px;
 }
+
+#edit_annotation_page {
+    padding-top: 0px;
+}

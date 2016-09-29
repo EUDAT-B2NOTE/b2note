@@ -43,6 +43,8 @@
 
 						<form action="interface_main" method="post">
 
+							{% csrf_token %}
+
 							<input type="hidden" name="subject_tofeed"
 								value="{{subject_tofeed}}" readonly="readonly" /> <input
 								type="hidden" name="pid_tofeed" value="{{pid_tofeed}}"
@@ -56,6 +58,8 @@
 					<li>
 
 						<form action="publish_annotations" method="post">
+
+							{% csrf_token %}
 
 							<input type="hidden" name="subject_tofeed"
 								value="{{subject_tofeed}}" readonly="readonly" /> <input
@@ -71,6 +75,8 @@
 					<li>
 
 						<form action="settings" method="post">
+
+							{% csrf_token %}
 
 							<input type="hidden" name="subject_tofeed"
 								value="{{subject_tofeed}}" readonly="readonly" /> <input

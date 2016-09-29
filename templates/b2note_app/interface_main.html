@@ -69,6 +69,8 @@
 
                                 <form action="/export_annotations" method="post">
 
+                                    {% csrf_token %}
+
                                     <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
                                     <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
                                     <input type="Submit" class="btn btn-link" value="Export" title="All your annotations as JSON" />
@@ -82,6 +84,8 @@
 
                                 <form action="/publish_annotations" method="post">
 
+                                    {% csrf_token %}
+
                                     <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
                                     <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
                                     <input type="Submit" class="btn btn-link" value = "Publish" title = "Make annotations available to SPARQL queries"/>
@@ -93,6 +97,8 @@
                             <li>
 
                                 <form action="/settings" method="post">
+
+                                    {% csrf_token %}
 
                                     <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
                                     <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
@@ -171,10 +177,12 @@
                 </ul>
                 <div class="tab-content">
                     <div id="keyword" class="tab-pane fade in active form-group">
+                        {% csrf_token %}
                         <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"  placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
                     </div>
                     <div id="comment" class="tab-pane fade form-group">
                         <div class="input-group">
+                            {% csrf_token %}
                             <textarea class="form-control custom-control" rows="2" id="free-text" placeholder="Type a comment"></textarea>
                             <span class="input-group-addon btn btn-primary" onClick="get_free_text()">Send</span>
                         </div>
@@ -205,34 +213,60 @@
 
                                                 <tr>
 
+                                                {% if "http://" in body.jsonld_id %}
+
+                                                    <!--
+                                                    <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
+                                                    -->
+                                                    <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
+                                                    <td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">
+                                                        <a target="_blank" href={{body.jsonld_id}}>{{body.value}}</a>
+                                                    </td>
+
+                                                {% else %}
+
+                                                    <!--
+                                                    <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
+                                                    -->
+                                                    <td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">{{body.value}}</td>
+
+                                                {% endif %}
+
+                                                    <form action="/edit_annotation" method="post" target="_blank">
+
+                                                        {% csrf_token %}
+
+                                                        <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
+                                                        <input type="hidden" name="visu_call" value="visu_call" readonly="readonly" />
+                                                        <!--<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />-->
+
+                                                        <td id="editAnnotation"><input type="image" id="pen-icon" src="{% static "images/Black_pencil.svg" %}" height="16px" title="Edit annotation" alt="Edit annotation" /></td>
+
+                                                    </form>
+
+                                                {% if user_nickname = annotation.creator.0.nickname %}
+
                                                     <form action="/delete_annotation" method="post">
+
+                                                        {% csrf_token %}
 
                                                         <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
                                                         <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
                                                         <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
 
-
-                                                        {% if "http://" in body.jsonld_id %}
-
-                                                            <!--
-                                                            <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
-                                                            -->
-                                                            <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
-                                                            <td id="objectLabel"><a target="_blank" href={{body.jsonld_id}}>{{body.value}}</a></td>
-
-                                                        {% else %}
-
-                                                            <!--
-                                                            <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
-                                                            -->
-                                                            <td id="objectLabel">{{body.value}}</td>
-
-                                                        {% endif %}
-
-                                                            <!-- "Octicons-trashcan" by GitHub - https://github.com/github/octicons. Licensed under MIT via Wikimedia Commons - https://commons.wikimedia.org/wiki/File:Octicons-trashcan.svg#/media/File:Octicons-trashcan.svg -->
-                                                            <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" title="Delete annotation" alt="Delete annotation" /></td>
+                                                        <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" height="16px" title="Delete annotation" alt="Delete annotation" /></td>
 
                                                     </form>
+
+                                                {% else %}
+
+                                                    <!-- Empty slot for bin icon for annotations of which logged-in user is not owner. -->
+                                                    <td></td>
+
+                                                {% endif %}
+
+                                                    <!-- "Octicons-trashcan" by GitHub - https://github.com/github/octicons. Licensed under MIT via Wikimedia Commons - https://commons.wikimedia.org/wiki/File:Octicons-trashcan.svg#/media/File:Octicons-trashcan.svg
+                                                    <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" title="Delete annotation" alt="Delete annotation" /></td> -->
 
                                                 </tr>
 
