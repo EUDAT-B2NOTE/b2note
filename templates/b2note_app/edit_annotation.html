@@ -86,16 +86,22 @@
 
             <div class="row">
 
-                <div class="col-sm-2">
-
-                    <a href="/homepage">Homepage</a>
-
+                <div class="col-sm-1">
+                    <a href="accounts/logout" target="_self" alt="Logout" title="Logout, terminate session">
+                        <button type="submit" class="btn btn-default">
+                            <img src="{% static "images/Off_font_awesome.svg" %}" height="16px"/>
+                            Logout
+                        </button>
+                    </a>
                 </div>
 
-                <div class="col-sm-2 col-sm-offset-4">
-
-                    <a href="logout"><p class="text-right">Logout</p></a>
-
+                <div class="col-sm-1">
+                    <a href="/homepage">
+                        <button type="submit" class="btn btn-default">
+                            <img src="{% static "images/Home-icon.svg" %}" height="16px"/>
+                            Homepage
+                        </button>
+                    </a>
                 </div>
 
             </div>
@@ -134,9 +140,7 @@
                     </div>
                 </div>
 
-            {% if owner %}
-
-                {% if form.body.0.jsonld_id %}
+            {% if form.body.0.jsonld_id %}
 
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="body.jsonld_id">Body id:</label>
@@ -152,7 +156,7 @@
                     </div>
                 </div>
 
-                {% else %}
+            {% else %}
 
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="body.value">Body value:</label>
@@ -161,7 +165,9 @@
                     </div>
                 </div>
 
-                {% endif %}
+            {% endif %}
+
+            {% if owner %}
 
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="body.jsonld_id">Change body:</label>
