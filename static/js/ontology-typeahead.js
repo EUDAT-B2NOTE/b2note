@@ -43,7 +43,9 @@ $(document).ready( function() {
     } else {
         // abremaud@esciencefactory.com, 20160922
         // Handling typeahead from edit_annotation page
-        db_id = document.getElementById("db_id").value;
+        if (document.getElementById("db_id")) {
+            db_id = document.getElementById("db_id").value;
+        }
     }
     // abremaud@esciencefactory.com, 20160129
     // gets the pid selected to provide the pid_tofeed field
@@ -106,14 +108,24 @@ $(document).ready( function() {
                     csrfmiddlewaretoken: this.parentElement.previousElementSibling.value,
                 });
             } else {
-                $.redirect('edit_annotation',
-                    {
-                    ontology_json: JSON.stringify(data.json_document),
-                    db_id: db_id,
-                    // abremaud@esciencefactory.com, 20160926
-                    // retrieve Django csrf token from html hidden input element
-                    csrfmiddlewaretoken: this.form.firstChild.value,
-                });
+                if (db_id != "") {
+                    $.redirect('edit_annotation',
+                        {
+                        ontology_json: JSON.stringify(data.json_document),
+                        db_id: db_id,
+                        // abremaud@esciencefactory.com, 20160926
+                        // retrieve Django csrf token from html hidden input element
+                        csrfmiddlewaretoken: this.form.firstChild.value,
+                    });
+                } else {
+                    $.redirect('search_annotation',
+                        {
+                        // abremaud@esciencefactory.com, 20160928
+                        // search annotations on keyword
+                        ontology_json: JSON.stringify(data.json_document),
+                        csrfmiddlewaretoken: this.form.firstChild.nextSibling.value,
+                    });
+                }
             };
     });
 });

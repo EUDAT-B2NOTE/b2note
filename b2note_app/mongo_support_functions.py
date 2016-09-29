@@ -8,6 +8,24 @@ from django.forms.models import model_to_dict
 
 
 
+def SearchAnnotation( kw ):
+
+    try:
+
+        A = Annotation.objects.raw_query({'body.value': kw})
+
+        return A
+
+    except:
+        print "SearchAnnotation function did not complete."
+        return False
+
+    print "SearchAnnotation function did not complete succesfully."
+    return False
+
+
+
+
 def RetrieveAnnotations_perUsername( nickname=None ):
     """
       Function: RetrieveAnnotations_perUsername
