@@ -52,17 +52,19 @@ def edit_annotation(request):
 
                             if isinstance(A.creator, list):
 
-                                if A.creator[0]:
+                                if len(A.creator)>0:
 
-                                    if A.creator[0].nickname:
+                                    if A.creator[0]:
 
-                                        if userprofile.nickname:
+                                        if A.creator[0].nickname:
 
-                                            if isinstance(A.creator[0].nickname, (str, unicode)) and isinstance(userprofile.nickname, (str, unicode)):
+                                            if userprofile.nickname:
 
-                                                if userprofile.nickname == A.creator[0].nickname:
+                                                if isinstance(A.creator[0].nickname, (str, unicode)) and isinstance(userprofile.nickname, (str, unicode)):
 
-                                                    owner = True
+                                                    if userprofile.nickname == A.creator[0].nickname:
+
+                                                        owner = True
 
                         if request.POST.get('duplicate_cmd'):
 

@@ -147,7 +147,13 @@ def SetAnnotationMotivation( db_id=None, motiv=None ):
 
                                 A.motivation = [ motiv ]
 
-                                if A.body: A.purpose = motiv
+                                if A.body:
+
+                                    if isinstance(A.body, list):
+
+                                        if len(A.body)>0:
+
+                                            A.body[0].purpose = motiv
 
                                 A.save()
 
