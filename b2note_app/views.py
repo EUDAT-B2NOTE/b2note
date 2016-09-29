@@ -30,44 +30,75 @@ def index(request):
 def edit_annotation(request):
     A=None
     owner=False
+    error_loc=[]
     try:
+
+        error_loc.append(1)
 
         if request.session.get("user"):
 
+            error_loc.append(2)
+
             userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+
+            error_loc.append(3)
 
             #annotation_list = RetrieveAnnotations_perUsername(userprofile.nickname)
 
             if request.POST.get('db_id'):
 
+                error_loc.append(4)
+
                 if isinstance(request.POST.get('db_id'), (str, unicode)):
+
+                    error_loc.append(5)
 
                     #A = Annotation.objects.get(id="57e1504510d06010314becc8")
                     #A = Annotation.objects.get(id="57dfd3fe10d0600412d056df")
                     A = Annotation.objects.get(id=request.POST.get('db_id'))
 
+                    error_loc.append(6)
+
                     if A:
+
+                        error_loc.append(7)
 
                         owner = userprofile.nickname == A.creator[0].nickname
 
+                        error_loc.append(8)
+
                         if request.POST.get('duplicate_cmd'):
+
+                            error_loc.append(9)
 
                             db_id = None
 
                             if A.body[0].jsonld_id:
 
+                                error_loc.append(10)
+
                                 onto_json = json.dumps({'uris': A.body[0].jsonld_id, 'labels': A.body[0].value})
                                 db_id = CreateSemanticTag( A.target[0].jsonld_id, onto_json )
 
+                                error_loc.append(11)
+
                             else:
+
+                                error_loc.append(12)
 
                                 db_id = CreateFreeText( A.target[0].jsonld_id, A.body[0].value )
 
+                                error_loc.append(13)
+
                             if db_id:
+
+                                error_loc.append(14)
 
                                 db_id = SetUserAsAnnotationCreator( request.session.get('user'), db_id )
                                 A     = Annotation.objects.get( id = db_id )
                                 owner = userprofile.nickname == A.creator[0].nickname
+
+                                error_loc.append(15)
 
                             else:
                                 print "Edit_annotation view, annotation could not be duplicated."
@@ -75,7 +106,11 @@ def edit_annotation(request):
 
                         elif owner and request.POST.get('delete_cmd'):
 
+                            error_loc.append(16)
+
                             if request.POST.get('delete_cmd')=='delete_cmd' and request.POST.get('db_id'):
+
+                                error_loc.append(17)
 
                                 DeleteFromPOSTinfo(request.POST.get('db_id'))
                                 return redirect('/homepage')
@@ -86,21 +121,37 @@ def edit_annotation(request):
 
                         elif owner:
 
+                            error_loc.append(18)
+
                             if request.POST.get('ontology_json'):
+
+                                error_loc.append(19)
 
                                 db_id = MakeAnnotationSemanticTag( A.id, request.POST.get('ontology_json') )
                                 A = Annotation.objects.get(id=db_id)
 
+                                error_loc.append(20)
+
                             elif request.POST.get('free_text'):
+
+                                error_loc.append(21)
 
                                 if isinstance(request.POST.get('free_text'), (str, unicode)):
 
+                                    error_loc.append(22)
+
                                     if request.POST.get('free_text') != A.body[0].value:
+
+                                        error_loc.append(23)
 
                                         db_id = None
                                         db_id = MakeAnnotationFreeText( A.id, request.POST.get('free_text') )
 
+                                        error_loc.append(24)
+
                                         if db_id: A = Annotation.objects.get( id = db_id )
+
+                                        error_loc.append(25)
 
                                     else:
                                         print "Edit_annotation view, not editing due to entered text identical to existing body value."
@@ -111,14 +162,24 @@ def edit_annotation(request):
 
                             if request.POST.get('motivation_selection'):
 
+                                error_loc.append(26)
+
                                 motiv = request.POST.get('motivation_selection')
 
+                                error_loc.append(27)
+
                                 if isinstance(motiv, (str, unicode)):
+
+                                    error_loc.append(28)
 
                                     db_id = None
                                     db_id = SetAnnotationMotivation( A.id, motiv )
 
+                                    error_loc.append(29)
+
                                     if db_id: A = Annotation.objects.get( id = db_id )
+
+                                    error_loc.append(30)
 
                     else:
                         print "Edit_annotation view, could not retrieve annotation with id:", str( request.POST.get('db_id') )
@@ -132,7 +193,7 @@ def edit_annotation(request):
 
     except:
         print "Edit_annotation view did not complete."
-        return Exception
+        return HttpResponse(json.dumps(error_loc))
 
     motivation_choices = Annotation.MOTIVATION_CHOICES
 
