@@ -254,6 +254,17 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="control-label col-sm-2" for="generator.nickname">Generator:</label>
+                    <div class="col-sm-6">
+                    {% if form.generator.0.homepage.0.0 %}
+                        <a href="{{ form.generator.0.homepage.0 }}" class="form-control" readonly>{{ form.generator.0.name.0 }} ({{ form.generator.0.nickname }})</a>
+                    {% else %}
+                        <input type="text" class="form-control" value="{{ form.generator.0.name.0 }} ({{ form.generator.0.nickname }})" name="generator.nickname" id="generator.nickname" readonly/>
+                    {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         {% if owner %}
                         <!--<button type="submit" class="btn btn-danger">Delete</button>-->
