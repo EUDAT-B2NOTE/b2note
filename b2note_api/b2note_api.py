@@ -8,6 +8,14 @@ from django.conf import settings as global_settings
 import json, requests, os
 
 
+
+import mimerender
+mimerender = mimerender.FlaskMimeRender()
+render_json = lambda **args: json.dumps(args)
+render_jsonld = lambda **args: json.dumps(args)
+render_txt = lambda **args: str(args)
+
+
 app = Eve(settings=mongo_settings)
 app.register_blueprint(swagger)
 
@@ -43,6 +51,7 @@ app.config['SWAGGER_INFO'] = {
 
 
 
+@mimerender(default = 'txt', json = render_json, jsonld = render_jsonld, txt = render_txt)
 def before_returning_items(resource_name, response):
     if isinstance(response, dict):
         if "_items" in response.keys():
@@ -52,11 +61,13 @@ def before_returning_items(resource_name, response):
                         for k2d in ["_etag", "_created", "_id", "_updated", "_links"]:
                             if k2d in doc.keys():
                                 del( doc[k2d] )
-            print "** *** " * 12
-            print json.dumps(readyQuerySetValuesForDumpAsJSONLD( response["_items"] ), indent=2)
-            print "** *** " * 12
+            #print "** *** " * 12
+            #print json.dumps(readyQuerySetValuesForDumpAsJSONLD( response["_items"] ), indent=2)
+            #print "** *** " * 12
             response["_items"] = readyQuerySetValuesForDumpAsJSONLD(response["_items"])
             response["@graph"] = response["_items"]
+            if not isinstance(response["@graph"], list):
+                response["@graph"] = [ response["@graph"] ]
             del response["_items"]
             context_str = open(os.path.join('./static/', 'files/anno_context.jsonld'), 'r').read()
             response["@context"] = json.loads(context_str, object_pairs_hook=OrderedDict)
@@ -91,7 +102,7 @@ def get_from_django():
 
 
 
-app.on_fetched_resource += before_returning_items
+#app.on_fetched_resource += before_returning_items
 
 
 if __name__ == '__main__':

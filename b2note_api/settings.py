@@ -1,14 +1,6 @@
 import os
 
 
-
-API_VERSION = '1'
-
-ALLOWED_FILTERS = []
-
-XML = False
-
-
 agent = {
         'jsonld_id' : { 'type' : 'string' },
         'type' : {
@@ -155,6 +147,11 @@ annotations = {
                         'creator.nickname': 1,
                         'creator.type': 1,
                         'motivation': 1,
+                        'generator.type': 1,
+                        'generator.name': 1,
+                        'generator.nickname': 1,
+                        'generator.email': 1,
+                        'generator.homepage': 1
                         },
                     },
                 'schema' : {
@@ -232,9 +229,9 @@ annotations = {
 mongo_settings = {
         'MONGO_HOST': 'localhost',
         'MONGO_PORT': 27017,
-        'MONGO_DBNAME': os.environ['MONGODB_NAME'],
-        'MONGO_USERNAME': os.environ['MONGODB_USR'],
-        'MONGO_PASSWORD': os.environ['MONGODB_PWD'],
+        'MONGO_DBNAME': "b2note_mongodb", #os.environ['MONGODB_NAME'],
+        #'MONGO_USERNAME': os.environ['MONGODB_USR'],
+        #'MONGO_PASSWORD': os.environ['MONGODB_PWD'],
         'DOMAIN': {
             'annotations': annotations,
             },
@@ -243,6 +240,10 @@ mongo_settings = {
         #'ALLOW_UNKNOWN' : True, # http://stackoverflow.com/questions/34666941/python-eve-get-response-does-not-contain-contents-of-resource-unless-i-specify
         'DEBUG' : True,
         'INFO'  : True,
+
+        #'API_VERSION' : '1',
+
+        'ALLOWED_FILTERS' : [],
+
+        'XML' : False,
 }
-
-

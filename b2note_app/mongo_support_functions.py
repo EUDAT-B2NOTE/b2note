@@ -505,10 +505,19 @@ def CreateAnnotation(target=None):
 
             if isinstance(target, (str, unicode)) and len(target)>0:
 
+                gen_agt = Agent(
+                     type       = ["Software"],
+                     name       = ["B2Note semantic annotator"],
+                     nickname   = "B2Note v1.0",
+                     email      = ["abremaud@esciencefactory.com"],
+                     homepage   = ["https://b2note.bsc.es"],
+                    )
+
                 ann = Annotation(
                     jsonld_context  = ["http://www.w3.org/ns/anno.jsonld"],
                     type            = ["Annotation"],
-                    target          = [ExternalResource( jsonld_id = target )]
+                    target          = [ExternalResource( jsonld_id = target )],
+                    generator       = [ gen_agt ]
                     )
                 ann.save()
 
@@ -533,92 +542,6 @@ def CreateAnnotation(target=None):
 
     print "CreateAnnotation function did not complete succesfully."
     return False
-        
-
-def CreateFromPOSTinfo( subject_url, object_json ):
-    """
-      Function: CreateFromPOSTinfo
-      ----------------------------
-        Creates an annotation in MongoDB.
-        
-        params:
-            subject_url (str): URL of the annotation to create.
-            object_json (str): JSON of the annotation provided by SOLR
-        
-        returns:
-            bool: True if successful, False otherwise.
-    """
-    object_uri   = ""
-    object_label = ""
-
-    try:
-
-        if subject_url and isinstance(subject_url, (str, unicode)) and len(subject_url)>0:
-
-            o = json.loads(object_json)
-
-            if "uris" in o.keys():
-                object_uri = o["uris"]
-                if "labels" in o.keys(): object_label = o["labels"]
-
-                print object_label, " ", object_uri
-
-                # creator = Agent(
-                #     jsonld_id 	= "http://example.com/user1",
-                #     jsonld_type	= ["Person"],
-                #     name		= "Default Anonymous",
-                #     nick	    = "default_anonymous",
-                #     email		= ["danonymous@example.com"],
-                #     homepage	= ["http://example.com/DAnonymous_homepage"],
-                # )
-                #
-                # generator = Agent(
-                #     jsonld_id 	= "http://example.com/agent1",
-                #     jsonld_type	= ["Software"],
-                #     name		= "B2Note semantic annotator prototype",
-                #     nick	    = "B2Note v0.5",
-                #     email		= ["abremaud@esciencedatalab.com"],
-                #     homepage	= ["https://b2note.bsc.es/devel"],
-                # )
-                #
-                # source = ExternalResource(
-                #     jsonld_id   = subject_url,
-                #     jsonld_type = ["Text"],
-                # )
-                #
-                # ann = Annotation(
-                #     jsonld_id   = "https://b2note.bsc.es/annotation/temporary_id",
-                #     jsonld_type = ["Annotation"],
-                #     body        = [TextualBody( jsonld_id = object_uri, jsonld_type = ["TextualBody"], text = object_label, language = ["en"], role = "tagging", creator = [creator] )],
-                #     target      = [ExternalResource( jsonld_id = subject_url, language = ["en"], creator = [creator] )],
-                #     #target      = [SpecificResource( jsonld_type = "oa:SpecificResource", source = source )],
-                #     creator     = [creator],
-                #     generator   = [generator],
-                #     motivation  = ["tagging"],
-                # ).save()
-
-                ann = Annotation(
-                    jsonld_context  = ["http://www.w3.org/ns/anno.jsonld"],
-                    jsonld_id       = "https://b2note.bsc.es/annotation/temporary_id",
-                    type            = ["Annotation"],
-                    target          = [ExternalResource( jsonld_id = subject_url )]
-                ).save()
-
-                anns = Annotation.objects.filter( jsonld_id = "https://b2note.bsc.es/annotation/temporary_id" )
-
-                for ann in anns:
-                    ann.jsonld_id = "https://b2note.bsc.es/annotation/" + ann.id
-                    ann.save()
-                    #ann.update( jsonld_id = "https://b2note.bsc.es/annotation/" + ann.id )
-
-
-    except ValueError:
-
-        print "Could not save to DB"
-        return False
-
-    print "Created an Annotation"
-    return True
 
 
 def readyQuerySetValuesForDumpAsJSONLD2( o_in ):
