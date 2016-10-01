@@ -69,15 +69,7 @@ def edit_annotation(request):
                         if request.POST.get('duplicate_cmd'):
 
                             db_id = None
-
-                            if A.body[0].jsonld_id:
-
-                                onto_json = json.dumps({'uris': A.body[0].jsonld_id, 'labels': A.body[0].value})
-                                db_id = CreateSemanticTag( A.target[0].jsonld_id, onto_json )
-
-                            else:
-
-                                db_id = CreateFreeText( A.target[0].jsonld_id, A.body[0].value )
+                            db_id = DuplicateAnnotation( A.id )
 
                             if db_id:
 
