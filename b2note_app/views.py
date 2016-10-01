@@ -52,30 +52,24 @@ def edit_annotation(request):
 
                             if isinstance(A.creator, list):
 
-                                if A.creator[0]:
+                                if len(A.creator)>0:
 
-                                    if A.creator[0].nickname:
+                                    if A.creator[0]:
 
-                                        if userprofile.nickname:
+                                        if A.creator[0].nickname:
 
-                                            if isinstance(A.creator[0].nickname, (str, unicode)) and isinstance(userprofile.nickname, (str, unicode)):
+                                            if userprofile.nickname:
 
-                                                if userprofile.nickname == A.creator[0].nickname:
+                                                if isinstance(A.creator[0].nickname, (str, unicode)) and isinstance(userprofile.nickname, (str, unicode)):
 
-                                                    owner = True
+                                                    if userprofile.nickname == A.creator[0].nickname:
+
+                                                        owner = True
 
                         if request.POST.get('duplicate_cmd'):
 
                             db_id = None
-
-                            if A.body[0].jsonld_id:
-
-                                onto_json = json.dumps({'uris': A.body[0].jsonld_id, 'labels': A.body[0].value})
-                                db_id = CreateSemanticTag( A.target[0].jsonld_id, onto_json )
-
-                            else:
-
-                                db_id = CreateFreeText( A.target[0].jsonld_id, A.body[0].value )
+                            db_id = DuplicateAnnotation( A.id )
 
                             if db_id:
 

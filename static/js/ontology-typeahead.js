@@ -115,7 +115,7 @@ $(document).ready( function() {
                         db_id: db_id,
                         // abremaud@esciencefactory.com, 20160926
                         // retrieve Django csrf token from html hidden input element
-                        csrfmiddlewaretoken: this.form.firstChild.value,
+                        csrfmiddlewaretoken: this.parentElement.parentElement.firstChild.nextSibling.value,
                     });
                 } else {
                     $.redirect('search_annotation',

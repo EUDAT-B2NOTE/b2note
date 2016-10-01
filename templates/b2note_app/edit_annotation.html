@@ -28,8 +28,6 @@
 
     <body id="edit_annotation_page">
 
-        {% csrf_token %}
-
         <header>
 
             <div id="header-top">
@@ -86,22 +84,23 @@
 
             <div class="row">
 
-                <div class="col-sm-1">
+                <div class="btn-group" role="group">
+
                     <a href="accounts/logout" target="_self" alt="Logout" title="Logout, terminate session">
                         <button type="submit" class="btn btn-default">
-                            <img src="{% static "images/Off_font_awesome.svg" %}" height="16px"/>
+                            <i class="glyphicon glyphicon-off"></i>
                             Logout
                         </button>
                     </a>
-                </div>
 
-                <div class="col-sm-1">
+
                     <a href="/homepage">
                         <button type="submit" class="btn btn-default">
-                            <img src="{% static "images/Home-icon.svg" %}" height="16px"/>
+                            <i class="glyphicon glyphicon-home"></i>
                             Homepage
                         </button>
                     </a>
+
                 </div>
 
             </div>
@@ -110,116 +109,86 @@
 
         {% endif %}
 
-        {% if is_console_access %}
-
-            <form action="edit_annotation" method="post" class="form-horizontal">{% csrf_token %}
-
-        {% else %}
-
-            <form action="edit_annotation" method="post" class="form-horizontal">{% csrf_token %}
-
-        {% endif %}
-
         {% if form %}
 
-                <div class="form-group">
-                    <input type="hidden" value="{{ form.id }}" name="db_id" id="db_id" readonly/>
+            <input type="hidden" value="{{ form.id }}" name="db_id" id="db_id" readonly/>
+
+            <div class="form-group col-sm-10">
+                <label class="control-label col-sm-2" for="semantic_body">Annotation:</label>
+                <div class="col-sm-8">
+                    {% if form.body.0.jsonld_id %}
+                    <a href="{{ form.body.0.jsonld_id }}" class="form-control" name="semantic_body" readonly>{{ form.body.0.value }}</a>
+                    {% else %}
+                    <input type="text" class="form-control" name="body.value" value="{{ form.body.0.value }}" id="body.value" readonly/>
+                    {% endif %}
                 </div>
-
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="jsonld_id">ID:</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" name="jsonld_id" value="{{form.jsonld_id}}" id="jsonld_id" readonly/>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="target.jsonld_id">Target:</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" name="target.jsonld_id" value="{{ form.target.0.jsonld_id }}" id="target.jsonld_id" readonly/>
-                    </div>
-                </div>
-
-            {% if form.body.0.jsonld_id %}
-
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="body.jsonld_id">Body id:</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" name="body.jsonld_id" value="{{ form.body.0.jsonld_id }}" id="body.jsonld_id" readonly/>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="body.value">Body value:</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" name="body.value" value="{{ form.body.0.value }}" id="body.value" readonly/>
-                    </div>
-                </div>
-
-            {% else %}
-
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="body.value">Body value:</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" name="body.value" value="{{ form.body.0.value }}" id="body.value" readonly/>
-                    </div>
-                </div>
-
-            {% endif %}
+            </div>
 
             {% if owner %}
 
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="body.jsonld_id">Change body:</label>
-                    <div class="col-sm-6">
-                        <ul class="nav nav-tabs">
-                            {% if form.body.0.jsonld_id %}
-                            <li class="active"><a data-toggle="tab" href="#keyword">keyword</a></li>
-                            <li><a data-toggle="tab" href="#comment">comment</a></li>
-                            {% else %}
-                            <li><a data-toggle="tab" href="#keyword">keyword</a></li>
-                            <li class="active"><a data-toggle="tab" href="#comment">comment</a></li>
-                            {% endif %}
-                        </ul>
-                        <div class="tab-content col-sm-12">
-                            {% if form.body.0.jsonld_id %}
-                            <div id="keyword" class="tab-pane fade in active form-group">
+            <div class="form-group col-sm-10">
+                <label class="control-label col-sm-2">Change:</label>
+                <div class="col-sm-8">
+                    <ul class="nav nav-tabs">
+                        {% if form.body.0.jsonld_id %}
+                        <li class="active"><a data-toggle="tab" href="#keyword">keyword</a></li>
+                        <li><a data-toggle="tab" href="#comment">comment</a></li>
+                        {% else %}
+                        <li class="active"><a data-toggle="tab" href="#comment">comment</a></li>
+                        <li><a data-toggle="tab" href="#keyword">keyword</a></li>
+                        {% endif %}
+                    </ul>
+                    <div class="tab-content">
+                        {% if form.body.0.jsonld_id %}
+                        <div id="keyword" class="tab-pane fade in active form-group">
+                        {% else %}
+                        <div id="keyword" class="tab-pane fade form-group">
+                        {% endif %}
+                            <form action="edit_annotation" method="post" class="form-horizontal" name="change_tag_form">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ form.id }}" name="db_id" id="db_id" readonly/>
                                 <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"
-                                       placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
-                            </div>
-                            <div id="comment" class="tab-pane fade form-group">
-                                <textarea class="form-control custom-control" rows="2" name="free_text" id="free_text"
-                                          placeholder="Type a comment"></textarea>
-                            </div>
-                            {% else %}
-                            <div id="keyword" class="tab-pane fade form-group">
-                                <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"
-                                       placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
-                            </div>
-                            <div id="comment" class="tab-pane fade in active form-group">
-                                <textarea class="form-control custom-control" rows="2" name="free_text" id="free_text"
-                                          placeholder="Type a comment"></textarea>
-                            </div>
-                            {% endif %}
+                                       placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto"
+                                       onselect="change_tag_form.submit()" autofocus/>
+                            </form>
+                        </div>
+                        {% if form.body.0.jsonld_id %}
+                        <div id="comment" class="tab-pane fade form-group">
+                        {% else %}
+                        <div id="comment" class="tab-pane fade in active form-group">
+                        {% endif %}
+                            <form action="edit_annotation" method="post" class="form-horizontal" name="change_comment_form">
+                                <div class="input-group">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ form.id }}" name="db_id" id="db_id" readonly/>
+                                    <textarea class="form-control custom-control" rows="3" name="free_text" id="free_text"
+                                                  placeholder="Type a comment">{{form.body.0.value}}</textarea>
+                                    <span class="input-group-addon btn btn-primary" onclick="change_comment_form.submit()">Edit</span>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
+            </div>
 
             {% endif %}
 
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="current_motivation">Motivation:</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" value="{{ form.motivation.0 }}" name="form.motivation" id="current_motivation" readonly/>
-                    </div>
+            <div class="form-group col-sm-10">
+                <label class="control-label col-sm-2" for="current_motivation">Motivation:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" value="{{ form.motivation.0 }}" name="form.motivation" id="current_motivation" readonly/>
                 </div>
+            </div>
 
             {% if owner %}
 
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="motivation_selection"></label>
-                    <div class="col-sm-6">
-                        <select class="form-control" name="motivation_selection" id="motivation_selection">
+            <div class="form-group col-sm-10">
+                <label class="control-label col-sm-2" for="motivation_selection"></label>
+                <div class="col-sm-8">
+                    <form action="edit_annotation" method="post" class="form-horizontal">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ form.id }}" name="db_id" id="db_id" readonly/>
+                        <select class="form-control" name="motivation_selection" id="motivation_selection" onchange="this.form.submit()">
                         {% for mc in motivation_choices %}
                             <option value="None" disabled selected hidden>Change motivation...</option>
                             {% if mc.0 != form.motivation.0 %}
@@ -227,87 +196,89 @@
                             {% endif %}
                         {% endfor %}
                         </select>
-                    </div>
+                    </form>
                 </div>
+            </div>
 
             {% endif %}
 
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="creator.nickname">Annotator pseudonym:</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" value="{{ form.creator.0.nickname }}" name="creator.nickname" id="creator.nickname" readonly/>
-                    </div>
+             <div class="form-group col-sm-10">
+                <label class="control-label col-sm-2" for="target.jsonld_id">About:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" name="target.jsonld_id" value="{{ form.target.0.jsonld_id }}" id="target.jsonld_id" readonly/>
                 </div>
-
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="date.created">Date created:</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" value="{{ form.created }}" name="date.created" id="date.created" readonly/>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="date.modified">Date modified:</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" value="{{ form.modified }}" name="date.modified" id="date.modified" readonly/>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        {% if owner %}
-                        <!--<button type="submit" class="btn btn-danger">Delete</button>-->
-                        <button type="submit" class="btn btn-success">Send</button>
-                        {% else %}
-                        <input type="hidden" value="duplicate_cmd" name="duplicate_cmd" id="duplicate_cmd" readonly/>
-                        <button type="submit" class="btn btn-success">Duplicate</button>
-                        {% endif %}
-                        <a href="/homepage" title="Go to homepage.">Cancel</a>
-                    </div>
-                </div>
-
-        {% else %}
-
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <a href="/homepage" title="Go to homepage.">Cancel</a>
-                    </div>
-                </div>
-
-        {% endif %}
-
-            </form>
-
-        {% if form and owner %}
-
-        <div class="container" id="extra_annotation_action_forms">
-
-            <label class="control-label col-sm-2"></label>
-
-            <div class="col-sm-2">
-                <form action="edit_annotation" method="post" class="form-horizontal">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <input type="hidden" value="duplicate_cmd" name="duplicate_cmd" id="duplicate_cmd" readonly/>
-                        <input type="hidden" value="{{ form.id }}" name="db_id" id="db_id" readonly/>
-                        <button type="submit" class="btn btn-info">Duplicate</button>
-                    </div>
-                </form>
             </div>
 
-            <div class="col-sm-2">
-                <form action="edit_annotation" method="post" class="form-horizontal">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <input type="hidden" value="delete_cmd" name="delete_cmd" id="delete_cmd" readonly/>
-                        <input type="hidden" value="{{ form.id }}" name="db_id" id="db_id" readonly/>
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </div>
-                </form>
+            <div class="form-group col-sm-10">
+                <label class="control-label col-sm-2" for="creator.nickname">Annotator pseudonym:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" value="{{ form.creator.0.nickname }}" name="creator.nickname" id="creator.nickname" readonly/>
+                </div>
             </div>
 
+            <div class="form-group col-sm-10">
+                <label class="control-label col-sm-2" for="date.created">Date created:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" value="{{ form.created }}" name="date.created" id="date.created" readonly/>
+                </div>
+            </div>
+
+            <div class="form-group col-sm-10">
+                <label class="control-label col-sm-2" for="date.modified">Date modified:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" value="{{ form.modified }}" name="date.modified" id="date.modified" readonly/>
+                </div>
+            </div>
+
+            <div class="form-group col-sm-10">
+                <label class="control-label col-sm-2" for="jsonld_id">ID:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" name="jsonld_id" value="{{form.jsonld_id}}" id="jsonld_id" readonly/>
+                </div>
+            </div>
+
+            <div class="form-group col-sm-10">
+                <label class="control-label col-sm-2" for="generator.nickname">Generator:</label>
+                <div class="col-sm-8">
+                {% if form.generator.0.homepage.0.0 %}
+                    <a href="{{ form.generator.0.homepage.0 }}" class="form-control" readonly>{{ form.generator.0.name.0 }} ({{ form.generator.0.nickname }})</a>
+                {% else %}
+                    {% if form.generator %}
+                    <input type="text" class="form-control" value="{{ form.generator.0.name.0 }} ({{ form.generator.0.nickname }})" name="generator.nickname" id="generator.nickname" readonly/>
+                    {% else %}
+                    <input type="text" class="form-control" value="" name="generator.nickname" id="generator.nickname" readonly/>
+                    {% endif %}
+                {% endif %}
+                </div>
+            </div>
+
+            <div class="container col-sm-10">
+                <label class="control-label col-sm-2"></label>
+                <div class="row">
+                    <form action="edit_annotation" method="post" class="form-horizontal col-sm-2">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="hidden" value="duplicate_cmd" name="duplicate_cmd" id="duplicate_cmd" readonly/>
+                            <input type="hidden" value="{{ form.id }}" name="db_id" id="db_id" readonly/>
+                            <button type="submit" class="btn btn-info">Duplicate</button>
+                        </div>
+                    </form>
+                    {% if owner %}
+                    <form action="edit_annotation" method="post" class="form-horizontal col-sm-2">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="hidden" value="delete_cmd" name="delete_cmd" id="delete_cmd" readonly/>
+                            <input type="hidden" value="{{ form.id }}" name="db_id" id="db_id" readonly/>
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </div>
+                    </form>
+                    {% endif %}
+                    <div class="form-group">
+                        <a href="/homepage" title="Go to homepage." class="btn btn-default">Back</a>
+                    </div>
+                </div>
+            </div>
         </div>
-
         {% endif %}
 
         {% if not is_console_access %}
