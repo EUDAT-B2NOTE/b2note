@@ -8,18 +8,25 @@
 
 	{% load staticfiles %}
 
-    <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
-    <link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
+	<link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
+	<link rel='stylesheet' type='text/css' href="{% static 'css/dashboard.css' %}" />
+	<link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
 
-    <script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/utils.js' %}"></script>
+	<script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+	<script src="{% static 'js/bloodhound.js' %}"></script>
+	<script src="{% static 'js/handlebars-v4.0.0.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/ontology-typeahead.js' %}"></script>
+	<script src="{% static 'js/underscore-min.js' %}"></script>
+	<script src="{% static 'js/typeahead.min.js' %}"></script>
+	<script src="{% static 'js/jquery.redirect.js' %}"></script>
+	<script src="{% static 'js/utils.js' %}"></script>
 
 	<title>B2Note service demo</title>
 
 </head>
 
-<body id="profilepage">
+<body id="user_homepage">
 
 	<header>
 
@@ -55,15 +62,6 @@
 
 	</header>
 
-	<!--<div class = "container">
-
-		<!-- http://stackoverflow.com/questions/12102464/how-do-i-make-iframes-load-only-on-a-button-click -->
-		<iframe id="b2note_iframe" name="b2note_iframe" src="interface_main"
-			width=0 onload="load_iframe()"
-			scrolling="no"></iframe>
-
-	<!--</div>-->
-
 	<div class="container" id="profilepage_title">
 
 		<div class="row">
@@ -78,33 +76,30 @@
 
 		<div class="row">
 
-			<div class="col-sm-1">
+			<div class="btn-group" role="group">
+
 				<a href="accounts/logout" target="_self" alt="Logout" title="Logout, terminate session">
 					<button type="submit" class="btn btn-default">
-						<img src="{% static "images/Off_font_awesome.svg" %}" height="16px"/>
+						<i class="glyphicon glyphicon-off"></i>
 						Logout
 					</button>
 				</a>
-			</div>
 
-			<div class="col-sm-1">
 				<a href="accounts/profilepage">
 					<button type="submit" class="btn btn-default">
-						<img src="{% static "images/AWS_Simple_Icons_Non-Service_Specific_User.svg" %}" height="16px"/>
+						<i class="glyphicon glyphicon-user"></i>
 						Profile
 					</button>
 				</a>
-			</div>
 
-			<div class="col-sm-1">
 				<a href="/search" target="_self" alt="Search annotations" title="Search annotations">
 					<button type="submit" class="btn btn-default">
-						<img src="{% static "images/Magnifying_glass_icon.svg" %}" height="16px"/>
+						<i class="glyphicon glyphicon-search"></i>
 						Search
 					</button>
 				</a>
-			</div>
 
+			</div>
 		</div>
 
 	</div>
@@ -127,7 +122,7 @@
 
 					{% for f in file_list %}
 
-						<table class="table table-responsive table-striped">
+					<table class="table table-responsive table-striped">
 
 						<tr>
 
@@ -138,20 +133,45 @@
 
 							<td>
 
-								<form action="/interface_main" method="post" target="b2note_iframe">
-
-									{% csrf_token %}
-
-									<input type="hidden" name="subject_tofeed" value="{{ f }}" class="field left" readonly="readonly" />
-    	                            <input type="hidden" name="pid_tofeed" value="untracked pid" class="field left" readonly="readonly" />
-									<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />
-
-									<input type="image" src="{% static "images/green_plus_sign.svg" %}" height="30px" alt="Add" title="Add annotation"/>
-
-								</form>
+								<a class="btn btn-xs" data-toggle="collapse" href="#new_{{ forloop.counter0 }}">
+									<img src="{% static "images/green_plus_sign.svg" %}" height="30px" alt="Add" title="Add annotation"/>
+								</a>
 
 							</td>
 
+						</tr>
+
+						<tr>
+							<td colspan="3">
+								<div id="new_{{ forloop.counter0 }}" class="collapse">
+									<ul class="nav nav-tabs">
+										<li class="active"><a data-toggle="tab" href="#keyword_{{ forloop.counter0 }}">keyword</a></li>
+										<li><a data-toggle="tab" href="#comment_{{ forloop.counter0 }}">comment</a></li>
+									</ul>
+									<div class="tab-content">
+										<div id="keyword_{{ forloop.counter0 }}" class="tab-pane fade in active form-group">
+											{% csrf_token %}
+											<input type="hidden" value="{{ f }}" name="subject_tofeed" readonly/>
+											<input type="hidden" value="homepage" name="pagefrom" readonly/>
+											<input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"
+													   placeholder="Type keyword" autocomplete="off" spellcheck="false" dir="auto" autofocus/>
+										</div>
+										<div id="comment_{{ forloop.counter0 }}" class="tab-pane fade form-group">
+											<form action="create_annotation" method="post" class="form-horizontal" name="create_form_{{ forloop.counter0 }}">
+												<div class="input-group">
+													{% csrf_token %}
+													<input type="hidden" value="{{ f }}" name="subject_tofeed" readonly/>
+													<input type="hidden" value="homepage" name="pagefrom" readonly/>
+													<textarea class="form-control custom-control" rows="3" name="free_text"
+																  placeholder="Type a comment"></textarea>
+													<span class="input-group-addon btn btn-primary" onclick="create_form_{{ forloop.counter0 }}.submit()">Create</span>
+												</div>
+											</form>
+										</div>
+									</div>
+
+								</div>
+							</td>
 						</tr>
 
 						{% for ann in annotation_list %}
@@ -164,61 +184,61 @@
 
 										{% if ann.body.0.value|length > 0 %}
 
-										<tr>
+						<tr>
 
-											<td></td>
+							<td></td>
 
 											{% if ann.body.0.jsonld_id %}
 
 												{% if ann.body.0.jsonld_id|length > 0 and "http://" in ann.body.0.jsonld_id %}
 
-												<td><a target="_blank" href={{ann.body.0.jsonld_id}}>{{ann.body.0.value}}</a></td>
+								<td><a target="_blank" href={{ann.body.0.jsonld_id}}>{{ann.body.0.value}}</a></td>
 
 												{% else %}
 
-												<td>{{ann.body.0.value}}</td>
+								<td>{{ann.body.0.value}}</td>
 
 												{% endif %}
 
 											{% else %}
 
-											<td>{{ann.body.0.value}}</td>
+							<td>{{ann.body.0.value}}</td>
 
 											{% endif %}
 
-											<td title="Created: {{ ann.created|date:'d/m/Y' }} {{ ann.created|time:'H:i' }}">
-												<p class="text-right"><small> {{ ann.created|date:"d/m/Y" }} </small></p>
-											</td>
+							<td title="Created: {{ ann.created|date:'d/m/Y' }} {{ ann.created|time:'H:i' }}">
+								<p class="text-right"><small> {{ ann.created|date:"d/m/Y" }} </small></p>
+							</td>
 
-											<div>
+							<div>
 
-												<form action="/delete_annotation" method="post">
+								<form action="/delete_annotation" method="post">
 
-													{% csrf_token %}
+									{% csrf_token %}
 
-													<input type="hidden" name="db_id" value="{{ ann.id }}" readonly="readonly" />
-													<input type="hidden" name="subject_tofeed" value="{{ f }}" readonly="readonly" />
-													<input type="hidden" name="pid_tofeed" value="untracked pid" readonly="readonly" />
-													<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />
+									<input type="hidden" name="db_id" value="{{ ann.id }}" readonly="readonly" />
+									<input type="hidden" name="subject_tofeed" value="{{ f }}" readonly="readonly" />
+									<input type="hidden" name="pid_tofeed" value="untracked pid" readonly="readonly" />
+									<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />
 
-													<td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" height="16px" title="Delete annotation" alt="Delete annotation" /></td>
+									<td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" height="16px" title="Delete annotation" alt="Delete annotation" /></td>
 
-												</form>
+								</form>
 
-												<form action="/edit_annotation" method="post">
+								<form action="/edit_annotation" method="post">
 
-													{% csrf_token %}
+									{% csrf_token %}
 
-													<input type="hidden" name="db_id" value="{{ ann.id }}" readonly="readonly" />
-													<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />
+									<input type="hidden" name="db_id" value="{{ ann.id }}" readonly="readonly" />
+									<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />
 
-													<td id="editAnnotation"><input type="image" id="pen-icon" src="{% static "images/Black_pencil.svg" %}" height="16px" title="Edit annotation" alt="Edit annotation" /></td>
+									<td id="editAnnotation"><input type="image" id="pen-icon" src="{% static "images/Black_pencil.svg" %}" height="16px" title="Edit annotation" alt="Edit annotation" /></td>
 
-												</form>
+								</form>
 
-											</div>
+							</div>
 
-										</tr>
+						</tr>
 
 										{% endif %}
 
@@ -230,7 +250,7 @@
 
 						{% endfor %}
 
-						</table>
+					</table>
 
 					{% endfor %}
 

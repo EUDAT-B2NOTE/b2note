@@ -1,4 +1,4 @@
-import os, re, datetime
+import os, re, datetime, copy
 import json, bson
 
 from .models import *
@@ -12,10 +12,21 @@ def SearchAnnotation( kw ):
 
     try:
 
-        A = Annotation.objects.raw_query({'body.value': kw})
+        if kw:
 
-        return A
+            if isinstance( kw, (str, unicode)):
 
+                A = Annotation.objects.raw_query({'body.value': kw})
+
+                print "SearchAnnotation function, returning annotations with body value:", kw
+                return A
+
+            else:
+                print "SearchAnnotation function, provided keyword argument neither str nor unicode."
+                return False
+        else:
+            print "SearchAnnotation function, missing 'kw' string argument."
+            return False
     except:
         print "SearchAnnotation function did not complete."
         return False
@@ -249,6 +260,88 @@ def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
     return False
 
 
+def DuplicateAnnotation( db_id=None ):
+    """
+      Function: DulicateAnnotation
+      ----------------------------
+        Duplicates an annotation in MongoDB.
+
+        params:
+            db_id (str): database id of the annotation document to duplicate.
+
+        returns:
+            id (str): database id of the created annotation document.
+    """
+    try:
+
+        if db_id:
+
+            if isinstance(db_id, (str, unicode)):
+
+                A = None
+                A = Annotation.objects.get(id=db_id)
+
+                if A:
+
+                    if A.target:
+
+                        if isinstance(A.target, list):
+
+                            if len(A.target)>0:
+
+                                if A.target[0]:
+
+                                    if A.target[0].jsonld_id:
+
+                                        if isinstance(A.target[0].jsonld_id, (str, unicode)):
+
+                                            B = CreateAnnotation( A.target[0].jsonld_id )
+                                            B = Annotation.objects.get( id = B )
+
+                                            ann = copy.deepcopy( A )
+
+                                            B_dict = {k: v for k, v in B.__dict__.iteritems() if v is not None}
+                                            ann.__dict__.update(B_dict)
+
+                                            ann.save()
+
+                                            print "DuplicateAnnotation function, created annotation document with id: " + str(ann.id)
+                                            return ann.id
+
+                                        else:
+                                            print "DuplicateAnnotation function, annotation document target 'jsonld_id' neither str nor unicode."
+                                            return False
+                                    else:
+                                        print "DuplicateAnnotation function, missing annotation document target 'jsonld_id'."
+                                        return False
+                                else:
+                                    print "DuplicateAnnotation function, no element in annotation document target list."
+                                    return False
+                            else:
+                                print "DuplicateAnnotation function, annotation doument target list empty."
+                                return False
+                        else:
+                            print "DuplicateAnnotation function, annotation doument target is not of type list."
+                            return False
+                    else:
+                        print "DuplicateAnnotation function, annotation document missing target field."
+                        return False
+            else:
+                print "DuplicateAnnotation function, provided 'db_id' argument neither str nor unicode."
+                return False
+
+        else:
+            print "DuplicateAnnotation function, missing 'db_id' argument."
+            return False
+
+    except ValueError:
+        print "DuplicateAnnotation function, did not complete."
+        return False
+
+    print "DuplicateAnnotation function did not complete succesfully."
+    return False
+
+
 def CreateSemanticTag( subject_url=None, object_json=None ):
     """
       Function: CreateSemanticTag
@@ -275,7 +368,7 @@ def CreateSemanticTag( subject_url=None, object_json=None ):
 
                     db_id = MakeAnnotationSemanticTag( my_id, object_json )
 
-                    db_id = SetAnnotationMotivation( db_id, "tagging" )
+                    #db_id = SetAnnotationMotivation( db_id, "tagging" )
 
                     print "MakeAnnotationSemanticTag function, made annotation semantic tag:", str(db_id)
                     return db_id
@@ -324,7 +417,7 @@ def CreateFreeText( subject_url=None, text=None ):
                     db_id = None
                     db_id = MakeAnnotationFreeText(my_id, text)
 
-                    db_id = SetAnnotationMotivation( db_id, "commenting" )
+                    #db_id = SetAnnotationMotivation( db_id, "commenting" )
 
                     print "CreateFreeText function, created free-text annotation:", str(db_id)
                     return db_id
@@ -396,7 +489,7 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
 
                                     A.save()
 
-                                    db_id = SetAnnotationMotivation( A.id, "tagging" )
+                                    #db_id = SetAnnotationMotivation( A.id, "tagging" )
 
                                     print "MakeAnnotationSemanticTag function, made annotation semantic tag:", str(db_id)
                                     return db_id
@@ -461,7 +554,7 @@ def MakeAnnotationFreeText( db_id=None, text=None ):
 
                         A.save()
 
-                        db_id = SetAnnotationMotivation( A.id, "commenting" )
+                        #db_id = SetAnnotationMotivation( A.id, "commenting" )
 
                         print "MakeAnnotationFreeText function, made free-text annotation:", str(db_id)
                         return db_id

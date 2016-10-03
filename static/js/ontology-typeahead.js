@@ -58,7 +58,8 @@ $(document).ready( function() {
     //$.ajaxSetup({data: {csrfmiddlewaretoken: '{{ csrf_token }}' },});
 
     // selects the html element where the suggestion takes places
-    $('#id_q').typeahead({
+    //$('#id_q').typeahead({
+    $('[id^="id_q"]').typeahead({
             hint: true,
             highlight: true,
             minLength: 1,
@@ -98,6 +99,7 @@ $(document).ready( function() {
               */
 
             if (document.getElementById("section_subject")) {
+
                 $.redirect('create_annotation',
                     {
                     ontology_json: JSON.stringify(data.json_document),
@@ -107,24 +109,40 @@ $(document).ready( function() {
                     // retrieve Django csrf token from html hidden input element
                     csrfmiddlewaretoken: this.parentElement.previousElementSibling.value,
                 });
+
             } else {
-                if (db_id != "") {
-                    $.redirect('edit_annotation',
+
+                if (document.getElementById("user_homepage")) {
+                    $.redirect('create_annotation',
                         {
                         ontology_json: JSON.stringify(data.json_document),
-                        db_id: db_id,
-                        // abremaud@esciencefactory.com, 20160926
+                        subject_tofeed: this.parentElement.parentElement.firstChild.nextSibling.nextElementSibling.value,
+                        pagefrom: this.parentElement.parentElement.firstChild.nextSibling.nextElementSibling.nextElementSibling.value,
+                        // abremaud@esciencefactory.com, 20161003
                         // retrieve Django csrf token from html hidden input element
-                        csrfmiddlewaretoken: this.form.firstChild.value,
+                        csrfmiddlewaretoken: this.parentElement.parentElement.firstChild.nextSibling.value,
                     });
+
                 } else {
-                    $.redirect('search_annotation',
-                        {
-                        // abremaud@esciencefactory.com, 20160928
-                        // search annotations on keyword
-                        ontology_json: JSON.stringify(data.json_document),
-                        csrfmiddlewaretoken: this.form.firstChild.nextSibling.value,
-                    });
+
+                    if (db_id != "") {
+                        $.redirect('edit_annotation',
+                            {
+                            ontology_json: JSON.stringify(data.json_document),
+                            db_id: db_id,
+                            // abremaud@esciencefactory.com, 20160926
+                            // retrieve Django csrf token from html hidden input element
+                            csrfmiddlewaretoken: this.parentElement.parentElement.firstChild.nextSibling.value,
+                        });
+                    } else {
+                        $.redirect('search_annotation',
+                            {
+                            // abremaud@esciencefactory.com, 20160928
+                            // search annotations on keyword
+                            ontology_json: JSON.stringify(data.json_document),
+                            csrfmiddlewaretoken: this.form.firstChild.nextSibling.value,
+                        });
+                    }
                 }
             };
     });
