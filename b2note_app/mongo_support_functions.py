@@ -740,3 +740,35 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
         pass
 
     return o_out
+
+
+def CheckDuplicateAnnotation( target, annotation_body ):
+    """
+      Function: CheckLengthFreeText
+      --------------------------------------------
+        Will be used to send feedback message to user in case they attempt to
+        create an annotation with a body that is a duplicate of a previously
+        existing annotation for the same target file.
+        input:
+            target (str): URL of the annotation to check.
+            annotation_body (dict): intended (new) annotation body.
+        output:
+            boolean: True/False
+    """
+    try:
+        if target:
+            if isinstance(target, (str, unicode)):
+                A = None
+                A = Annotation.objects.get(target.jsonld_id=target)
+                if 
+                
+            else:
+                print "CheckDuplicateAnnotation function, provided 'target' argument not a valid str or unicode."
+                return False
+        else:
+            print "CheckDuplicateAnnotation function, missing 'target' argument."
+            return False
+    
+    except ValueError:
+        print "CheckDuplicateAnnotation function, did not complete."
+        return False
