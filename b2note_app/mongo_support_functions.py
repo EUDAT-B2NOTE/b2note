@@ -742,7 +742,7 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
     return o_out
 
 
-def CheckDuplicateAnnotation( target, annotation_body ):
+def CheckDuplicateAnnotation( target=None, annotation_body=None ):
     """
       Function: CheckLengthFreeText
       --------------------------------------------
@@ -758,10 +758,23 @@ def CheckDuplicateAnnotation( target, annotation_body ):
     try:
         if target:
             if isinstance(target, (str, unicode)):
-                A = None
-                A = Annotation.objects.get(target.jsonld_id=target)
-                if 
-                
+                if 'body' in annotation_body:
+                    A = None
+                    if 'jsonld_id' in annotation_body['body'] and isinstance(annotation_body['body']['jsonld_id'], (str, unicode)) and len(annotation_body['body']['jsonld_id']) > 0:
+                        A = Annotation.objects.raw_query({'target.jsonld_id':target,'body.jsonld_id':annotation_body['body']['jsonld_id']})
+                    else:
+                        if 'value' in annotation_body['body']:
+                            A = Annotation.objects.raw_query({'target.jsonld_id':target,'body.value':annotation_body['body']['value']})
+                        else:
+                            print "CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary."
+                            return False
+                    if len(A) > 0:
+                        return A
+                    else:
+                        return False
+                else:
+                    print "CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary."
+                    return False
             else:
                 print "CheckDuplicateAnnotation function, provided 'target' argument not a valid str or unicode."
                 return False
