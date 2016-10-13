@@ -742,9 +742,10 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
     return o_out
 
 
+
 def CheckDuplicateAnnotation( target=None, annotation_body=None ):
     """
-      Function: CheckLengthFreeText
+      Function: CheckDuplicateAnnotation
       --------------------------------------------
         Will be used to send feedback message to user in case they attempt to
         create an annotation with a body that is a duplicate of a previously
@@ -755,7 +756,7 @@ def CheckDuplicateAnnotation( target=None, annotation_body=None ):
         output:
             boolean: True/False
     """
-    try:
+    try:    
         if target:
             if isinstance(target, (str, unicode)):
                 if 'body' in annotation_body:
@@ -784,4 +785,38 @@ def CheckDuplicateAnnotation( target=None, annotation_body=None ):
     
     except ValueError:
         print "CheckDuplicateAnnotation function, did not complete."
+        return False
+
+
+def CheckLengthFreeText( body_value=None, length_limit=60 ):
+    """
+      Function: CheckLengthFreeText
+      --------------------------------------------
+        Will be used to send feedback message to the user in case they attempt to create
+        a free-text tag annotation with a long body value, to check whether their intent
+        is "tagging" or "commenting" (resulting in 2 different types of annotations:
+        "free-text tag" or "(free-text) comment").
+        input:
+            body_value (str): intended (new) annotation body value.
+            length_limit (int): tag string length check limit
+        output:
+            boolean: True/False
+    """
+    try:
+        if body_value:
+            if isinstance(body_value, (str, unicode)):
+                if len(body_value) <= length_limit:
+                    return True
+                else:
+                    return False
+                
+            else:
+                print "CheckLengthFreeText function, provided 'body_value' argument not a valid str or unicode."
+                return False
+        else:
+            print "CheckLengthFreeText function, missing parameter called 'body_value'."
+            return False
+    
+    except ValueError:
+        print "CheckLengthFreeText function, did not complete."
         return False
