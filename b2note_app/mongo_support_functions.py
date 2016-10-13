@@ -742,7 +742,7 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
     return o_out
 
 
-def CheckLengthFreeText( body_value, length_limit=60 ):
+def CheckLengthFreeText( body_value=None, length_limit=60 ):
     """
       Function: CheckLengthFreeText
       --------------------------------------------
