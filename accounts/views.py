@@ -14,7 +14,7 @@ from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from b2note_devel.settings import DEFAULT_FROM_EMAIL
 from django.views.generic import *
-from forms.reset_password import PasswordResetRequestForm
+from forms.reset_password import PasswordResetRequestForm, SetPasswordForm
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
@@ -23,6 +23,42 @@ from django.db.models.query_utils import Q
 
 
 # http://ruddra.com/2015/09/18/implementation-of-forgot-reset-password-feature-in-django/
+class PasswordResetConfirmView(FormView):
+    template_name = "accounts/test_template.html"
+    success_url = 'accounts/logout'
+    form_class = SetPasswordForm
+
+    def post(self, request, uidb64=None, token=None, *arg, **kwargs):
+        """
+        View that checks the hash in a password reset link and presents a
+        form for entering a new password.
+        """
+        UserModel = UserCred()
+        form = self.form_class(request.POST)
+        assert uidb64 is not None and token is not None  # checked by URLconf
+        try:
+            if isinstance(uidb64, unicode): uidb64 = str(uidb64)
+            uid = urlsafe_base64_decode(uidb64)
+            user = UserCred.objects.using('users').get(pk=uid)
+
+        except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
+            user = None
+
+        if user is not None and default_token_generator.check_token(user, token):
+            if form.is_valid():
+                new_password= form.cleaned_data['new_password2']
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, 'Password has been reset.')
+                return self.form_valid(form)
+            else:
+                messages.error(request, 'Password reset has not been unsuccessful.')
+                return self.form_invalid(form)
+        else:
+            messages.error(request,'The reset password link is no longer valid.')
+            return self.form_invalid(form)
+
+
 class ResetPasswordRequestView(FormView):
     template_name = "accounts/test_template.html"  # code for template is given below the view's code
     success_url = '/accounts/login'
