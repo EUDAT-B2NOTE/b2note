@@ -3,7 +3,7 @@ from django.template import RequestContext
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 from django.forms.models import model_to_dict
 from accounts.forms import AuthenticationForm, RegistrationForm, ProfileForm
-from accounts.models import AnnotatorProfile
+from accounts.models import AnnotatorProfile, UserCred
 
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
@@ -24,8 +24,8 @@ from django.db.models.query_utils import Q
 
 # http://ruddra.com/2015/09/18/implementation-of-forgot-reset-password-feature-in-django/
 class ResetPasswordRequestView(FormView):
-    template_name = "account/test_template.html"  # code for template is given below the view's code
-    success_url = '/account/login'
+    template_name = "accounts/test_template.html"  # code for template is given below the view's code
+    success_url = '/accounts/login'
     form_class = PasswordResetRequestForm
 
     @staticmethod
@@ -49,74 +49,46 @@ class ResetPasswordRequestView(FormView):
         data = None
         if form.is_valid():
             data = form.cleaned_data["email_or_username"]
+        print "#A"
         if self.validate_email_address(data) is True:  # uses the method written above
             '''
             If the input is an valid email address, then the following code will lookup for users associated with that email address. If found then an email will be sent to the address, else an error message will be printed on the screen.
             '''
-            associated_users = User.objects.filter(Q(email=data) | Q(username=data))
+            print "#B", data
+            associated_users = UserCred.objects.using('users').filter(Q(username=data))
             if associated_users.exists():
                 for user in associated_users:
                     c = {
-                        'email': user.email,
+                        'email': user.username,
                         'domain': request.META['HTTP_HOST'],
-                        'site_name': 'your site',
+                        'site_name': 'EUDAT B2Note',
                         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                         'user': user,
                         'token': default_token_generator.make_token(user),
                         'protocol': 'http',
                     }
-                    subject_template_name = 'registration/password_reset_subject.txt'
+                    subject_template_name = 'accounts/password_reset_subject.txt'
                     # copied from django/contrib/admin/templates/registration/password_reset_subject.txt to templates directory
-                    email_template_name = 'registration/password_reset_email.html'
+                    email_template_name = 'accounts/password_reset_email.html'
                     # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
                     subject = loader.render_to_string(subject_template_name, c)
                     # Email subject *must not* contain newlines
                     subject = ''.join(subject.splitlines())
                     email = loader.render_to_string(email_template_name, c)
-                    send_mail(subject, email, DEFAULT_FROM_EMAIL, [user.email], fail_silently=False)
+                    send_mail(subject, email, DEFAULT_FROM_EMAIL, [user.username], fail_silently=False)
                 result = self.form_valid(form)
                 messages.success(request,
-                                 'An email has been sent to ' + data + ". Please check its inbox to continue reseting password.")
+                                 'An email has been sent. Please check inbox to continue reseting password.')
                 return result
             result = self.form_invalid(form)
-            messages.error(request, 'No user is associated with this email address')
+            messages.error(request, 'This email address does not qualify.')
             return result
         else:
-            '''
-            If the input is an username, then the following code will lookup for users associated with that user. If found then an email will be sent to the user's address, else an error message will be printed on the screen.
-            '''
-            associated_users = User.objects.filter(username=data)
-            if associated_users.exists():
-                for user in associated_users:
-                    c = {
-                        'email': user.email,
-                        'domain': 'example.com',  # or your domain
-                        'site_name': 'example',
-                        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                        'user': user,
-                        'token': default_token_generator.make_token(user),
-                        'protocol': 'http',
-                    }
-                    subject_template_name = 'registration/password_reset_subject.txt'
-                    email_template_name = 'registration/password_reset_email.html'
-                    subject = loader.render_to_string(subject_template_name, c)
-                    # Email subject *must not* contain newlines
-                    subject = ''.join(subject.splitlines())
-                    email = loader.render_to_string(email_template_name, c)
-                    send_mail(subject, email, DEFAULT_FROM_EMAIL, [user.email], fail_silently=False)
-                result = self.form_valid(form)
-                messages.success(request,
-                                 'Email has been sent to ' + data + "'s email address. Please check its inbox to continue reseting password.")
-                return result
             result = self.form_invalid(form)
-            messages.error(request, 'This username does not exist in the system.')
+            messages.error(request, 'This input does not qualify.')
             return result
         messages.error(request, 'Invalid Input')
         return self.form_invalid(form)
-
-
-
-
 
 
 def profilepage(request):
