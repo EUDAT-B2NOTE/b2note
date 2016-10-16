@@ -14,7 +14,7 @@ from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from b2note_devel.settings import DEFAULT_FROM_EMAIL
 from django.views.generic import *
-from forms.reset_password import PasswordResetRequestForm, SetPasswordForm
+from forms.reset_password import PasswordResetRequestForm, SetPasswordForm, AccountRetrieveForm
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
@@ -22,10 +22,40 @@ from django.db.models.query_utils import Q
 # Create your views here.
 
 
+def request_account_retrieval(request):
+    """
+    Request account retrieval view.
+    """
+    if request.method == 'POST':
+        form = AccountRetrieveForm(data=request.POST)
+        print form.is_valid()
+        if form.is_valid():
+            c = {'form': form,}
+            email_template_name = 'accounts/account_retrieve_email.html'
+            # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
+            # Email subject *must not* contain newlines
+            email = loader.render_to_string(email_template_name, c)
+            send_mail('B2Note user request account retrieval',
+                      email, DEFAULT_FROM_EMAIL,
+                      ['b2note-support@bsc.es'],
+                      fail_silently=False)
+            messages.success(request,
+                             '''The information was sent to the service support team.
+                             Unfortunately, for the time being, your access to your B2Note account can not be granted.
+                             The support team shall get in contact with you shortly and provide more assistance.
+                             Thank you for your interest in B2Note and your understanding.''')
+            form = None
+        else:
+            messages.error(request, "Information does not qualify.")
+    else:
+        form = AccountRetrieveForm()
+    return render_to_response('accounts/request_account_retrieval.html', {'form': form,}, context_instance=RequestContext(request))
+
+
 # http://ruddra.com/2015/09/18/implementation-of-forgot-reset-password-feature-in-django/
 class PasswordResetConfirmView(FormView):
     template_name = "accounts/test_template.html"
-    success_url = 'accounts/logout'
+    success_url = "accounts/reset_password"
     form_class = SetPasswordForm
 
     def post(self, request, uidb64=None, token=None, *arg, **kwargs):
@@ -61,7 +91,7 @@ class PasswordResetConfirmView(FormView):
 
 class ResetPasswordRequestView(FormView):
     template_name = "accounts/test_template.html"  # code for template is given below the view's code
-    success_url = '/accounts/login'
+    success_url = '/accounts/reset_password'
     form_class = PasswordResetRequestForm
 
     @staticmethod
@@ -85,12 +115,10 @@ class ResetPasswordRequestView(FormView):
         data = None
         if form.is_valid():
             data = form.cleaned_data["email_or_username"]
-        print "#A"
         if self.validate_email_address(data) is True:  # uses the method written above
             '''
             If the input is an valid email address, then the following code will lookup for users associated with that email address. If found then an email will be sent to the address, else an error message will be printed on the screen.
             '''
-            print "#B", data
             associated_users = UserCred.objects.using('users').filter(Q(username=data))
             if associated_users.exists():
                 for user in associated_users:
@@ -206,7 +234,6 @@ def register(request):
     """
     if request.method == 'POST':
         form = RegistrationForm(data=request.POST)
-        #print form
         if form.is_valid():
             user = form.save()
             return redirect('/accounts/logout')
