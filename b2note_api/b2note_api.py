@@ -1,5 +1,5 @@
 from eve import Eve
-#from eve_swagger import swagger
+from eve_swagger import swagger
 #from flask import request
 from settings import mongo_settings
 from collections import OrderedDict
@@ -17,23 +17,23 @@ import json, os, copy
 
 
 app = Eve(settings=mongo_settings)
-#app.register_blueprint(swagger)
+app.register_blueprint(swagger)
 
 
-# app.config['SWAGGER_INFO'] = {
-#     'title': 'EUDAT B2Note API',
-#     'version': '1.0',
-#     'description': 'EUDAT B2Note API provides read access to annotation documents created using the B2Note web annotator service.',
-#     'termsOfService': 'EUDAT terms of service',
-#     'contact': {
-#         'name': 'B2Note support',
-#         'url': 'https://github.com/EUDAT-B2NOTE/b2note'
-#     },
-#     'license': {
-#         'name': 'unspecified',
-#         'url': 'https://github.com/EUDAT-B2NOTE/b2note',
-#     }
-# }
+app.config['SWAGGER_INFO'] = {
+    'title': 'EUDAT B2Note API',
+    'version': '1.0',
+    'description': 'EUDAT B2Note API provides read access to annotation documents created using the B2Note web annotator service.',
+    'termsOfService': 'EUDAT terms of service',
+    'contact': {
+        'name': 'B2Note support',
+        'url': 'https://github.com/EUDAT-B2NOTE/b2note'
+    },
+    'license': {
+        'name': 'unspecified',
+        'url': 'https://github.com/EUDAT-B2NOTE/b2note',
+    }
+}
 
 # optional. Will use flask.request.host if missing.
 #app.config['SWAGGER_HOST'] = 'myhost.com'
