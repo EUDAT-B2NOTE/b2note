@@ -1,3 +1,7 @@
+
+
+
+
 # Django settings for b2note_devel project.
 
 import os
@@ -31,9 +35,11 @@ DATABASES = {
     },
     'users' : {
         'ENGINE' : 'django.db.backends.sqlite3',
-        'NAME' : os.environ['SQLDB_NAME'],
-        'USER' : os.environ['SQLDB_USR'],
-        'PASSWORD' :  os.environ['SQLDB_PWD'],
+        'NAME' : 'users.sqlite3',
+        'USER' : 'b2note',
+        'PASSWORD' : 'abc123',
+        'HOST' : '',
+        'PORT' : '',
     }
 }
 
@@ -136,6 +142,20 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.contrib.messages.context_processors.messages',
+    # abremaud@esciencefactory.com, 20160927
+    # http://stackoverflow.com/questions/12096440/using-django-session-inside-templates
+    'django.core.context_processors.request',
+)
+
+
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -153,6 +173,7 @@ INSTALLED_APPS = (
     'b2note_app',
     'accounts',
     'django_countries',
+    'captcha',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
@@ -186,3 +207,11 @@ LOGGING = {
     }
 }
 
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'b2note.temp@gmail.com'
+SERVER_EMAIL = 'test@gmail.com'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'b2note.temp@gmail.com'
+EMAIL_HOST_PASSWORD = 'kL74KV13Th'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
