@@ -35,9 +35,9 @@ DATABASES = {
     },
     'users' : {
         'ENGINE' : 'django.db.backends.sqlite3',
-        'NAME' : 'users.sqlite3',
-        'USER' : 'b2note',
-        'PASSWORD' : 'abc123',
+        'NAME': os.environ['SQLDB_NAME'],
+        'USER': os.environ['SQLDB_USR'],
+        'PASSWORD': os.environ['SQLDB_PWD'],
         'HOST' : '',
         'PORT' : '',
     }
