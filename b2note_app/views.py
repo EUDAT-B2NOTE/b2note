@@ -18,9 +18,9 @@ from .models import *
 from itertools import chain
 
 from accounts.models import AnnotatorProfile
+import logging
 
-
-
+stdlogger = logging.getLogger('b2note')
 
 def index(request):
     return HttpResponse("replace me with index text")
