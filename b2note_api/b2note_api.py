@@ -1,19 +1,10 @@
 from eve import Eve
 from eve_swagger import swagger
-#from flask import request
 from settings import mongo_settings
 from collections import OrderedDict
 from jsonld_support_functions import readyQuerySetValuesForDumpAsJSONLD
-#from django.conf import settings as global_settings
-#import json, requests, os
+from django.conf import settings as global_settings
 import json, os, copy
-
-
-#import mimerender
-#mimerender = mimerender.FlaskMimeRender()
-#render_json = lambda **args: json.dumps(args)
-#render_jsonld = lambda **args: json.dumps(args)
-#render_txt = lambda **args: str(args)
 
 
 app = Eve(settings=mongo_settings)
@@ -66,9 +57,8 @@ def before_returning_items(response):
             if not isinstance(response["@graph"], list):
                 response["@graph"] = [ response["@graph"] ]
             del(response["_items"])
-            context_str = open(os.path.join('./static/', 'files/anno_context.jsonld'), 'r').read()
+            context_str = open(os.path.join(global_settings.STATIC_PATH, 'files/anno_context.jsonld'), 'r').read()
             response["@context"] = json.loads(context_str, object_pairs_hook=OrderedDict)
-    #print 'About to return items from "%s" ' % resource_name
     return response
 
 
@@ -79,12 +69,11 @@ def before_returning_item(response):
             if k2d in resp.keys():
                 del( resp[k2d] )
         response["@graph"] = [ readyQuerySetValuesForDumpAsJSONLD( resp ) ]
-        context_str = open(os.path.join('./static/', 'files/anno_context.jsonld'), 'r').read()
+        context_str = open(os.path.join(global_settings.STATIC_PATH, 'files/anno_context.jsonld'), 'r').read()
         response["@context"] = json.loads(context_str, object_pairs_hook=OrderedDict)
         for k2d in response.keys():
             if k2d not in ["@graph", "@context", "_etag"]:
                 del(response[k2d])
-    #print 'About to return items from "%s" ' % resource_name
     return response
 
 
@@ -116,7 +105,6 @@ def before_returning_item(response):
 
 
 app.on_fetched_resource_annotations += before_returning_items
-#app.on_fetched_resource += before_returning_items
 app.on_fetched_item_annotations += before_returning_item
 
 
