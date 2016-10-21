@@ -28,6 +28,17 @@ def index(request):
 
 @login_required
 def edit_annotation(request):
+    """
+        Function: edit_annotation
+      ----------------------------
+        Edit the info of an annotation.
+        
+        input:
+            request (object): context of the petition.
+        
+        output:
+            object: HttpResponse with the result of the request.
+    """
     A=None
     owner=False
     try:
@@ -36,14 +47,9 @@ def edit_annotation(request):
 
             userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
 
-            #annotation_list = RetrieveAnnotations_perUsername(userprofile.nickname)
-
             if request.POST.get('db_id'):
 
                 if isinstance(request.POST.get('db_id'), (str, unicode)):
-
-                    #A = Annotation.objects.get(id="57e1504510d06010314becc8")
-                    #A = Annotation.objects.get(id="57dfd3fe10d0600412d056df")
                     A = Annotation.objects.get(id=request.POST.get('db_id'))
 
                     if A:
@@ -79,6 +85,7 @@ def edit_annotation(request):
 
                             else:
                                 print "Edit_annotation view, annotation could not be duplicated."
+                                stdlogger.error("Edit_annotation view, annotation could not be duplicated.")
                                 pass
 
                         elif owner and request.POST.get('delete_cmd'):
@@ -90,6 +97,7 @@ def edit_annotation(request):
 
                             else:
                                 print "Edit_annotation view, POST parameter 'db_id' is None."
+                                stdlogger.error("Edit_annotation view, POST parameter 'db_id' is None.")
                                 pass
 
                         elif owner:
@@ -112,9 +120,11 @@ def edit_annotation(request):
 
                                     else:
                                         print "Edit_annotation view, not editing due to entered text identical to existing body value."
+                                        stdlogger.error("Edit_annotation view, not editing due to entered text identical to existing body value.")
                                         pass
                                 else:
                                     print "Edit_annotation view, provided POST argument 'body.change' does not contain valid str or unicode."
+                                    stdlogger.error("Edit_annotation view, provided POST argument 'body.change' does not contain valid str or unicode.")
                                     pass
 
                             if request.POST.get('motivation_selection'):
@@ -129,17 +139,21 @@ def edit_annotation(request):
                                     if db_id: A = Annotation.objects.get( id = db_id )
 
                     else:
-                        print "Edit_annotation view, could not retrieve annotation with id:", str( request.POST.get('db_id') )
+                        print "Edit_annotation view, could not retrieve annotation with id: ", str( request.POST.get('db_id') )
+                        stdlogger.error("Edit_annotation view, could not retrieve annotation with id: " + str( request.POST.get('db_id') ))
                         pass
                 else:
                     print "Edit_annotation view, POST request contains object called 'db_id' that is neither str nor unicode."
+                    stdlogger.error("Edit_annotation view, POST request contains object called 'db_id' that is neither str nor unicode.")
                     pass
         else:
             print "Edit_annotation view, unidentified user."
+            stdlogger.info("Edit_annotation view, unidentified user.")
             return redirect('accounts/logout')
 
     except:
         print "Edit_annotation view did not complete."
+        stdlogger.error("Edit_annotation view did not complete.")
         return HttpResponse(Exception)
 
     motivation_choices = Annotation.MOTIVATION_CHOICES
@@ -151,7 +165,15 @@ def edit_annotation(request):
 @login_required
 def homepage(request):
     """
-    User profile view.
+        Function: homepage
+        ----------------------------
+        User profile view.
+        
+        input:
+            request (object): context of the petition.
+        
+        output:
+            object: HttpResponse with the result of the request.
     """
     try:
         if request.session.get("user"):
@@ -171,9 +193,11 @@ def homepage(request):
             return render_to_response('b2note_app/homepage.html', context_instance=context)
         else:
             print "Redirecting from homepage view."
+            stdlogger.info("Redirecting from homepage view.")
             return redirect('/accounts/logout')
     except Exception:
         print "Could not load or redirect from homepage view."
+        stdlogger.error("Could not load or redirect from homepage view.")
         return False
 
 
@@ -228,9 +252,11 @@ def export_annotations(request):
             return render(request, 'b2note_app/export.html', {'annotations_json': json.dumps(response, indent=2),"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
         else:
             print "Redirecting from export view."
+            stdlogger.info("Redirecting from export view.")
             return redirect('/accounts/logout')
     except Exception:
         print "Could not export or redirect from export view."
+        stdlogger.error("Could not export or redirect from export view.")
         return False
 
 
@@ -393,18 +419,23 @@ def delete_annotation(request):
                         DeleteFromPOSTinfo( request.POST.get('db_id') )
                     else:
                         print "delete_annotation view, cannot delete annotation, current user is not owner."
+                        stdlogger.error("delete_annotation view, cannot delete annotation, current user is not owner.")
                         pass
                 else:
-                    print "delete_annotation view, no annotation with provided 'db_id':", str( request.POST.get('db_id') )
+                    print "delete_annotation view, no annotation with provided 'db_id': ", str( request.POST.get('db_id') )
+                    stdlogger.error("delete_annotation view, no annotation with provided 'db_id': " + str( request.POST.get('db_id') ))
                     pass
             else:
                 print "delete_annotation view, provided parameter 'db_id' neither str nor unicode."
+                stdlogger.error("delete_annotation view, provided parameter 'db_id' neither str nor unicode.")
                 pass
         else:
             print "delete_annotation view, missing POST parameter 'db_id'."
+            stdlogger.error("delete_annotation view, missing POST parameter 'db_id'.")
             pass
     else:
         print "delete_annotation view, user is not logged-in."
+        stdlogger.error("delete_annotation view, user is not logged-in.")
         pass
 
     subject_tofeed = ""
@@ -545,9 +576,6 @@ def interface_main(request):
         # https://blog.scrapinghub.com/2013/05/13/mongo-bad-for-scraped-data/
         # https://github.com/aparo/django-mongodb-engine/blob/master/docs/embedded-objects.rst
         annotation_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
-        #print "### " * 20
-        #print json.dumps(readyQuerySetValuesForDumpAsJSONLD( [item for item in annotation_list.values()] ), indent=2)
-        #print "### " * 20
     except Annotation.DoesNotExist:
         annotation_list = []
 
