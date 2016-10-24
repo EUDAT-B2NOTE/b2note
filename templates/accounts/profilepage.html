@@ -20,39 +20,52 @@
 
 <body id="profilepage">
 
-	<header>
+	<div class="navbar navbar-default navbar-static-top">
 
-		<div id="header-top">
+		<div class="container">
 
-			<a href="http://www.eudat.eu" target="_blank">GO TO EUDAT WEBSITE</a>
-
-		</div>
-
-		<div class = "container" id="header">
-
-            <section class="row">
-
-                <div class="col-xs-8 col-sm-4 col-md-2">
-
-                    <img alt="EUDAT" title="EUDAT" src="{% static 'images/EUDAT-logo_3.png' %}" />
-
-                </div>
-
-                <div class="col-xs-12 col-sm-6 col-md-2">
-
-    			    <img alt="B2NOTE" title="B2NOTE" src="{% static 'images/B2NOTE-logo.png' %}" />
-
-                </div>
-
-                <div class="clear"> </div>
-
-            </section>
+			<div class="navbar-brand">B2Note console</div>
 
 		</div>
 
-        <div class="clear"> </div>
+		<div class="container" align="right">
 
-	</header>
+			<a href="/accounts/profilepage" title="Account">
+				<button type="submit" class="btn btn-link btn-xs">
+					<i class="glyphicon glyphicon-user"></i>
+					{% if user_nickname %}
+						{{ user_nickname }}
+					{% endif %}
+				</button>
+			</a>
+
+			<a href="/search" title="Search">
+				<button type="submit" class="btn btn-link btn-xs">
+					<i class="glyphicon glyphicon-search"></i>
+				</button>
+			</a>
+
+			<a href="/export" title="Download">
+				<button type="submit" class="btn btn-link btn-xs">
+					<i class="glyphicon glyphicon-download"></i>
+				</button>
+			</a>
+
+			<a href="/accounts/logout" title="Logout">
+				<button type="submit" class="btn btn-link btn-xs">
+					<i class="glyphicon glyphicon-off"></i>
+				</button>
+			</a>
+
+			<a href="/help" alt="Help" title="Help">
+				<button type="submit" class="btn btn-link btn-xs">
+					<i class="glyphicon glyphicon-user"></i>
+				</button>
+			</a>
+
+		</div>
+
+	</div>
 
 	<div class="container" id="profilepage_title">
 
@@ -77,7 +90,7 @@
 					</button>
 				</a>
 
-				<a href="/homepage">
+				<a href="/b2note_app/interface_main">
 					<button type="submit" class="btn btn-default">
 						<i class="glyphicon glyphicon-home"></i>
 						Homepage
@@ -119,16 +132,6 @@
 		</div>
 
 	</div>
-
-	<footer>
-		<div id="footer-content">
-			<img alt="CE logo" title="CE logo" src="{% static 'images/logo_ce.jpg' %}" />
-			<p>
-				EUDAT receives funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No. 654065.
-				<a href="http://www.eudat.eu/legal-notice" target="_blank">Legal Notice</a>
-			</p>
-		</div>
-	</footer>
 
 </body>
 

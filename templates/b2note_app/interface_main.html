@@ -24,7 +24,6 @@
         <script src="{% static 'js/jquery.redirect.js' %}"></script>
     	<script src="{% static 'js/utils.js' %}"></script>
 
-
 	    <title>B2Note prototype interface</title>
 
     </head>
@@ -33,261 +32,412 @@
 
         {% if subject_tofeed|length = 0 %}
 
-            <script>hide_iframe();</script>
+        <script>hide_iframe();</script>
 
         {% else %}
 
-            <script>show_iframe();</script>
+        <script>show_iframe();</script>
 
             <!-- https://www.youtube.com/watch?v=qpWlaOeGZ_4#t=586.470113308 -->
-            <div class="navbar navbar-default navbar-static-top">
+		<div class="navbar navbar-default navbar-static-top">
 
-                <div class="container">
+			<div class="container">
 
-                    <div class="navbar-brand">B2Note console</div>
+				<div class="navbar-brand">B2Note console</div>
 
-                    <button class = "navbar-toggle" data-toggle = "collapse" data-target = ".navHeaderCollapse">
+			</div>
 
-                        <span class = "icon-bar"></span>
-                        <span class = "icon-bar"></span>
-                        <span class = "icon-bar"></span>
+            <!--<button class = "navbar-toggle" data-toggle = "collapse" data-target = ".navHeaderCollapse">
 
-                    </button>
+                <span class = "icon-bar"></span>
+                <span class = "icon-bar"></span>
+                <span class = "icon-bar"></span>
 
-                    <div class = "collapse navbar-collapse navHeaderCollapse">
+            </button>
 
-                        <ul class = "nav navbar-nav navbar-right">
+            <div class = "collapse navbar-collapse navHeaderCollapse">
 
-                            <li>
+                <ul class = "nav navbar-nav navbar-right">
 
-                                <!-- http://stackoverflow.com/questions/11828829/twitter-bootstrap-how-to-get-rid-of-underlined-button-text-when-hovering-over-a -->
-                                <a href="/homepage" target="_parent" class="btn btn-link" value="Homepage" title="User homepage">Home</a>
+                    <li>
 
-                            </li>
+                        <!-- http://stackoverflow.com/questions/11828829/twitter-bootstrap-how-to-get-rid-of-underlined-button-text-when-hovering-over-a -->
+                        <!--<a href="/homepage" target="_parent" class="btn btn-link" value="Homepage" title="User homepage">Home</a>
 
-                            <li>
+                    </li>
 
-                                <form action="/export_annotations" method="post">
+                    <li>
 
-                                    {% csrf_token %}
+                        <form action="/export_annotations" method="post">
 
-                                    <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-                                    <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-                                    <input type="Submit" class="btn btn-link" value="Export" title="All your annotations as JSON" />
-                                    <!-- http://stackoverflow.com/questions/19981949/how-to-make-a-button-in-bootstrap-look-like-a-normal-link-in-nav-tabs -->
+                            {% csrf_token %}
 
-                                </form>
+                            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+                            <input type="Submit" class="btn btn-link" value="Export" title="All your annotations as JSON" />
+                            <!-- http://stackoverflow.com/questions/19981949/how-to-make-a-button-in-bootstrap-look-like-a-normal-link-in-nav-tabs -->
 
-                            </li>
+                        <!--</form>
 
-                            <li>
+                    </li>
 
-                                <form action="/publish_annotations" method="post">
+                    <li>
 
-                                    {% csrf_token %}
+                        <form action="/publish_annotations" method="post">
 
-                                    <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-                                    <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-                                    <input type="Submit" class="btn btn-link" value = "Publish" title = "Make annotations available to SPARQL queries"/>
+                            {% csrf_token %}
 
-                                </form>
+                            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+                            <input type="Submit" class="btn btn-link" value = "Publish" title = "Make annotations available to SPARQL queries"/>
 
-                            </li>
+                        </form>
 
-                            <li>
+                    </li>
 
-                                <form action="/settings" method="post">
+                    <li>
 
-                                    {% csrf_token %}
+                        <form action="/settings" method="post">
 
-                                    <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-                                    <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-                                    <input type="Submit" class="btn btn-link" value = "Settings" title = "Manage source ontologies"/>
+                            {% csrf_token %}
 
-                                </form>
+                            <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                            <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+                            <input type="Submit" class="btn btn-link" value = "Settings" title = "Manage source ontologies"/>
 
-                            </li>
+                        </form>
 
-                            <li>
+                    </li>
 
-                                <!-- http://stackoverflow.com/questions/11828829/twitter-bootstrap-how-to-get-rid-of-underlined-button-text-when-hovering-over-a -->
-                                <a href = "#" class = "btn btn-link" value = "Close" title = "Close B2Note interface" onClick = "hide_iframe()">Close</a>
+                    <li>
 
-                            </li>
+                        <!-- http://stackoverflow.com/questions/11828829/twitter-bootstrap-how-to-get-rid-of-underlined-button-text-when-hovering-over-a -->
+                        <!--<a href = "#" class = "btn btn-link" value = "Close" title = "Close B2Note interface" onClick = "hide_iframe()">Close</a>
 
-                        </ul>
+                    </li>
 
-                    </div>
+                </ul>
 
-                </div>
+            </div>-->
+
+			<div class="container" align="right">
+
+				<a href="/accounts/profilepage" title="Account">
+					<button type="submit" class="btn btn-link btn-xs">
+						<i class="glyphicon glyphicon-user"></i>
+                        {% if user_nickname %}
+                            {{ user_nickname }}
+                        {% endif %}
+					</button>
+				</a>
+
+				<a href="/search" title="Search">
+					<button type="submit" class="btn btn-link btn-xs">
+						<i class="glyphicon glyphicon-search"></i>
+					</button>
+				</a>
+
+				<a href="/export" title="Download">
+					<button type="submit" class="btn btn-link btn-xs">
+						<i class="glyphicon glyphicon-download"></i>
+					</button>
+				</a>
+
+				<a href="/accounts/logout" title="Logout">
+					<button type="submit" class="btn btn-link btn-xs">
+						<i class="glyphicon glyphicon-off"></i>
+					</button>
+				</a>
+
+				<a href="/help" alt="Help" title="Help">
+					<button type="submit" class="btn btn-link btn-xs">
+						<i class="glyphicon glyphicon-user"></i>
+					</button>
+				</a>
 
             </div>
 
-            <div class="container" id="section_subject">
+        </div>
 
-                <h3>Subject</h3>
+        <!--<div class="container" id="section_subject">
 
-                <div class="table-responsive">
+            <h3>Subject</h3>
 
-                   <div class="row">
+            <div class="table-responsive">
 
-                       <div class="col-md-6" id="col_table">
+               <div class="row">
 
-                           <table class="table table-condensed">
+                   <div class="col-md-6" id="col_table">
 
-                               <tr>
+                       <table class="table table-condensed">
 
-                                   <td>URL:</td>
+                           <tr>
 
-                                   <!-- http://stackoverflow.com/questions/19819322/preselect-text-input-on-page-load -->
-                                   <td><strong><a href="{{subject_tofeed}}" target="_blank">{{subject_tofeed}}</a></strong></td>
+                               <td>URL:</td>
 
-                               </tr>
+                               <!-- http://stackoverflow.com/questions/19819322/preselect-text-input-on-page-load -->
+                               <!--<td><strong><a href="{{subject_tofeed}}" target="_blank">{{subject_tofeed}}</a></strong></td>
 
-                               {% if pid_tofeed != "" %}
+                           </tr>
 
-                                <tr>
+                           {% if pid_tofeed != "" %}
 
-                                    <td>PID:</td>
+                            <tr>
 
-                                    <td><a href="{{pid_tofeed}}" target="_blank" class="pid_link">{{ pid_tofeed }}</a></td>
+                                <td>PID:</td>
 
-                                </tr>
+                                <td><a href="{{pid_tofeed}}" target="_blank" class="pid_link">{{ pid_tofeed }}</a></td>
 
-                               {% endif %}
+                            </tr>
 
-                           </table>
+                           {% endif %}
 
-                       </div>
+                       </table>
 
                    </div>
 
-                </div>
+               </div>
 
             </div>
 
-            <div class="container" id="section_create">
+        </div>-->
 
-                <h3>Create annotation</h3>
+        <div class="container" id="section_create">
+
+            <div class="container" id="user_area">
 
                 <!-- http://stackoverflow.com/questions/18036315/centering-bootstrap-input-fields -->
                 <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" href="#keyword">keyword</a></li>
+                    <li class="active"><a data-toggle="tab" href="#semantic">Semantic tag</a></li>
+                    <li><a data-toggle="tab" href="#keyword">Free-text keyword</a></li>
                     <li><a data-toggle="tab" href="#comment">comment</a></li>
                 </ul>
                 <div class="tab-content">
-                    <div id="keyword" class="tab-pane fade in active form-group">
+                    <div id="semantic" class="tab-pane fade in active form-group">
                         {% csrf_token %}
-                        <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"  placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
+                        <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"  placeholder="Type-in and select one."  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
+                        <input type="submit" id="semantic_submit" value="Create" title="Create an annotation using my selected tag."/>
+                    </div>
+                    <div id="keyword" class="tab-pane fade form-group">
+                        <div class="input-group">
+                            <input type="text" class="form-control custom-control" id="keyword_input" placeholder="Type in your free-text comment."></input>
+                            <span class="input-group-addon btn btn-primary" onClick="get_free_text()">Create</span>
+                        </div>
                     </div>
                     <div id="comment" class="tab-pane fade form-group">
                         <div class="input-group">
                             {% csrf_token %}
-                            <textarea class="form-control custom-control" rows="2" id="free-text" placeholder="Type a comment"></textarea>
-                            <span class="input-group-addon btn btn-primary" onClick="get_free_text()">Send</span>
+                            <textarea class="form-control custom-control" rows="2" id="comment_input" placeholder="Type-in your comment."></textarea>
+                            <span class="input-group-addon btn btn-primary" onClick="get_free_text()">OK</span>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="container" id="section_existing">
+                <hr>
 
-                <h3>Existing annotations</h3>
+                <div>
+                    <a class="btn btn-link" data-toggle="collapse" href="#myannotation_collapse">
+                        <i class="glyphicon glyphicon-user"></i>
+                    </a>
+                    <h5>My annotations</h5>
+                    <div id="myannotation_collapse" class="panel-collapse collapse">
 
-                <div class="container" id="container_table_existing">
+                        <table>
 
-                    <table class="table table-responsive table-striped">
+                            <tr>
 
-                        {% for annotation in annotation_list %}
+                                <td>Semantic tags </td>
+                                <td>{% if my_s != None %} {{my_s}} {% endif %}</td>
 
-                            {% for target in annotation.target %}
+                            </tr>
 
-                                {% if target.jsonld_id or target.source.jsonld_id %}
+                            <tr>
 
-                                    <!-- http://stackoverflow.com/questions/1275735/how-to-access-dictionary-element-in-django-template -->
-                                    {% if target.jsonld_id == subject_tofeed or target.source.jsonld_id == subject_tofeed %}
+                                <td>Free-text keywords </td>
+                                <td>{% if my_k != None %} {{my_k}} {% endif %}</td>
 
-                                        {% for body in annotation.body %}
+                            </tr>
 
-                                            {% if body.jsonld_id or body.value %}
+                            <tr>
 
-                                                <tr>
+                                <td>Comments </td>
+                                <td>{% if my_c != None %} {{my_c}} {% endif %}</td>
 
-                                                {% if "http://" in body.jsonld_id %}
+                            </tr>
 
-                                                    <!--
-                                                    <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
-                                                    -->
-                                                    <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
-                                                    <td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">
-                                                        <a target="_blank" href={{body.jsonld_id}}>{{body.value}}</a>
-                                                    </td>
+                        </table>
 
-                                                {% else %}
-
-                                                    <!--
-                                                    <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
-                                                    -->
-                                                    <td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">{{body.value}}</td>
-
-                                                {% endif %}
-
-                                                    <form action="/edit_annotation" method="post" target="_blank">
-
-                                                        {% csrf_token %}
-
-                                                        <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
-                                                        <!--<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />-->
-
-                                                        <td id="editAnnotation"><input type="image" id="pen-icon" src="{% static "images/Black_pencil.svg" %}" height="16px" title="Edit annotation" alt="Edit annotation" /></td>
-
-                                                    </form>
-
-                                                {% if user_nickname = annotation.creator.0.nickname %}
-
-                                                    <form action="/delete_annotation" method="post">
-
-                                                        {% csrf_token %}
-
-                                                        <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
-                                                        <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-                                                        <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-
-                                                        <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" height="16px" title="Delete annotation" alt="Delete annotation" /></td>
-
-                                                    </form>
-
-                                                {% else %}
-
-                                                    <!-- Empty slot for bin icon for annotations of which logged-in user is not owner. -->
-                                                    <td></td>
-
-                                                {% endif %}
-
-                                                    <!-- "Octicons-trashcan" by GitHub - https://github.com/github/octicons. Licensed under MIT via Wikimedia Commons - https://commons.wikimedia.org/wiki/File:Octicons-trashcan.svg#/media/File:Octicons-trashcan.svg
-                                                    <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" title="Delete annotation" alt="Delete annotation" /></td> -->
-
-                                                </tr>
-
-                                            {% endif %}
-
-                                        {% endfor %}
-
-                                    {% endif %}
-
-                                {% endif %}
-
-                            {% endfor %}
-
-                        {% endfor %}
-
-                    </table>
+                    </div>
 
                 </div>
 
             </div>
 
-        {% endif %}
+        </div>
+
+        <div class="container" id="pulledarea">
+            <a class="btn btn-link" data-toggle="collapse" href="#allannotations_collapse">
+                <i class="glyphicon glyphicon-user"></i>
+            </a>
+            <h5><a href="/allannotations">All annotations</a></h5>
+            <div id="allannotations_collapse" class="panel-collapse collapse">
+                <table>
+                    <tr>
+                        <td><a href="/allannotations#semantic">Semantic tags</a></td>
+                        <td>
+                            {% if all_s != None %}
+                            <a href="/allannotations#semantic">
+                                {{all_s}}
+                            </a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if my_s != None %}
+                            <a href="/myannotations#semantic">
+                                {{my_s}}
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Free-text keywords </td>
+                        <td>
+                            {% if all_k != None %}
+                            <a href="/allannotations#keyword">
+                                {{all_k}}
+                            </a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if my_k != None %}
+                            <a href="/myannotations#keyword">
+                                {{my_k}}
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Comments </td>
+                        <td>
+                            {% if all_c != None %}
+                            <a href="/allannotations#comment">
+                                {{all_c}}
+                            </a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if my_c != None %}
+                            <a href="/myannotations#comment">
+                                {{my_c}}
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+<!--        <div class="container" id="section_existing">
+
+            <div class="container" id="container_table_existing">
+
+                <table class="table table-responsive table-striped">
+
+                    {% for annotation in annotation_list %}
+
+                        {% for target in annotation.target %}
+
+                            {% if target.jsonld_id %}
+
+                                <!-- http://stackoverflow.com/questions/1275735/how-to-access-dictionary-element-in-django-template -->
+<!--                                {% if target.jsonld_id == subject_tofeed %}
+
+                                    {% for body in annotation.body %}
+
+                                        {% if body.jsonld_id or body.value %}
+
+                                            <tr>
+
+                                            {% if "http://" in body.jsonld_id %}
+
+                                                <!--
+                                                <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
+                                                -->
+                                                <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
+<!--                                                <td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">
+                                                    <a target="_blank" href={{body.jsonld_id}}>{{body.value}}</a>
+                                                </td>
+
+                                            {% else %}
+
+                                                <!--
+                                                <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
+                                                -->
+<!--                                                <td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">{{body.value}}</td>
+
+                                            {% endif %}
+
+                                                <form action="/edit_annotation" method="post" target="_blank">
+
+                                                    {% csrf_token %}
+
+                                                    <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
+                                                    <!--<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />-->
+
+<!--                                                    <td id="editAnnotation"><input type="image" id="pen-icon" src="{% static "images/Black_pencil.svg" %}" height="16px" title="Edit annotation" alt="Edit annotation" /></td>
+
+                                                </form>
+
+                                            {% if user_nickname = annotation.creator.0.nickname %}
+
+                                                <form action="/delete_annotation" method="post">
+
+                                                    {% csrf_token %}
+
+                                                    <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
+                                                    <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+                                                    <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+
+                                                    <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" height="16px" title="Delete annotation" alt="Delete annotation" /></td>
+
+                                                </form>
+
+                                            {% else %}
+
+                                                <!-- Empty slot for bin icon for annotations of which logged-in user is not owner. -->
+<!--                                                <td></td>
+
+                                            {% endif %}
+
+                                                <!-- "Octicons-trashcan" by GitHub - https://github.com/github/octicons. Licensed under MIT via Wikimedia Commons - https://commons.wikimedia.org/wiki/File:Octicons-trashcan.svg#/media/File:Octicons-trashcan.svg
+                                                <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" title="Delete annotation" alt="Delete annotation" /></td> -->
+
+<!--                                            </tr>
+
+                                        {% endif %}
+
+                                    {% endfor %}
+
+                                {% endif %}
+
+                            {% endif %}
+
+                        {% endfor %}
+
+                    {% endfor %}
+
+                </table>
+
+            </div>
+
+        </div>
+
+        {% endif %}-->
 
 		</div>
 

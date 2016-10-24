@@ -7,12 +7,11 @@ from django.conf.urls import patterns, include, url
 urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
+    url(r'^captcha/', include('captcha.urls')),
     url(r'^accounts/', include('accounts.urls', namespace='accounts')),
     url(r'^$', 'b2note_app.views.hostpage', name='index'),
     url(r'^login', 'accounts.views.login'),
-    url(r'^consolelogin', 'accounts.views.consolelogin'),
     url(r'^logout', 'accounts.views.logout'),
-    url(r'^captcha/', include('captcha.urls')),
 
     url(r'^hostpage', 'b2note_app.views.hostpage'),
     url(r'^homepage$', 'b2note_app.views.homepage', name='homepage'),
@@ -26,4 +25,6 @@ urlpatterns = patterns('',
     url(r'^search', 'b2note_app.views.search_annotations'),
     url(r'^retrieve_annotations', 'b2note_app.views.retrieve_annotations'),
     url(r'^edit_annotation', 'b2note_app.views.edit_annotation'),
+    url(r'^help$', 'b2note_app.views.helppage'),
+    url(r'^allannotations$', 'b2note_app.views.allannotations'),
 )

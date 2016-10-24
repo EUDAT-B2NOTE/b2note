@@ -9,66 +9,56 @@
 
     <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
     <link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.0/css/bootstrap-select.min.css">
 
     <script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/utils.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.0/js/bootstrap-select.min.js"></script>
 
 	<title>B2Note service demo</title>
 
 </head>
 
-<body id="loginpage">
+<body id="registerpage">
 
-	<header>
+    <div class="navbar navbar-default navbar-static-top">
 
-		<div id="header-top">
+        <div class="container">
 
-			<a href="http://www.eudat.eu" target="_blank">GO TO EUDAT WEBSITE</a>
+            <div class="navbar-brand">B2Note console</div>
 
-		</div>
+        </div>
 
-		<div class = "container" id="header">
+        <div class="container" align="right">
 
-            <section class="row">
+            <a href="/accounts/login" title="Login">
+                <button type="submit" class="btn btn-link btn-xs">
+                    <i class="glyphicon glyphicon-user"></i>
+                </button>
+            </a>
 
-                <div class="col-xs-8 col-sm-4 col-md-2">
+            <a href="/help" title="Help">
+                <button type="submit" class="btn btn-link btn-xs">
+                    <i class="glyphicon glyphicon-home"></i>
+                </button>
+            </a>
 
-                    <img alt="EUDAT" title="EUDAT" src="{% static 'images/EUDAT-logo_3.png' %}" />
+        </div>
 
-                </div>
+    </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-2">
-
-    			    <img alt="B2NOTE" title="B2NOTE" src="{% static 'images/B2NOTE-logo.png' %}" />
-
-                </div>
-
-                <div class="clear"> </div>
-
-            </section>
-
-		</div>
-
-        <div class="clear"> </div>
-
-	</header>
-
-	<div class="container" id="loginform">
+	<div class="container" id="registration_form">
 
         <div class="row">
 
+            <a href="/accounts/login" title="Login">
+                <button type="submit" class="btn btn-link">
+                    <i class="glyphicon glyphicon-home"></i>
+                </button>
+            </a>
+
             <div class="col-sm-2">
 
-                <h2>Registration</h2>
-
-            </div>
-
-            <div class="col-sm-offset-7">
-
-                <a href="/login" class="btn btn-primary btn-xs" title="Registered user, log in to your home page.">Login instead</a>
+                <h3>Registration</h3>
 
             </div>
 
@@ -86,72 +76,90 @@
 
                     {% if f.errors %}
 
-                    <div class="col-sm-4-offset-sm-2">
-                        <div class="form-group has-error has-feedback">
-                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                            <!--<input type="text" class="form-control" id="inputError2" aria-describedby="inputError2Status">-->
-                            <!--<span id="inputError2Status" class="sr-only">(error)</span>-->
-                            <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>
-                            {{ f }}
-                        </div>
-                    </div>
+            <div class="col-sm-4-offset-sm-2">
+                <div class="form-group has-error has-feedback">
+                    <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                    <!--<input type="text" class="form-control" id="inputError2" aria-describedby="inputError2Status">-->
+                    <!--<span id="inputError2Status" class="sr-only">(error)</span>-->
+                    <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>
+                    {{ f }}
+                </div>
+            </div>
 
                     {% else %}
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>
-                        {{ f }}
-                    </div>
+            <div class="form-group">
+                <!--<label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>-->
+                {{ f }}
+            </div>
 
                     {% endif %}
 
                 {% elif f.id_for_label|slice:"3:" == "country" %}
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>
-                        <div class="col-sm-6">
-                            <select name='{{ f.id_for_label|slice:"3:" }}' class="selectpicker">
-                                {% for c in f.field.choices %}
-                                    <option value="{{c.0}}">{{ c.1 }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
+            <div class="form-group">
+                <!--<label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>-->
+                <div class="col-sm-6">
+                    <select name='{{ f.id_for_label|slice:"3:" }}' class="selectpicker">
+                        {% for c in f.field.choices %}
+                            <option value="{{c.0}}">{{ c.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
 
                 {% elif f.id_for_label|slice:"3:" == "annotator_exp" %}
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>
-                        <div class="col-sm-6">
-                            <select name='{{ f.id_for_label|slice:"3:" }}' class="selectpicker">
-                                {% for c in f.field.choices %}
-                                    <option value="{{c.0}}">{{ c.1 }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
+            <div class="form-group">
+                <!--<label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>-->
+                <div class="col-sm-6">
+                    <select name='{{ f.id_for_label|slice:"3:" }}' class="selectpicker">
+                        {% for c in f.field.choices %}
+                            <option value="{{c.0}}">{{ c.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
 
                 {% elif f.id_for_label|slice:"3:-1" == "password" %}
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label}}:</label>
-                        <div class="col-sm-6">
-                            <input type="password" name='{{ f.id_for_label|slice:"3:" }}' class="form-control" id="some-id" placeholder="Enter {{ f.label|lower }}" />
-                        </div>
-                    </div>
+            <div class="form-group">
+                <!--<label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label}}:</label>-->
+                <div class="col-sm-6">
+                    <input type="password" name='{{ f.id_for_label|slice:"3:" }}' class="form-control" id="some-id" placeholder="Enter {{ f.label|lower }}" />
+                </div>
+            </div>
 
                 {% else %}
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>
-                        <div class="col-sm-6">
-                            <input type="text" name='{{ f.id_for_label|slice:"3:" }}' class="form-control" id="some-id" placeholder="Enter {{ f.label|lower }}" />
-                        </div>
-                    </div>
+            <div class="form-group">
+                <!--<label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>-->
+                <div class="col-sm-6">
+                    <input type="text" name='{{ f.id_for_label|slice:"3:" }}' class="form-control" id="id" placeholder="Enter {{ f.label|lower }}" />
+                </div>
+            </div>
 
                 {% endif %}
 
             {% endfor %}
+
+            <div>
+
+                <a data-toggle="collapse" href="#collapse1">B2Note registration disclaimer</a>
+
+                <div id="collapse1" class="panel-collapse collapse">
+
+                    <p>
+
+                        B2Note is a crowdsourcing annotation service.
+                        As such there is a minimum set of information that we ask be filled-in to register to the service.
+                        This information may only be used solely for the purpose of identifying categories of users and analyse the usage these catgories have of the service for us to specifically improve functionalities of particular interest to each category, as well as helping prevent any unwarranted usage.
+
+                    </p>
+
+                </div>
+
+            </div>
 
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-6">
@@ -161,16 +169,6 @@
         </form>
 
 	</div>
-
-	<footer>
-		<div id="footer-content">
-			<img alt="CE logo" title="CE logo" src="{% static 'images/logo_ce.jpg' %}" />
-			<p>
-				EUDAT receives funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No. 654065.
-				<a href="http://www.eudat.eu/legal-notice" target="_blank">Legal Notice</a>
-			</p>
-		</div>
-	</footer>
 
 </body>
 

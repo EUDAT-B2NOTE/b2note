@@ -208,10 +208,10 @@ LOGGING = {
 }
 
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'b2note.temp@gmail.com'
+DEFAULT_FROM_EMAIL = os.environ['SUPPORT_EMAIL_ADDR']
 SERVER_EMAIL = 'test@gmail.com'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'b2note.temp@gmail.com'
-EMAIL_HOST_PASSWORD = 'kL74KV13Th'
+EMAIL_HOST_USER = os.environ['SUPPORT_EMAIL_ADDR']
+EMAIL_HOST_PASSWORD = os.environ['SUPPORT_EMAIL_PWD']
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

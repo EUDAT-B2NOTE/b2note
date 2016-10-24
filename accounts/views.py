@@ -54,7 +54,7 @@ def request_account_retrieval(request):
 
 # http://ruddra.com/2015/09/18/implementation-of-forgot-reset-password-feature-in-django/
 class PasswordResetConfirmView(FormView):
-    template_name = "accounts/test_template.html"
+    template_name = "accounts/reset_password.html"
     success_url = "accounts/reset_password"
     form_class = SetPasswordForm
 
@@ -90,8 +90,8 @@ class PasswordResetConfirmView(FormView):
 
 
 class ResetPasswordRequestView(FormView):
-    template_name = "accounts/test_template.html"  # code for template is given below the view's code
-    success_url = '/accounts/reset_password'
+    template_name = "accounts/reset_password.html"  # code for template is given below the view's code
+    success_url = "/accounts/reset_password"
     form_class = PasswordResetRequestForm
 
     @staticmethod
@@ -182,34 +182,6 @@ def login(request):
             user = authenticate(email=request.POST['username'], password=request.POST['password'])
             if user is not None:
                 if user.is_active:
-                    print type(user), isinstance(user, unicode), user
-                    django_login(request, user)
-                    print ">>>", user.annotator_id.annotator_id
-                    request.session["user"] = user.annotator_id.annotator_id
-                    return redirect('/homepage')
-    else:
-        if request.session.get("user"):
-            return redirect('/homepage', context=RequestContext(request))
-        else:
-            form = AuthenticationForm()
-
-    return render_to_response('accounts/login.html',{'form': form, 'is_console_access': False},
-                              context_instance=RequestContext(request, {
-                                  "pid_tofeed": request.session.get("pid_tofeed"),
-                                  "subject_tofeed": request.session.get("subject_tofeed")
-                              }))
-
-def consolelogin(request):
-    """
-    Log in view
-    """
-
-    if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            user = authenticate(email=request.POST['username'], password=request.POST['password'])
-            if user is not None:
-                if user.is_active:
                     #print type(user), isinstance(user, unicode), user
                     django_login(request, user)
                     #print ">>>", user.annotator_id.annotator_id
@@ -221,7 +193,7 @@ def consolelogin(request):
         else:
             form = AuthenticationForm()
 
-    return render_to_response('accounts/login.html',{'form': form, 'is_console_access': True},
+    return render_to_response('accounts/login.html',{'form': form},
                               context_instance=RequestContext(request, {
                                   "pid_tofeed": request.session.get("pid_tofeed"),
                                   "subject_tofeed": request.session.get("subject_tofeed")

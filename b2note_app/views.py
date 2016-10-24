@@ -497,6 +497,87 @@ def create_annotation(request):
         return render(request, 'b2note_app/interface_main.html', data_dict)
 
 
+@login_required
+def allannotations(request):
+    """
+      Function: allannotations
+      ----------------------------
+        Displays 4 sections one with a summarising table
+        and 3 listing annotations about the file in each category.
+
+        input:
+            request (object): context of the petition.
+
+        output:
+            object: HttpResponse with the annotations.
+    """
+    pid_tofeed = ""
+    if request.POST.get('pid_tofeed')!=None:
+        pid_tofeed = request.POST.get('pid_tofeed')
+        request.session["pid_tofeed"] = pid_tofeed
+    elif request.session.get('pid_tofeed'):
+        pid_tofeed = request.session.get('pid_tofeed')
+
+    subject_tofeed = ""
+    if request.POST.get('subject_tofeed')!=None:
+        subject_tofeed = request.POST.get('subject_tofeed')
+        request.session["subject_tofeed"] = subject_tofeed
+    elif request.session.get('subject_tofeed'):
+        subject_tofeed = request.session.get('subject_tofeed')
+
+    user_nickname = None
+    if not request.session.get('user'):
+        context = RequestContext(request, {"subject_tofeed":subject_tofeed, "pid_tofeed":pid_tofeed})
+        return redirect('accounts/login', context=context)
+    elif request.session.get('user')!=None:
+        userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+        user_nickname = userprofile.nickname
+
+    pagefrom = ""
+    if request.POST.get('pagefrom')!=None:
+        pagefrom = request.POST.get('pagefrom')
+
+    try:
+        allannotations_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
+    except Annotation.DoesNotExist:
+        allannotations_list = []
+
+    allannotations_list = sorted(allannotations_list, key=lambda Annotation: Annotation.created, reverse=True)
+
+    all_s = None
+    all_k = None
+    all_c = None
+    my_s  = None
+    my_k  = None
+    my_c  = None
+
+    all_s = len([A for A in allannotations_list if A.body and A.body[0].jsonld_id ])
+    all_k = len([A for A in allannotations_list if A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="tagging" ])
+    all_c = len([A for A in allannotations_list if A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting" ])
+    if user_nickname:
+        my_s  = len([A for A in allannotations_list if A.creator and A.creator[0].nickname==user_nickname
+                     and A.body and A.body[0].jsonld_id ])
+        my_k  = len([A for A in allannotations_list if A.creator and A.creator[0].nickname==user_nickname
+                     and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="tagging" ])
+        my_c  = len([A for A in allannotations_list if A.creator and A.creator[0].nickname==user_nickname
+                     and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting" ])
+
+    data_dict = {
+        'annotation_list': allannotations_list,
+        'all_s': all_s,
+        'all_k': all_k,
+        'all_c': all_c,
+        'my_s': my_s,
+        'my_k': my_k,
+        'my_c': my_c,
+        'subject_tofeed': subject_tofeed,
+        'pid_tofeed': pid_tofeed,
+        'pagefrom': pagefrom,
+        'user_nickname': user_nickname}
+
+    return render(request, 'b2note_app/allannotations.html', data_dict)
+
+
 # forbidden CSRF verification failed. Request aborted.
 @csrf_exempt
 def interface_main(request):
@@ -511,8 +592,6 @@ def interface_main(request):
         output:
             object: HttpResponse with the iframe.
     """
-
-    request.session["is_console_access"] = True
 
     pid_tofeed = ""
     if request.POST.get('pid_tofeed')!=None:
@@ -531,7 +610,7 @@ def interface_main(request):
     user_nickname = None
     if not request.session.get('user'):
         context = RequestContext(request, {"subject_tofeed":subject_tofeed, "pid_tofeed":pid_tofeed})
-        return redirect('accounts/consolelogin', context=context)
+        return redirect('accounts/login', context=context)
     elif request.session.get('user')!=None:
         userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
         user_nickname = userprofile.nickname
@@ -544,21 +623,43 @@ def interface_main(request):
     try:
         # https://blog.scrapinghub.com/2013/05/13/mongo-bad-for-scraped-data/
         # https://github.com/aparo/django-mongodb-engine/blob/master/docs/embedded-objects.rst
-        annotation_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
-        #print "### " * 20
-        #print json.dumps(readyQuerySetValuesForDumpAsJSONLD( [item for item in annotation_list.values()] ), indent=2)
-        #print "### " * 20
+        allannotations_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
     except Annotation.DoesNotExist:
-        annotation_list = []
+        allannotations_list = []
 
-    annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.created, reverse=True)
+    allannotations_list = sorted(allannotations_list, key=lambda Annotation: Annotation.created, reverse=True)
+
+    all_s = None
+    all_k = None
+    all_c = None
+    my_s  = None
+    my_k  = None
+    my_c  = None
+
+    all_s = len([A for A in allannotations_list if A.body and A.body[0].jsonld_id ])
+    all_k = len([A for A in allannotations_list if A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="tagging" ])
+    all_c = len([A for A in allannotations_list if A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting" ])
+    if user_nickname:
+        my_s  = len([A for A in allannotations_list if A.creator and A.creator[0].nickname==user_nickname
+                     and A.body and A.body[0].jsonld_id ])
+        my_k  = len([A for A in allannotations_list if A.creator and A.creator[0].nickname==user_nickname
+                     and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="tagging" ])
+        my_c  = len([A for A in allannotations_list if A.creator and A.creator[0].nickname==user_nickname
+                     and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting" ])
 
     data_dict = {
-        'annotation_list': annotation_list,
+        'annotation_list': allannotations_list,
+        'all_s': all_s,
+        'all_k': all_k,
+        'all_c': all_c,
+        'my_s': my_s,
+        'my_k': my_k,
+        'my_c': my_c,
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
         'pagefrom': pagefrom,
         'user_nickname': user_nickname}
+
     return render(request, 'b2note_app/interface_main.html', data_dict)
 
 
@@ -736,6 +837,32 @@ def search_annotations(request):
     return render(request, "b2note_app/searchpage.html", {'keywd_json': keywd_json,'label_match': label_match, 'synonym_match':synonym_match})
 
 
+def helppage(request):
+    """
+      Function: helppage
+      ----------------------------
+        Displays help topics centralised on a single page as successive anchors.
+
+        input:
+            request (object): context of the petition.
+
+        output:
+    """
+
+    pagefrom = None
+    if request.GET.get('pagefrom') != None:
+        pagefrom = request.GET.get('pagefrom')
+
+    user_nickname = None
+    if request.session.get('user')!=None:
+        userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+        user_nickname = userprofile.nickname
+
+    return render(request, "b2note_app/help.html",
+                  {'pagefrom': pagefrom,
+                   'user_nickname':user_nickname})
+
+
 @csrf_exempt
 @login_required
 def retrieve_annotations(request):
@@ -753,7 +880,7 @@ def retrieve_annotations(request):
     target_id = ""
     if request.GET.get('target_id') != None:
         target_id = request.GET.get('target_id')
-    
+
     annotations = RetrieveAnnotations(target_id)
     
     
