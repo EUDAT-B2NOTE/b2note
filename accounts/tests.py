@@ -8,6 +8,8 @@ Replace this with more appropriate tests for your application.
 from django.test import TestCase
 from django.test.client import Client
 from accounts.models import UserCred, AnnotatorProfile
+from accounts.urls import urlpatterns as aurls
+from b2note_devel.urls import urlpatterns as burls
 
 class AccountTest(TestCase):
     username='test'
@@ -39,4 +41,15 @@ class AccountTest(TestCase):
         self.test_login()
         response = self.c.get('/logout')
         self.assertEqual(response.status_code, 302)
+        
+    # http://stackoverflow.com/questions/1828187/determine-complete-django-url-configuration    
+    def parse_urls(self):
+        print "Accounts URL's:"
+        for url in aurls:
+            print url
+        
+        print "B2note URL's:"
+        for url in burls:
+            print url
+            
         
