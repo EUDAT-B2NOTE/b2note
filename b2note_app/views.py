@@ -14,6 +14,7 @@ from collections import OrderedDict
 
 from .mongo_support_functions import *
 from .models import *
+from .nav_support_functions import list_navbarlinks, list_shortcutlinks
 
 from itertools import chain
 
@@ -190,6 +191,7 @@ def export_annotations(request):
         output:
             object: HttpResponse with the result of the request.
     """
+
     try:
         subject_tofeed = ""
         if request.POST.get('subject_tofeed')!=None:
@@ -202,6 +204,8 @@ def export_annotations(request):
         if request.session.get("user"):
 
             userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+
+            user_nickname = userprofile.nickname
 
             annotation_list = RetrieveAnnotations_perUsername(userprofile.nickname)
 
@@ -225,7 +229,16 @@ def export_annotations(request):
             json_data['Content-Disposition'] = 'attachment; filename=annotations.json'
             download_json.file_data = json_data
 
-            return render(request, 'b2note_app/export.html', {'annotations_json': json.dumps(response, indent=2),"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+            navbarlinks = list_navbarlinks(request, ["Download"])
+            shortcutlinks = list_shortcutlinks(request, ["Download"])
+
+            return render(request, 'b2note_app/export.html', {
+                'navbarlinks':navbarlinks,
+                'shortcutlinks':shortcutlinks,
+                'user_nickname': user_nickname,
+                'annotations_json': json.dumps(response, indent=2),
+                "subject_tofeed":subject_tofeed ,
+                "pid_tofeed":pid_tofeed })
         else:
             print "Redirecting from export view."
             return redirect('/accounts/logout')
@@ -511,6 +524,7 @@ def allannotations(request):
         output:
             object: HttpResponse with the annotations.
     """
+
     pid_tofeed = ""
     if request.POST.get('pid_tofeed')!=None:
         pid_tofeed = request.POST.get('pid_tofeed')
@@ -562,7 +576,15 @@ def allannotations(request):
         my_c  = len([A for A in allannotations_list if A.creator and A.creator[0].nickname==user_nickname
                      and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting" ])
 
+
+
+
+    navbarlinks = list_navbarlinks(request, [])
+    shortcutlinks = list_shortcutlinks(request, [])
+
     data_dict = {
+        'navbarlinks': navbarlinks,
+        'shortcutlinks': shortcutlinks,
         'annotation_list': allannotations_list,
         'all_s': all_s,
         'all_k': all_k,
@@ -647,7 +669,12 @@ def interface_main(request):
         my_c  = len([A for A in allannotations_list if A.creator and A.creator[0].nickname==user_nickname
                      and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting" ])
 
+    navbarlinks = list_navbarlinks(request, [])
+    shortcutlinks = []
+
     data_dict = {
+        'navbarlinks': navbarlinks,
+        'shortcutlinks': shortcutlinks,
         'annotation_list': allannotations_list,
         'all_s': all_s,
         'all_k': all_k,
@@ -834,7 +861,21 @@ def search_annotations(request):
 
                                 synonym_match.append(qs)
 
-    return render(request, "b2note_app/searchpage.html", {'keywd_json': keywd_json,'label_match': label_match, 'synonym_match':synonym_match})
+    user_nickname = None
+    if request.session.get('user')!=None:
+        userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+        user_nickname = userprofile.nickname
+
+    navbarlinks = list_navbarlinks(request, ["Search"])
+    shortcutlinks = list_shortcutlinks(request, ["Search"])
+
+    return render(request, "b2note_app/searchpage.html", {
+        'navbarlinks': navbarlinks,
+        'shortcutlinks': shortcutlinks,
+        'user_nickname': user_nickname,
+        'keywd_json': keywd_json,
+        'label_match': label_match,
+        'synonym_match':synonym_match})
 
 
 def helppage(request):
@@ -849,6 +890,9 @@ def helppage(request):
         output:
     """
 
+    navbarlinks = list_navbarlinks(request, ["Help page"])
+    shortcutlinks = list_shortcutlinks(request, ["Help page"])
+
     pagefrom = None
     if request.GET.get('pagefrom') != None:
         pagefrom = request.GET.get('pagefrom')
@@ -859,7 +903,9 @@ def helppage(request):
         user_nickname = userprofile.nickname
 
     return render(request, "b2note_app/help.html",
-                  {'pagefrom': pagefrom,
+                  {'navbarlinks': navbarlinks,
+                   'shortcutlinks': shortcutlinks,
+                   'pagefrom': pagefrom,
                    'user_nickname':user_nickname})
 
 
@@ -882,7 +928,5 @@ def retrieve_annotations(request):
         target_id = request.GET.get('target_id')
 
     annotations = RetrieveAnnotations(target_id)
-    
-    
-    return HttpResponse(annotations)
 
+    return HttpResponse(annotations)

@@ -74,11 +74,15 @@
 
 #header img {
 	padding: 5px;
-	margin-leftt: 50px;
+	margin-left: 5px;
 }
 
 .clear{
     clear: both;
+}
+
+#consolepagebody {
+    padding-top: 0px;
 }
 
 #content {

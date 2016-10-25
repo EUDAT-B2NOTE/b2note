@@ -1,145 +1,84 @@
-<!DOCTYPE html>
+{% extends "b2note_app/__base.html" %}
 
-<html lang="en">
+{% block content %}
 
-    <head>
+    <div class="container" id="confirmpassowrdform">
 
-        <meta charset="UTF-8">
+        <h3>Lost credentials</h3>
 
-        {% load staticfiles %}
+        {# Loss of account credentials template #}
+        <!-- code for displaying success or error message in template -->
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+            {% endif %}
+        </ul>
 
-        <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
-        <link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
+        {% if form %}
+        <!-- Form rendering code for template -->
+        <form action="/accounts/request_account_retrieval" method="post">
 
-        <script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
-        <script src="{% static 'js/bootstrap.min.js' %}"></script>
-        <script src="{% static 'js/utils.js' %}"></script>
+            {% csrf_token %}
 
-        <title>B2Note service demo</title>
+            <p>
 
-    </head>
+                Please provide as much of the information filled-in during your registration to the service as possible, and pass the anti-robot test.
+                This information will be sent to the support team for assistance.
 
-    <body id="confirmpasswordresetpage">
+            </p>
 
-        <div class="navbar navbar-default navbar-static-top">
+            <p>Fields marked with an asterisk are required.</p>
 
-            <div class="container">
+            {% for f in form %}
 
-                <div class="navbar-brand">B2Note console</div>
+                {% if f.id_for_label|slice:"3:" == "captcha_1" %}
 
-            </div>
+                    {% if f.errors %}
 
-            <div class="container" align="right">
-
-                <a href="/accounts/login" alt="Login" title="Login">
-                    <button type="submit" class="btn btn-link btn-xs">
-                        <i class="glyphicon glyphicon-user"></i>
-                    </button>
-                </a>
-
-                <a href="/accounts/register" alt="Registration" title="Register">
-                    <button type="submit" class="btn btn-link btn-xs">
-                        <i class="glyphicon glyphicon-user"></i>
-                    </button>
-                </a>
-
-                <a href="/help" alt="Help" title="Help">
-                    <button type="submit" class="btn btn-link btn-xs">
-                        <i class="glyphicon glyphicon-home"></i>
-                    </button>
-                </a>
-
-            </div>
-
-        </div>
-
-        <div class="container" id="confirmpassowrdform">
-
-            <a href="/accounts/login" alt="Login" title="Login">
-                <button type="submit" class="btn btn-link">
-                    <i class="glyphicon glyphicon-home"></i>
-                </button>
-            </a>
-
-            <h3>Lost credentials</h3>
-
-            {# Loss of account credentials template #}
-            <!-- code for displaying success or error message in template -->
-            {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-                {% endif %}
-            </ul>
-
-            {% if form %}
-            <!-- Form rendering code for template -->
-            <form action="/accounts/request_account_retrieval" method="post">
-
-                {% csrf_token %}
-
-                <p>
-
-                    Please provide as much of the information filled-in during your registration to the service as possible, and pass the anti-robot test.
-                    This information will be sent to the support team for assistance.
-
-                </p>
-
-                <p>Fields with a star are required.</p>
-
-                <br><br>
-
-                {% for f in form %}
-
-                    {% if f.id_for_label|slice:"3:" == "captcha_1" %}
-
-                        {% if f.errors %}
-
-                <div class="col-sm-4-offset-sm-2">
-                    <div class="form-group has-error has-feedback">
-                        <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                        <!--<input type="text" class="form-control" id="inputError2" aria-describedby="inputError2Status">-->
-                        <!--<span id="inputError2Status" class="sr-only">(error)</span>-->
-                        <label class="control-label col-sm-2">{% if f.field.required %}*{% endif %}{{ f.label }}:</label>
-                        {{ f }}
-                    </div>
-                </div>
-
-                        {% else %}
-
-                <div class="form-group">
+            <div class="col-sm-4-offset-sm-2">
+                <div class="form-group has-error has-feedback">
+                    <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                    <!--<input type="text" class="form-control" id="inputError2" aria-describedby="inputError2Status">-->
+                    <!--<span id="inputError2Status" class="sr-only">(error)</span>-->
                     <label class="control-label col-sm-2">{% if f.field.required %}*{% endif %}{{ f.label }}:</label>
                     {{ f }}
                 </div>
-
-                        {% endif %}
+            </div>
 
                     {% else %}
 
-                <div class="form-group">
-                    <!--<label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{% if f.field.required %}*{% endif %}{{ f.label }}:</label>-->
-                    <div class="col-sm-6">
-                        <input type="text" name='{{ f.id_for_label|slice:"3:" }}' class="form-control" id='{{ f.id_for_label|slice:"3:" }}' placeholder="{% if f.field.required %}* {% endif %}Enter {{ f.label|lower }}" />
-                    </div>
-                </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">{% if f.field.required %}*{% endif %}{{ f.label }}:</label>
+                {{ f }}
+            </div>
 
                     {% endif %}
 
-                {% endfor %}
+                {% else %}
 
-                <input type="submit" value="Submit" />
+            <div class="form-group">
+                <!--<label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{% if f.field.required %}*{% endif %}{{ f.label }}:</label>-->
+                <div class="col-sm-6">
+                    <input type="text" name='{{ f.id_for_label|slice:"3:" }}' class="form-control" id='{{ f.id_for_label|slice:"3:" }}' placeholder="{% if f.field.required %}* {% endif %}Enter {{ f.label|lower }}" />
+                </div>
+            </div>
 
-            </form>
+                {% endif %}
 
-            {% endif %}
+            {% endfor %}
 
-            <br>
+            <input type="submit" value="Submit" />
 
-            <a href="/" target="_parent">Back to demo index page</a>
+        </form>
 
-        </div>
+        {% endif %}
 
-    </body>
+        <br>
 
-</html>
+        <a href="/" target="_parent">Back to demo index page</a>
+
+    </div>
+
+{% endblock %}

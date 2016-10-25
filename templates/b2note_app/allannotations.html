@@ -1,195 +1,156 @@
-<!DOCTYPE html>
-
-<html lang="en">
-
-	<head>
-
-		<meta charset="UTF-8">
-
-		{% load staticfiles %}
-
-		<link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
-		<link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
-
-		<script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
-		<script src="{% static 'js/utils.js' %}"></script>
-		<script src="{% static 'js/bootstrap.min.js' %}"></script>
-
-		<title>B2Note service prototype</title>
-
-	</head>
-
-	<body id="allannotationspage">
-
-		<div class="navbar navbar-default navbar-static-top">
-
-			<div class="container">
-
-				<div class="navbar-brand">B2Note console</div>
-
-			</div>
-
-			<div class="container" align="right">
-
-				<a href="/interface_main" title="Account">
-					<button type="submit" class="btn btn-link btn-xs">
-						<i class="glyphicon glyphicon-user"></i>
-						{% if user_nickname %} {{ user_nickname }} {% endif %}
-					</button>
-				</a>
-
-				<a href="/search" title="Search">
-					<button type="submit" class="btn btn-link btn-xs">
-						<i class="glyphicon glyphicon-search"></i>
-					</button>
-				</a>
-
-				<a href="/export" title="Download">
-					<button type="submit" class="btn btn-link btn-xs">
-						<i class="glyphicon glyphicon-download"></i>
-					</button>
-				</a>
-
-				<a href="/accounts/logout" title="Logout">
-					<button type="submit" class="btn btn-link btn-xs">
-						<i class="glyphicon glyphicon-off"></i>
-					</button>
-				</a>
-
-			</div>
-
-		</div>
-
-		<div class="container" id="wayback">
-
-			<a href="/interface_main" alt="Login" title="Login">
-				<button type="submit" class="btn btn-link">
-					<i class="glyphicon glyphicon-home"></i>
-				</button>
-			</a>
-
-		</div>
-
-		<div class="container" id="allannotations_summary">
-
-			<h3>Annotations</h3>
-
-			<div class="container" id="semantic">
-
-				<h4>Semantic tags</h4>
-
-			</div>
-
-			<div class="container" id="keyword">
-
-				<h4>Free-text keywords</h4>
-
-			</div>
-
-			<div class="container" id="comment">
-
-				<h4>Comments</h4>
-
-			</div>
-
-		</div>
-
-
-        <div class="container" id="section_existing">
-
-            <div class="container" id="container_table_existing">
-
-                <table class="table table-responsive table-striped">
-
-                    {% for annotation in annotation_list %}
-
-                        {% for target in annotation.target %}
-
-                            {% if target.jsonld_id %}
-
-                                <!-- http://stackoverflow.com/questions/1275735/how-to-access-dictionary-element-in-django-template -->
-                                {% if target.jsonld_id == subject_tofeed %}
-
-                                    {% for body in annotation.body %}
-
-                                        {% if body.jsonld_id or body.value %}
-
-                                            <tr>
-
-                                            {% if "http://" in body.jsonld_id %}
-
-                                                <!--
-                                                <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
-                                                -->
-                                                <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
-                                                <td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">
-                                                    <a target="_blank" href={{body.jsonld_id}}>{{body.value}}</a>
-                                                </td>
-
-                                            {% else %}
-
-                                                <!--
-                                                <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
-                                                -->
-                                                <td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">{{body.value}}</td>
-
-                                            {% endif %}
-
-                                                <form action="/edit_annotation" method="post" target="_blank">
-
-                                                    {% csrf_token %}
-
-                                                    <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
-                                                    <!--<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />-->
-
-                                                    <td id="editAnnotation"><input type="image" id="pen-icon" src="{% static "images/Black_pencil.svg" %}" height="16px" title="Edit annotation" alt="Edit annotation" /></td>
-
-                                                </form>
-
-                                            {% if user_nickname = annotation.creator.0.nickname %}
-
-                                                <form action="/delete_annotation" method="post">
-
-                                                    {% csrf_token %}
-
-                                                    <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
-                                                    <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-                                                    <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-
-                                                    <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" height="16px" title="Delete annotation" alt="Delete annotation" /></td>
-
-                                                </form>
-
-                                            {% else %}
-
-                                                <!-- Empty slot for bin icon for annotations of which logged-in user is not owner. -->
-                                                <td></td>
-
-                                            {% endif %}
-
-                                                <!-- "Octicons-trashcan" by GitHub - https://github.com/github/octicons. Licensed under MIT via Wikimedia Commons - https://commons.wikimedia.org/wiki/File:Octicons-trashcan.svg#/media/File:Octicons-trashcan.svg
-                                                <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" title="Delete annotation" alt="Delete annotation" /></td> -->
-
-                                            </tr>
-
-                                        {% endif %}
-
-                                    {% endfor %}
-
-                                {% endif %}
-
-                            {% endif %}
-
-                        {% endfor %}
-
-                    {% endfor %}
-
-                </table>
-
+{% extends "b2note_app/__base.html" %}
+
+{% block content %}
+
+	<div class="container" id="allannotations_summary">
+
+		<h3>Annotations</h3>
+
+		<div id="allannotations_summ">
+
+            <div class = "row">
+                <a href="#semantic">Semantic tag</a>
+                {% if all_s != None %}
+                <a href="#semantic" title="All semantic annotations, click for full list."> {{all_s}} </a>
+                {% endif %}
+                {% if my_s != None %}
+                <a href="#semantic" title="Only my semantic annotations, click for full list."> {{my_s}} </a>
+                {% endif %}
+            </div>
+
+            <div class = "row">
+                <a href="#keyword">Free-text keyword</a>
+                {% if all_k != None %}
+                <a href="#keyword" title="All keyword annotations, click for full list."> {{all_k}} </a>
+                {% endif %}
+                {% if my_k != None %}
+                <a href="#keyword" title="Only my keyword annotations, click for full list."> {{my_k}} </a>
+                {% endif %}
+            </div>
+
+            <div class = "row">
+                <a href="#comment">Comment</a>
+                {% if all_c != None %}
+                <a href="#comment" title="All comment annotations, click for full list."> {{all_c}} </a>
+                {% endif %}
+                {% if my_c != None %}
+                <a href="#comment" title="Only my comment annotations, click for full list."> {{my_c}} </a>
+                {% endif %}
             </div>
 
         </div>
 
-	</body>
+		<div class="container" id="semantic">
 
-</html>
+			<h4>Semantic tags</h4>
+
+		</div>
+
+		<div class="container" id="keyword">
+
+			<h4>Free-text keywords</h4>
+
+		</div>
+
+		<div class="container" id="comment">
+
+			<h4>Comments</h4>
+
+		</div>
+
+	</div>
+
+
+	<div class="container" id="section_existing">
+
+		<div class="container" id="container_table_existing">
+
+			<table class="table table-responsive table-striped">
+
+				{% for annotation in annotation_list %}
+
+					{% for target in annotation.target %}
+
+						{% if target.jsonld_id %}
+
+							<!-- http://stackoverflow.com/questions/1275735/how-to-access-dictionary-element-in-django-template -->
+							{% if target.jsonld_id == subject_tofeed %}
+
+								{% for body in annotation.body %}
+
+									{% if body.jsonld_id or body.value %}
+
+										<tr>
+
+										{% if "http://" in body.jsonld_id %}
+
+											<!--
+											<td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
+											-->
+											<!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
+											<td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">
+												<a target="_blank" href={{body.jsonld_id}}>{{body.value}}</a>
+											</td>
+
+										{% else %}
+
+											<!--
+											<td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
+											-->
+											<td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">{{body.value}}</td>
+
+										{% endif %}
+
+											<form action="/edit_annotation" method="post" target="_blank">
+
+												{% csrf_token %}
+
+												<input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
+												<!--<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />-->
+
+												<td id="editAnnotation"><i class="glyphicon glyphicon-pencil"></i></td>
+
+											</form>
+
+										{% if user_nickname = annotation.creator.0.nickname %}
+
+											<form action="/delete_annotation" method="post">
+
+												{% csrf_token %}
+
+												<input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
+												<input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+												<input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+
+												<td id="delAnnotation"><i class="glyphicon glyphicon-trash"></td>
+
+											</form>
+
+										{% else %}
+
+											<!-- Empty slot for bin icon for annotations of which logged-in user is not owner. -->
+											<td></td>
+
+										{% endif %}
+
+										</tr>
+
+									{% endif %}
+
+								{% endfor %}
+
+							{% endif %}
+
+						{% endif %}
+
+					{% endfor %}
+
+				{% endfor %}
+
+			</table>
+
+		</div>
+
+	</div>
+
+{% endblock %}

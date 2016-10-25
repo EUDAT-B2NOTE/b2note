@@ -1,70 +1,10 @@
-<!DOCTYPE html>
+{% extends "b2note_app/__base.html" %}
 
-<html lang="en">
-
-<head>
-	<meta charset="UTF-8">
-
-	{% load staticfiles %}
-
-    <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
-    <link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
-
-    <script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/utils.js' %}"></script>
-
-	<title>B2Note service demo</title>
-
-</head>
-
-<body id="registerpage">
-
-    <div class="navbar navbar-default navbar-static-top">
-
-        <div class="container">
-
-            <div class="navbar-brand">B2Note console</div>
-
-        </div>
-
-        <div class="container" align="right">
-
-            <a href="/accounts/login" title="Login">
-                <button type="submit" class="btn btn-link btn-xs">
-                    <i class="glyphicon glyphicon-user"></i>
-                </button>
-            </a>
-
-            <a href="/help" title="Help">
-                <button type="submit" class="btn btn-link btn-xs">
-                    <i class="glyphicon glyphicon-home"></i>
-                </button>
-            </a>
-
-        </div>
-
-    </div>
+{% block content %}
 
 	<div class="container" id="registration_form">
 
-        <div class="row">
-
-            <a href="/accounts/login" title="Login">
-                <button type="submit" class="btn btn-link">
-                    <i class="glyphicon glyphicon-home"></i>
-                </button>
-            </a>
-
-            <div class="col-sm-2">
-
-                <h3>Registration</h3>
-
-            </div>
-
-        </div>
-
-        <br>
+        <h3>Registration</h3>
 
         <form action="register" method="post" class="form-horizontal">
 
@@ -170,6 +110,4 @@
 
 	</div>
 
-</body>
-
-</html>
+{% endblock %}
