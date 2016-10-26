@@ -464,50 +464,250 @@ def create_annotation(request):
         output:
             object: HttpResponse with the annotations.
     """
+    message = None
     user_nickname = None
     if request.session.get('user')!=None:
+
         userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
         user_nickname = userprofile.nickname
 
         ann_id1 = None
         ann_id2 = None
-        if request.POST.get('ontology_json'):
-            ann_id1 = CreateSemanticTag( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
-            ann_id2 = SetUserAsAnnotationCreator( request.session.get('user'), ann_id1 )
+        if request.POST.get('semantic_submit')!=None:
+            if request.POST.get('ontology_json') and request.POST.get('subject_tofeed'):
+                if isinstance(request.POST.get('subject_tofeed'), (str, unicode)):
+                    o = None
+                    o = json.loads( request.POST.get('ontology_json') )
+                    if o and isinstance(o, dict):
+                        if "uris" in o.keys():
+                            if o["uris"] and isinstance(o["uris"], (str, unicode)):
+                                newbody = None
+                                newbody = {"body":{"jsonld_id": o["uris"] }}
+                                D = None
+                                D = CheckDuplicateAnnotation( request.POST.get('subject_tofeed'), newbody )
+                                if not D:
+                                    ann_id1 = CreateSemanticTag( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
+                                    ann_id2 = SetUserAsAnnotationCreator( request.session.get('user'), ann_id1 )
+                                    A = Annotation.objects.get( id = ann_id2 )
+                                    request.session["new_semantic"] = {
+                                        "label": A.body[0].value,
+                                        "shortform": A.body[0].jsonld_id[::-1][:A.body[0].jsonld_id[::-1].find("/")][::-1],
+                                    }
+                                else:
+                                    request.session["duplicate"] = {
+                                        "label": D[0].body[0].value,
+                                        "shortform": D[0].body[0].jsonld_id[::-1][:D[0].body[0].jsonld_id[::-1].find("/")][::-1],
+                                    }
+                                    print "Create_annotation view, semantic tag annotation would be a duplicate."
+                            else:
+                                print "Create_annotation view, in semantic case, no value to uris key or neither string or unicode."
+                        else:
+                            print "Create_annotation view, in semantic case, no uris key."
+                    else:
+                        print "Create_annotation view, in semantic case, could not load json."
+                else:
+                    print "Create_annotation view, in semantic case, target file id neither string nor unicode."
+            else:
+                print "Create_annotation view, missing parameter to create semantic annotation."
 
-        if request.POST.get('free_text'):
-            ann_id1 = CreateFreeText( request.POST.get('subject_tofeed'), request.POST.get('free_text') )
-            ann_id2 = SetUserAsAnnotationCreator(request.session.get('user'), ann_id1 )
+        elif request.POST.get('keyword_submit')!=None:
+            if request.POST.get('keyword_text') and request.POST.get('subject_tofeed'):
 
-    subject_tofeed = ""
-    if request.POST.get('subject_tofeed')!=None:
-        subject_tofeed = request.POST.get('subject_tofeed')
+                pass_on = False
+                if not request.POST.get('confirm_flag'):
+                    r = solr_fetchtermonexactlabel( request.POST.get('keyword_text') )
+                    if r and len(r)>0:
+                        request.session["has_semantic_equivalent"] = request.POST.get('keyword_text')
+                        print "Create_annotation view, keyword has semantic tag equivalent."
+                        pass_on = True
+
+                if not pass_on and not request.POST.get('enforce_flag'):
+                    L = None
+                    L = CheckLengthFreeText( request.POST.get('keyword_text'), 60)
+                    if not L:
+                        request.session["long_keyword"] = request.POST.get('keyword_text')
+                        pass_on = True
+
+                if not pass_on:
+                    newbody = None
+                    newbody = {"body": {"value": request.POST.get('keyword_text')}}
+                    D = None
+                    D = CheckDuplicateAnnotation(request.POST.get('subject_tofeed'), newbody)
+                    if not D:
+                        ann_id1 = CreateFreeTextKeyword( request.POST.get('subject_tofeed'), request.POST.get('keyword_text') )
+                        ann_id2 = SetUserAsAnnotationCreator(request.session.get('user'), ann_id1 )
+                        A = Annotation.objects.get( id = ann_id2 )
+                        request.session["new_keyword"] = { "label": A.body[0].value, }
+                    else:
+                        if D[0].body[0].jsonld_id:
+                            request.session["duplicate"] = {
+                                "label": D[0].body[0].value,
+                                "shortform": D[0].body[0].jsonld_id[::-1][:D[0].body[0].jsonld_id[::-1].find("/")][::-1],
+                            }
+                        else:
+                            request.session["duplicate"] = { "label": D[0].body[0].value, }
+                        print "Create_annotation view, free-text keyword annotation would be a duplicate."
+
+        elif request.POST.get('comment_submit')!=None:
+            if request.POST.get('comment_text') and request.POST.get('subject_tofeed'):
+                ann_id1 = CreateFreeTextComment(request.POST.get('subject_tofeed'), request.POST.get('comment_text'))
+                ann_id2 = SetUserAsAnnotationCreator(request.session.get('user'), ann_id1)
+                A = Annotation.objects.get(id=ann_id2)
+                request.session["new_comment"] = {"label": A.body[0].value,}
+
+    return redirect("/interface_main")
+
+
+@login_required
+def myannotations(request):
+    """
+      Function: myannotations
+      ----------------------------
+        Displays 4 sections one with a summarising table
+        and 3 listing annotations about the file in each category.
+
+        input:
+            request (object): context of the petition.
+
+        output:
+            object: HttpResponse with the annotations.
+    """
 
     pid_tofeed = ""
     if request.POST.get('pid_tofeed')!=None:
         pid_tofeed = request.POST.get('pid_tofeed')
+        request.session["pid_tofeed"] = pid_tofeed
+    elif request.session.get('pid_tofeed'):
+        pid_tofeed = request.session.get('pid_tofeed')
+
+    subject_tofeed = ""
+    if request.POST.get('subject_tofeed')!=None:
+        subject_tofeed = request.POST.get('subject_tofeed')
+        request.session["subject_tofeed"] = subject_tofeed
+    elif request.session.get('subject_tofeed'):
+        subject_tofeed = request.session.get('subject_tofeed')
+
+    user_nickname = None
+    if not request.session.get('user'):
+        context = RequestContext(request, {"subject_tofeed":subject_tofeed, "pid_tofeed":pid_tofeed})
+        return redirect('accounts/login', context=context)
+    elif request.session.get('user')!=None:
+        userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+        user_nickname = userprofile.nickname
 
     pagefrom = ""
     if request.POST.get('pagefrom')!=None:
         pagefrom = request.POST.get('pagefrom')
 
     try:
-        annotation_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
+        allannotations_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed, 'creator.nickname': user_nickname})
     except Annotation.DoesNotExist:
-        annotation_list = []
+        allannotations_list = []
 
-    annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.created, reverse=True)
+    allannotations_list = sorted(allannotations_list, key=lambda Annotation: Annotation.created, reverse=True)
+
+    my_s  = 0
+    my_k  = 0
+    my_c  = 0
+
+    semantic_table = []
+    keyword_table  = []
+    comment_table  = []
+
+    r = None
+    r = solr_fetchorigintermonid([A.body[0].jsonld_id for A in allannotations_list if A.body and A.body[0] and A.body[0].jsonld_id])
+
+    for A in allannotations_list:
+
+        link_label = ""
+        link_info_label = ""
+        link_info_modified = ""
+
+        if A.body and A.body[0] and A.body[0].value:
+            link_label = A.body[0].value[:30]
+            if len(link_label) > 30: link_label += '...'
+            link_info_label = A.body[0].value[:50]
+            if len(link_info_label) > 50: link_info_label += '...'
+
+        if A.modified: link_info_modified = str(A.modified)
+
+        if A.body and A.body[0] and A.body[0].jsonld_id:
+
+            link_info_ontologyacronym = ""
+            link_info_shortform = ""
+            if r:
+                if isinstance(r, dict):
+                    if A.body[0].jsonld_id in r.keys():
+                        if isinstance(r[A.body[0].jsonld_id], dict):
+                            if "ontology_acronym" in r[A.body[0].jsonld_id].keys():
+                                link_info_ontologyacronym = r[A.body[0].jsonld_id]["ontology_acronym"]
+                            if "ontology_acronym" in r[A.body[0].jsonld_id].keys():
+                                link_info_shortform = r[A.body[0].jsonld_id]["short_form"]
+
+            semantic_list = Annotation.objects.raw_query({'body.jsonld_id': A.body[0].jsonld_id})
+
+            semantic_dict = {'ann_id': A.id,
+                             'link_label': link_label,
+                             'link_info_label': link_info_label,
+                             'link_info_ontologyacronym': link_info_ontologyacronym,
+                             'link_info_shortform': link_info_shortform,
+                             'link_info_modified': link_info_modified,
+                             'my_similar': len(semantic_list),
+                             }
+
+            semantic_table.append( semantic_dict )
+
+            my_s += 1
+
+        elif A.body and A.body[0] and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="tagging":
+
+            print
+
+            keyword_list = Annotation.objects.raw_query({'body.jsonld_id': None, 'body.value': A.body[0].value, 'motivation': "tagging"})
+
+            keyword_dict = {'ann_id': A.id,
+                            'link_label': link_label,
+                            'link_info_label': link_info_label,
+                            'link_info_modified': link_info_modified,
+                            'my_similar': len(keyword_list),
+                            }
+
+            keyword_table.append( keyword_dict )
+
+            my_k += 1
+
+        elif A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting":
+
+            comment_dict = {'ann_id': A.id,
+                            'link_label': link_label,
+                            'link_info_label': link_info_label,
+                            'link_info_modified': link_info_modified,
+                            }
+
+            comment_table.append(comment_dict)
+
+            my_c += 1
+
+    navbarlinks = list_navbarlinks(request, [])
+    shortcutlinks = list_shortcutlinks(request, [])
 
     data_dict = {
-        'annotation_list': annotation_list,
+        'semantic_table': semantic_table,
+        'keyword_table': keyword_table,
+        'comment_table': comment_table,
+        'navbarlinks': navbarlinks,
+        'shortcutlinks': shortcutlinks,
+        'annotation_list': allannotations_list,
+        'my_s': my_s,
+        'my_k': my_k,
+        'my_c': my_c,
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
         'pagefrom': pagefrom,
         'user_nickname': user_nickname}
-    if pagefrom == 'homepage':
-        return redirect('/homepage', context_instance=RequestContext(request, data_dict))
-    else:
-        return render(request, 'b2note_app/interface_main.html', data_dict)
+
+    return render(request, 'b2note_app/myannotations.html', data_dict)
+
 
 
 @login_required
@@ -558,31 +758,117 @@ def allannotations(request):
 
     allannotations_list = sorted(allannotations_list, key=lambda Annotation: Annotation.created, reverse=True)
 
-    all_s = None
-    all_k = None
-    all_c = None
-    my_s  = None
-    my_k  = None
-    my_c  = None
+    all_s = 0
+    all_k = 0
+    all_c = 0
+    my_s  = 0
+    my_k  = 0
+    my_c  = 0
 
-    all_s = len([A for A in allannotations_list if A.body and A.body[0].jsonld_id ])
-    all_k = len([A for A in allannotations_list if A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="tagging" ])
-    all_c = len([A for A in allannotations_list if A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting" ])
-    if user_nickname:
-        my_s  = len([A for A in allannotations_list if A.creator and A.creator[0].nickname==user_nickname
-                     and A.body and A.body[0].jsonld_id ])
-        my_k  = len([A for A in allannotations_list if A.creator and A.creator[0].nickname==user_nickname
-                     and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="tagging" ])
-        my_c  = len([A for A in allannotations_list if A.creator and A.creator[0].nickname==user_nickname
-                     and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting" ])
+    semantic_table = []
+    keyword_table  = []
+    comment_table  = []
 
+    r = None
+    r = solr_fetchorigintermonid([A.body[0].jsonld_id for A in allannotations_list if A.body and A.body[0] and A.body[0].jsonld_id])
 
+    for A in allannotations_list:
 
+        link_label = ""
+        link_info_label = ""
+        link_info_creatornickname = ""
+        link_info_modified = ""
+
+        if A.body and A.body[0] and A.body[0].value:
+            link_label = A.body[0].value[:30]
+            if len(link_label) > 30: link_label += '...'
+            link_info_label = A.body[0].value[:50]
+            if len(link_info_label) > 50: link_info_label += '...'
+
+        if A.creator and A.creator[0] and A.creator[0].nickname:
+            link_info_creatornickname = A.creator[0].nickname
+        if A.modified:
+            link_info_modified = str(A.modified)
+
+        if A.body and A.body[0] and A.body[0].jsonld_id:
+
+            link_info_ontologyacronym = ""
+            link_info_shortform = ""
+            if r:
+                if isinstance(r, dict):
+                    if A.body[0].jsonld_id in r.keys():
+                        if isinstance(r[A.body[0].jsonld_id], dict):
+                            if "ontology_acronym" in r[A.body[0].jsonld_id].keys():
+                                link_info_ontologyacronym = r[A.body[0].jsonld_id]["ontology_acronym"]
+                            if "ontology_acronym" in r[A.body[0].jsonld_id].keys():
+                                link_info_shortform = r[A.body[0].jsonld_id]["short_form"]
+
+            semantic_list = Annotation.objects.raw_query({'body.jsonld_id': A.body[0].jsonld_id})
+
+            semantic_dict = {'ann_id': A.id,
+                             'link_label': link_label,
+                             'link_info_label': link_info_label,
+                             'link_info_ontologyacronym': link_info_ontologyacronym,
+                             'link_info_shortform': link_info_shortform,
+                             'link_info_creatornickname': link_info_creatornickname,
+                             'link_info_modified': link_info_modified,
+                             'all_similar': len(semantic_list),
+                             'my_similar': len([A for A in semantic_list if A.creator and A.creator[0].nickname==user_nickname]),
+                             }
+
+            semantic_table.append( semantic_dict )
+
+            all_s += 1
+
+            if A.creator and A.creator[0].nickname==user_nickname:
+
+                my_s += 1
+
+        elif A.body and A.body[0] and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="tagging":
+
+            keyword_list = Annotation.objects.raw_query({'body.jsonld_id': None, 'body.value': A.body[0].value, 'motivation': "tagging"})
+
+            keyword_dict = {'ann_id': A.id,
+                            'link_label': link_label,
+                            'link_info_label': link_info_label,
+                            'link_info_creatornickname': link_info_creatornickname,
+                            'link_info_modified': link_info_modified,
+                            'all_similar': len(keyword_list),
+                            'my_similar': len([A for A in keyword_list if A.creator and A.creator[0].nickname==user_nickname]),
+                            }
+
+            keyword_table.append( keyword_dict )
+
+            all_k += 1
+
+            if A.creator and A.creator[0].nickname==user_nickname:
+
+                my_k += 1
+
+        elif A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting":
+
+            comment_dict = {'ann_id': A.id,
+                            'link_label': link_label,
+                            'link_info_label': link_info_label,
+                            'link_info_creatornickname': link_info_creatornickname,
+                            'link_info_modified': link_info_modified,
+                            }
+
+            comment_table.append(comment_dict)
+
+            all_c += 1
+
+            if A.creator and A.creator[0] and A.creator[0].nickname==user_nickname:
+
+                my_c += 1
 
     navbarlinks = list_navbarlinks(request, [])
     shortcutlinks = list_shortcutlinks(request, [])
 
     data_dict = {
+        'semantic_table': semantic_table,
+        'keyword_table': keyword_table,
+        'comment_table': comment_table,
         'navbarlinks': navbarlinks,
         'shortcutlinks': shortcutlinks,
         'annotation_list': allannotations_list,
@@ -614,6 +900,40 @@ def interface_main(request):
         output:
             object: HttpResponse with the iframe.
     """
+
+    duplicate = None
+    if request.session.get("duplicate"):
+        duplicate = request.session.get("duplicate")
+        request.session["duplicate"] = None
+
+    new_semantic = None
+    if request.session.get("new_semantic"):
+        new_semantic = request.session.get("new_semantic")
+        request.session["new_semantic"] = None
+
+    new_keyword = None
+    if request.session.get("new_keyword"):
+        new_keyword = request.session.get("new_keyword")
+        request.session["new_keyword"] = None
+
+    new_comment = None
+    if request.session.get("new_comment"):
+        new_comment = request.session.get("new_comment")
+        request.session["new_comment"] = None
+
+    has_semantic_equivalent = None
+    if request.session["has_semantic_equivalent"]:
+        has_semantic_equivalent = request.session["has_semantic_equivalent"]
+        request.session["has_semantic_equivalent"] = None
+
+    long_keyword = None
+    if "long_keyword" in request.session.keys() and request.session["long_keyword"]:
+        long_keyword = request.session["long_keyword"]
+        request.session["long_keyword"] = None
+
+    textinput_primer = None
+    if request.POST.get('textinput_primer'):
+        textinput_primer = request.POST.get('textinput_primer')
 
     pid_tofeed = ""
     if request.POST.get('pid_tofeed')!=None:
@@ -673,6 +993,13 @@ def interface_main(request):
     shortcutlinks = []
 
     data_dict = {
+        'new_comment': new_comment,
+        'long_keyword': long_keyword,
+        'textinput_primer': textinput_primer,
+        'has_semantic_equivalent': has_semantic_equivalent,
+        'new_keyword': new_keyword,
+        'new_semantic': new_semantic,
+        'duplicate': duplicate,
         'navbarlinks': navbarlinks,
         'shortcutlinks': shortcutlinks,
         'annotation_list': allannotations_list,

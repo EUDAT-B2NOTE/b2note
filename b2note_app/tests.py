@@ -114,7 +114,7 @@ class B2noteappTest(TestCase):
         # DB just created with no annotations in there
         before = Annotation.objects.filter().count()
         self.assertEqual(before, 0)
-        a = CreateFreeText(u"https://b2share.eudat.eu/record/30", u"testing free text")
+        a = CreateFreeTextKeyword(u"https://b2share.eudat.eu/record/30", u"testing free text")
         self.assertTrue(a)
         # DB with 1 annotations created
         after = Annotation.objects.filter().count()
@@ -124,9 +124,9 @@ class B2noteappTest(TestCase):
         self.assertEqual(a, db_id)
         
     def test_dont_create_free_text(self):
-        a = CreateFreeText(u"https://b2share.eudat.eu/record/30", 1234)
+        a = CreateFreeTextKeyword(u"https://b2share.eudat.eu/record/30", 1234)
         self.assertTrue(not a)
-        a = CreateFreeText(u"https://b2share.eudat.eu/record/30", "")
+        a = CreateFreeTextKeyword(u"https://b2share.eudat.eu/record/30", "")
         self.assertTrue(not a)
         
     def test_interface_main_view(self):

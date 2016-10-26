@@ -2,27 +2,21 @@
 
 {% block content %}
 
-	<div class="container" id="allannotations_summary">
+	<div class="container" id="myannotations_summary">
 
-		<h3>Annotations</h3>
+		<h3>My annotations</h3>
 
-		<div id="allannotations_summ">
+		<div id="myannotations_summ">
 
             <div class = "row">
                 <a href="#semantic">Semantic tag</a>
-                {% if all_s != None %}
-                <a href="#semantic" title="All semantic annotations,&#13click for full list."> {{all_s}} </a>
-                {% endif %}
                 {% if my_s != None %}
-                <a href="#semantic" title="Only my semantic annotations,&#13click for full list."> {{my_s}} </a>
+                <a href="#semantic" title="My semantic annotations,&#13click for full list."> {{my_s}} </a>
                 {% endif %}
             </div>
 
             <div class = "row">
                 <a href="#keyword">Free-text keyword</a>
-                {% if all_k != None %}
-                <a href="#keyword" title="All keyword annotations,&#13click for full list."> {{all_k}} </a>
-                {% endif %}
                 {% if my_k != None %}
                 <a href="#keyword" title="Only my keyword annotations,&#13click for full list."> {{my_k}} </a>
                 {% endif %}
@@ -30,9 +24,6 @@
 
             <div class = "row">
                 <a href="#comment">Comment</a>
-                {% if all_c != None %}
-                <a href="#comment" title="All comment annotations,&#13click for full list."> {{all_c}} </a>
-                {% endif %}
                 {% if my_c != None %}
                 <a href="#comment" title="Only my comment annotations,&#13click for full list."> {{my_c}} </a>
                 {% endif %}
@@ -61,10 +52,8 @@
 										   title="{% if ann.link_info_label %}{{ann.link_info_label}}{% endif %}
 {% if ann.link_info_ontologyacronym %}{{ann.link_info_ontologyacronym}}{% endif %}: {% if ann.link_info_shortform %}{{ann.link_info_shortform}}{% endif %}
 {% if ann.link_info_creatornickname %}By: {{ann.link_info_creatornickname}}{% endif %}
-{% if ann.link_info_modified %}On: {{ann.link_info_modified}}{% endif %}
+{% if ann.link_info_creatornickname %}On: {{ann.link_info_modified}}{% endif %}
 Click for full info."/>
-									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}"
-										   title="In any annotations,&#13click for full list."/>
 									<input type="submit" class="btn btn-link" name="about_mysimilar" value="{{ann.my_similar}}"
 										   title="In my annotations,&#13click for full list."/>
 								</form>
@@ -104,7 +93,7 @@ Click for full info."/>
 
 			{% else %}
 
-				<p>No semantic tag annotation exists about this file.</p>
+				<p>No semantic tag annotation about this file.</p>
 
 			{% endif %}
 
@@ -130,12 +119,10 @@ Click for full info."/>
 									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"
 										   title="{% if ann.link_info_label %}{{ann.link_info_label}}{% endif %}
 {% if ann.link_info_creatornickname %}By: {{ann.link_info_creatornickname}}{% endif %}
-{% if ann.link_info_modified %}On: {{ann.link_info_modified}}{% endif %}
+{% if ann.link_info_creatornickname %}On: {{ann.link_info_modified}}{% endif %}
 Click for full info."/>
-									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}" title=
-											"In any annotations,&#13click for full list."/>
-									<input type="submit" class="btn btn-link" name="about_mysimilar" value="{{ann.my_similar}}" title=
-											"In my annotations,&#13click for full list."/>
+									<input type="submit" class="btn btn-link" name="about_mysimilar" value="{{ann.my_similar}}"
+										   title="In my annotations,&#13click for full list."/>
 								</form>
 
 							</td>
@@ -173,7 +160,7 @@ Click for full info."/>
 
 			{% else %}
 
-				<p>No free-text keyword annotation exists about this file.</p>
+				<p>No free-text keyword annotation about this file.</p>
 
 			{% endif %}
 
@@ -198,8 +185,7 @@ Click for full info."/>
 									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
 									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"
 										   title="{% if ann.link_info_label %}{{ann.link_info_label}}{% endif %}
-{% if ann.link_info_creatornickname %}By: {{ann.link_info_creatornickname}}{% endif %}
-{% if ann.link_info_modified %}On: {{ann.link_info_modified}}{% endif %}
+{% if ann.link_info_link_info_modified%}On: {{ann.link_info_modified}}{% endif %}
 Click for full info."/>
 								</form>
 
@@ -238,7 +224,7 @@ Click for full info."/>
 
 			{% else %}
 
-				<p>No comment annotation exists about this file.</p>
+				<p>No comment annotation about this file.</p>
 
 			{% endif %}
 
@@ -246,9 +232,7 @@ Click for full info."/>
 
 	</div>
 
-{% endblock %}
 
-<!--
 	<div class="container" id="section_existing">
 
 		<div class="container" id="container_table_existing">
@@ -262,7 +246,7 @@ Click for full info."/>
 						{% if target.jsonld_id %}
 
 							<!-- http://stackoverflow.com/questions/1275735/how-to-access-dictionary-element-in-django-template -->
-<!--							{% if target.jsonld_id == subject_tofeed %}
+							{% if target.jsonld_id == subject_tofeed %}
 
 								{% for body in annotation.body %}
 
@@ -276,7 +260,7 @@ Click for full info."/>
 											<td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
 											-->
 											<!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
-<!--											<td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">
+											<td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">
 												<a target="_blank" href={{body.jsonld_id}}>{{body.value}}</a>
 											</td>
 
@@ -285,7 +269,7 @@ Click for full info."/>
 											<!--
 											<td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
 											-->
-<!--											<td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">{{body.value}}</td>
+											<td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">{{body.value}}</td>
 
 										{% endif %}
 
@@ -296,7 +280,7 @@ Click for full info."/>
 												<input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
 												<!--<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />-->
 
-<!--												<td id="editAnnotation"><i class="glyphicon glyphicon-pencil"></i></td>
+												<td id="editAnnotation"><i class="glyphicon glyphicon-pencil"></i></td>
 
 											</form>
 
@@ -317,7 +301,7 @@ Click for full info."/>
 										{% else %}
 
 											<!-- Empty slot for bin icon for annotations of which logged-in user is not owner. -->
-<!--											<td></td>
+											<td></td>
 
 										{% endif %}
 
@@ -339,4 +323,6 @@ Click for full info."/>
 
 		</div>
 
-	</div>-->
+	</div>
+
+{% endblock %}

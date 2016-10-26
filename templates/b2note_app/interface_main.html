@@ -12,9 +12,108 @@
 
     {% endif %}
 
-    <div class="container" id="section_create" border="2px; solid black">
+    <div class="container" id="section_create">
 
         <div class="container" id="user_area">
+
+            {% if duplicate %}
+
+                <p>Not created, an identical annotation already exists.</p>
+
+                <a href="/interface_main" class="btn btn-default">OK</a>
+
+                <br>
+
+                {% if duplicate.shortform %}
+
+                    <input type="text" value="{{duplicate.label}} ({{duplicate.shortform}})" readonly>
+
+                {% else %}
+
+                    <input type="text" value="{{duplicate.label}}" readonly>
+
+                {% endif %}
+
+            {% elif new_semantic %}
+
+                <p>The semantic annotation was created.</p>
+
+                <a href="/interface_main" class="btn btn-default">OK</a>
+
+                <br>
+
+                <input type="text" value="{{new_semantic.label}} ({{new_semantic.shortform}})" readonly>
+
+            {% elif new_keyword %}
+
+                <p>The free-text keyword annotation was created.</p>
+
+                <a href="/interface_main" class="btn btn-default">OK</a>
+
+                <br>
+
+                <input type="text" value="{{new_keyword.label}}" readonly>
+
+            {% elif new_comment %}
+
+                <p>The comment annotation was created.</p>
+
+                <a href="/interface_main" class="btn btn-default">OK</a>
+
+                <br>
+
+                <textarea name="comment_text" rows="3" class="form-control custom-control" id="created_comment_input" readonly>{{new_comment.label}}</textarea>
+
+            {% elif has_semantic_equivalent %}
+
+                <p>We detected semantic terms matching your keyword.</p>
+
+                <p>Would you like to select one?</p>
+
+                <p>Or carry on with free-text?</p>
+
+                <form action="/interface_main" method="post">
+                    {% csrf_token %}
+                    <input type="text" name="subject_tofeed" value="{{subject_tofeed}}" hidden>
+                    <input type="text" name="textinput_primer" value="{{has_semantic_equivalent}}" hidden>
+                    <input type="submit" class="btn btn-default" name="semantic_submit" id="primed_semantic_submit" value="Semantic" title="Create a semantic annotation."/>
+                </form>
+
+                <form action="/create_annotation" method="post">
+                    {% csrf_token %}
+                    <input type="text" name="subject_tofeed" value="{{subject_tofeed}}" hidden>
+                    <input type="text" name="confirm_flag" value="confirmed" hidden>
+                    <input type="text" name="keyword_text" value="{{has_semantic_equivalent}}" hidden>
+                    <input type="submit" class="btn btn-default" name="keyword_submit" id="confirmed_keyword_submit" value="Keyword" title="Create the free-text keyword annotation."/>
+                </form>
+
+                <a href="/interface_main" class="btn btn-default">Cancel</a>
+
+            {% elif long_keyword %}
+
+                <p>This text seems long for a keyword (>60 characters).</p>
+
+                <p>Do you want to use it as ... ?</p>
+
+                <form action="/create_annotation" method="post">
+                    {% csrf_token %}
+                    <input type="text" name="subject_tofeed" value="{{subject_tofeed}}" hidden>
+                    <input type="text" name="enforce_flag" value="confirmed" hidden>
+                    <input type="text" name="confirm_flag" value="confirmed" hidden>
+                    <input type="text" name="keyword_text" value="{{long_keyword}}" hidden>
+                    <input type="submit" class="btn btn-default" name="keyword_submit" id="enforced_keyword_submit" value="Keyword" title="Create the free-text keyword annotation."/>
+                </form>
+
+                <form action="/create_annotation" method="post">
+                    {% csrf_token %}
+                    <input type="text" name="subject_tofeed" value="{{subject_tofeed}}" hidden>
+                    <input type="text" name="comment_text" value="{{long_keyword}}" hidden>
+                    <input type="submit" class="btn btn-default" name="comment_submit" id="primed_comment_submit" value="Comment" title="Create a comment annotation."/>
+                </form>
+
+                <a href="/interface_main" class="btn btn-default">Cancel</a>
+
+            {% else %}
 
             <!-- http://stackoverflow.com/questions/18036315/centering-bootstrap-input-fields -->
             <ul class="nav nav-tabs">
@@ -24,24 +123,43 @@
             </ul>
             <div class="tab-content">
                 <div id="semantic" class="tab-pane fade in active form-group">
-                    {% csrf_token %}
-                    <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"  placeholder="Type-in and select one." autocomplete="off" spellcheck="false" dir="auto" autofocus/>
-                    <input type="submit" id="semantic_submit" value="Create" title="Create an annotation using my selected tag."/>
+                    <form action="/create_annotation" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="ontology_json" id="ontology_json">
+                        <input type="text" name="subject_tofeed" id="semantic_target_id" value="{{subject_tofeed}}" hidden>
+                        {% if textinput_primer %}
+                            <input type="text" class="form-control" name="q" id="id_q" value="{% if query %}{{ query }}{% else %}{{textinput_primer}}{% endif %}" autocomplete="off" spellcheck="false" dir="auto" autofocus/>
+                        {% else %}
+                            <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}" placeholder="Type-in to select a tag." autocomplete="off" spellcheck="false" dir="auto" autofocus/>
+                        {% endif %}
+                        <input type="submit" name="semantic_submit" id="semantic_submit" value="Create" title="Create an annotation using my selected tag."/>
+                    </form>
                 </div>
                 <div id="keyword" class="tab-pane fade form-group">
-                    <div class="input-group">
-                        <input type="text" class="form-control custom-control" id="keyword_input" placeholder="Type-in your free-text keyword."/>
-                        <span class="input-group-addon btn btn-primary" title="Create an annotation using my free-text keyword." onClick="get_free_text()">Create</span>
-                    </div>
+                    <form action="/create_annotation" method="post">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="text" name="subject_tofeed" id="keyword_target_id" value="{{subject_tofeed}}" hidden>
+                            <input type="text" name="keyword_text" class="form-control custom-control" id="keyword_input" placeholder="Type-in your free-text keyword."/>
+                            <!--<span class="input-group-addon btn btn-primary" title="Create an annotation using my free-text keyword." onClick="get_free_text()">Create</span>-->
+                            <input type="submit" name="keyword_submit" id="keyword_submit" value="Create" title="Create an annotation using my free-text keyword."/>
+                        </div>
+                    </form>
                 </div>
                 <div id="comment" class="tab-pane fade form-group">
-                    <div class="input-group">
+                    <form action="/create_annotation" method="post">
                         {% csrf_token %}
-                        <textarea class="form-control custom-control" rows="2" id="comment_input" placeholder="Type-in your comment."></textarea>
-                        <span class="input-group-addon btn btn-primary" title="Create an annotation using my comment." onClick="get_free_text()">Create</span>
-                    </div>
+                        <div class="input-group">
+                            {% csrf_token %}
+                            <input type="text" name="subject_tofeed" id="comment_target_id" value="{{subject_tofeed}}" hidden>
+                            <textarea name="comment_text" rows="2" class="form-control custom-control" id="comment_input" placeholder="Type your comment."></textarea>
+                            <input type="submit" name="comment_submit" id="comment_submit" value="Create" title="Create an annotation using my comment."/>
+                        </div>
+                    </form>
                 </div>
             </div>
+
+            {% endif %}
 
             <hr>
 

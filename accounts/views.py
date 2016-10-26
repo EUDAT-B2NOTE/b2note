@@ -255,4 +255,4 @@ def logout(request):
     Log out view
     """
     django_logout(request)
-    return redirect('/')
+    return redirect('/accounts/login')

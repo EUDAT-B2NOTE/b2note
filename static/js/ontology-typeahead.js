@@ -98,51 +98,42 @@ $(document).ready( function() {
 	      *
               */
 
-            if (document.getElementById("section_subject")) {
+            //if (document.getElementById("section_subject")) {
+            if (document.getElementById("semantic")) {
 
-                $.redirect('create_annotation',
-                    {
-                    ontology_json: JSON.stringify(data.json_document),
-                    subject_tofeed: subject,
-                    pid_tofeed: pid,
-                    // abremaud@esciencefactory.com, 20160926
-                    // retrieve Django csrf token from html hidden input element
-                    csrfmiddlewaretoken: this.parentElement.previousElementSibling.value,
-                });
+                $('#ontology_json').val( JSON.stringify(data.json_document) )
+
+//              abremaud 20161025, stop creating anntation upon simply selecting one entry,
+//              instead selection label is output to the typeahead text-box while full information json
+//              gets outputed to a hiden input for being POSTED upon user hitting submit...
+//                $.redirect('create_annotation',
+//                    {
+//                    ontology_json: JSON.stringify(data.json_document),
+//                    subject_tofeed: subject,
+//                    pid_tofeed: pid,
+//                    // abremaud@esciencefactory.com, 20160926
+//                    // retrieve Django csrf token from html hidden input element
+//                    csrfmiddlewaretoken: this.parentElement.previousElementSibling.value,
+//                });
 
             } else {
-
-                if (document.getElementById("user_homepage")) {
-                    $.redirect('create_annotation',
+                if (db_id != "") {
+                    $.redirect('edit_annotation',
                         {
                         ontology_json: JSON.stringify(data.json_document),
-                        subject_tofeed: this.parentElement.parentElement.firstChild.nextSibling.nextElementSibling.value,
-                        pagefrom: this.parentElement.parentElement.firstChild.nextSibling.nextElementSibling.nextElementSibling.value,
-                        // abremaud@esciencefactory.com, 20161003
+                        db_id: db_id,
+                        // abremaud@esciencefactory.com, 20160926
                         // retrieve Django csrf token from html hidden input element
                         csrfmiddlewaretoken: this.parentElement.parentElement.firstChild.nextSibling.value,
                     });
-
                 } else {
-
-                    if (db_id != "") {
-                        $.redirect('edit_annotation',
-                            {
-                            ontology_json: JSON.stringify(data.json_document),
-                            db_id: db_id,
-                            // abremaud@esciencefactory.com, 20160926
-                            // retrieve Django csrf token from html hidden input element
-                            csrfmiddlewaretoken: this.parentElement.parentElement.firstChild.nextSibling.value,
-                        });
-                    } else {
-                        $.redirect('search_annotation',
-                            {
-                            // abremaud@esciencefactory.com, 20160928
-                            // search annotations on keyword
-                            ontology_json: JSON.stringify(data.json_document),
-                            csrfmiddlewaretoken: this.form.firstChild.nextSibling.value,
-                        });
-                    }
+                    $.redirect('search_annotation',
+                        {
+                        // abremaud@esciencefactory.com, 20160928
+                        // search annotations on keyword
+                        ontology_json: JSON.stringify(data.json_document),
+                        csrfmiddlewaretoken: this.form.firstChild.nextSibling.value,
+                    });
                 }
             };
     });

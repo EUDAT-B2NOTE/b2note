@@ -1,11 +1,105 @@
 import os, re, datetime, copy
 import json, bson
+import requests
 
 from .models import *
 from accounts.models import AnnotatorProfile
 
 from django.forms.models import model_to_dict
 
+
+
+
+def solr_fetchtermonexactlabel(label=None):
+    out = None
+    try:
+        if label:
+            if isinstance(label, (str, unicode)):
+                r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=labels:"' + label + '"&wt=json&indent=true&start=0&rows=100')
+                out = []
+                for rr in r.json()["response"]["docs"]:
+                    if rr["labels"].lower() == label.lower():
+                        out.append( rr )
+                return out
+            else:
+                print "solr_fetchtermonexactlabel fuction, parameter neither string nor unicode."
+        else:
+            print "solr_fetchtermonexactlabel function, empty parameter."
+    except:
+        print "solr_fetchtermonexactlabel function, could not complete."
+        return False
+    return False
+
+
+def solr_fetchorigintermonid(ids=None):
+    out = None
+    try:
+        if ids:
+            if isinstance(ids, list):
+                q_str = ""
+                for id in ids:
+                    if isinstance(id, (str, unicode)):
+                        q_str += 'OR "' + id + '" '
+                if q_str:
+                    q_str = q_str.replace("#","%23")
+                    q_str = "(" + q_str[3:] + ")"
+                    r = None
+                    r = requests.get(
+                        'https://b2note.bsc.es/solr/b2note_index/select?q=uris:' + q_str +'&fl=ontology_acronym,uris,labels,short_form&wt=json&indent=true&start=0&rows=' + str(10*len(ids)))
+                    if r and r.json():
+                        if isinstance(r.json(), dict):
+                            if "response" in r.json().keys():
+                                if isinstance(r.json()["response"], dict):
+                                    if "docs" in r.json()["response"].keys():
+                                        if isinstance(r.json()["response"]["docs"], list):
+                                            out = {}
+                                            for rr in r.json()["response"]["docs"]:
+                                                if isinstance(rr, dict):
+                                                    if "ontology_acronym" in rr.keys() and "uris" in rr.keys():
+                                                        if rr["uris"] not in out.keys():
+                                                            out[ rr["uris"] ] = rr
+                                                        elif rr["ontology_acronym"] in rr["uris"]:
+                                                            out[ rr["uris"] ] = rr
+                                            return out
+                                        else:
+                                            print "solr_fetchorigintermonid fuction, requests object json>response>docs not a list."
+                                    else:
+                                        print "solr_fetchorigintermonid fuction, 'docs' not a key of requests object json>response dict."
+                                else:
+                                    print "solr_fetchorigintermonid fuction, requests object json>response not a dict"
+                            else:
+                                print "solr_fetchorigintermonid fuction, 'response' not a key of requests object json dict."
+                        else:
+                            print "solr_fetchorigintermonid fuction, requests object json not a dict."
+                    else:
+                        print "solr_fetchorigintermonid fuction, sorl fetch with no response or response not json."
+                else:
+                    print "solr_fetchorigintermonid fuction, list item neither string nor unicode."
+            else:
+                print "solr_fetchorigintermonid fuction, paramter not a list."
+        else:
+            print "solr_fetchorigintermonid function, empty parameter."
+    except:
+        print "solr_fetchorigintermonid function, could not complete."
+        return False
+    return False
+
+
+def solr_fetchtermonid(id=None):
+    out = None
+    try:
+        if id:
+            if isinstance(id, (str, unicode)):
+                r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=uris:"' + id + '"&wt=json&indent=true&start=0&rows=100')
+                return r
+            else:
+                print "solr_fetchtermonid fuction, parameter neither string nor unicode."
+        else:
+            print "solr_fetchtermonid function, empty parameter."
+    except:
+        print "solr_fetchtermonid function, could not complete."
+        return False
+    return False
 
 
 def SearchAnnotation( kw ):
@@ -368,7 +462,7 @@ def CreateSemanticTag( subject_url=None, object_json=None ):
 
                     db_id = MakeAnnotationSemanticTag( my_id, object_json )
 
-                    #db_id = SetAnnotationMotivation( db_id, "tagging" )
+                    db_id = SetAnnotationMotivation( db_id, "tagging" )
 
                     print "MakeAnnotationSemanticTag function, made annotation semantic tag:", str(db_id)
                     return db_id
@@ -391,9 +485,9 @@ def CreateSemanticTag( subject_url=None, object_json=None ):
     return False
 
 
-def CreateFreeText( subject_url=None, text=None ):
+def CreateFreeTextKeyword( subject_url=None, text=None ):
     """
-      Function: CreateFreeText
+      Function: CreateFreeTextKeyword
       ----------------------------
         Creates an annotation in MongoDB.
         
@@ -417,26 +511,75 @@ def CreateFreeText( subject_url=None, text=None ):
                     db_id = None
                     db_id = MakeAnnotationFreeText(my_id, text)
 
-                    #db_id = SetAnnotationMotivation( db_id, "commenting" )
+                    db_id = SetAnnotationMotivation( db_id, "tagging" )
 
-                    print "CreateFreeText function, created free-text annotation:", str(db_id)
+                    print "CreateFreeTextKeyword function, created free-text keyword annotation:", str(db_id)
                     return db_id
 
                 else:
-                    print "CreateFreeText function, wrong text codification or empty text."
+                    print "CreateFreeTextKeyword function, wrong text codification or empty text."
                     return False
             else:
-                print "CreateFreeText function, 'my_id' parameter neither str nor unicode."
+                print "CreateFreeTextKeyword function, 'my_id' parameter neither str nor unicode."
                 return False
         else:
-            print "CreateFreeText function, annotation not created or id not returned."
+            print "CreateFreeTextKeyword function, annotation not created or id not returned."
             return False
 
     except ValueError:
-        print "CreateFreeText function did not complete."
+        print "CreateFreeTextKeyword function did not complete."
         return False
 
-    print "CreateFreeText function did not complete succesfully."
+    print "CreateFreeTextKeyword function did not complete succesfully."
+    return False
+
+
+def CreateFreeTextComment(subject_url=None, text=None):
+    """
+      Function: CreateFreeTextComment
+      ----------------------------
+        Creates an annotation in MongoDB.
+
+        params:
+            subject_url (str): URL of the annotation to create.
+            text (str): Free text introduced by the user
+
+        returns:
+            db_id (str): database id of the modified annotation if successful, False otherwise.
+    """
+    try:
+
+        my_id = CreateAnnotation(subject_url)
+
+        if my_id:
+
+            if isinstance(my_id, (str, unicode)):
+
+                if isinstance(text, (str, unicode)) and len(text) > 0:
+
+                    db_id = None
+                    db_id = MakeAnnotationFreeText(my_id, text)
+
+                    db_id = SetAnnotationMotivation(db_id, "commenting")
+
+                    print "CreateFreeTextComment function, created free-text comment annotation:", str(db_id)
+                    return db_id
+
+                else:
+                    print "CreateFreeTextComment function, wrong text codification or empty text."
+                    return False
+            else:
+                print "CreateFreeTextComment function, 'my_id' parameter neither str nor unicode."
+                return False
+        else:
+            print "CreateFreeTextComment function, annotation not created or id not returned."
+            return False
+
+    except ValueError:
+        print "CreateFreeTextComment function did not complete."
+        return False
+
+    print "CreateFreeTextComment function did not complete succesfully."
     return False
 
 
@@ -742,7 +885,6 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
     return o_out
 
 
-
 def CheckDuplicateAnnotation( target=None, annotation_body=None ):
     """
       Function: CheckDuplicateAnnotation
@@ -809,7 +951,6 @@ def CheckLengthFreeText( body_value=None, length_limit=60 ):
                     return True
                 else:
                     return False
-                
             else:
                 print "CheckLengthFreeText function, provided 'body_value' argument not a valid str or unicode."
                 return False

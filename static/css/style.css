@@ -95,13 +95,13 @@
 	float: right;
 	margin: 5px 5px 15px 5px;
 	border: 2px solid gray;
-	overflow: hidden;
 	-moz-border-radius: 20px;
 	border-radius: 20px;
-	overflow: hidden;
 	text-align: center;
 	position: fixed;
-	right: 5px;
+	right: 5px;`
+	height: 400px;
+	overflow: scroll;
 }
 
 #interface_main, #export {
@@ -137,6 +137,11 @@
 	width: 100%;
 	padding: 2px 2px 5px 2px;
 	border-bottom: thin solid lightgrey;
+}
+
+#user_area {
+    padding: 2px;
+    border: 2px solid black;
 }
 
 #section_subject .table-responsive {
