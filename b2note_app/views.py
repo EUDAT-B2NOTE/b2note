@@ -559,6 +559,125 @@ def create_annotation(request):
 
 
 @login_required
+def annotation_summary(request):
+    """
+      Function: annotation_summary
+      ----------------------------
+        Displays 4 sections one with a summarising table
+        and 3 listing annotations about the file in each category.
+
+        input:
+            request (object): context of the petition.
+
+        output:
+            object: HttpResponse with the annotations.
+    """
+    pid_tofeed = ""
+    if request.POST.get('pid_tofeed')!=None:
+        pid_tofeed = request.POST.get('pid_tofeed')
+        request.session["pid_tofeed"] = pid_tofeed
+    elif request.session.get('pid_tofeed'):
+        pid_tofeed = request.session.get('pid_tofeed')
+
+    subject_tofeed = ""
+    if request.POST.get('subject_tofeed')!=None:
+        subject_tofeed = request.POST.get('subject_tofeed')
+        request.session["subject_tofeed"] = subject_tofeed
+    elif request.session.get('subject_tofeed'):
+        subject_tofeed = request.session.get('subject_tofeed')
+
+    user_nickname = None
+    if not request.session.get('user'):
+        context = RequestContext(request, {"subject_tofeed":subject_tofeed, "pid_tofeed":pid_tofeed})
+        return redirect('accounts/login', context=context)
+    elif request.session.get('user')!=None:
+        userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+        user_nickname = userprofile.nickname
+
+    A = None
+
+    r = None
+
+    rrr = None
+
+    all_or_mine = None
+
+    allannotations_list = []
+
+    if request.POST.get('db_id')!=None:
+
+        if isinstance(request.POST.get('db_id'), (str, unicode)):
+
+            A = Annotation.objects.get( id = request.POST.get('db_id') )
+
+        if A and A.body and A.body[0]:
+
+            if request.POST.get('about_allsimilar')!=None:
+
+                if A.body[0].jsonld_id!=None:
+
+                    r = solr_fetchorigintermonid([A.body[0].jsonld_id])
+
+                    allannotations_list = Annotation.objects.raw_query({'body.jsonld_id': A.body[0].jsonld_id})
+
+                elif A.body[0].value and A.motivation and A.motivation=="tagging":
+
+                    allannotations_list = Annotation.objects.raw_query(
+                        {'body.value': A.body[0].value, 'motivation': "tagging"})
+
+                elif A.body[0].value and A.motivation and A.motivation == "commenting":
+
+                    allannotations_list = Annotation.objects.raw_query(
+                        {'body.value': A.body[0].value, 'motivation': "commenting"})
+
+                if allannotations_list: all_or_mine = "all"
+
+            elif request.POST.get('about_mysimilar') != None:
+
+                if A.body[0].jsonld_id!=None:
+
+                    r = solr_fetchorigintermonid( [A.body[0].jsonld_id] )
+
+                    allannotations_list = Annotation.objects.raw_query(
+                        {'body.jsonld_id': A.body[0].jsonld_id, 'creator.nickname': user_nickname})
+
+                elif A.body[0].value and A.motivation and A.motivation=="tagging":
+
+                    allannotations_list = Annotation.objects.raw_query(
+                        {'body.value': A.body[0].value, 'motivation': "tagging", 'creator.nickname': user_nickname})
+
+                elif A.body[0].value and A.motivation and A.motivation == "commenting":
+
+                    allannotations_list = Annotation.objects.raw_query(
+                        {'body.value': A.body[0].value, 'motivation': "commenting", 'creator.nickname': user_nickname})
+
+                if allannotations_list: all_or_mine = "mine"
+
+            if r:
+                for rr in r.keys():
+                    rrr = r[rr]
+                    break
+
+    navbarlinks = list_navbarlinks(request, [])
+    shortcutlinks = list_shortcutlinks(request, [])
+
+    data_dict = {
+        'r': rrr,
+        'all_or_mine': all_or_mine,
+        'navbarlinks': navbarlinks,
+        'shortcutlinks': shortcutlinks,
+        'annotation_list': allannotations_list,
+        'subject_tofeed': subject_tofeed,
+        'pid_tofeed': pid_tofeed,
+        'user_nickname': user_nickname,
+    }
+
+    return render(request, 'b2note_app/annotation_summary.html', data_dict)
+
+
+
+
+@login_required
 def myannotations(request):
     """
       Function: myannotations
@@ -595,10 +714,6 @@ def myannotations(request):
         userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
         user_nickname = userprofile.nickname
 
-    pagefrom = ""
-    if request.POST.get('pagefrom')!=None:
-        pagefrom = request.POST.get('pagefrom')
-
     try:
         allannotations_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed, 'creator.nickname': user_nickname})
     except Annotation.DoesNotExist:
@@ -629,7 +744,7 @@ def myannotations(request):
             link_info_label = A.body[0].value[:50]
             if len(link_info_label) > 50: link_info_label += '...'
 
-        if A.modified: link_info_modified = str(A.modified)
+        if A.modified: link_info_modified = A.modified
 
         if A.body and A.body[0] and A.body[0].jsonld_id:
 
@@ -703,7 +818,6 @@ def myannotations(request):
         'my_c': my_c,
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
-        'pagefrom': pagefrom,
         'user_nickname': user_nickname}
 
     return render(request, 'b2note_app/myannotations.html', data_dict)
@@ -788,7 +902,7 @@ def allannotations(request):
         if A.creator and A.creator[0] and A.creator[0].nickname:
             link_info_creatornickname = A.creator[0].nickname
         if A.modified:
-            link_info_modified = str(A.modified)
+            link_info_modified = A.modified
 
         if A.body and A.body[0] and A.body[0].jsonld_id:
 

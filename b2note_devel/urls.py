@@ -28,4 +28,5 @@ urlpatterns = patterns('',
     url(r'^help$', 'b2note_app.views.helppage'),
     url(r'^allannotations$', 'b2note_app.views.allannotations'),
     url(r'^myannotations$', 'b2note_app.views.myannotations'),
+    url(r'^annotation_summary$', 'b2note_app.views.annotation_summary'),
 )

@@ -11,21 +11,33 @@
             <div class = "row">
                 <a href="#semantic">Semantic tag</a>
                 {% if my_s != None %}
-                <a href="#semantic" title="My semantic annotations,&#13click for full list."> {{my_s}} </a>
+					{% if my_s == 0 %}
+						<span title="No semantic annotation was created by me."> 0 </span>
+					{% else %}
+                		<a href="#semantic" title="My semantic annotations,&#13click for full list."> {{my_s}} </a>
+	                {% endif %}
                 {% endif %}
             </div>
 
             <div class = "row">
                 <a href="#keyword">Free-text keyword</a>
                 {% if my_k != None %}
-                <a href="#keyword" title="Only my keyword annotations,&#13click for full list."> {{my_k}} </a>
+					{% if my_k == 0 %}
+						<span title="No free-text keyword annotation was created by me."> 0 </span>
+					{% else %}
+		                <a href="#keyword" title="Only my keyword annotations,&#13click for full list."> {{my_k}} </a>
+	                {% endif %}
                 {% endif %}
             </div>
 
             <div class = "row">
                 <a href="#comment">Comment</a>
                 {% if my_c != None %}
-                <a href="#comment" title="Only my comment annotations,&#13click for full list."> {{my_c}} </a>
+					{% if my_c == 0 %}
+						<span title="No comment annotation was created by me."> 0 </span>
+					{% else %}
+		                <a href="#comment" title="Only my comment annotations,&#13click for full list."> {{my_c}} </a>
+	                {% endif %}
                 {% endif %}
             </div>
 
@@ -45,7 +57,7 @@
 
 							<td>
 
-								<form action="/aboutannotation" method="post">
+								<form action="/annotation_summary" method="post">
 									{% csrf_token %}
 									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
 									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"
@@ -113,7 +125,7 @@ Click for full info."/>
 
 							<td>
 
-								<form action="/aboutannotation" method="post">
+								<form action="/annotation_summary" method="post">
 									{% csrf_token %}
 									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
 									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"
@@ -180,7 +192,7 @@ Click for full info."/>
 
 							<td>
 
-								<form action="/aboutannotation" method="post">
+								<form action="/annotation_summary" method="post">
 									{% csrf_token %}
 									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
 									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"

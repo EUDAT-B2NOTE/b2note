@@ -11,20 +11,28 @@
             <div class = "row">
                 <a href="#semantic">Semantic tag</a>
                 {% if all_s != None %}
-                <a href="#semantic" title="All semantic annotations,&#13click for full list."> {{all_s}} </a>
+                	<a href="#semantic" title="All semantic annotations,&#13click for full list."> {{all_s}} </a>
                 {% endif %}
                 {% if my_s != None %}
-                <a href="#semantic" title="Only my semantic annotations,&#13click for full list."> {{my_s}} </a>
+					{% if my_s == 0 %}
+						<span title="No semantic annotation was created by me."> 0 </span>
+					{% else %}
+                		<a href="/myannotations#semantic" title="Only my semantic annotations,&#13click for full list."> {{my_s}} </a>
+					{% endif %}
                 {% endif %}
             </div>
 
             <div class = "row">
                 <a href="#keyword">Free-text keyword</a>
                 {% if all_k != None %}
-                <a href="#keyword" title="All keyword annotations,&#13click for full list."> {{all_k}} </a>
+        	        <a href="#keyword" title="All keyword annotations,&#13click for full list."> {{all_k}} </a>
                 {% endif %}
                 {% if my_k != None %}
-                <a href="#keyword" title="Only my keyword annotations,&#13click for full list."> {{my_k}} </a>
+					{% if my_k == 0 %}
+						<span title="No free-text keyword annotation was created by me."> 0 </span>
+					{% else %}
+		                <a href="/myannotations#keyword" title="Only my keyword annotations,&#13click for full list."> {{my_k}} </a>
+					{% endif %}
                 {% endif %}
             </div>
 
@@ -34,7 +42,11 @@
                 <a href="#comment" title="All comment annotations,&#13click for full list."> {{all_c}} </a>
                 {% endif %}
                 {% if my_c != None %}
-                <a href="#comment" title="Only my comment annotations,&#13click for full list."> {{my_c}} </a>
+					{% if my_c == 0 %}
+						<span title="No comment annotation was created by me."> 0 </span>
+					{% else %}
+    		            <a href="/myannotations#comment" title="Only my comment annotations,&#13click for full list."> {{my_c}} </a>
+	                {% endif %}
                 {% endif %}
             </div>
 
@@ -54,7 +66,7 @@
 
 							<td>
 
-								<form action="/aboutannotation" method="post">
+								<form action="/annotation_summary" method="post">
 									{% csrf_token %}
 									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
 									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"
@@ -65,8 +77,13 @@
 Click for full info."/>
 									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}"
 										   title="In any annotations,&#13click for full list."/>
-									<input type="submit" class="btn btn-link" name="about_mysimilar" value="{{ann.my_similar}}"
+									{% if ann.my_similar == 0 %}
+										<span title="No similar annotation was created by me."> 0 </span>
+									{% else %}
+										<input type="submit" class="btn btn-link" name="about_mysimilar" value="{{ann.my_similar}}"
 										   title="In my annotations,&#13click for full list."/>
+									{% endif %}
+
 								</form>
 
 							</td>
@@ -124,7 +141,7 @@ Click for full info."/>
 
 							<td>
 
-								<form action="/aboutannotation" method="post">
+								<form action="/annotation_summary" method="post">
 									{% csrf_token %}
 									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
 									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"
@@ -132,10 +149,14 @@ Click for full info."/>
 {% if ann.link_info_creatornickname %}By: {{ann.link_info_creatornickname}}{% endif %}
 {% if ann.link_info_modified %}On: {{ann.link_info_modified}}{% endif %}
 Click for full info."/>
-									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}" title=
-											"In any annotations,&#13click for full list."/>
-									<input type="submit" class="btn btn-link" name="about_mysimilar" value="{{ann.my_similar}}" title=
-											"In my annotations,&#13click for full list."/>
+									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}"
+										   title="In any annotations,&#13click for full list."/>
+									{% if ann.my_similar == 0 %}
+										<span title="No similar annotation was created by me."> 0 </span>
+									{% else %}
+										<input type="submit" class="btn btn-link" name="about_mysimilar" value="{{ann.my_similar}}"
+											   title="In my annotations,&#13click for full list."/>
+									{% endif %}
 								</form>
 
 							</td>
@@ -193,7 +214,7 @@ Click for full info."/>
 
 							<td>
 
-								<form action="/aboutannotation" method="post">
+								<form action="/annotation_summary" method="post">
 									{% csrf_token %}
 									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
 									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"
