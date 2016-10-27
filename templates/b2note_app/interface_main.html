@@ -18,9 +18,7 @@
 
             {% if duplicate %}
 
-                <p>Not created, an identical annotation already exists.</p>
-
-                <a href="/interface_main" class="btn btn-default">OK</a>
+                <p>Not created, an identical annotation already exists. <a href="/interface_main" class="btn btn-default">OK</a></p>
 
                 <br>
 
@@ -36,9 +34,7 @@
 
             {% elif new_semantic %}
 
-                <p>The semantic annotation was created.</p>
-
-                <a href="/interface_main" class="btn btn-default">OK</a>
+                <p>The semantic annotation was created. <a href="/interface_main" class="btn btn-default">OK</a></p>
 
                 <br>
 
@@ -46,9 +42,7 @@
 
             {% elif new_keyword %}
 
-                <p>The free-text keyword annotation was created.</p>
-
-                <a href="/interface_main" class="btn btn-default">OK</a>
+                <p>The free-text keyword annotation was created. <a href="/interface_main" class="btn btn-default">OK</a></p>
 
                 <br>
 
@@ -56,13 +50,27 @@
 
             {% elif new_comment %}
 
-                <p>The comment annotation was created.</p>
-
-                <a href="/interface_main" class="btn btn-default">OK</a>
+                <p>The comment annotation was created. <a href="/interface_main" class="btn btn-default">OK</a></p>
 
                 <br>
 
                 <textarea name="comment_text" rows="3" class="form-control custom-control" id="created_comment_input" readonly>{{new_comment.label}}</textarea>
+
+           {% elif annotation_deleted %}
+
+                {% if annotation_deleted == "success" %}
+
+                    <p>The annotation was deleted. <a href="/interface_main" class="btn btn-default">OK</a></p>
+
+                    <br>
+
+                {% elif annotation_deleted == "abort" %}
+
+                    <p>The annotation could not be deleted. <a href="/interface_main" class="btn btn-default">OK</a></p>
+
+                    <br>
+
+                {% endif %}
 
             {% elif has_semantic_equivalent %}
 

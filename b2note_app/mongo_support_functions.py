@@ -632,7 +632,7 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
 
                                     A.save()
 
-                                    #db_id = SetAnnotationMotivation( A.id, "tagging" )
+                                    db_id = SetAnnotationMotivation( A.id, "tagging" )
 
                                     print "MakeAnnotationSemanticTag function, made annotation semantic tag:", str(db_id)
                                     return db_id

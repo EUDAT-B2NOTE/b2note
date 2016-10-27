@@ -1,109 +1,8 @@
-<!DOCTYPE html>
+{% extends "b2note_app/__base.html" %}
 
-<html lang="en">
+{% block content %}
 
-<head>
-	<meta charset="UTF-8">
-
-	{% load staticfiles %}
-
-    <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
-    <link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
-
-    <script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/utils.js' %}"></script>
-
-	<title>B2Note service demo</title>
-
-</head>
-
-<body id="profilepage">
-
-	<div class="navbar navbar-default navbar-static-top">
-
-		<div class="container">
-
-			<div class="navbar-brand">B2Note console</div>
-
-		</div>
-
-		<div class="container" align="right">
-
-			<a href="/accounts/profilepage" title="Account">
-				<button type="submit" class="btn btn-link btn-xs">
-					<i class="glyphicon glyphicon-user"></i>
-					{% if user_nickname %}
-						{{ user_nickname }}
-					{% endif %}
-				</button>
-			</a>
-
-			<a href="/search" title="Search">
-				<button type="submit" class="btn btn-link btn-xs">
-					<i class="glyphicon glyphicon-search"></i>
-				</button>
-			</a>
-
-			<a href="/export" title="Download">
-				<button type="submit" class="btn btn-link btn-xs">
-					<i class="glyphicon glyphicon-download-alt"></i>
-				</button>
-			</a>
-
-			<a href="/accounts/logout" title="Logout">
-				<button type="submit" class="btn btn-link btn-xs">
-					<i class="glyphicon glyphicon-off"></i>
-				</button>
-			</a>
-
-			<a href="/help" alt="Help" title="Help">
-				<button type="submit" class="btn btn-link btn-xs">
-					<i class="glyphicon glyphicon-question-sign"></i>
-				</button>
-			</a>
-
-		</div>
-
-	</div>
-
-	<div class="container" id="profilepage_title">
-
-		<div class="row">
-
-			<div class="col-sm-6">
-
-				<h2>{{ form.nickname.value }}'s profilepage</h2>
-
-			</div>
-
-		</div>
-
-		<div class="row">
-
-			<div class="btn-group" role="group">
-
-				<a href="/logout" target="_self" alt="Logout" title="Logout, terminate session">
-					<button type="submit" class="btn btn-default">
-						<i class="glyphicon glyphicon-off"></i>
-						Logout
-					</button>
-				</a>
-
-				<a href="/b2note_app/interface_main">
-					<button type="submit" class="btn btn-default">
-						<i class="glyphicon glyphicon-home"></i>
-						Homepage
-					</button>
-				</a>
-
-			</div>
-
-		</div>
-
-	</div>
-
-	<br>
+	<h3>User account</h3>
 
 	<div class="container" id="homepageform">
 
@@ -133,6 +32,4 @@
 
 	</div>
 
-</body>
-
-</html>
+{% endblock %}

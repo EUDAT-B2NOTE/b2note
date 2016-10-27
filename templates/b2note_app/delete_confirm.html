@@ -1,0 +1,25 @@
+{% extends "b2note_app/__base.html" %}
+
+{% block content %}
+
+	<div class="container" id="delete_confirm_form">
+
+		<h3>Delete</h3>
+
+		<p>Please confirm delete:</p>
+
+		<form action="/delete_annotation" method="post">
+			{% csrf_token %}
+			<input type="hidden" name="db_id" value="{{id}}" hidden>
+			<input type="submit" class="btn btn-danger" name="delete_confirmed" value="DELETE"/>
+		</form>
+
+		<a href="/interface_main" class="btn btn-default">Cancel</a>
+
+	</div>
+
+	<br>
+	<br>
+	<br>
+
+{% endblock %}

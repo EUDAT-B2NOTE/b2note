@@ -28,128 +28,6 @@ def index(request):
 
 
 @login_required
-def edit_annotation(request):
-    A=None
-    owner=False
-    try:
-
-        if request.session.get("user"):
-
-            userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
-
-            #annotation_list = RetrieveAnnotations_perUsername(userprofile.nickname)
-
-            if request.POST.get('db_id'):
-
-                if isinstance(request.POST.get('db_id'), (str, unicode)):
-
-                    #A = Annotation.objects.get(id="57e1504510d06010314becc8")
-                    #A = Annotation.objects.get(id="57dfd3fe10d0600412d056df")
-                    A = Annotation.objects.get(id=request.POST.get('db_id'))
-
-                    if A:
-
-                        if A.creator:
-
-                            if isinstance(A.creator, list):
-
-                                if len(A.creator)>0:
-
-                                    if A.creator[0]:
-
-                                        if A.creator[0].nickname:
-
-                                            if userprofile.nickname:
-
-                                                if isinstance(A.creator[0].nickname, (str, unicode)) and isinstance(userprofile.nickname, (str, unicode)):
-
-                                                    if userprofile.nickname == A.creator[0].nickname:
-
-                                                        owner = True
-
-                        if request.POST.get('duplicate_cmd'):
-
-                            db_id = None
-                            db_id = DuplicateAnnotation( A.id )
-
-                            if db_id:
-
-                                db_id = SetUserAsAnnotationCreator( request.session.get('user'), db_id )
-                                A     = Annotation.objects.get( id = db_id )
-                                owner = userprofile.nickname == A.creator[0].nickname
-
-                            else:
-                                print "Edit_annotation view, annotation could not be duplicated."
-                                pass
-
-                        elif owner and request.POST.get('delete_cmd'):
-
-                            if request.POST.get('delete_cmd')=='delete_cmd' and request.POST.get('db_id'):
-
-                                DeleteFromPOSTinfo(request.POST.get('db_id'))
-                                return redirect('/homepage')
-
-                            else:
-                                print "Edit_annotation view, POST parameter 'db_id' is None."
-                                pass
-
-                        elif owner:
-
-                            if request.POST.get('ontology_json'):
-
-                                db_id = MakeAnnotationSemanticTag( A.id, request.POST.get('ontology_json') )
-                                A = Annotation.objects.get(id=db_id)
-
-                            elif request.POST.get('free_text'):
-
-                                if isinstance(request.POST.get('free_text'), (str, unicode)):
-
-                                    if request.POST.get('free_text') != A.body[0].value:
-
-                                        db_id = None
-                                        db_id = MakeAnnotationFreeText( A.id, request.POST.get('free_text') )
-
-                                        if db_id: A = Annotation.objects.get( id = db_id )
-
-                                    else:
-                                        print "Edit_annotation view, not editing due to entered text identical to existing body value."
-                                        pass
-                                else:
-                                    print "Edit_annotation view, provided POST argument 'body.change' does not contain valid str or unicode."
-                                    pass
-
-                            if request.POST.get('motivation_selection'):
-
-                                motiv = request.POST.get('motivation_selection')
-
-                                if isinstance(motiv, (str, unicode)):
-
-                                    db_id = None
-                                    db_id = SetAnnotationMotivation( A.id, motiv )
-
-                                    if db_id: A = Annotation.objects.get( id = db_id )
-
-                    else:
-                        print "Edit_annotation view, could not retrieve annotation with id:", str( request.POST.get('db_id') )
-                        pass
-                else:
-                    print "Edit_annotation view, POST request contains object called 'db_id' that is neither str nor unicode."
-                    pass
-        else:
-            print "Edit_annotation view, unidentified user."
-            return redirect('accounts/logout')
-
-    except:
-        print "Edit_annotation view did not complete."
-        return HttpResponse(Exception)
-
-    motivation_choices = Annotation.MOTIVATION_CHOICES
-
-    context = RequestContext(request, {"form": A, "owner": owner, "motivation_choices": motivation_choices})
-    return render(request, "b2note_app/edit_annotation.html", context)
-
-
-@login_required
 def homepage(request):
     """
     User profile view.
@@ -184,10 +62,10 @@ def export_annotations(request):
       Function: export_annotations
       ----------------------------
         Export all annotations in JSON format.
-        
+
         input:
             request (object): context of the petition.
-        
+
         output:
             object: HttpResponse with the result of the request.
     """
@@ -380,6 +258,160 @@ Influence of smoking and obesity in sperm quality
 
 
 @login_required
+def edit_annotation(request):
+    """
+      Function: edit_annotation
+      ----------------------------
+        Displays a different form for each annotation type.
+        Processes the user-input and performs editing on annotation document.
+        Displays editing outcome message/form.
+        On clicking redirects to main_interface.
+
+        input:
+            request (object): context of the petition.
+
+        output:
+            object: HttpResponse with the annotations.
+    """
+
+    pid_tofeed = ""
+    if request.POST.get('pid_tofeed') != None:
+        pid_tofeed = request.POST.get('pid_tofeed')
+        request.session["pid_tofeed"] = pid_tofeed
+    elif request.session.get('pid_tofeed'):
+        pid_tofeed = request.session.get('pid_tofeed')
+
+    subject_tofeed = ""
+    if request.POST.get('subject_tofeed') != None:
+        subject_tofeed = request.POST.get('subject_tofeed')
+        request.session["subject_tofeed"] = subject_tofeed
+    elif request.session.get('subject_tofeed'):
+        subject_tofeed = request.session.get('subject_tofeed')
+
+    user_nickname = None
+    if request.session.get("user"):
+        userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+        user_nickname = userprofile.nickname
+
+    textinput_primer = None
+    if request.POST.get('textinput_primer'):
+        textinput_primer = request.POST.get('textinput_primer')
+
+    A = None
+    edited_semantic = None
+    edited_keyword = None
+    edited_comment = None
+    shortform = None
+    duplicate = None
+    long_keyword = None
+    has_semantic_equivalent = None
+    if request.POST.get('db_id'):
+        if isinstance(request.POST.get('db_id'), (str, unicode)):
+            a_id = request.POST.get('db_id')
+            A = Annotation.objects.get(id=a_id)
+            if A:
+                if request.POST.get('semantic_submit') is not None:
+                    edited_semantic = False
+                    if request.POST.get('ontology_json'):
+                        jo = request.POST.get('ontology_json')
+                        if isinstance(jo, (str, unicode)):
+                            o = None
+                            o = json.loads( jo )
+                            if o and isinstance(o, dict):
+                                if "uris" in o.keys():
+                                    if o["uris"] and isinstance(o["uris"], (str, unicode)):
+                                        newbody = None
+                                        newbody = {"body": {"jsonld_id": o["uris"]}}
+                                        D = None
+                                        D = CheckDuplicateAnnotation( A.target[0].jsonld_id , newbody)
+                                        if not D:
+                                            id1 = None
+                                            id1 = MakeAnnotationSemanticTag(a_id, jo)
+                                            if id1: edited_semantic = True
+                                        else:
+                                            duplicate = {
+                                                "label": D[0].body[0].value,
+                                                "shortform": D[0].body[0].jsonld_id[::-1][:D[0].body[0].jsonld_id[::-1].find("/")][::-1],
+                                            }
+
+                elif request.POST.get('keyword_submit') is not None:
+                    edited_keyword = False
+                    if request.POST.get('keyword_text'):
+                        k_text = request.POST.get('keyword_text')
+                        if isinstance(k_text, (str, unicode)):
+                            pass_on = False
+                            if not request.POST.get('confirm_flag'):
+                                r = solr_fetchtermonexactlabel( k_text )
+                                if r and len(r) > 0:
+                                    has_semantic_equivalent = k_text
+                                    print "Create_annotation view, keyword has semantic tag equivalent."
+                                    pass_on = True
+
+                            if not pass_on and not request.POST.get('enforce_flag'):
+                                L = None
+                                L = CheckLengthFreeText( k_text, 60)
+                                if not L:
+                                    long_keyword = k_text
+                                    pass_on = True
+
+                            if not pass_on:
+                                newbody = None
+                                newbody = {"body": {"value": k_text}}
+                                D = None
+                                D = CheckDuplicateAnnotation( A.target[0].jsonld_id , newbody)
+                                if not D:
+                                    id1 = None
+                                    id1 = MakeAnnotationFreeText(a_id, k_text)
+                                    id1 = SetAnnotationMotivation(id1, "tagging")
+                                    if id1: edited_keyword = True
+                                else:
+                                    if D[0].body[0].jsonld_id:
+                                        duplicate = {
+                                            "label": D[0].body[0].value,
+                                            "shortform": D[0].body[0].jsonld_id[::-1][:D[0].body[0].jsonld_id[::-1].find("/")][::-1],
+                                        }
+                                    else:
+                                        duplicate = {"label": D[0].body[0].value, }
+
+                elif request.POST.get('comment_submit') is not None:
+                    edited_comment = False
+                    if request.POST.get('comment_text'):
+                        c_text = request.POST.get('comment_text')
+                        if isinstance(c_text, (str, unicode)):
+                            id1 = None
+                            id1 = MakeAnnotationFreeText( a_id , c_text )
+                            id1 = SetAnnotationMotivation( id1, "commenting" )
+                            if id1: edited_comment = True
+
+                A = Annotation.objects.get(id=a_id)
+
+                if A and A.body and A.body[0] and A.body[0].jsonld_id:
+                    shortform = A.body[0].jsonld_id[::-1][:A.body[0].jsonld_id[::-1].find("/")][::-1]
+
+    navbarlinks = list_navbarlinks(request, [])
+    shortcutlinks = list_shortcutlinks(request, [])
+
+    data_dict = {
+        'textinput_primer': textinput_primer,
+        'long_keyword': long_keyword,
+        'has_semantic_equivalent': has_semantic_equivalent,
+        'shortform': shortform,
+        'duplicate': duplicate,
+        'edited_semantic': edited_semantic,
+        'edited_keyword': edited_keyword,
+        'edited_comment': edited_comment,
+        'ann': A,
+        'navbarlinks': navbarlinks,
+        'shortcutlinks': list_shortcutlinks,
+        'subject_tofeed': subject_tofeed,
+        'pid_tofeed': pid_tofeed,
+        'user_nickname': user_nickname,
+    }
+
+    return render(request, "b2note_app/edit_annotation.html", data_dict)
+
+
+@login_required
 def delete_annotation(request):
     """
       Function: delete_annotation
@@ -393,17 +425,36 @@ def delete_annotation(request):
             object: HttpResponse with the remaining annotations.
     """
 
+    request.session["annotation_deleted"] = False
+
     user_nickname = None
     if request.session.get("user"):
         userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
         user_nickname = userprofile.nickname
         if request.POST.get('db_id'):
             if isinstance(request.POST.get('db_id'), (str, unicode)):
+                if request.POST.get("delete_confirmed") is None:
+                    navbarlinks = list_navbarlinks(request, [])
+                    shortcutlinks = list_shortcutlinks(request, [])
+                    data_dict = {
+                        'id':request.POST.get('db_id'),
+                        'user_nickname': user_nickname,
+                        'navbarlinks':navbarlinks,
+                        'shortcutlinks':shortcutlinks,
+                    }
+                    return render(request, 'b2note_app/delete_confirm.html', data_dict)
                 A = Annotation.objects.get(id=request.POST.get('db_id'))
                 if A:
                     owner = userprofile.nickname == A.creator[0].nickname
                     if owner:
-                        DeleteFromPOSTinfo( request.POST.get('db_id') )
+                        R = None
+                        R = DeleteFromPOSTinfo( request.POST.get('db_id') )
+                        if R:
+                            request.session["annotation_deleted"] = True
+                            return redirect('/interface_main')
+                        else:
+                            print "delete_annotation view, annotation delete not successful."
+                            pass
                     else:
                         print "delete_annotation view, cannot delete annotation, current user is not owner."
                         pass
@@ -418,37 +469,9 @@ def delete_annotation(request):
             pass
     else:
         print "delete_annotation view, user is not logged-in."
-        pass
+        return redirect('/accounts/logout')
 
-    subject_tofeed = ""
-    if request.POST.get('subject_tofeed')!=None:
-        subject_tofeed = request.POST.get('subject_tofeed')
-
-    pid_tofeed = ""
-    if request.POST.get('pid_tofeed')!=None:
-        pid_tofeed = request.POST.get('pid_tofeed')
-
-    pagefrom = ""
-    if request.POST.get('pagefrom')!=None:
-        pagefrom = request.POST.get('pagefrom')
-
-    try:
-        annotation_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
-    except Annotation.DoesNotExist:
-        annotation_list = []
-
-    annotation_list = sorted(annotation_list, key=lambda Annotation: Annotation.created, reverse=True)
-
-    data_dict = {
-        'annotation_list': annotation_list,
-        'subject_tofeed': subject_tofeed,
-        'pid_tofeed': pid_tofeed,
-        'pagefrom': pagefrom,
-        'user_nickanme': user_nickname}
-    if pagefrom == 'homepage':
-        return redirect('/homepage')
-    else:
-        return render(request, 'b2note_app/interface_main.html', data_dict)
+    return redirect('/interface_main')
 
 
 @login_required
@@ -734,14 +757,17 @@ def myannotations(request):
 
         link_label = ""
         link_info_label = ""
+        link_info_creatornickname = ""
         link_info_modified = ""
 
         if A.body and A.body[0] and A.body[0].value:
-            if A.body[0].value > 30: link_label = '...'
+            if len(A.body[0].value) > 30: link_label = '...'
             link_label = A.body[0].value[:30] + link_label
-            if A.body[0].value > 50: link_info_label = '...'
+            if len(A.body[0].value) > 50: link_info_label = '...'
             link_info_label = A.body[0].value[:50] + link_info_label
 
+        if A.creator and A.creator[0] and A.creator[0].nickname:
+            link_info_creatornickname = A.creator[0].nickname
         if A.modified: link_info_modified = A.modified
 
         if A.body and A.body[0] and A.body[0].jsonld_id:
@@ -764,6 +790,7 @@ def myannotations(request):
                              'link_info_label': link_info_label,
                              'link_info_ontologyacronym': link_info_ontologyacronym,
                              'link_info_shortform': link_info_shortform,
+                             'link_info_creatornickname': link_info_creatornickname,
                              'link_info_modified': link_info_modified,
                              'my_similar': len(semantic_list),
                              }
@@ -781,6 +808,7 @@ def myannotations(request):
             keyword_dict = {'ann_id': A.id,
                             'link_label': link_label,
                             'link_info_label': link_info_label,
+                            'link_info_creatornickname': link_info_creatornickname,
                             'link_info_modified': link_info_modified,
                             'my_similar': len(keyword_list),
                             }
@@ -794,6 +822,7 @@ def myannotations(request):
             comment_dict = {'ann_id': A.id,
                             'link_label': link_label,
                             'link_info_label': link_info_label,
+                            'link_info_creatornickname': link_info_creatornickname,
                             'link_info_modified': link_info_modified,
                             }
 
@@ -892,9 +921,9 @@ def allannotations(request):
         link_info_modified = ""
 
         if A.body and A.body[0] and A.body[0].value:
-            if A.body[0].value > 30: link_label = '...'
+            if len(A.body[0].value) > 30: link_label = '...'
             link_label = A.body[0].value[:30] + link_label
-            if A.body[0].value > 50: link_info_label = '...'
+            if len(A.body[0].value) > 50: link_info_label = '...'
             link_info_label = A.body[0].value[:50] + link_info_label
 
         if A.creator and A.creator[0] and A.creator[0].nickname:
@@ -1034,7 +1063,7 @@ def interface_main(request):
         request.session["new_comment"] = None
 
     has_semantic_equivalent = None
-    if request.session["has_semantic_equivalent"]:
+    if "has_semantic_equivalent" in request.session.keys() and request.session["has_semantic_equivalent"]:
         has_semantic_equivalent = request.session["has_semantic_equivalent"]
         request.session["has_semantic_equivalent"] = None
 
@@ -1046,6 +1075,14 @@ def interface_main(request):
     textinput_primer = None
     if request.POST.get('textinput_primer'):
         textinput_primer = request.POST.get('textinput_primer')
+
+    annotation_deleted = None
+    if "annotation_deleted" in request.session.keys() and request.session["annotation_deleted"]==True:
+        annotation_deleted = "success"
+        request.session["annotation_deleted"] = None
+    elif "annotation_deleted" in request.session.keys() and request.session["annotation_deleted"]==False:
+        annotation_deleted = "abort"
+        request.session["annotation_deleted"] = None
 
     pid_tofeed = ""
     if request.POST.get('pid_tofeed')!=None:
@@ -1105,6 +1142,7 @@ def interface_main(request):
     shortcutlinks = []
 
     data_dict = {
+        'annotation_deleted': annotation_deleted,
         'new_comment': new_comment,
         'long_keyword': long_keyword,
         'textinput_primer': textinput_primer,

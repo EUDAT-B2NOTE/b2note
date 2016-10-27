@@ -64,7 +64,7 @@
 										   title="{% if ann.link_info_label %}{{ann.link_info_label}}{% endif %}
 {% if ann.link_info_ontologyacronym %}{{ann.link_info_ontologyacronym}}{% endif %}: {% if ann.link_info_shortform %}{{ann.link_info_shortform}}{% endif %}
 {% if ann.link_info_creatornickname %}By: {{ann.link_info_creatornickname}}{% endif %}
-{% if ann.link_info_creatornickname %}On: {{ann.link_info_modified}}{% endif %}
+{% if ann.link_info_modified %}On: {{ann.link_info_modified}}{% endif %}
 Click for full info."/>
 									<input type="submit" class="btn btn-link" name="about_mysimilar" value="{{ann.my_similar}}"
 										   title="In my annotations,&#13click for full list."/>
@@ -197,7 +197,7 @@ Click for full info."/>
 									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
 									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"
 										   title="{% if ann.link_info_label %}{{ann.link_info_label}}{% endif %}
-{% if ann.link_info_link_info_modified%}On: {{ann.link_info_modified}}{% endif %}
+{% if ann.link_info_modified %}On: {{ann.link_info_modified}}{% endif %}
 Click for full info."/>
 								</form>
 

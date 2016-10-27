@@ -176,13 +176,14 @@ def profilepage(request):
     """
 
     navbarlinks = list_navbarlinks(request, [])
-    shortcutlinks = list_shortcutlinks(request, ["Account"])
+    shortcutlinks = list_shortcutlinks(request, [])
 
     try:
         if request.session.get("user"):
             userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
             form = ProfileForm(initial = model_to_dict(userprofile) )
             return render_to_response('accounts/profilepage.html', {
+                'user_nickname': userprofile.nickname,
                 'navbarlinks': navbarlinks,
                 'shortcutlinks': shortcutlinks,
                 'form': form}, context_instance=RequestContext(request))
