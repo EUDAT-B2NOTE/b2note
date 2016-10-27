@@ -45,7 +45,7 @@ def solr_fetchorigintermonid(ids=None):
                     q_str = "(" + q_str[3:] + ")"
                     r = None
                     r = requests.get(
-                        'https://b2note.bsc.es/solr/b2note_index/select?q=uris:' + q_str +'&fl=ontology_acronym,uris,labels,short_form&wt=json&indent=true&start=0&rows=' + str(10*len(ids)))
+                        'https://b2note.bsc.es/solr/b2note_index/select?q=uris:' + q_str +'&fl=ontology_acronym,ontology_name,description,uris,labels,short_form&wt=json&indent=true&start=0&rows=' + str(10*len(ids)))
                     if r and r.json():
                         if isinstance(r.json(), dict):
                             if "response" in r.json().keys():

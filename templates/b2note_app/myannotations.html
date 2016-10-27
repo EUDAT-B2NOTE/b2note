@@ -78,7 +78,7 @@ Click for full info."/>
 									<form action="/edit_annotation" method="post">
 										{% csrf_token %}
 										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link">
+										<button type="submit" class="btn btn-link" title="Edit this annotation">
 											<span class="glyphicon glyphicon-pencil"></span>
 										</button>
 									</form>
@@ -88,7 +88,7 @@ Click for full info."/>
 									<form action="/delete_annotation" method="post">
 										{% csrf_token %}
 										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link">
+										<button type="submit" class="btn btn-link" title="Delete this annotation">
 											<span class="glyphicon glyphicon-trash"></span>
 										</button>
 									</form>
@@ -145,7 +145,7 @@ Click for full info."/>
 									<form action="/edit_annotation" method="post">
 										{% csrf_token %}
 										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link">
+										<button type="submit" class="btn btn-link" title="Edit this annotation">
 											<span class="glyphicon glyphicon-pencil"></span>
 										</button>
 									</form>
@@ -155,7 +155,7 @@ Click for full info."/>
 									<form action="/delete_annotation" method="post">
 										{% csrf_token %}
 										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link">
+										<button type="submit" class="btn btn-link" title="Delete this annotation">
 											<span class="glyphicon glyphicon-trash"></span>
 										</button>
 									</form>
@@ -209,7 +209,7 @@ Click for full info."/>
 									<form action="/edit_annotation" method="post">
 										{% csrf_token %}
 										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link">
+										<button type="submit" class="btn btn-link" title="Edit this annotation">
 											<span class="glyphicon glyphicon-pencil"></span>
 										</button>
 									</form>
@@ -219,7 +219,7 @@ Click for full info."/>
 									<form action="/delete_annotation" method="post">
 										{% csrf_token %}
 										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link">
+										<button type="submit" class="btn btn-link" title="Delete this annotation">
 											<span class="glyphicon glyphicon-trash"></span>
 										</button>
 									</form>
@@ -239,99 +239,6 @@ Click for full info."/>
 				<p>No comment annotation about this file.</p>
 
 			{% endif %}
-
-		</div>
-
-	</div>
-
-
-	<div class="container" id="section_existing">
-
-		<div class="container" id="container_table_existing">
-
-			<table class="table table-responsive table-striped">
-
-				{% for annotation in annotation_list %}
-
-					{% for target in annotation.target %}
-
-						{% if target.jsonld_id %}
-
-							<!-- http://stackoverflow.com/questions/1275735/how-to-access-dictionary-element-in-django-template -->
-							{% if target.jsonld_id == subject_tofeed %}
-
-								{% for body in annotation.body %}
-
-									{% if body.jsonld_id or body.value %}
-
-										<tr>
-
-										{% if "http://" in body.jsonld_id %}
-
-											<!--
-											<td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
-											-->
-											<!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
-											<td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">
-												<a target="_blank" href={{body.jsonld_id}}>{{body.value}}</a>
-											</td>
-
-										{% else %}
-
-											<!--
-											<td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
-											-->
-											<td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">{{body.value}}</td>
-
-										{% endif %}
-
-											<form action="/edit_annotation" method="post" target="_blank">
-
-												{% csrf_token %}
-
-												<input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
-												<!--<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />-->
-
-												<td id="editAnnotation"><i class="glyphicon glyphicon-pencil"></i></td>
-
-											</form>
-
-										{% if user_nickname = annotation.creator.0.nickname %}
-
-											<form action="/delete_annotation" method="post">
-
-												{% csrf_token %}
-
-												<input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
-												<input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-												<input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-
-												<td id="delAnnotation"><i class="glyphicon glyphicon-trash"></td>
-
-											</form>
-
-										{% else %}
-
-											<!-- Empty slot for bin icon for annotations of which logged-in user is not owner. -->
-											<td></td>
-
-										{% endif %}
-
-										</tr>
-
-									{% endif %}
-
-								{% endfor %}
-
-							{% endif %}
-
-						{% endif %}
-
-					{% endfor %}
-
-				{% endfor %}
-
-			</table>
 
 		</div>
 

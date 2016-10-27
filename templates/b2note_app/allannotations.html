@@ -94,7 +94,7 @@ Click for full info."/>
 									<form action="/edit_annotation" method="post">
 										{% csrf_token %}
 										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link">
+										<button type="submit" class="btn btn-link" title="Edit this annotation">
 											<span class="glyphicon glyphicon-pencil"></span>
 										</button>
 									</form>
@@ -104,7 +104,7 @@ Click for full info."/>
 									<form action="/delete_annotation" method="post">
 										{% csrf_token %}
 										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link">
+										<button type="submit" class="btn btn-link" title="Delete this annotation">
 											<span class="glyphicon glyphicon-trash"></span>
 										</button>
 									</form>
@@ -167,7 +167,7 @@ Click for full info."/>
 									<form action="/edit_annotation" method="post">
 										{% csrf_token %}
 										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link">
+										<button type="submit" class="btn btn-link" title="Edit this annotation">
 											<span class="glyphicon glyphicon-pencil"></span>
 										</button>
 									</form>
@@ -177,7 +177,7 @@ Click for full info."/>
 									<form action="/delete_annotation" method="post">
 										{% csrf_token %}
 										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link">
+										<button type="submit" class="btn btn-link" title="Delete this annotation">
 											<span class="glyphicon glyphicon-trash"></span>
 										</button>
 									</form>
@@ -232,7 +232,7 @@ Click for full info."/>
 									<form action="/edit_annotation" method="post">
 										{% csrf_token %}
 										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link">
+										<button type="submit" class="btn btn-link" title="Edit this annotation">
 											<span class="glyphicon glyphicon-pencil"></span>
 										</button>
 									</form>
@@ -242,7 +242,7 @@ Click for full info."/>
 									<form action="/delete_annotation" method="post">
 										{% csrf_token %}
 										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link">
+										<button type="submit" class="btn btn-link" title="Delete this annotation">
 											<span class="glyphicon glyphicon-trash"></span>
 										</button>
 									</form>

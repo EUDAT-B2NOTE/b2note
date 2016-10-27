@@ -620,15 +620,14 @@ def annotation_summary(request):
 
                     allannotations_list = Annotation.objects.raw_query({'body.jsonld_id': A.body[0].jsonld_id})
 
-                elif A.body[0].value and A.motivation and A.motivation=="tagging":
+                elif A.body[0].value and A.motivation and A.motivation[0]=="tagging":
 
                     allannotations_list = Annotation.objects.raw_query(
                         {'body.value': A.body[0].value, 'motivation': "tagging"})
 
-                elif A.body[0].value and A.motivation and A.motivation == "commenting":
+                elif A.body[0].value and A.motivation and A.motivation[0] == "commenting":
 
-                    allannotations_list = Annotation.objects.raw_query(
-                        {'body.value': A.body[0].value, 'motivation': "commenting"})
+                    allannotations_list = A
 
                 if allannotations_list: all_or_mine = "all"
 
@@ -641,15 +640,14 @@ def annotation_summary(request):
                     allannotations_list = Annotation.objects.raw_query(
                         {'body.jsonld_id': A.body[0].jsonld_id, 'creator.nickname': user_nickname})
 
-                elif A.body[0].value and A.motivation and A.motivation=="tagging":
+                elif A.body[0].value and A.motivation and A.motivation[0] == "tagging":
 
                     allannotations_list = Annotation.objects.raw_query(
                         {'body.value': A.body[0].value, 'motivation': "tagging", 'creator.nickname': user_nickname})
 
-                elif A.body[0].value and A.motivation and A.motivation == "commenting":
+                elif A.body[0].value and A.motivation and A.motivation[0] == "commenting":
 
-                    allannotations_list = Annotation.objects.raw_query(
-                        {'body.value': A.body[0].value, 'motivation': "commenting", 'creator.nickname': user_nickname})
+                    allannotations_list = A
 
                 if allannotations_list: all_or_mine = "mine"
 
@@ -739,10 +737,10 @@ def myannotations(request):
         link_info_modified = ""
 
         if A.body and A.body[0] and A.body[0].value:
-            link_label = A.body[0].value[:30]
-            if len(link_label) > 30: link_label += '...'
-            link_info_label = A.body[0].value[:50]
-            if len(link_info_label) > 50: link_info_label += '...'
+            if A.body[0].value > 30: link_label = '...'
+            link_label = A.body[0].value[:30] + link_label
+            if A.body[0].value > 50: link_info_label = '...'
+            link_info_label = A.body[0].value[:50] + link_info_label
 
         if A.modified: link_info_modified = A.modified
 
@@ -894,10 +892,10 @@ def allannotations(request):
         link_info_modified = ""
 
         if A.body and A.body[0] and A.body[0].value:
-            link_label = A.body[0].value[:30]
-            if len(link_label) > 30: link_label += '...'
-            link_info_label = A.body[0].value[:50]
-            if len(link_info_label) > 50: link_info_label += '...'
+            if A.body[0].value > 30: link_label = '...'
+            link_label = A.body[0].value[:30] + link_label
+            if A.body[0].value > 50: link_info_label = '...'
+            link_info_label = A.body[0].value[:50] + link_info_label
 
         if A.creator and A.creator[0] and A.creator[0].nickname:
             link_info_creatornickname = A.creator[0].nickname
