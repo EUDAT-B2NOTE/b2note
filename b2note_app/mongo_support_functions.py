@@ -129,9 +129,7 @@ def SearchAnnotation( kw ):
     return False
 
 
-
-
-def RetrieveAnnotations_perUsername( nickname=None ):
+def RetrieveUserFileAnnotations( subject_url=None, nickname=None ):
     """
       Function: RetrieveAnnotations_perUsername
       ----------------------------
@@ -139,35 +137,35 @@ def RetrieveAnnotations_perUsername( nickname=None ):
 
         params:
             subject_url (str): ID of the file.
+            nickname (str): user nickname as from user profile DB record.
 
         returns:
             dic: Dictionary with the values of the annotations.
     """
     try:
 
-        if nickname and isinstance(nickname, (str, unicode)):
-
-            annotations = Annotation.objects.raw_query({'creator.nickname': nickname})
-
-            #annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
-
-            print "RetrieveAnnotations_perUsername function, returning annotations."
-            return annotations
-
+        if subject_url and isinstance(subject_url, (str, unicode)):
+            if nickname and isinstance(nickname, (str, unicode)):
+                annotations = Annotation.objects.raw_query({'target.jsonld_id': subject_url, 'creator.nickname': nickname})
+                #annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
+                print "RetrieveUserFileAnnotations function, returning annotations."
+                return annotations
+            else:
+                print "RetrieveUserFileAnnotations function, provided nickname not valid:", nickname
+                return False
         else:
-
-            print "RetrieveAnnotations_perUsername function, provided nickname not valid:", nickname
+            print "RetrieveUserFileAnnotations function, provided target id not valid:", subject_url
             return False
 
     except Annotation.DoesNotExist:
-        "RetrieveAnnotations_perUsername function did not complete."
+        "RetrieveUserFileAnnotations function did not complete."
         return False
 
-    print "RetrieveAnnotations_perUsername function did not complete succesfully."
+    print "RetrieveUserFileAnnotations function did not complete succesfully."
     return False
 
 
-def RetrieveAnnotations( subject_url ):
+def RetrieveFileAnnotations( subject_url ):
     """
       Function: RetrieveAnnotations
       ----------------------------
@@ -185,8 +183,8 @@ def RetrieveAnnotations( subject_url ):
     except Annotation.DoesNotExist:
         annotations = []
 
-    annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
-    
+    #annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
+
     return annotations
 
 
@@ -780,57 +778,6 @@ def CreateAnnotation(target=None):
     return False
 
 
-def readyQuerySetValuesForDumpAsJSONLD2( o_in ):
-    """
-      Function: readyQuerySetValuesForDumpAsJSONLD
-      --------------------------------------------
-
-        Recursively drops embedded custom model class objects and model
-         class field names beginning with "jsonld_whatever" to "@whatever",
-         while avoiding returning fields with no content and making
-         datetimes to xsd:datetime strings.
-
-        input:
-            o_in (object): In nesting order, Django queryset values
-                list then tuple or list or set or dict or datetime or
-                out-of-scope object.
-
-        output:
-            o_out: None (execution failed) or list of native python
-                objects, where each out-of-scope object was replaced
-                by its "string-ified" avatar, designed for subsequent
-                JSON-ification.
-    """
-
-    o_out = None
-
-    try:
-        if type(o_in) is str or type(o_in) is unicode:
-            o_out = str(o_in)
-        elif type(o_in) is list or type(o_in) is set:
-            o_out = []
-            for item in o_in:
-                if item and readyQuerySetValuesForDumpAsJSONLD( item ):
-                    o_out.append( readyQuerySetValuesForDumpAsJSONLD( item ) )
-        elif type(o_in) is dict:
-            o_out = {}
-            for k in o_in.keys():
-                if o_in[k] and readyQuerySetValuesForDumpAsJSONLD( o_in[k] ) and k != "id":
-                    newkey = k
-                    m = re.match(r'^jsonld_(.*)', k)
-                    if m:
-                        newkey = "@{0}".format(m.group(1))
-                    if newkey == "@id": newkey = "id"
-                    o_out[newkey] = readyQuerySetValuesForDumpAsJSONLD( o_in[k] )
-        elif not re.match(r'^<class (.*)>', str(o_in)):
-            o_out = readyQuerySetValuesForDumpAsJSONLD( model_to_dict(o_in) )
-    except:
-        o_out = None
-        pass
-    print "#", o_out
-    return o_out
-
-
 def readyQuerySetValuesForDumpAsJSONLD( o_in ):
     """
       Function: readyQuerySetValuesForDumpAsJSONLD
@@ -855,14 +802,20 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
     try:
         if type(o_in) is tuple:
             o_out = ()
-            for item in o_in:
-                if item and readyQuerySetValuesForDumpAsJSONLD( item ):
-                    o_out += ( readyQuerySetValuesForDumpAsJSONLD( item ), )
+            if len(o_in) == 1 and readyQuerySetValuesForDumpAsJSONLD( o_in[0] ):
+                o_out = readyQuerySetValuesForDumpAsJSONLD( o_in[0] )
+            else:
+                for item in o_in:
+                    if item and readyQuerySetValuesForDumpAsJSONLD( item ):
+                        o_out += ( readyQuerySetValuesForDumpAsJSONLD( item ), )
         elif type(o_in) is list or type(o_in) is set:
             o_out = []
-            for item in o_in:
-                if item and readyQuerySetValuesForDumpAsJSONLD( item ):
-                    o_out.append( readyQuerySetValuesForDumpAsJSONLD( item ) )
+            if len(o_in) == 1 and readyQuerySetValuesForDumpAsJSONLD( o_in[0] ):
+                o_out = readyQuerySetValuesForDumpAsJSONLD( o_in[0] )
+            else:
+                for item in o_in:
+                    if item and readyQuerySetValuesForDumpAsJSONLD( item ):
+                        o_out.append( readyQuerySetValuesForDumpAsJSONLD( item ) )
         elif type(o_in) is dict:
             o_out = {}
             for k in o_in.keys():
@@ -872,17 +825,20 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
                     if m:
                         newkey = "@{0}".format(m.group(1))
                     if newkey=="@id": newkey="id"
-                    o_out[newkey] = readyQuerySetValuesForDumpAsJSONLD( o_in[k] )
+                    if newkey!="@context":
+                        o_out[newkey] = readyQuerySetValuesForDumpAsJSONLD( o_in[k] )
         elif isinstance(o_in, datetime.datetime) or isinstance(o_in, datetime.datetime):
             o_out = o_in.isoformat()
         elif o_in and o_in != "None" and not re.match(r'^<class (.*)>', o_in):
             o_out = str(o_in)
-        #if len(o_out) <= 0: o_out = None
+
     except:
         o_out = None
         pass
 
     return o_out
+
+
 
 
 def CheckDuplicateAnnotation( target=None, annotation_body=None ):

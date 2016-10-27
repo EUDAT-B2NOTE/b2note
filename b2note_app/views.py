@@ -22,38 +22,8 @@ from accounts.models import AnnotatorProfile
 
 
 
-
 def index(request):
     return HttpResponse("replace me with index text")
-
-
-@login_required
-def homepage(request):
-    """
-    User profile view.
-    """
-    try:
-        if request.session.get("user"):
-
-            userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
-
-            annotation_list = RetrieveAnnotations_perUsername( userprofile.nickname )
-
-            file_list = list(annotation_list)
-
-            file_list = set([k.target[0].jsonld_id for k in file_list])
-
-            context = RequestContext(request, {
-                'userprofile': userprofile,
-                'annotation_list': annotation_list,
-                'file_list': file_list})
-            return render_to_response('b2note_app/homepage.html', context_instance=context)
-        else:
-            print "Redirecting from homepage view."
-            return redirect('/accounts/logout')
-    except Exception:
-        print "Could not load or redirect from homepage view."
-        return False
 
 
 @login_required
@@ -72,51 +42,75 @@ def export_annotations(request):
 
     try:
         subject_tofeed = ""
-        if request.POST.get('subject_tofeed')!=None:
+        if request.POST.get('subject_tofeed') != None:
             subject_tofeed = request.POST.get('subject_tofeed')
+            request.session["subject_tofeed"] = subject_tofeed
+        elif request.session.get('subject_tofeed'):
+            subject_tofeed = request.session.get('subject_tofeed')
 
         pid_tofeed = ""
         if request.POST.get('pid_tofeed')!=None:
             pid_tofeed = request.POST.get('pid_tofeed')
 
+        user_nickname = None
+        userprofile = None
         if request.session.get("user"):
-
             userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
-
             user_nickname = userprofile.nickname
 
-            annotation_list = RetrieveAnnotations_perUsername(userprofile.nickname)
+        response = None
+        annotation_list = None
+        annotations_of = None
 
-            annotation_list = annotation_list.values()
+        if subject_tofeed and isinstance(subject_tofeed, (str, unicode)):
 
-            """
-            abremaud@esciencedatalab.com, 20160303
-            Upon testing on json-ld online playground, none of the URLs provided in current
-             web annotation specification document allowed the context to be retrieved
-             with likely origin of trouble being CORS.
-            As a consequence we resort here to embedding rather than linking to the context.
-            """
-            context_str = open(os.path.join(global_settings.STATIC_PATH, 'files/anno_context.jsonld'), 'r').read()
+            if request.POST.get('user_annotations')!=None and user_nickname:
+                annotation_list = RetrieveUserFileAnnotations(subject_tofeed, user_nickname)
+                annotation_list = annotation_list.values()
+                annotations_of = "mine"
 
-            response = {"@context": json.loads( context_str, object_pairs_hook=OrderedDict ) }
+            elif request.POST.get('all_annotations')!=None:
+                annotation_list = RetrieveFileAnnotations( subject_tofeed )
+                annotation_list = annotation_list.values()
+                annotations_of = "all"
 
-            response["@graph"] = readyQuerySetValuesForDumpAsJSONLD( [ann for ann in annotation_list] )
+            if annotation_list:
+                """
+                abremaud@esciencedatalab.com, 20160303
+                Upon testing on json-ld online playground, none of the URLs provided in current
+                 web annotation specification document allowed the context to be retrieved
+                 with likely origin of trouble being CORS.
+                As a consequence we resort here to embedding rather than linking to the context.
+                """
+                #context_str = open(os.path.join(global_settings.STATIC_PATH, 'files/anno_context.jsonld'), 'r').read()
+                contextfile_name = "jsonld_context_b2note_20161027.json"
+                context_str = "https://b2note-dev.bsc.es/" + contextfile_name
 
-            # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
-            json_data = HttpResponse(json.dumps(response, indent=2), mimetype= 'application/json')
-            json_data['Content-Disposition'] = 'attachment; filename=annotations.json'
-            download_json.file_data = json_data
+                #response = {"@context": json.loads( context_str, object_pairs_hook=OrderedDict ) }
+                response = {"@context": context_str}
+
+                response["@graph"] = readyQuerySetValuesForDumpAsJSONLD( [ann for ann in annotation_list] )
+
+                # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
+                json_data = HttpResponse(json.dumps(response, indent=2), mimetype= 'application/json')
+                json_data['Content-Disposition'] = 'attachment; filename=' + contextfile_name
+                download_json.file_data = json_data
 
             navbarlinks = list_navbarlinks(request, ["Download"])
             shortcutlinks = list_shortcutlinks(request, ["Download"])
 
-            return render(request, 'b2note_app/export.html', {
-                'navbarlinks':navbarlinks,
-                'shortcutlinks':shortcutlinks,
+            data_dict = {
+                'annotations_of': annotations_of,
+                'navbarlinks': navbarlinks,
+                'shortcutlinks': shortcutlinks,
                 'user_nickname': user_nickname,
                 'annotations_json': json.dumps(response, indent=2),
-                "subject_tofeed":subject_tofeed ,
-                "pid_tofeed":pid_tofeed })
+                "subject_tofeed": subject_tofeed,
+                "pid_tofeed": pid_tofeed
+            }
+
+            return render(request, 'b2note_app/export.html', data_dict)
+
         else:
             print "Redirecting from export view."
             return redirect('/accounts/logout')
@@ -1106,10 +1100,6 @@ def interface_main(request):
         userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
         user_nickname = userprofile.nickname
 
-    pagefrom = ""
-    if request.POST.get('pagefrom')!=None:
-        pagefrom = request.POST.get('pagefrom')
-
     #http://stackoverflow.com/questions/5508888/matching-query-does-not-exist-error-in-django
     try:
         # https://blog.scrapinghub.com/2013/05/13/mongo-bad-for-scraped-data/
@@ -1161,7 +1151,6 @@ def interface_main(request):
         'my_c': my_c,
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
-        'pagefrom': pagefrom,
         'user_nickname': user_nickname}
 
     return render(request, 'b2note_app/interface_main.html', data_dict)
@@ -1169,6 +1158,61 @@ def interface_main(request):
 
 @login_required
 def search_annotations(request):
+
+    user_nickname = None
+    if request.session.get('user')!=None:
+        userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+        user_nickname = userprofile.nickname
+
+    form = []
+    if request.POST.get("launch_search")!=None:
+        print 'LAUNCH'
+    elif request.POST.get("plus")!=None:
+        print 'PLUS'
+    else:
+        iterator = 0
+        valid_field = True
+        cbc = True
+        while valid_field:
+            valid_field = False
+            if request.POST.get("select"+str(iterator)):
+                valid_field = True
+                if cbc:
+                    fdic = {'types': ["Semantic tag", "Free-text keyword", "Comment"]}
+                else:
+                    fdic = {'types': ["Semantic tag", "Free-text keyword"]}
+                if request.POST.get("select"+str(iterator)) == "Semantic tag":
+                    fdic["type"] = "Semantic tag"
+                elif request.POST.get("select" + str(iterator)) == "Free-text keyword":
+                    fdic["type"] = "Free-text keyword"
+                elif cbc and request.POST.get("select" + str(iterator)) == "Comment":
+                    cbc = False
+                    fdic["type"] = "Comment"
+                print "DETECTED", request.POST.get("select"+str(iterator))
+                form.append( fdic )
+                iterator+=1
+
+    if form == []: form = [{'logical': None,
+                            'types': ["Semantic tag", "Free-text keyword", "Comment"],
+                            'type':"Semantic tag"}]
+
+
+    navbarlinks = list_navbarlinks(request, ["Search"])
+    shortcutlinks = list_shortcutlinks(request, ["Search"])
+
+    data_dict = {
+        'form': form,
+        'user_nickname': user_nickname,
+        'navbarlinks': navbarlinks,
+        'shortcutlinks': shortcutlinks,
+    }
+
+    return render(request, "b2note_app/searchpage.html", data_dict)
+
+
+
+@login_required
+def search_annotations_bck(request):
 
     keywd_json = None
     label_match = None
@@ -1404,6 +1448,6 @@ def retrieve_annotations(request):
     if request.GET.get('target_id') != None:
         target_id = request.GET.get('target_id')
 
-    annotations = RetrieveAnnotations(target_id)
+    annotations = RetrieveFileAnnotations(target_id)
 
     return HttpResponse(annotations)
