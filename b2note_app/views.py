@@ -893,10 +893,6 @@ def allannotations(request):
         userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
         user_nickname = userprofile.nickname
 
-    pagefrom = ""
-    if request.POST.get('pagefrom')!=None:
-        pagefrom = request.POST.get('pagefrom')
-
     try:
         allannotations_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
     except Annotation.DoesNotExist:
@@ -1026,7 +1022,6 @@ def allannotations(request):
         'my_c': my_c,
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
-        'pagefrom': pagefrom,
         'user_nickname': user_nickname}
 
     return render(request, 'b2note_app/allannotations.html', data_dict)
@@ -1168,6 +1163,141 @@ def interface_main(request):
     return render(request, 'b2note_app/interface_main.html', data_dict)
 
 
+def process_semantic_entry( query_dict, entry ):
+
+    if query_dict and entry:
+
+        if isinstance(query_dict, dict) and isinstance(entry, dict):
+
+            if "search_param" in entry.keys():
+
+                if entry["search_param"]:
+
+                    if isinstance(entry["search_param"], dict):
+
+                        if "uris" in entry["search_param"].keys():
+                            uri = None
+                            uri = entry["search_param"]["uris"]
+                            if uri and isinstance(uri, (str, unicode)):
+                                if "logical" in entry.keys():
+                                    if entry["logical"] and isinstance(entry["logical"], (str, unicode)):
+                                        for logic in ["AND", "OR", "NOT", "XOR"]:
+                                            if entry["logical"] == logic:
+                                                query_dict["body_id_"+str(logic).lower()].append( uri )
+                                    elif entry["logical"] is None:
+                                        query_dict["body_id_or"].append( uri )
+
+                        if "syn_incl" in entry.keys() and entry["syn_incl"] is True:
+                            if "synonyms" in entry["search_param"].keys():
+                                syns = None
+                                syns = entry["search_param"]["synonyms"]
+                                if syns and isinstance(syns, list):
+                                    for syn in syns:
+                                        if syn and isinstance(syn, (str, unicode)):
+                                            query_dict["body_val_syn"].append( syn )
+    return query_dict
+
+
+def process_keyword_entry( query_dict, entry ):
+    if query_dict and entry:
+        if isinstance(query_dict, dict) and isinstance(entry, dict):
+            if "search_param" in entry.keys():
+                if entry["search_param"]:
+                    if isinstance(entry["search_param"], (str, unicode)):
+                        kwd = None
+                        kwd = entry["search_param"]
+                        if kwd and isinstance(kwd, (str, unicode)):
+                            if "logical" in entry.keys():
+                                if entry["logical"] and isinstance(entry["logical"], (str, unicode)):
+                                    for logic in ["AND", "OR", "NOT", "XOR"]:
+                                        if entry["logical"] == logic:
+                                            query_dict["body_val_"+str(logic).lower()].append( kwd )
+                                elif entry["logical"] is None:
+                                    query_dict["body_val_or"].append( kwd )
+    return query_dict
+
+
+def process_search_query( form ):
+
+    query_dict = {"body_val_and": [],
+                  "body_val_or" : [],
+                  "body_val_not": [],
+                  "body_val_xor": [],
+                  "body_id_and" : [],
+                  "body_id_or"  : [],
+                  "body_id_not" : [],
+                  "body_id_xor" : [],
+                  "body_val_syn": [],
+                  "commenting"  : False,
+                  }
+    search_str = ""
+    for entry in form:
+        if isinstance(entry, dict):
+            if "type" in entry.keys():
+                if entry["type"] and isinstance(entry["type"], (str, unicode)):
+                    if entry["type"] == "Semantic tag":
+                        query_dict = process_semantic_entry( query_dict, entry )
+                    elif entry["type"] == "Free-text keyword":
+                        query_dict = process_keyword_entry(query_dict, entry)
+                    elif entry["type"] == "Comment":
+                        query_dict["commenting"] = True
+
+    print query_dict
+
+    VA=""
+    VX=""
+    VO=""
+    VN=""
+    VS=""
+    IA=""
+    IO=""
+    IN=""
+    IX=""
+
+    for k, v in query_dict.iteritems():
+
+        if v and isinstance(v,list) and len(v)>0:
+
+            if k == "body_val_and": VA = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+            if k == "body_val_or":  VO = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+            if k == "body_val_not": VN = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+            if k == "body_val_xor": VX = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+            if k == "body_val_syn": VS = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+
+            if k == "body_id_and": IA = Annotation.objects.raw_query({"body.jsonld_id": {"$in": query_dict[ k ]}})
+            if k == "body_id_or":  IO = Annotation.objects.raw_query({"body.jsonld_id": {"$in": query_dict[ k ]}})
+            if k == "body_id_not": IN = Annotation.objects.raw_query({"body.jsonld_id": {"$in": query_dict[ k ]}})
+            if k == "body_id_xor": IX = Annotation.objects.raw_query({"body.jsonld_id": {"$in": query_dict[ k ]}})
+
+
+    print len(VA)
+    print len(VO)
+    print len(VN)
+    print len(VX)
+    print len(VS), VS
+    print len(IA)
+    print len(IO)
+    print len(IN)
+    print len(IX)
+
+    exact = []
+    related = []
+
+    if VA:
+        for ann in VA:
+            v = set([ann.body[0].value])
+            for anno in VA:
+                if ann.target[0].jsonld_id == anno.target[0].jsonld_id:
+                    v.add( ann.body[0].value )
+            if v == set(query_dict["body_val_and"]):
+                exact.append( ann.target[0].jsonld_id )
+    if VO:
+        for ann in VO:
+            exact.append(ann.target[0].jsonld_id)
+
+    return search_str
+
+
 @login_required
 def search_annotations(request):
 
@@ -1177,42 +1307,88 @@ def search_annotations(request):
         user_nickname = userprofile.nickname
 
     form = []
+    cbc = True
+    fmessage = None
+    while request.POST.get("select"+str(len(form))):
+        fdic = {"types": ["Semantic tag", "Free-text keyword", "Comment"],
+                "type": "Semantic tag",
+                "logicals": ["AND", "OR", "NOT", "XOR"],
+                "logical": "AND",
+                "syn_incl": False,
+                "search_param": None}
+        if not cbc: fdic["types"] = ["Semantic tag", "Free-text keyword"]
+        if request.POST.get("logical" + str(len(form))):
+            if request.POST.get("logical" + str(len(form))) == "AND":
+                fdic["logical"] = "AND"
+            elif request.POST.get("logical" + str(len(form))) == "OR":
+                fdic["logical"] = "OR"
+            elif request.POST.get("logical" + str(len(form))) == "NOT":
+                fdic["logical"] = "NOT"
+            elif request.POST.get("logical" + str(len(form))) == "XOR":
+                fdic["logical"] = "XOR"
+        if request.POST.get("select"+str(len(form))) == "Semantic tag":
+            fdic["type"] = "Semantic tag"
+            fdic["search_param"] = None
+            if request.POST.get("ontology_json"+ str(len(form))):
+                jdic = None
+                jdic = json.loads(request.POST.get("ontology_json"+ str(len(form))))
+                if jdic:
+                    fdic["search_param"] = jdic
+                    jstr = None
+                    jstr = json.dumps(jdic)
+                    if jstr:
+                        fdic["search_json"] = jstr
+            fdic["syn_incl"] = False
+            if request.POST.get("cbox" + str(len(form))) == "syn":
+                fdic["syn_incl"] = True
+        elif request.POST.get("select" + str(len(form))) == "Free-text keyword":
+            fdic["type"] = "Free-text keyword"
+            fdic["search_param"] = None
+            if request.POST.get("keyword" + str(len(form))):
+                fdic["search_param"] = request.POST.get("keyword" + str(len(form)))
+        elif cbc and request.POST.get("select" + str(len(form))) == "Comment":
+            cbc = False
+            fdic["type"] = "Comment"
+            fdic["logicals"] = None
+            fdic["logical"] = None
+        if len(form) == 0:
+            fdic["logicals"] = None
+            fdic["logical"] = None
+
+        form.append( fdic )
+
     if request.POST.get("launch_search")!=None:
         print 'LAUNCH'
+
+        if form:
+
+            process_search_query( form )
+
     elif request.POST.get("plus")!=None:
-        print 'PLUS'
-    else:
-        iterator = 0
-        valid_field = True
-        cbc = True
-        while valid_field:
-            valid_field = False
-            if request.POST.get("select"+str(iterator)):
-                valid_field = True
-                if cbc:
-                    fdic = {'types': ["Semantic tag", "Free-text keyword", "Comment"]}
-                else:
-                    fdic = {'types': ["Semantic tag", "Free-text keyword"]}
-                if request.POST.get("select"+str(iterator)) == "Semantic tag":
-                    fdic["type"] = "Semantic tag"
-                elif request.POST.get("select" + str(iterator)) == "Free-text keyword":
-                    fdic["type"] = "Free-text keyword"
-                elif cbc and request.POST.get("select" + str(iterator)) == "Comment":
-                    cbc = False
-                    fdic["type"] = "Comment"
-                print "DETECTED", request.POST.get("select"+str(iterator))
-                form.append( fdic )
-                iterator+=1
+        if form[len(form)-1]["search_param"] is not None or form[len(form)-1]["type"] == "Comment":
+            fdic = {"types": ["Semantic tag", "Free-text keyword", "Comment"],
+                    "type": "Semantic tag",
+                    "logicals": ["AND", "OR", "NOT", "XOR"],
+                    "logical": "AND",
+                    "search_param": None,
+                           }
+            form.append( fdic )
+        else:
+            fmessage = "Please fill-in the existing fields before adding new ones."
 
-    if form == []: form = [{'logical': None,
+    if form == []: form = [{'logicals': None,
+                            'logical': None,
                             'types': ["Semantic tag", "Free-text keyword", "Comment"],
-                            'type':"Semantic tag"}]
-
+                            'type':"Semantic tag",
+                            "syn_incl": False,
+                            "search_param":None
+                            }]
 
     navbarlinks = list_navbarlinks(request, ["Search"])
     shortcutlinks = list_shortcutlinks(request, ["Search"])
 
     data_dict = {
+        'fmessage': fmessage,
         'form': form,
         'user_nickname': user_nickname,
         'navbarlinks': navbarlinks,

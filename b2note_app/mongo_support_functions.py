@@ -162,39 +162,35 @@ def RetrieveUserFileAnnotations( subject_url=None, nickname=None ):
     """
     try:
 
-        if nickname and isinstance(nickname, (str, unicode)):
-
-            annotations = Annotation.objects.raw_query({'creator.nickname': nickname})
-
-
-            print "RetrieveAnnotations_perUsername function, returning annotations."
-            stdlogger.info("RetrieveAnnotations_perUsername function, returning annotations.")
-            return annotations
-
         if subject_url and isinstance(subject_url, (str, unicode)):
             if nickname and isinstance(nickname, (str, unicode)):
+                annotations = None
                 annotations = Annotation.objects.raw_query({'target.jsonld_id': subject_url, 'creator.nickname': nickname})
                 #annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
-                print "RetrieveUserFileAnnotations function, returning annotations."
-                return annotations
+                if annotations:
+                    print "RetrieveUserFileAnnotations function, returning annotations."
+                    stdlogger.info("RetrieveUserFileAnnotations function, returning annotations.")
+                    return annotations
+                else:
+                    print "RetrieveUserFileAnnotations function, no annotations retrieved."
+                    stdlogger.info("RetrieveUserFileAnnotations function, no annotations retrieved.")
+                    return False
             else:
                 print "RetrieveUserFileAnnotations function, provided nickname not valid:", nickname
+                stdlogger.info("RetrieveUserFileAnnotations function, provided nickname not valid:" + str(nickname))
                 return False
         else:
             print "RetrieveUserFileAnnotations function, provided target id not valid:", subject_url
-            print "RetrieveAnnotations_perUsername function, provided nickname not valid: ", nickname
-            stdlogger.error("RetrieveAnnotations_perUsername function, provided nickname not valid: " + str(nickname))
+            stdlogger.error("RetrieveUserFileAnnotations function, provided target id not valid:" + str(subject_url))
             return False
 
     except Annotation.DoesNotExist:
-        "RetrieveUserFileAnnotations function did not complete."
-        print "RetrieveAnnotations_perUsername function did not complete."
-        stdlogger.error("RetrieveAnnotations_perUsername function did not complete.")
+        print "RetrieveUserFileAnnotations function did not complete."
+        stdlogger.error("RetrieveUserFileAnnotations function did not complete.")
         return False
 
     print "RetrieveUserFileAnnotations function did not complete succesfully."
-    print "RetrieveAnnotations_perUsername function did not complete succesfully."
-    stdlogger.error("RetrieveAnnotations_perUsername function did not complete succesfully.")
+    stdlogger.error("RetrieveUserFileAnnotations function did not complete succesfully.")
     return False
 
 
@@ -578,38 +574,36 @@ def CreateFreeTextKeyword( subject_url=None, text=None ):
                     db_id = None
                     db_id = MakeAnnotationFreeText(my_id, text)
 
-                    print "CreateFreeText function, created free-text annotation: ", str(db_id)
-                    stdlogger.info("CreateFreeText function, created free-text annotation: " + str(db_id))
-                    db_id = SetAnnotationMotivation( db_id, "tagging" )
+                    #db_id = SetAnnotationMotivation( db_id, "tagging" )
 
-                    print "CreateFreeTextKeyword function, created free-text keyword annotation:", str(db_id)
-                    return db_id
-
+                    if db_id:
+                        print "CreateFreeTextKeyword function, created free-text keyword annotation:", str(db_id)
+                        stdlogger.info("CreateFreeTextKeyword function, created free-text keyword annotation:", str(db_id))
+                        return db_id
+                    else:
+                        print "CreateFreeTextKeyword function, free-text keyword annotation make unreturned."
+                        stdlogger.info("CreateFreeTextKeyword function, free-text keyword annotation make unreturned.")
+                        return False
                 else:
                     print "CreateFreeTextKeyword function, wrong text codification or empty text."
-                    print "CreateFreeText function, wrong text codification or empty text."
-                    stdlogger.error("CreateFreeText function, wrong text codification or empty text.")
+                    stdlogger.error("CreateFreeTextKeyword function, wrong text codification or empty text.")
                     return False
             else:
-                print "CreateFreeText function, 'my_id' parameter neither str nor unicode."
-                stdlogger.error("CreateFreeText function, 'my_id' parameter neither str nor unicode.")
                 print "CreateFreeTextKeyword function, 'my_id' parameter neither str nor unicode."
+                stdlogger.error("CreateFreeTextKeyword function, 'my_id' parameter neither str nor unicode.")
                 return False
         else:
-            print "CreateFreeText function, annotation not created or id not returned."
-            stdlogger.error("CreateFreeText function, annotation not created or id not returned.")
             print "CreateFreeTextKeyword function, annotation not created or id not returned."
+            stdlogger.error("CreateFreeText function, annotation not created or id not returned.")
             return False
 
     except ValueError:
-        print "CreateFreeText function did not complete."
-        stdlogger.error("CreateFreeText function did not complete.")
         print "CreateFreeTextKeyword function did not complete."
+        stdlogger.error("CreateFreeTextKeyword function did not complete.")
         return False
 
-    print "CreateFreeText function did not complete succesfully."
-    stdlogger.error("CreateFreeText function did not complete succesfully.")
     print "CreateFreeTextKeyword function did not complete succesfully."
+    stdlogger.error("CreateFreeTextKeyword function did not complete succesfully.")
     return False
 
 
@@ -641,24 +635,35 @@ def CreateFreeTextComment(subject_url=None, text=None):
 
                     db_id = SetAnnotationMotivation(db_id, "commenting")
 
-                    print "CreateFreeTextComment function, created free-text comment annotation:", str(db_id)
-                    return db_id
+                    if db_id:
+                        print "CreateFreeTextComment function, created free-text comment annotation:", str(db_id)
+                        stdlogger.info("CreateFreeTextComment function, created free-text comment annotation:", str(db_id))
+                        return db_id
+                    else:
+                        print "CreateFreeTextComment function, free-text comment annotation created not returned."
+                        stdlogger.info("CreateFreeTextComment function, free-text comment annotation created not returned.")
+                        return False
 
                 else:
                     print "CreateFreeTextComment function, wrong text codification or empty text."
+                    stdlogger.info("CreateFreeTextComment function, wrong text codification or empty text.")
                     return False
             else:
                 print "CreateFreeTextComment function, 'my_id' parameter neither str nor unicode."
+                stdlogger.info("CreateFreeTextComment function, 'my_id' parameter neither str nor unicode.")
                 return False
         else:
             print "CreateFreeTextComment function, annotation not created or id not returned."
+            stdlogger.info("CreateFreeTextComment function, annotation not created or id not returned.")
             return False
 
     except ValueError:
         print "CreateFreeTextComment function did not complete."
+        stdlogger.info("CreateFreeTextComment function did not complete.")
         return False
 
     print "CreateFreeTextComment function did not complete succesfully."
+    stdlogger.info("CreateFreeTextComment function did not complete succesfully.")
     return False
 
 
@@ -713,7 +718,6 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
 
                                     db_id = SetAnnotationMotivation( A.id, "tagging" )
 
-                                    print "MakeAnnotationSemanticTag function, made annotation semantic tag:", str(db_id)
                                     print "MakeAnnotationSemanticTag function, made annotation semantic tag: ", str(db_id)
                                     stdlogger.info("MakeAnnotationSemanticTag function, made annotation semantic tag: " + str(db_id))
                                     return db_id

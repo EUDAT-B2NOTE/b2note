@@ -81,7 +81,7 @@ $(document).ready( function() {
                     ' -No results-',
                     '</div>'
                 ].join('\n'),
-                suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}' + ' ({{ontology_acronym}}:{{short_form}})</p>')
+                suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}' + ' ({{short_form}})</p>')
             },
             engine: Handlebars
 	// defines the event 'onclick'
@@ -98,10 +98,17 @@ $(document).ready( function() {
 	      *
               */
 
+
             //if (document.getElementById("section_subject")) {
             if (document.getElementById("semantic")) {
 
                 $('#ontology_json').val( JSON.stringify(data.json_document) )
+
+            } else {
+
+                $('#'+this.parentElement.parentElement.querySelector('[id^="ontology_json"]').name).val( JSON.stringify(data.json_document) )
+
+            }
 
 //              abremaud 20161025, stop creating anntation upon simply selecting one entry,
 //              instead selection label is output to the typeahead text-box while full information json
@@ -116,25 +123,25 @@ $(document).ready( function() {
 //                    csrfmiddlewaretoken: this.parentElement.previousElementSibling.value,
 //                });
 
-            } else {
-                if (db_id != "") {
-                    $.redirect('edit_annotation',
-                        {
-                        ontology_json: JSON.stringify(data.json_document),
-                        db_id: db_id,
-                        // abremaud@esciencefactory.com, 20160926
-                        // retrieve Django csrf token from html hidden input element
-                        csrfmiddlewaretoken: this.parentElement.parentElement.firstChild.nextSibling.value,
-                    });
-                } else {
-                    $.redirect('search_annotation',
-                        {
-                        // abremaud@esciencefactory.com, 20160928
-                        // search annotations on keyword
-                        ontology_json: JSON.stringify(data.json_document),
-                        csrfmiddlewaretoken: this.form.firstChild.nextSibling.value,
-                    });
-                }
-            };
+//            } else {
+//                if (db_id != "") {
+//                    $.redirect('edit_annotation',
+//                        {
+//                        ontology_json: JSON.stringify(data.json_document),
+//                        db_id: db_id,
+//                        // abremaud@esciencefactory.com, 20160926
+//                        // retrieve Django csrf token from html hidden input element
+//                        csrfmiddlewaretoken: this.parentElement.parentElement.firstChild.nextSibling.value,
+//                    });
+//                } else {
+//                    $.redirect('search_annotation',
+//                        {
+//                        // abremaud@esciencefactory.com, 20160928
+//                        // search annotations on keyword
+//                        ontology_json: JSON.stringify(data.json_document),
+//                        csrfmiddlewaretoken: this.form.firstChild.nextSibling.value,
+//                    });
+//                }
+//            };
     });
 });

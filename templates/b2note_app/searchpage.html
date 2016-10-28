@@ -12,15 +12,23 @@
 
             {% if f.logicals %}
 
-                {% for op in f.logicals %}
+                <select name="logical{{forloop.counter0}}" onchange="this.form.submit()">
 
-                    <select name="logical{{forloop.counter0}}" onchange="this.form.submit()">
+                    {% for op in f.logicals %}
 
-                        <option value="{{op}}">{{ op }}</option>
+                        {% if op == f.logical %}
 
-                    </select>
+                            <option value="{{op}}" selected>{{ op }}</option>
 
-                {% endfor %}
+                        {% else %}
+
+                             <option value="{{op}}">{{ op }}</option>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                </select>
 
             {% endif %}
 
@@ -48,14 +56,19 @@
 
                     {% if f.type == "Semantic tag" %}
 
-                        <input type="text" class="form-control" name="q" id="id_q{{forloop.counter0}}" value="{{ query }}" placeholder="Type-in to select a tag"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
+                        <div id="select_semantic">
 
-                        <br>
-                        <input type="checkbox" id="cbox{{forloop.counter0}}" value="syn">Include synonym matches
+                            <input type="hidden" name="ontology_json{{forloop.counter0}}" id="ontology_json{{forloop.counter0}}" {% if f.search_json %}value="{{f.search_json}}"{% endif %}>
+                            <input type="text" class="form-control" name="q{{forloop.counter0}}" id="id_q{{forloop.counter0}}" value="{% if query %}{{ query }}{% elif f.search_param %}{{f.search_param.labels}} ({{f.search_param.short_form}}){% endif %}" placeholder="Type-in to select a tag"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
+
+                            <br>
+                            <input type="checkbox" name="cbox{{forloop.counter0}}" id="cbox{{forloop.counter0}}" value="syn" {% if f.syn_incl %}checked{% endif %}>Include synonym matches
+
+                        </div>
 
                     {% elif f.type == "Free-text keyword" %}
 
-                        <input type="text" name="keyword{{forloop.counter0}}" id="keyword{{forloop.counter0}}" placeholder="Type-in a free-text keyword"/>
+                        <input type="text" name="keyword{{forloop.counter0}}" {% if f.search_param %}value="{{f.search_param}}"{% endif %} id="keyword{{forloop.counter0}}" placeholder="Type-in a free-text keyword"/>
 
                     {% elif f.type == "Comment" %}
 
@@ -67,7 +80,11 @@
 
             {% endif %}
 
+            <br>
+
         {% endfor %}
+
+        {% if fmessage %}<p>{{fmessage}}</p>{% endif %}
 
         <br>
         <input type="submit" name="plus" value="+"/>
