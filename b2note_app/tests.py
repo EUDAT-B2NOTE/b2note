@@ -10,7 +10,9 @@ from b2note_app.models import Annotation
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db import connections
+from accounts.tests import *
 from b2note_app.mongo_support_functions import *
+from b2note_devel.urls import urlpatterns
 import json
 
 #class B2noteappFailTest(TestCase):
@@ -37,6 +39,27 @@ import json
     #def test_dont_create_annotation(self):
         #a = CreateAnnotation(u"test_target")
         #self.assertEqual(a, None)
+
+def check_urls(urllist, depth=0):
+    c = Client()
+    for entry in urllist:
+        if hasattr(entry, 'url_patterns'):
+                check_urls(entry.url_patterns, depth+1)
+        else:
+            test_url = entry.regex.pattern.translate(None, '^$')
+            response = None
+            if depth == 1:
+                if ('register' not in test_url) and ('retrieval' not in test_url):
+                    if 'reset_password_confirm' not in test_url:
+                        response = c.get('/accounts/' + test_url)
+            else:
+                response = c.get('/' + test_url)
+            
+            if response is not None:
+                if response.status_code != 200 and response.status_code != 302:
+                    print test_url + ": " + str(response.status_code)
+                    return False
+    return True
 
 class B2noteappTest(TestCase):
     """
@@ -187,5 +210,8 @@ class B2noteappTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertIn("annotation_test", resp.content)
 
-
+    
+    # http://stackoverflow.com/questions/1828187/determine-complete-django-url-configuration    
+    def parse_urls(self):
+        self.assertTrue(check_urls(urlpatterns))
 
