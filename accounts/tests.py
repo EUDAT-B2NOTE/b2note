@@ -7,33 +7,35 @@ Replace this with more appropriate tests for your application.
 
 from django.test import TestCase
 from django.test.client import Client
-from accounts.models import UserCred, AnnotatorProfile
-from accounts.urls import urlpatterns as aurls
-from b2note_devel.urls import urlpatterns as burls
+from django.contrib.auth import login as django_login, authenticate, logout as django_logout
+from accounts.models import UserCred
+from accounts.views import login
 
 class AccountTest(TestCase):
     username='test'
-    password='1234'
+    password='123456'
     email='test@test.com'
-    c=Client()
-
-    def test_create_user(self):
-        #UserCred.objects.create_user(username='test', email='test@test.com', password='1234')
-        user = UserCred()
-        user.set_password(self.password)
-        ap = AnnotatorProfile(nickname=self.username, email=self.email)
-        ap.save(using='users')
-        user.annotator_id= ap
-        user.save(using='users')
+    user = None
+    c = Client()
+    
+    def setUp(self):
+        self.user = UserCred.objects.create_user(username=self.username, email=self.email, password=self.password)
         
-        
+    def is_created(self):
+        print UserCred.objects.get(username=self.email)
+    
     def test_login(self):
-        #self.test_create_user()
-        response = self.c.get('/consolelogin')
+        response = self.c.get('/login')
         self.assertEqual(response.status_code, 200)
-        response = self.c.post('/consolelogin', {'username': self.username, 'password': self.password})
+        #auth = authenticate(email=self.email,password=self.password,db=self.user.getDB())
+        auth = self.c.login(email=self.email,password=self.password,db=self.user.getDB())
+        self.assertTrue(auth)
+        response = self.c.post('/login', {'username': self.email, 'password': self.password})
         self.assertEqual(response.status_code, 200)
-        response = self.c.post
+        #print response.content
+        response = self.c.get('/homepage')
+        self.assertEqual(response.status_code, 200)
+        
         
     
     def test_logout(self):
@@ -41,15 +43,5 @@ class AccountTest(TestCase):
         self.test_login()
         response = self.c.get('/logout')
         self.assertEqual(response.status_code, 302)
-        
-    # http://stackoverflow.com/questions/1828187/determine-complete-django-url-configuration    
-    def parse_urls(self):
-        print "Accounts URL's:"
-        for url in aurls:
-            print url
-        
-        print "B2note URL's:"
-        for url in burls:
-            print url
             
         

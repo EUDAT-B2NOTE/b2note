@@ -1,9 +1,19 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, UserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django_countries.fields import CountryField
 from django.utils import timezone
 
 
+# http://procrastinatingdev.com/django/using-configurable-user-models-in-django-1-5/
+class UserCredManager(BaseUserManager):
+    def create_user(self, username, email, password=None):
+        user = self.model(username=email, password=password)
+        user.set_password(password)
+        ap = AnnotatorProfile(nickname=username,email=email)
+        ap.save(using=self._db)
+        user.annotator_id = ap
+        user.save(using=self._db)
+        return user
 
 # http://blackglasses.me/2013/09/17/custom-django-user-model/
 class UserCred(AbstractBaseUser):
@@ -16,11 +26,14 @@ class UserCred(AbstractBaseUser):
     USERNAME_FIELD = 'user_id'
     REQUIRED_FIELDS = []
 
-    objects = UserManager()
+    objects = UserCredManager()
+    db = objects._db
     
     def __str__(self):
          return str(self.username)
-
+     
+    def getDB(self):
+        return self.db
 
 
 class AnnotatorProfile(models.Model):
