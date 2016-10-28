@@ -1,126 +1,55 @@
-<!DOCTYPE html>
+{% extends "b2note_app/__base.html" %}
 
-<html lang="en">
+{% block content %}
 
-<head>
-<meta charset="UTF-8">
+	<h3>Export</h3>
 
-{% load staticfiles %}
-<link rel='stylesheet' type='text/css'
-	href="{% static 'css/bootstrap.min.css' %}" />
-<link rel='stylesheet' type='text/css'
-	href="{% static 'css/style.css' %}" />
+	{% if not annotations_json or annotations_json == "null" %}
 
-<script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
-<script src="{% static 'js/utils.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
+		<p>Download annotations about the file:</p>
 
-<title>B2Note annotations export</title>
+		<form action="/export_annotations" method="post">
+			{% csrf_token %}
+			<input type="submit" class="btn btn-default" name="user_annotations" value="My annotations" title="Only the annotations that I created."/>
+			<input type="submit" class="btn btn-default" name="all_annotations" value="All annotations" title="All the annotations about the file.">
+		</form>
 
-</head>
+	{% else %}
 
-<body id="export">
-	<div class="navbar navbar-default navbar-static-top">
+		{% if annotations_of %}
 
-		<div class="container">
+			{% if annotations_of == "mine" %}
 
-			<div class="navbar-brand">B2Note interface</div>
+				<p><strong>My annotations</strong> about the file.</p>
 
-			<button class="navbar-toggle" data-toggle="collapse"
-				data-target=".navHeaderCollapse">
+			{% elif annotations_of == "all" %}
 
-				<span class="icon-bar"></span> <span class="icon-bar"></span> <span
-					class="icon-bar"></span>
+				<p><strong>All</strong> annotations about the file.</p>
 
-			</button>
-
-			<div class="collapse navbar-collapse navHeaderCollapse">
-
-				<ul class="nav navbar-nav navbar-right">
-
-					<li>
-
-						<form action="interface_main" method="post">
-
-							{% csrf_token %}
-
-							<input type="hidden" name="subject_tofeed"
-								value="{{subject_tofeed}}" readonly="readonly" /> <input
-								type="hidden" name="pid_tofeed" value="{{pid_tofeed}}"
-								readonly="readonly" /> <input class="btn btn-link"
-								type="Submit" value="Back" title="Back to main interface" />
-
-						</form>
-
-					</li>
-
-					<li>
-
-						<form action="publish_annotations" method="post">
-
-							{% csrf_token %}
-
-							<input type="hidden" name="subject_tofeed"
-								value="{{subject_tofeed}}" readonly="readonly" /> <input
-								type="hidden" name="pid_tofeed" value="{{pid_tofeed}}"
-								readonly="readonly" /> <input type="Submit"
-								class="btn btn-link" value="Publish"
-								title="Make annotations available to SPARQL queries" />
-
-						</form>
-
-					</li>
-
-					<li>
-
-						<form action="settings" method="post">
-
-							{% csrf_token %}
-
-							<input type="hidden" name="subject_tofeed"
-								value="{{subject_tofeed}}" readonly="readonly" /> <input
-								type="hidden" name="pid_tofeed" value="{{pid_tofeed}}"
-								readonly="readonly" /> <input type="Submit"
-								class="btn btn-link" value="Settings"
-								title="Manage source ontologies" />
-
-						</form>
-
-					</li>
-
-					<li>
-						<!-- http://stackoverflow.com/questions/11828829/twitter-bootstrap-how-to-get-rid-of-underlined-button-text-when-hovering-over-a -->
-						<a href="#" class="btn btn-link" value="Close"
-						title="Close B2Note interface" onClick="hide_iframe()">Close</a>
-
-					</li>
-
-				</ul>
-
-			</div>
-
-		</div>
-
-	</div>
-
-	<div class="container" id="export-download">
-
-		<a href="{% url 'b2note_app.views.download_json' %}"
-			class="btn btn-default btn-block">Download your annotations as JSON-LD</a>
-
-	</div>
-
-	<div class="container" id="export-content">
-
-		{% if annotations_json %}
-
-			<pre id="ann_json">{{annotations_json|safe}}</pre>
+			{% endif %}
 
 		{% endif %}
 
-	</div>
+		<div class="container" id="export-download" align="right">
 
-</body>
+			<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default">Download JSON-LD</a>
 
-</html>
+		</div>
+
+		<div class="container" id="export-content">
+
+			{% if annotations_json %}
+
+				<pre id="ann_json">{{annotations_json|safe}}</pre>
+
+			{% endif %}
+
+		</div>
+
+	{% endif %}
+
+	<br>
+	<br>
+	<br>
+
+{% endblock %}

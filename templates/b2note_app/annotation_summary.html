@@ -1,0 +1,147 @@
+{% extends "b2note_app/__base.html" %}
+
+{% block content %}
+
+	<div class="container" id="allannotations_summary">
+
+		{% if r %}
+
+			{% if r.labels %}<h3>{{ r.labels }}</h3>{% endif %}
+
+			<table>
+
+				{% if r.description %}
+					{% if r.description.items|length > 1 %}
+						{% for def in r.description %}
+							{% if forloop.counter0 == 0 %}
+								<tr><td><Label>Definition:</Label> {{ def }}</td></tr>
+							{% else %}
+								<tr><td>{{ def }}</td></tr>
+							{% endif %}
+						{% endfor %}
+					{% elif r.description|length > 0 %}
+						<tr><td><Label>Definition:</Label> {{ r.description.0 }}</td></tr>
+					{% endif %}
+				{% endif %}
+				{% if r.synonyms %}<tr><td><Label>Synonyms:</Label> {{ r.synonyms }}</td></tr>{% endif %}
+				{% if r.short_form %}<tr><td><Label>Short-form:</Label> {{ r.short_form }}</td></tr>{% endif %}
+				{% if r.ontology_acronym %}<tr><td><Label>Ontology acronym:</Label> {{ r.ontology_acronym }}</td></tr>{% endif %}
+				{% if r.ontology_name %}<tr><td><Label>Ontology name:</Label> {{ r.ontology_name }}</td></tr>{% endif %}
+				{% if r.uris %}<tr><td><Label>URI:</Label> <a href="{{r.uris}}" target="_blank">{{ r.uris }}</a></td></tr>{% endif %}
+
+			</table>
+
+		{% elif annotation_list and annotation_list.0 and annotation_list.0.motivation and annotation_list.0.motivation.0 and annotation_list.0.motivation.0 == "tagging" %}
+
+			<h3>Free-text keyword</h3>
+
+				<table>
+
+					{% if annotation_list.0.body and annotation_list.0.body.0 and annotation_list.0.body.0.value %}
+						<tr><td><strong>{{ annotation_list.0.body.0.value }}</strong></td></tr>
+						<tr><td><br></td></tr>
+					{% endif %}
+
+					{% if annotation_list.0.modified %}
+						<tr><td><label>On: </label> {{ annotation_list.0.modified }}</td></tr>
+					{% endif %}
+
+					{% if annotation_list.0.creator and annotation_list.0.creator.0 and annotation_list.0.creator.0.nickname %}
+						<tr><td><label>By: </label> {{ annotation_list.0.creator.0.nickname }}</td></tr>
+					{% endif %}
+
+				</table>
+
+		{% elif annotation_list and annotation_list.motivation and "commenting" in annotation_list.motivation %}
+
+			<h3>Comment</h3>
+
+				{% if annotation_list.body and annotation_list.body.0 and annotation_list.body.0.value %}
+					<textarea rows="6" readonly>{{ annotation_list.body.0.value }}</textarea>
+				{% endif %}
+
+				<table>
+
+					{% if annotation_list.modified %}
+						<tr><td><label>On: </label> {{ annotation_list.modified }}</td></tr>
+					{% endif %}
+
+					{% if annotation_list.creator and annotation_list.creator.0 and annotation_list.creator.0.nickname %}
+						<tr><td><label>By: </label> {{ annotation_list.creator.0.nickname }}</td></tr>
+					{% endif %}
+
+				</table>
+
+		{% endif %}
+
+		{% if annotation_list.0 %}
+
+			<hr>
+
+			<h4>Used to annotate these files:</h4>
+
+			<table>
+
+				{% if annotation_list %}
+
+					{% for ann in annotation_list %}
+
+						{% if ann.target %}
+
+							{% if ann.target.0 %}
+
+								{% if ann.target.0.jsonld_id %}
+
+									<tr>
+										<td><a href="{{ ann.target.0.jsonld_id }}" target="_parent"
+										   title="{% if ann.creator and ann.creator.0 and ann.creator.0.nickname %}By: {{ ann.creator.0.nickname }}{% endif %}
+{% if ann.modified %}On: {{ ann.modified }}{% endif %}
+Click to acces on B2Share.">{{ ann.target.0.jsonld_id }}</a></td>
+									</tr>
+
+								{% endif %}
+
+							{% endif %}
+
+						{% endif %}
+
+					{% endfor %}
+
+				{% endif %}
+
+				<tr></tr>
+
+			</table>
+
+		{% elif annotation_list and annotation_list.creator.0.nickname == user_nickname %}
+
+			<table>
+
+				<td>
+					<form action="/edit_annotation" method="post">
+						{% csrf_token %}
+						<input type="hidden" name="db_id" value="{{annotation_list.id}}" hidden>
+						<button type="submit" class="btn btn-link" title="Edit this annotation">
+							<span class="glyphicon glyphicon-pencil"></span>
+						</button>
+					</form>
+				</td>
+
+				<td>
+					<form action="/delete_annotation" method="post">
+						{% csrf_token %}
+						<input type="hidden" name="db_id" value="{{annotation_list.id}}" hidden>
+						<button type="submit" class="btn btn-link" title="Delete this annotation">
+							<span class="glyphicon glyphicon-trash"></span>
+						</button>
+					</form>
+
+				</td>
+
+			</table>
+
+		{% endif %}
+
+	</div>
+
+{% endblock %}

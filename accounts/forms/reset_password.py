@@ -37,16 +37,15 @@ class AccountRetrieveForm(forms.Form):
     """
     Form for sending known information about account upon lost credentials.
     """
+    contact_email   = forms.EmailField(widget=forms.widgets.TextInput(), label="Contact email", required=True)
+    nickname        = forms.CharField( widget=forms.widgets.TextInput(), label="Annotator pseudonym", required=False)
+
     first_name      = forms.CharField( widget=forms.widgets.TextInput(), label="First name", required=False)
     last_name       = forms.CharField( widget=forms.widgets.TextInput(), label="Last name", required=True)
 
-    contact_email   = forms.EmailField(widget=forms.widgets.TextInput(), label="Contact email", required=False)
     username        = forms.EmailField(widget=forms.widgets.TextInput(), label="Registered email", required=False)
-
-    nickname        = forms.CharField( widget=forms.widgets.TextInput(), label="Annotator pseudonym", required=False)
     job_title       = forms.CharField( widget=forms.widgets.TextInput(), label="Job title", required=False)
     organization    = forms.CharField( widget=forms.widgets.TextInput(), label="Organization", required=False)
-    country         = forms.ChoiceField( widget=forms.Select(), choices=sorted(COUNTRIES.items()), required=False)
 
     captcha = CaptchaField()
 

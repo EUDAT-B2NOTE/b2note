@@ -1,0 +1,363 @@
+{% extends "b2note_app/__base.html" %}
+
+{% block content %}
+
+	<div class="container" id="allannotations_summary">
+
+		<h3>Annotations</h3>
+
+		<div id="allannotations_summ">
+
+            <div class = "row">
+                <a href="#semantic">Semantic tag</a>
+                {% if all_s != None %}
+                	<a href="#semantic" title="All semantic annotations,&#13click for full list."> {{all_s}} </a>
+                {% endif %}
+                {% if my_s != None %}
+					{% if my_s == 0 %}
+						<span title="No semantic annotation was created by me."> 0 </span>
+					{% else %}
+                		<a href="/myannotations#semantic" title="Only my semantic annotations,&#13click for full list."> {{my_s}} </a>
+					{% endif %}
+                {% endif %}
+            </div>
+
+            <div class = "row">
+                <a href="#keyword">Free-text keyword</a>
+                {% if all_k != None %}
+        	        <a href="#keyword" title="All keyword annotations,&#13click for full list."> {{all_k}} </a>
+                {% endif %}
+                {% if my_k != None %}
+					{% if my_k == 0 %}
+						<span title="No free-text keyword annotation was created by me."> 0 </span>
+					{% else %}
+		                <a href="/myannotations#keyword" title="Only my keyword annotations,&#13click for full list."> {{my_k}} </a>
+					{% endif %}
+                {% endif %}
+            </div>
+
+            <div class = "row">
+                <a href="#comment">Comment</a>
+                {% if all_c != None %}
+                <a href="#comment" title="All comment annotations,&#13click for full list."> {{all_c}} </a>
+                {% endif %}
+                {% if my_c != None %}
+					{% if my_c == 0 %}
+						<span title="No comment annotation was created by me."> 0 </span>
+					{% else %}
+    		            <a href="/myannotations#comment" title="Only my comment annotations,&#13click for full list."> {{my_c}} </a>
+	                {% endif %}
+                {% endif %}
+            </div>
+
+        </div>
+
+		<div class="container" id="semantic">
+
+			<h4>Semantic tags</h4>
+
+			{% if semantic_table %}
+
+				<table>
+
+					{% for ann in semantic_table %}
+
+						<tr>
+
+							<td>
+
+								<form action="/annotation_summary" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
+									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"
+										   title="{% if ann.link_info_label %}{{ann.link_info_label}}{% endif %}
+{% if ann.link_info_ontologyacronym %}{{ann.link_info_ontologyacronym}}{% endif %}: {% if ann.link_info_shortform %}{{ann.link_info_shortform}}{% endif %}
+{% if ann.link_info_creatornickname %}By: {{ann.link_info_creatornickname}}{% endif %}
+{% if ann.link_info_modified %}On: {{ann.link_info_modified}}{% endif %}
+Click for full info."/>
+									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}"
+										   title="In any annotations,&#13click for full list."/>
+									{% if ann.my_similar == 0 %}
+										<span title="No similar annotation was created by me."> 0 </span>
+									{% else %}
+										<input type="submit" class="btn btn-link" name="about_mysimilar" value="{{ann.my_similar}}"
+										   title="In my annotations,&#13click for full list."/>
+									{% endif %}
+
+								</form>
+
+							</td>
+
+							{% if ann.link_info_creatornickname == user_nickname %}
+
+								<td>
+									<form action="/edit_annotation" method="post">
+										{% csrf_token %}
+										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
+										<button type="submit" class="btn btn-link" title="Edit this annotation">
+											<span class="glyphicon glyphicon-pencil"></span>
+										</button>
+									</form>
+								</td>
+
+								<td>
+									<form action="/delete_annotation" method="post">
+										{% csrf_token %}
+										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
+										<button type="submit" class="btn btn-link" title="Delete this annotation">
+											<span class="glyphicon glyphicon-trash"></span>
+										</button>
+									</form>
+
+								</td>
+
+							{% endif %}
+
+						</tr>
+
+					{% endfor %}
+
+				</table>
+
+			{% else %}
+
+				<p>No semantic tag annotation exists about this file.</p>
+
+			{% endif %}
+
+		</div>
+
+		<div class="container" id="keyword">
+
+			<h4>Free-text keywords</h4>
+
+			{% if keyword_table %}
+
+				<table>
+
+					{% for ann in keyword_table %}
+
+						<tr>
+
+							<td>
+
+								<form action="/annotation_summary" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
+									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"
+										   title="{% if ann.link_info_label %}{{ann.link_info_label}}{% endif %}
+{% if ann.link_info_creatornickname %}By: {{ann.link_info_creatornickname}}{% endif %}
+{% if ann.link_info_modified %}On: {{ann.link_info_modified}}{% endif %}
+Click for full info."/>
+									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}"
+										   title="In any annotations,&#13click for full list."/>
+									{% if ann.my_similar == 0 %}
+										<span title="No similar annotation was created by me."> 0 </span>
+									{% else %}
+										<input type="submit" class="btn btn-link" name="about_mysimilar" value="{{ann.my_similar}}"
+											   title="In my annotations,&#13click for full list."/>
+									{% endif %}
+								</form>
+
+							</td>
+
+							{% if ann.link_info_creatornickname == user_nickname %}
+
+								<td>
+									<form action="/edit_annotation" method="post">
+										{% csrf_token %}
+										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
+										<button type="submit" class="btn btn-link" title="Edit this annotation">
+											<span class="glyphicon glyphicon-pencil"></span>
+										</button>
+									</form>
+								</td>
+
+								<td>
+									<form action="/delete_annotation" method="post">
+										{% csrf_token %}
+										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
+										<button type="submit" class="btn btn-link" title="Delete this annotation">
+											<span class="glyphicon glyphicon-trash"></span>
+										</button>
+									</form>
+
+								</td>
+
+							{% endif %}
+
+						</tr>
+
+					{% endfor %}
+
+				</table>
+
+			{% else %}
+
+				<p>No free-text keyword annotation exists about this file.</p>
+
+			{% endif %}
+
+		</div>
+
+		<div class="container" id="comment">
+
+			<h4>Comments</h4>
+
+			{% if comment_table %}
+
+				<table>
+
+					{% for ann in comment_table %}
+
+						<tr>
+
+							<td>
+
+								<form action="/annotation_summary" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
+									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"
+										   title="{% if ann.link_info_label %}{{ann.link_info_label}}{% endif %}
+{% if ann.link_info_creatornickname %}By: {{ann.link_info_creatornickname}}{% endif %}
+{% if ann.link_info_modified %}On: {{ann.link_info_modified}}{% endif %}
+Click for full info."/>
+								</form>
+
+							</td>
+
+							{% if ann.link_info_creatornickname == user_nickname %}
+
+								<td>
+									<form action="/edit_annotation" method="post">
+										{% csrf_token %}
+										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
+										<button type="submit" class="btn btn-link" title="Edit this annotation">
+											<span class="glyphicon glyphicon-pencil"></span>
+										</button>
+									</form>
+								</td>
+
+								<td>
+									<form action="/delete_annotation" method="post">
+										{% csrf_token %}
+										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
+										<button type="submit" class="btn btn-link" title="Delete this annotation">
+											<span class="glyphicon glyphicon-trash"></span>
+										</button>
+									</form>
+
+								</td>
+
+							{% endif %}
+
+						</tr>
+
+					{% endfor %}
+
+				</table>
+
+			{% else %}
+
+				<p>No comment annotation exists about this file.</p>
+
+			{% endif %}
+
+		</div>
+
+	</div>
+
+{% endblock %}
+
+<!--
+	<div class="container" id="section_existing">
+
+		<div class="container" id="container_table_existing">
+
+			<table class="table table-responsive table-striped">
+
+				{% for annotation in annotation_list %}
+
+					{% for target in annotation.target %}
+
+						{% if target.jsonld_id %}
+
+							<!-- http://stackoverflow.com/questions/1275735/how-to-access-dictionary-element-in-django-template -->
+<!--							{% if target.jsonld_id == subject_tofeed %}
+
+								{% for body in annotation.body %}
+
+									{% if body.jsonld_id or body.value %}
+
+										<tr>
+
+										{% if "http://" in body.jsonld_id %}
+
+											<!--
+											<td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
+											-->
+											<!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
+<!--											<td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">
+												<a target="_blank" href={{body.jsonld_id}}>{{body.value}}</a>
+											</td>
+
+										{% else %}
+
+											<!--
+											<td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
+											-->
+<!--											<td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">{{body.value}}</td>
+
+										{% endif %}
+
+											<form action="/edit_annotation" method="post" target="_blank">
+
+												{% csrf_token %}
+
+												<input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
+												<!--<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />-->
+
+<!--												<td id="editAnnotation"><i class="glyphicon glyphicon-pencil"></i></td>
+
+											</form>
+
+										{% if user_nickname = annotation.creator.0.nickname %}
+
+											<form action="/delete_annotation" method="post">
+
+												{% csrf_token %}
+
+												<input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
+												<input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
+												<input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
+
+												<td id="delAnnotation"><i class="glyphicon glyphicon-trash"></td>
+
+											</form>
+
+										{% else %}
+
+											<!-- Empty slot for bin icon for annotations of which logged-in user is not owner. -->
+<!--											<td></td>
+
+										{% endif %}
+
+										</tr>
+
+									{% endif %}
+
+								{% endfor %}
+
+							{% endif %}
+
+						{% endif %}
+
+					{% endfor %}
+
+				{% endfor %}
+
+			</table>
+
+		</div>
+
+	</div>-->

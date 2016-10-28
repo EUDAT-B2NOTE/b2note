@@ -15,7 +15,7 @@ $(document).ready( function() {
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         remote: {
             // What may be a relevant size of class subset for the user to select from VS. transaction size x user population?
-            url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select?q=%QUERY&wt=json&indent=true&rows=1000',
+            url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select?q="%QUERY"&wt=json&indent=true&rows=1000',
             wildcard: '%QUERY',
             filter: function (data) {
                 return $.map(data.response.docs, function (suggestionSet) {
@@ -81,7 +81,7 @@ $(document).ready( function() {
                     ' -No results-',
                     '</div>'
                 ].join('\n'),
-                suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}' + ' ({{ontology_acronym}}:{{short_form}})</p>')
+                suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}' + ' ({{short_form}})</p>')
             },
             engine: Handlebars
 	// defines the event 'onclick'
@@ -98,52 +98,50 @@ $(document).ready( function() {
 	      *
               */
 
-            if (document.getElementById("section_subject")) {
 
-                $.redirect('create_annotation',
-                    {
-                    ontology_json: JSON.stringify(data.json_document),
-                    subject_tofeed: subject,
-                    pid_tofeed: pid,
-                    // abremaud@esciencefactory.com, 20160926
-                    // retrieve Django csrf token from html hidden input element
-                    csrfmiddlewaretoken: this.parentElement.previousElementSibling.value,
-                });
+            //if (document.getElementById("section_subject")) {
+            if (document.getElementById("semantic")) {
+
+                $('#ontology_json').val( JSON.stringify(data.json_document) )
 
             } else {
 
-                if (document.getElementById("user_homepage")) {
-                    $.redirect('create_annotation',
-                        {
-                        ontology_json: JSON.stringify(data.json_document),
-                        subject_tofeed: this.parentElement.parentElement.firstChild.nextSibling.nextElementSibling.value,
-                        pagefrom: this.parentElement.parentElement.firstChild.nextSibling.nextElementSibling.nextElementSibling.value,
-                        // abremaud@esciencefactory.com, 20161003
-                        // retrieve Django csrf token from html hidden input element
-                        csrfmiddlewaretoken: this.parentElement.parentElement.firstChild.nextSibling.value,
-                    });
+                $('#'+this.parentElement.parentElement.querySelector('[id^="ontology_json"]').name).val( JSON.stringify(data.json_document) )
 
-                } else {
+            }
 
-                    if (db_id != "") {
-                        $.redirect('edit_annotation',
-                            {
-                            ontology_json: JSON.stringify(data.json_document),
-                            db_id: db_id,
-                            // abremaud@esciencefactory.com, 20160926
-                            // retrieve Django csrf token from html hidden input element
-                            csrfmiddlewaretoken: this.parentElement.parentElement.firstChild.nextSibling.value,
-                        });
-                    } else {
-                        $.redirect('search_annotation',
-                            {
-                            // abremaud@esciencefactory.com, 20160928
-                            // search annotations on keyword
-                            ontology_json: JSON.stringify(data.json_document),
-                            csrfmiddlewaretoken: this.form.firstChild.nextSibling.value,
-                        });
-                    }
-                }
-            };
+//              abremaud 20161025, stop creating anntation upon simply selecting one entry,
+//              instead selection label is output to the typeahead text-box while full information json
+//              gets outputed to a hiden input for being POSTED upon user hitting submit...
+//                $.redirect('create_annotation',
+//                    {
+//                    ontology_json: JSON.stringify(data.json_document),
+//                    subject_tofeed: subject,
+//                    pid_tofeed: pid,
+//                    // abremaud@esciencefactory.com, 20160926
+//                    // retrieve Django csrf token from html hidden input element
+//                    csrfmiddlewaretoken: this.parentElement.previousElementSibling.value,
+//                });
+
+//            } else {
+//                if (db_id != "") {
+//                    $.redirect('edit_annotation',
+//                        {
+//                        ontology_json: JSON.stringify(data.json_document),
+//                        db_id: db_id,
+//                        // abremaud@esciencefactory.com, 20160926
+//                        // retrieve Django csrf token from html hidden input element
+//                        csrfmiddlewaretoken: this.parentElement.parentElement.firstChild.nextSibling.value,
+//                    });
+//                } else {
+//                    $.redirect('search_annotation',
+//                        {
+//                        // abremaud@esciencefactory.com, 20160928
+//                        // search annotations on keyword
+//                        ontology_json: JSON.stringify(data.json_document),
+//                        csrfmiddlewaretoken: this.form.firstChild.nextSibling.value,
+//                    });
+//                }
+//            };
     });
 });

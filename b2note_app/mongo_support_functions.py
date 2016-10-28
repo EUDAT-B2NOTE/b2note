@@ -1,5 +1,6 @@
 import os, re, datetime, copy
 import json, bson
+import requests
 
 from .models import *
 from accounts.models import AnnotatorProfile
@@ -8,6 +9,99 @@ from django.forms.models import model_to_dict
 import logging
 
 stdlogger = logging.getLogger('b2note')
+
+
+
+def solr_fetchtermonexactlabel(label=None):
+    out = None
+    try:
+        if label:
+            if isinstance(label, (str, unicode)):
+                r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=labels:"' + label + '"&wt=json&indent=true&start=0&rows=100')
+                out = []
+                for rr in r.json()["response"]["docs"]:
+                    if rr["labels"].lower() == label.lower():
+                        out.append( rr )
+                return out
+            else:
+                print "solr_fetchtermonexactlabel fuction, parameter neither string nor unicode."
+        else:
+            print "solr_fetchtermonexactlabel function, empty parameter."
+    except:
+        print "solr_fetchtermonexactlabel function, could not complete."
+        return False
+    return False
+
+
+def solr_fetchorigintermonid(ids=None):
+    out = None
+    try:
+        if ids:
+            if isinstance(ids, list):
+                q_str = ""
+                for id in ids:
+                    if isinstance(id, (str, unicode)):
+                        q_str += 'OR "' + id + '" '
+                if q_str:
+                    q_str = q_str.replace("#","%23")
+                    q_str = "(" + q_str[3:] + ")"
+                    r = None
+                    r = requests.get(
+                        'https://b2note.bsc.es/solr/b2note_index/select?q=uris:' + q_str +'&fl=ontology_acronym,ontology_name,description,uris,labels,short_form&wt=json&indent=true&start=0&rows=' + str(10*len(ids)))
+                    if r and r.json():
+                        if isinstance(r.json(), dict):
+                            if "response" in r.json().keys():
+                                if isinstance(r.json()["response"], dict):
+                                    if "docs" in r.json()["response"].keys():
+                                        if isinstance(r.json()["response"]["docs"], list):
+                                            out = {}
+                                            for rr in r.json()["response"]["docs"]:
+                                                if isinstance(rr, dict):
+                                                    if "ontology_acronym" in rr.keys() and "uris" in rr.keys():
+                                                        if rr["uris"] not in out.keys():
+                                                            out[ rr["uris"] ] = rr
+                                                        elif rr["ontology_acronym"] in rr["uris"]:
+                                                            out[ rr["uris"] ] = rr
+                                            return out
+                                        else:
+                                            print "solr_fetchorigintermonid fuction, requests object json>response>docs not a list."
+                                    else:
+                                        print "solr_fetchorigintermonid fuction, 'docs' not a key of requests object json>response dict."
+                                else:
+                                    print "solr_fetchorigintermonid fuction, requests object json>response not a dict"
+                            else:
+                                print "solr_fetchorigintermonid fuction, 'response' not a key of requests object json dict."
+                        else:
+                            print "solr_fetchorigintermonid fuction, requests object json not a dict."
+                    else:
+                        print "solr_fetchorigintermonid fuction, sorl fetch with no response or response not json."
+                else:
+                    print "solr_fetchorigintermonid fuction, list item neither string nor unicode."
+            else:
+                print "solr_fetchorigintermonid fuction, paramter not a list."
+        else:
+            print "solr_fetchorigintermonid function, empty parameter."
+    except:
+        print "solr_fetchorigintermonid function, could not complete."
+        return False
+    return False
+
+
+def solr_fetchtermonid(id=None):
+    out = None
+    try:
+        if id:
+            if isinstance(id, (str, unicode)):
+                r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=uris:"' + id + '"&wt=json&indent=true&start=0&rows=100')
+                return r
+            else:
+                print "solr_fetchtermonid fuction, parameter neither string nor unicode."
+        else:
+            print "solr_fetchtermonid function, empty parameter."
+    except:
+        print "solr_fetchtermonid function, could not complete."
+        return False
+    return False
 
 
 def SearchAnnotation( kw ):
@@ -53,9 +147,7 @@ def SearchAnnotation( kw ):
     return False
 
 
-
-
-def RetrieveAnnotations_perUsername( nickname=None ):
+def RetrieveUserFileAnnotations( subject_url=None, nickname=None ):
     """
       Function: RetrieveAnnotations_perUsername
       ----------------------------
@@ -63,37 +155,46 @@ def RetrieveAnnotations_perUsername( nickname=None ):
 
         params:
             subject_url (str): ID of the file.
+            nickname (str): user nickname as from user profile DB record.
 
         returns:
             dic: Dictionary with the values of the annotations.
     """
     try:
 
-        if nickname and isinstance(nickname, (str, unicode)):
-
-            annotations = Annotation.objects.raw_query({'creator.nickname': nickname})
-            
-            
-            print "RetrieveAnnotations_perUsername function, returning annotations."
-            stdlogger.info("RetrieveAnnotations_perUsername function, returning annotations.")
-            return annotations
-
+        if subject_url and isinstance(subject_url, (str, unicode)):
+            if nickname and isinstance(nickname, (str, unicode)):
+                annotations = None
+                annotations = Annotation.objects.raw_query({'target.jsonld_id': subject_url, 'creator.nickname': nickname})
+                #annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
+                if annotations:
+                    print "RetrieveUserFileAnnotations function, returning annotations."
+                    stdlogger.info("RetrieveUserFileAnnotations function, returning annotations.")
+                    return annotations
+                else:
+                    print "RetrieveUserFileAnnotations function, no annotations retrieved."
+                    stdlogger.info("RetrieveUserFileAnnotations function, no annotations retrieved.")
+                    return False
+            else:
+                print "RetrieveUserFileAnnotations function, provided nickname not valid:", nickname
+                stdlogger.info("RetrieveUserFileAnnotations function, provided nickname not valid:" + str(nickname))
+                return False
         else:
-            print "RetrieveAnnotations_perUsername function, provided nickname not valid: ", nickname
-            stdlogger.error("RetrieveAnnotations_perUsername function, provided nickname not valid: " + str(nickname))
+            print "RetrieveUserFileAnnotations function, provided target id not valid:", subject_url
+            stdlogger.error("RetrieveUserFileAnnotations function, provided target id not valid:" + str(subject_url))
             return False
 
     except Annotation.DoesNotExist:
-        print "RetrieveAnnotations_perUsername function did not complete."
-        stdlogger.error("RetrieveAnnotations_perUsername function did not complete.")
+        print "RetrieveUserFileAnnotations function did not complete."
+        stdlogger.error("RetrieveUserFileAnnotations function did not complete.")
         return False
 
-    print "RetrieveAnnotations_perUsername function did not complete succesfully."
-    stdlogger.error("RetrieveAnnotations_perUsername function did not complete succesfully.")
+    print "RetrieveUserFileAnnotations function did not complete succesfully."
+    stdlogger.error("RetrieveUserFileAnnotations function did not complete succesfully.")
     return False
 
 
-def RetrieveAnnotations( subject_url ):
+def RetrieveFileAnnotations( subject_url ):
     """
       Function: RetrieveAnnotations
       ----------------------------
@@ -111,8 +212,8 @@ def RetrieveAnnotations( subject_url ):
     except Annotation.DoesNotExist:
         annotations = []
 
-    annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
-    
+    #annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
+
     return annotations
 
 
@@ -418,7 +519,7 @@ def CreateSemanticTag( subject_url=None, object_json=None ):
 
                     db_id = MakeAnnotationSemanticTag( my_id, object_json )
 
-                    #db_id = SetAnnotationMotivation( db_id, "tagging" )
+                    db_id = SetAnnotationMotivation( db_id, "tagging" )
 
                     print "MakeAnnotationSemanticTag function, made annotation semantic tag: ", str(db_id)
                     stdlogger.info("MakeAnnotationSemanticTag function, made annotation semantic tag: " + str(db_id))
@@ -447,9 +548,9 @@ def CreateSemanticTag( subject_url=None, object_json=None ):
     return False
 
 
-def CreateFreeText( subject_url=None, text=None ):
+def CreateFreeTextKeyword( subject_url=None, text=None ):
     """
-      Function: CreateFreeText
+      Function: CreateFreeTextKeyword
       ----------------------------
         Creates an annotation in MongoDB.
         
@@ -473,30 +574,96 @@ def CreateFreeText( subject_url=None, text=None ):
                     db_id = None
                     db_id = MakeAnnotationFreeText(my_id, text)
 
-                    print "CreateFreeText function, created free-text annotation: ", str(db_id)
-                    stdlogger.info("CreateFreeText function, created free-text annotation: " + str(db_id))
-                    return db_id
+                    #db_id = SetAnnotationMotivation( db_id, "tagging" )
 
+                    if db_id:
+                        print "CreateFreeTextKeyword function, created free-text keyword annotation:", str(db_id)
+                        stdlogger.info("CreateFreeTextKeyword function, created free-text keyword annotation:", str(db_id))
+                        return db_id
+                    else:
+                        print "CreateFreeTextKeyword function, free-text keyword annotation make unreturned."
+                        stdlogger.info("CreateFreeTextKeyword function, free-text keyword annotation make unreturned.")
+                        return False
                 else:
-                    print "CreateFreeText function, wrong text codification or empty text."
-                    stdlogger.error("CreateFreeText function, wrong text codification or empty text.")
+                    print "CreateFreeTextKeyword function, wrong text codification or empty text."
+                    stdlogger.error("CreateFreeTextKeyword function, wrong text codification or empty text.")
                     return False
             else:
-                print "CreateFreeText function, 'my_id' parameter neither str nor unicode."
-                stdlogger.error("CreateFreeText function, 'my_id' parameter neither str nor unicode.")
+                print "CreateFreeTextKeyword function, 'my_id' parameter neither str nor unicode."
+                stdlogger.error("CreateFreeTextKeyword function, 'my_id' parameter neither str nor unicode.")
                 return False
         else:
-            print "CreateFreeText function, annotation not created or id not returned."
+            print "CreateFreeTextKeyword function, annotation not created or id not returned."
             stdlogger.error("CreateFreeText function, annotation not created or id not returned.")
             return False
 
     except ValueError:
-        print "CreateFreeText function did not complete."
-        stdlogger.error("CreateFreeText function did not complete.")
+        print "CreateFreeTextKeyword function did not complete."
+        stdlogger.error("CreateFreeTextKeyword function did not complete.")
         return False
 
-    print "CreateFreeText function did not complete succesfully."
-    stdlogger.error("CreateFreeText function did not complete succesfully.")
+    print "CreateFreeTextKeyword function did not complete succesfully."
+    stdlogger.error("CreateFreeTextKeyword function did not complete succesfully.")
+    return False
+
+
+def CreateFreeTextComment(subject_url=None, text=None):
+    """
+      Function: CreateFreeTextComment
+      ----------------------------
+        Creates an annotation in MongoDB.
+
+        params:
+            subject_url (str): URL of the annotation to create.
+            text (str): Free text introduced by the user
+
+        returns:
+            db_id (str): database id of the modified annotation if successful, False otherwise.
+    """
+    try:
+
+        my_id = CreateAnnotation(subject_url)
+
+        if my_id:
+
+            if isinstance(my_id, (str, unicode)):
+
+                if isinstance(text, (str, unicode)) and len(text) > 0:
+
+                    db_id = None
+                    db_id = MakeAnnotationFreeText(my_id, text)
+
+                    db_id = SetAnnotationMotivation(db_id, "commenting")
+
+                    if db_id:
+                        print "CreateFreeTextComment function, created free-text comment annotation:", str(db_id)
+                        stdlogger.info("CreateFreeTextComment function, created free-text comment annotation:", str(db_id))
+                        return db_id
+                    else:
+                        print "CreateFreeTextComment function, free-text comment annotation created not returned."
+                        stdlogger.info("CreateFreeTextComment function, free-text comment annotation created not returned.")
+                        return False
+
+                else:
+                    print "CreateFreeTextComment function, wrong text codification or empty text."
+                    stdlogger.info("CreateFreeTextComment function, wrong text codification or empty text.")
+                    return False
+            else:
+                print "CreateFreeTextComment function, 'my_id' parameter neither str nor unicode."
+                stdlogger.info("CreateFreeTextComment function, 'my_id' parameter neither str nor unicode.")
+                return False
+        else:
+            print "CreateFreeTextComment function, annotation not created or id not returned."
+            stdlogger.info("CreateFreeTextComment function, annotation not created or id not returned.")
+            return False
+
+    except ValueError:
+        print "CreateFreeTextComment function did not complete."
+        stdlogger.info("CreateFreeTextComment function did not complete.")
+        return False
+
+    print "CreateFreeTextComment function did not complete succesfully."
+    stdlogger.info("CreateFreeTextComment function did not complete succesfully.")
     return False
 
 
@@ -548,6 +715,8 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
                                     ]
 
                                     A.save()
+
+                                    db_id = SetAnnotationMotivation( A.id, "tagging" )
 
                                     print "MakeAnnotationSemanticTag function, made annotation semantic tag: ", str(db_id)
                                     stdlogger.info("MakeAnnotationSemanticTag function, made annotation semantic tag: " + str(db_id))
@@ -715,58 +884,6 @@ def CreateAnnotation(target=None):
     return False
 
 
-def readyQuerySetValuesForDumpAsJSONLD2( o_in ):
-    """
-      Function: readyQuerySetValuesForDumpAsJSONLD
-      --------------------------------------------
-
-        Recursively drops embedded custom model class objects and model
-         class field names beginning with "jsonld_whatever" to "@whatever",
-         while avoiding returning fields with no content and making
-         datetimes to xsd:datetime strings.
-
-        input:
-            o_in (object): In nesting order, Django queryset values
-                list then tuple or list or set or dict or datetime or
-                out-of-scope object.
-
-        output:
-            o_out: None (execution failed) or list of native python
-                objects, where each out-of-scope object was replaced
-                by its "string-ified" avatar, designed for subsequent
-                JSON-ification.
-    """
-
-    o_out = None
-
-    try:
-        if type(o_in) is str or type(o_in) is unicode:
-            o_out = str(o_in)
-        elif type(o_in) is list or type(o_in) is set:
-            o_out = []
-            for item in o_in:
-                if item and readyQuerySetValuesForDumpAsJSONLD( item ):
-                    o_out.append( readyQuerySetValuesForDumpAsJSONLD( item ) )
-        elif type(o_in) is dict:
-            o_out = {}
-            for k in o_in.keys():
-                if o_in[k] and readyQuerySetValuesForDumpAsJSONLD( o_in[k] ) and k != "id":
-                    newkey = k
-                    m = re.match(r'^jsonld_(.*)', k)
-                    if m:
-                        newkey = "@{0}".format(m.group(1))
-                    if newkey == "@id": newkey = "id"
-                    o_out[newkey] = readyQuerySetValuesForDumpAsJSONLD( o_in[k] )
-        elif not re.match(r'^<class (.*)>', str(o_in)):
-            o_out = readyQuerySetValuesForDumpAsJSONLD( model_to_dict(o_in) )
-    except:
-        o_out = None
-        pass
-    print "#", o_out
-    stdlogger.info("#" + str(o_out))
-    return o_out
-
-
 def readyQuerySetValuesForDumpAsJSONLD( o_in ):
     """
       Function: readyQuerySetValuesForDumpAsJSONLD
@@ -791,14 +908,20 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
     try:
         if type(o_in) is tuple:
             o_out = ()
-            for item in o_in:
-                if item and readyQuerySetValuesForDumpAsJSONLD( item ):
-                    o_out += ( readyQuerySetValuesForDumpAsJSONLD( item ), )
+            if len(o_in) == 1 and readyQuerySetValuesForDumpAsJSONLD( o_in[0] ):
+                o_out = readyQuerySetValuesForDumpAsJSONLD( o_in[0] )
+            else:
+                for item in o_in:
+                    if item and readyQuerySetValuesForDumpAsJSONLD( item ):
+                        o_out += ( readyQuerySetValuesForDumpAsJSONLD( item ), )
         elif type(o_in) is list or type(o_in) is set:
             o_out = []
-            for item in o_in:
-                if item and readyQuerySetValuesForDumpAsJSONLD( item ):
-                    o_out.append( readyQuerySetValuesForDumpAsJSONLD( item ) )
+            if len(o_in) == 1 and readyQuerySetValuesForDumpAsJSONLD( o_in[0] ):
+                o_out = readyQuerySetValuesForDumpAsJSONLD( o_in[0] )
+            else:
+                for item in o_in:
+                    if item and readyQuerySetValuesForDumpAsJSONLD( item ):
+                        o_out.append( readyQuerySetValuesForDumpAsJSONLD( item ) )
         elif type(o_in) is dict:
             o_out = {}
             for k in o_in.keys():
@@ -808,7 +931,8 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
                     if m:
                         newkey = "@{0}".format(m.group(1))
                     if newkey=="@id": newkey="id"
-                    o_out[newkey] = readyQuerySetValuesForDumpAsJSONLD( o_in[k] )
+                    if newkey!="@context":
+                        o_out[newkey] = readyQuerySetValuesForDumpAsJSONLD( o_in[k] )
         elif isinstance(o_in, datetime.datetime) or isinstance(o_in, datetime.datetime):
             o_out = o_in.isoformat()
         elif o_in and o_in != "None" and not re.match(r'^<class (.*)>', o_in):
@@ -893,7 +1017,6 @@ def CheckLengthFreeText( body_value=None, length_limit=60 ):
                     return True
                 else:
                     return False
-                
             else:
                 print "CheckLengthFreeText function, provided 'body_value' argument not a valid str or unicode."
                 stdlogger.error("CheckLengthFreeText function, provided 'body_value' argument not a valid str or unicode.")
