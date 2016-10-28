@@ -49,9 +49,8 @@ def check_urls(urllist, depth=0):
             test_url = entry.regex.pattern.translate(None, '^$')
             response = None
             if depth == 1:
-                if ('register' not in test_url) and ('retrieval' not in test_url):
-                    if 'reset_password_confirm' not in test_url:
-                        response = c.get('/accounts/' + test_url)
+                if 'reset_password_confirm' not in test_url:
+                    response = c.get('/accounts/' + test_url)
             else:
                 response = c.get('/' + test_url)
             
