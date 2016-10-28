@@ -19,8 +19,11 @@ from .nav_support_functions import list_navbarlinks, list_shortcutlinks
 from itertools import chain
 
 from accounts.models import AnnotatorProfile
+import logging
 
 
+
+stdlogger = logging.getLogger('b2note')
 
 def index(request):
     return HttpResponse("replace me with index text")
@@ -113,9 +116,11 @@ def export_annotations(request):
 
         else:
             print "Redirecting from export view."
+            stdlogger.info("Redirecting from export view.")
             return redirect('/accounts/logout')
     except Exception:
         print "Could not export or redirect from export view."
+        stdlogger.error("Could not export or redirect from export view.")
         return False
 
 
@@ -451,19 +456,25 @@ def delete_annotation(request):
                             pass
                     else:
                         print "delete_annotation view, cannot delete annotation, current user is not owner."
+                        stdlogger.error("delete_annotation view, cannot delete annotation, current user is not owner.")
                         pass
                 else:
-                    print "delete_annotation view, no annotation with provided 'db_id':", str( request.POST.get('db_id') )
+                    print "delete_annotation view, no annotation with provided 'db_id': ", str( request.POST.get('db_id') )
+                    stdlogger.error("delete_annotation view, no annotation with provided 'db_id': " + str( request.POST.get('db_id') ))
                     pass
             else:
                 print "delete_annotation view, provided parameter 'db_id' neither str nor unicode."
+                stdlogger.error("delete_annotation view, provided parameter 'db_id' neither str nor unicode.")
                 pass
         else:
             print "delete_annotation view, missing POST parameter 'db_id'."
+            stdlogger.error("delete_annotation view, missing POST parameter 'db_id'.")
             pass
     else:
         print "delete_annotation view, user is not logged-in."
         return redirect('/accounts/logout')
+        stdlogger.error("delete_annotation view, user is not logged-in.")
+        pass
 
     return redirect('/interface_main')
 
@@ -1104,6 +1115,7 @@ def interface_main(request):
     try:
         # https://blog.scrapinghub.com/2013/05/13/mongo-bad-for-scraped-data/
         # https://github.com/aparo/django-mongodb-engine/blob/master/docs/embedded-objects.rst
+        annotation_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
         allannotations_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
     except Annotation.DoesNotExist:
         allannotations_list = []

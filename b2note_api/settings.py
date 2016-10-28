@@ -222,7 +222,7 @@ annotations = {
                             'value' : { 'type' : 'string' },
                             },
                         },
-                    }, 
+                    },
                 #'url' : 'annotations/<regex("[a-f0-9]{24}"):annotation_id>/files',
                 }
 

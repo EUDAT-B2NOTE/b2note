@@ -6,7 +6,9 @@ from .models import *
 from accounts.models import AnnotatorProfile
 
 from django.forms.models import model_to_dict
+import logging
 
+stdlogger = logging.getLogger('b2note')
 
 
 
@@ -103,6 +105,17 @@ def solr_fetchtermonid(id=None):
 
 
 def SearchAnnotation( kw ):
+    """
+      Function: SearchAnnotation
+      ----------------------------
+        Seaches for an annotation matching with the provided body value.
+
+        params:
+            kw (str): Body value.
+
+        returns:
+            A (object): Object of the matching annotation, False otherwise.
+    """
 
     try:
 
@@ -112,20 +125,25 @@ def SearchAnnotation( kw ):
 
                 A = Annotation.objects.raw_query({'body.value': kw})
 
-                print "SearchAnnotation function, returning annotations with body value:", kw
+                print "SearchAnnotation function, returning annotations with body value: ", kw
+                stdlogger.info("SearchAnnotation function, returning annotations with body value: " + str(kw))
                 return A
 
             else:
                 print "SearchAnnotation function, provided keyword argument neither str nor unicode."
+                stdlogger.error("SearchAnnotation function, provided keyword argument neither str nor unicode.")
                 return False
         else:
             print "SearchAnnotation function, missing 'kw' string argument."
+            stdlogger.error("SearchAnnotation function, missing 'kw' string argument.")
             return False
     except:
         print "SearchAnnotation function did not complete."
+        stdlogger.error("SearchAnnotation function did not complete.")
         return False
 
     print "SearchAnnotation function did not complete succesfully."
+    stdlogger.error("SearchAnnotation function did not complete succesfully.")
     return False
 
 
@@ -144,6 +162,15 @@ def RetrieveUserFileAnnotations( subject_url=None, nickname=None ):
     """
     try:
 
+        if nickname and isinstance(nickname, (str, unicode)):
+
+            annotations = Annotation.objects.raw_query({'creator.nickname': nickname})
+
+
+            print "RetrieveAnnotations_perUsername function, returning annotations."
+            stdlogger.info("RetrieveAnnotations_perUsername function, returning annotations.")
+            return annotations
+
         if subject_url and isinstance(subject_url, (str, unicode)):
             if nickname and isinstance(nickname, (str, unicode)):
                 annotations = Annotation.objects.raw_query({'target.jsonld_id': subject_url, 'creator.nickname': nickname})
@@ -155,13 +182,19 @@ def RetrieveUserFileAnnotations( subject_url=None, nickname=None ):
                 return False
         else:
             print "RetrieveUserFileAnnotations function, provided target id not valid:", subject_url
+            print "RetrieveAnnotations_perUsername function, provided nickname not valid: ", nickname
+            stdlogger.error("RetrieveAnnotations_perUsername function, provided nickname not valid: " + str(nickname))
             return False
 
     except Annotation.DoesNotExist:
         "RetrieveUserFileAnnotations function did not complete."
+        print "RetrieveAnnotations_perUsername function did not complete."
+        stdlogger.error("RetrieveAnnotations_perUsername function did not complete.")
         return False
 
     print "RetrieveUserFileAnnotations function did not complete succesfully."
+    print "RetrieveAnnotations_perUsername function did not complete succesfully."
+    stdlogger.error("RetrieveAnnotations_perUsername function did not complete succesfully.")
     return False
 
 
@@ -207,14 +240,17 @@ def DeleteFromPOSTinfo( db_id ):
             del_flag = True
         else:
             print "Argument provided is not a valid collection document id"
+            stdlogger.error("Argument provided is not a valid collection document id")
     except ValueError:
         pass
 
     if del_flag:
         print "Removed an Annotation from DB"
+        stdlogger.info("Removed an Annotation from DB")
         return True
 
     print "Could not remove from DB"
+    stdlogger.error("Could not remove from DB")
     return False
 
 
@@ -260,33 +296,42 @@ def SetAnnotationMotivation( db_id=None, motiv=None ):
 
                                 A.save()
 
-                                print 'SetAnnotationMotivation function, "' + motiv + '" set as motivation of annotation:', str(db_id)
+                                print 'SetAnnotationMotivation function, "' + motiv + '" set as motivation of annotation: ', str(db_id)
+                                stdlogger.info('SetAnnotationMotivation function, "' + motiv + '" set as motivation of annotation: ' + str(db_id))
                                 return A.id
 
                             else:
                                 print "SetAnnotationMotivation function, provided string parameter not part of predefined set of motivations."
+                                stdlogger.error("SetAnnotationMotivation function, provided string parameter not part of predefined set of motivations.")
                                 return False
                         else:
                             print "SetAnnotationMotivation function, parameter provided for motivation neither string nor unicode."
+                            stdlogger.error("SetAnnotationMotivation function, parameter provided for motivation neither string nor unicode.")
                             return False
                     else:
                         print "SetAnnotationMotivation function, missing motivation parameter."
+                        stdlogger.error("SetAnnotationMotivation function, missing motivation parameter.")
                         return False
                 else:
-                    print "SetAnnotationMotivation function, no annotation wit id:", str(db_id)
+                    print "SetAnnotationMotivation function, no annotation wit id: ", str(db_id)
+                    stdlogger.error("SetAnnotationMotivation function, no annotation wit id: " + str(db_id))
                     return False
             else:
                 print "SetAnnotationMotivation function, 'db_id' parameter neither str nor unicode."
+                stdlogger.error("SetAnnotationMotivation function, 'db_id' parameter neither str nor unicode.")
                 return False
         else:
             print "SetAnnotationMotivation function, missing parameter called 'db_id'."
+            stdlogger.error("SetAnnotationMotivation function, missing parameter called 'db_id'.")
             return False
 
     except ValueError:
         print "SetAnnotationMotivation function did not complete."
+        stdlogger.error("SetAnnotationMotivation function did not complete.")
         return False
 
     print "SetAnnotationMotivation function did not complete succesfully."
+    stdlogger.error("SetAnnotationMotivation function did not complete succesfully.")
     return False
 
 
@@ -329,26 +374,33 @@ def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
                         )]
                         annotation.save()
 
-                        print "User with nickname", str(ap.nickname) ,", set as annotation", annotation.id ,"creator"
+                        print "User with nickname ", str(ap.nickname) ,", set as annotation ", annotation.id ," creator"
+                        stdlogger.info("User with nickname " + str(ap.nickname) + ", set as annotation " + annotation.id + " creator")
                         return annotation.id
 
                     else:
-                        print "SetUserAsAnnotationCreator function, no annotation were found matching this id:", str(db_id)
+                        print "SetUserAsAnnotationCreator function, no annotation were found matching this id: ", str(db_id)
+                        stdlogger.error("SetUserAsAnnotationCreator function, no annotation were found matching this id: " + str(db_id))
 
                 else:
                     print "SetUserAsAnnotationCreator function, provided parameter for annotation id invalid."
+                    stdlogger.error("SetUserAsAnnotationCreator function, provided parameter for annotation id invalid.")
 
             else:
-                print "SetUserAsAnnotationCreator function, no registered annotator profile with id:", user_id
+                print "SetUserAsAnnotationCreator function, no registered annotator profile with id: ", user_id
+                stdlogger.error("SetUserAsAnnotationCreator function, no registered annotator profile with id: " + user_id)
 
         else:
             print "SetCurrentUserAsAnnotationCreator function, provided parameter for annotator profile id invalid."
+            stdlogger.error("SetCurrentUserAsAnnotationCreator function, provided parameter for annotator profile id invalid.")
 
     except Exception:
         print "SetUserAsAnnotationCreator function did not complete."
+        stdlogger.error("SetUserAsAnnotationCreator function did not complete.")
         return False
 
     print "SetUserAsAnnotationCreator function did not complete succesfully."
+    stdlogger.error("SetUserAsAnnotationCreator function did not complete succesfully.")
     return False
 
 
@@ -398,39 +450,50 @@ def DuplicateAnnotation( db_id=None ):
                                             ann.save()
 
                                             print "DuplicateAnnotation function, created annotation document with id: " + str(ann.id)
+                                            stdlogger.info("DuplicateAnnotation function, created annotation document with id: " + str(ann.id))
                                             return ann.id
 
                                         else:
                                             print "DuplicateAnnotation function, annotation document target 'jsonld_id' neither str nor unicode."
+                                            stdlogger.error("DuplicateAnnotation function, annotation document target 'jsonld_id' neither str nor unicode.")
                                             return False
                                     else:
                                         print "DuplicateAnnotation function, missing annotation document target 'jsonld_id'."
+                                        stdlogger.error("DuplicateAnnotation function, missing annotation document target 'jsonld_id'.")
                                         return False
                                 else:
                                     print "DuplicateAnnotation function, no element in annotation document target list."
+                                    stdlogger.error("DuplicateAnnotation function, no element in annotation document target list.")
                                     return False
                             else:
                                 print "DuplicateAnnotation function, annotation doument target list empty."
+                                stdlogger.error("DuplicateAnnotation function, annotation doument target list empty.")
                                 return False
                         else:
                             print "DuplicateAnnotation function, annotation doument target is not of type list."
+                            stdlogger.error("DuplicateAnnotation function, annotation doument target is not of type list.")
                             return False
                     else:
                         print "DuplicateAnnotation function, annotation document missing target field."
+                        stdlogger.error("DuplicateAnnotation function, annotation document missing target field.")
                         return False
             else:
                 print "DuplicateAnnotation function, provided 'db_id' argument neither str nor unicode."
+                stdlogger.error("DuplicateAnnotation function, provided 'db_id' argument neither str nor unicode.")
                 return False
 
         else:
             print "DuplicateAnnotation function, missing 'db_id' argument."
+            stdlogger.error("DuplicateAnnotation function, missing 'db_id' argument.")
             return False
 
     except ValueError:
         print "DuplicateAnnotation function, did not complete."
+        stdlogger.error("DuplicateAnnotation function, did not complete.")
         return False
 
     print "DuplicateAnnotation function did not complete succesfully."
+    stdlogger.error("DuplicateAnnotation function did not complete succesfully.")
     return False
 
 
@@ -462,24 +525,30 @@ def CreateSemanticTag( subject_url=None, object_json=None ):
 
                     db_id = SetAnnotationMotivation( db_id, "tagging" )
 
-                    print "MakeAnnotationSemanticTag function, made annotation semantic tag:", str(db_id)
+                    print "MakeAnnotationSemanticTag function, made annotation semantic tag: ", str(db_id)
+                    stdlogger.info("MakeAnnotationSemanticTag function, made annotation semantic tag: " + str(db_id))
                     return db_id
 
                 else:
                     print "CreateSemanticTag function, provided json object is neither string nor unicode."
+                    stdlogger.error("CreateSemanticTag function, provided json object is neither string nor unicode.")
                     return False
             else:
                 print "CreateSemanticTag function, internal call to CreateAnnotation function did not return an exploitable id reference."
+                stdlogger.error("CreateSemanticTag function, internal call to CreateAnnotation function did not return an exploitable id reference.")
                 return False
         else:
             print "CreateSemanticTag function, provided parameter is not a valid string for subject_url."
+            stdlogger.error("CreateSemanticTag function, provided parameter is not a valid string for subject_url.")
             return False
 
     except ValueError:
         print "CreateSemanticTag function did not complete."
+        stdlogger.error("CreateSemanticTag function did not complete.")
         return False
 
     print "CreateSemanticTag function did not complete succesfully."
+    stdlogger.error("CreateSemanticTag function did not complete succesfully.")
     return False
 
 
@@ -509,6 +578,8 @@ def CreateFreeTextKeyword( subject_url=None, text=None ):
                     db_id = None
                     db_id = MakeAnnotationFreeText(my_id, text)
 
+                    print "CreateFreeText function, created free-text annotation: ", str(db_id)
+                    stdlogger.info("CreateFreeText function, created free-text annotation: " + str(db_id))
                     db_id = SetAnnotationMotivation( db_id, "tagging" )
 
                     print "CreateFreeTextKeyword function, created free-text keyword annotation:", str(db_id)
@@ -516,18 +587,28 @@ def CreateFreeTextKeyword( subject_url=None, text=None ):
 
                 else:
                     print "CreateFreeTextKeyword function, wrong text codification or empty text."
+                    print "CreateFreeText function, wrong text codification or empty text."
+                    stdlogger.error("CreateFreeText function, wrong text codification or empty text.")
                     return False
             else:
+                print "CreateFreeText function, 'my_id' parameter neither str nor unicode."
+                stdlogger.error("CreateFreeText function, 'my_id' parameter neither str nor unicode.")
                 print "CreateFreeTextKeyword function, 'my_id' parameter neither str nor unicode."
                 return False
         else:
+            print "CreateFreeText function, annotation not created or id not returned."
+            stdlogger.error("CreateFreeText function, annotation not created or id not returned.")
             print "CreateFreeTextKeyword function, annotation not created or id not returned."
             return False
 
     except ValueError:
+        print "CreateFreeText function did not complete."
+        stdlogger.error("CreateFreeText function did not complete.")
         print "CreateFreeTextKeyword function did not complete."
         return False
 
+    print "CreateFreeText function did not complete succesfully."
+    stdlogger.error("CreateFreeText function did not complete succesfully.")
     print "CreateFreeTextKeyword function did not complete succesfully."
     return False
 
@@ -633,35 +714,46 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
                                     db_id = SetAnnotationMotivation( A.id, "tagging" )
 
                                     print "MakeAnnotationSemanticTag function, made annotation semantic tag:", str(db_id)
+                                    print "MakeAnnotationSemanticTag function, made annotation semantic tag: ", str(db_id)
+                                    stdlogger.info("MakeAnnotationSemanticTag function, made annotation semantic tag: " + str(db_id))
                                     return db_id
 
                                 else:
                                     print "MakeAnnotationSemanticTag function, dictionary field at key 'uris' does not resolve in a valid string."
+                                    stdlogger.error("MakeAnnotationSemanticTag function, dictionary field at key 'uris' does not resolve in a valid string.")
                                     return False
                             else:
                                 print "MakeAnnotationSemanticTag function, dictionary does not contain a field with key 'uris'."
+                                stdlogger.error("MakeAnnotationSemanticTag function, dictionary does not contain a field with key 'uris'.")
                                 return False
                         else:
                             print "MakeAnnotationSemanticTag function, provided json does not load as a python dictionary."
+                            stdlogger.error("MakeAnnotationSemanticTag function, provided json does not load as a python dictionary.")
                             return False
                     else:
                         print "MakeAnnotationSemanticTag function, provided json object is neither string nor unicode."
+                        stdlogger.error("MakeAnnotationSemanticTag function, provided json object is neither string nor unicode.")
                         return False
                 else:
-                    print "MakeAnnotationSemanticTag function, no annotation wit id:", str(db_id)
+                    print "MakeAnnotationSemanticTag function, no annotation wit id: ", str(db_id)
+                    stdlogger.error("MakeAnnotationSemanticTag function, no annotation wit id: " + str(db_id))
                     return False
             else:
                 print "MakeAnnotationSemanticTag function, 'db_id' parameter neither str nor unicode."
+                stdlogger.error("MakeAnnotationSemanticTag function, 'db_id' parameter neither str nor unicode.")
                 return False
         else:
             print "MakeAnnotationSemanticTag function, missing parameter called 'db_id'."
+            stdlogger.error("MakeAnnotationSemanticTag function, missing parameter called 'db_id'.")
             return False
 
     except ValueError:
         print "MakeAnnotationSemanticTag function did not complete."
+        stdlogger.error("MakeAnnotationSemanticTag function did not complete.")
         return False
 
     print "MakeAnnotationSemanticTag function did not complete succesfully."
+    stdlogger.error("MakeAnnotationSemanticTag function did not complete succesfully.")
     return False
 
 
@@ -695,29 +787,34 @@ def MakeAnnotationFreeText( db_id=None, text=None ):
 
                         A.save()
 
-                        #db_id = SetAnnotationMotivation( A.id, "commenting" )
-
-                        print "MakeAnnotationFreeText function, made free-text annotation:", str(db_id)
+                        print "MakeAnnotationFreeText function, made free-text annotation: ", str(db_id)
+                        stdlogger.info("MakeAnnotationFreeText function, made free-text annotation: " + str(db_id))
                         return db_id
 
                     else:
                         print "MakeAnnotationFreeText function, wrong text codification or empty text"
+                        stdlogger.error("MakeAnnotationFreeText function, wrong text codification or empty text")
                         return False
                 else:
-                    print "MakeAnnotationFreeText function, no annotation wit id:", str(db_id)
+                    print "MakeAnnotationFreeText function, no annotation wit id: ", str(db_id)
+                    stdlogger.error("MakeAnnotationFreeText function, no annotation wit id: " + str(db_id))
                     return False
             else:
                 print "MakeAnnotationFreeText function, 'db_id' parameter neither str nor unicode."
+                stdlogger.error("MakeAnnotationFreeText function, 'db_id' parameter neither str nor unicode.")
                 return False
         else:
             print "MakeAnnotationFreeText function, missing parameter called 'db_id'."
+            stdlogger.error("MakeAnnotationFreeText function, missing parameter called 'db_id'.")
             return False
 
     except ValueError:
         print "MakeAnnotationFreeText function did not complete."
+        stdlogger.error("MakeAnnotationFreeText function did not complete.")
         return False
 
     print "MakeAnnotationFreeText function did not complete succesfully."
+    stdlogger.error("MakeAnnotationFreeText function did not complete succesfully.")
     return False
 
 
@@ -760,21 +857,26 @@ def CreateAnnotation(target=None):
                 ann.save()
 
                 print "CreateAnnotation function, created annotation document with id: " + str(ann.id)
+                stdlogger.info("CreateAnnotation function, created annotation document with id: " + str(ann.id))
                 return ann.id
 
             else:
                 print "CreateAnnotation function, provided 'target' argument not a valid str or unicode."
+                stdlogger.error("CreateAnnotation function, provided 'target' argument not a valid str or unicode.")
                 return False
 
         else:
             print "CreateAnnotation function, missing 'target' argument."
+            stdlogger.error("CreateAnnotation function, missing 'target' argument.")
             return False
     
     except ValueError:
         print "CreateAnnotation function, did not complete."
+        stdlogger.error("CreateAnnotation function, did not complete.")
         return False
 
     print "CreateAnnotation function did not complete succesfully."
+    stdlogger.error("CreateAnnotation function did not complete succesfully.")
     return False
 
 
@@ -840,7 +942,6 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
 
 
 
-
 def CheckDuplicateAnnotation( target=None, annotation_body=None ):
     """
       Function: CheckDuplicateAnnotation
@@ -866,6 +967,7 @@ def CheckDuplicateAnnotation( target=None, annotation_body=None ):
                             A = Annotation.objects.raw_query({'target.jsonld_id':target,'body.value':annotation_body['body']['value']})
                         else:
                             print "CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary."
+                            stdlogger.error("CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary.")
                             return False
                     if len(A) > 0:
                         return A
@@ -873,16 +975,20 @@ def CheckDuplicateAnnotation( target=None, annotation_body=None ):
                         return False
                 else:
                     print "CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary."
+                    stdlogger.error("CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary.")
                     return False
             else:
                 print "CheckDuplicateAnnotation function, provided 'target' argument not a valid str or unicode."
+                stdlogger.error("CheckDuplicateAnnotation function, provided 'target' argument not a valid str or unicode.")
                 return False
         else:
             print "CheckDuplicateAnnotation function, missing 'target' argument."
+            stdlogger.error("CheckDuplicateAnnotation function, missing 'target' argument.")
             return False
     
     except ValueError:
         print "CheckDuplicateAnnotation function, did not complete."
+        stdlogger.error("CheckDuplicateAnnotation function, did not complete.")
         return False
 
 
@@ -909,11 +1015,14 @@ def CheckLengthFreeText( body_value=None, length_limit=60 ):
                     return False
             else:
                 print "CheckLengthFreeText function, provided 'body_value' argument not a valid str or unicode."
+                stdlogger.error("CheckLengthFreeText function, provided 'body_value' argument not a valid str or unicode.")
                 return False
         else:
             print "CheckLengthFreeText function, missing parameter called 'body_value'."
+            stdlogger.error("CheckLengthFreeText function, missing parameter called 'body_value'.")
             return False
     
     except ValueError:
         print "CheckLengthFreeText function, did not complete."
+        stdlogger.error("CheckLengthFreeText function, did not complete.")
         return False

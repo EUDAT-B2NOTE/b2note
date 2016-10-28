@@ -1,4 +1,7 @@
 import re, datetime
+import logging
+
+stdlogger = logging.getLogger('b2note')
 
 
 def readyQuerySetValuesForDumpAsJSONLD( o_in ):
@@ -48,10 +51,12 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
                     if newkey == "@id": newkey = "id"
                     o_out[newkey] = readyQuerySetValuesForDumpAsJSONLD( o_in[k] )
         else:
-            print "readyQuerySetValuesForDumpAsJSONLD function, unhandled object type encountered:", type(o_in)
+            print "readyQuerySetValuesForDumpAsJSONLD function, unhandled object type encountered: ", type(o_in)
+            stdlogger.error("readyQuerySetValuesForDumpAsJSONLD function, unhandled object type encountered: " + type(o_in))
             pass
     except:
         o_out = None
         print "readyQuerySetValuesForDumpAsJSONLD function did not complete."
+        stdlogger.error("readyQuerySetValuesForDumpAsJSONLD function did not complete.")
         pass
     return o_out
