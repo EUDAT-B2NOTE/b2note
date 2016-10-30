@@ -26,13 +26,25 @@
 
 				<p><strong>All</strong> annotations about the file.</p>
 
+			{% elif annotations_of == "search_results" %}
+
+				<p>Selected files information.</p>
+
 			{% endif %}
 
 		{% endif %}
 
 		<div class="container" id="export-download" align="right">
 
-			<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default">Download JSON-LD</a>
+			{% if annotations_of == "search_results" %}
+
+				<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default">Download JSON</a>
+
+			{% else %}
+
+				<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default">Download JSON-LD</a>
+
+			{% endif %}
 
 		</div>
 
