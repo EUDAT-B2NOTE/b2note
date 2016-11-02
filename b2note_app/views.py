@@ -1542,6 +1542,11 @@ def select_search_results(request):
         "exact": [],
         "related": [],
     }
+
+    if "search_str" in request.session.keys() and request.session["search_str"]:
+        if isinstance(request.session["search_str"], (str, unicode)):
+            search_str = request.session["search_str"]
+
     if request.POST.get("submit_toselect") is not None:
         if "search_str" in request.session.keys() and request.session["search_str"]:
             if isinstance(request.session["search_str"], (str, unicode)):
@@ -1559,8 +1564,6 @@ def select_search_results(request):
                         export_dic["related"].append( {"checked": True, "url": url} )
                         all_related_cbox = True
 
-    print "# 1 " * 30
-    print "# ", request.POST.get("submit_toexport")
     if request.POST.get("submit_toexport") is not None:
         iterator = 0
         export_dic = {"exact":[], "related":[]}
@@ -1597,16 +1600,16 @@ def select_search_results(request):
             if "related" in export_dic.keys() and export_dic["related"] and isinstance(export_dic["related"], list):
                 response["synonym_match"] = []
 
-                A = Annotation.objects.raw_query({"jsonld_id": {"$in": export_dic["related"]}}).values()
+                A = Annotation.objects.raw_query({"target.jsonld_id": {"$in": export_dic["related"]}}).values()
 
                 for url in export_dic["related"]:
                     if isinstance(url, (str, unicode)):
-                        exac = {"@context": context_str}
-                        exac["@graph"] = readyQuerySetValuesForDumpAsJSONLD([ann for ann in A if
+                        relat = {"@context": context_str}
+                        relat["@graph"] = readyQuerySetValuesForDumpAsJSONLD([ann for ann in A if
                                                                              ann["target"][0][1]["jsonld_id"] == url])
                         response["synonym_match"].append(
                             {"file_url": url,
-                             "annotations": exac, }
+                             "annotations": relat, }
                         )
 
             # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
