@@ -14,6 +14,8 @@ from accounts.tests import *
 from b2note_app.mongo_support_functions import *
 from b2note_devel.urls import urlpatterns
 import json
+from django.contrib.auth import login as django_login, authenticate, logout as django_logout
+from accounts.models import UserCred
 
 #class B2noteappFailTest(TestCase):
     #"""
@@ -60,6 +62,13 @@ def check_urls(urllist, depth=0):
                     return False
     return True
 
+class MyRequest(dict):
+    def __init__(self, req, session, user):
+        self.__dict__ = req
+        self.session = session
+        self.__dict__['META'] = {}
+        self.user = user
+
 class B2noteappTest(TestCase):
     """
         TestCase class that clear the collection between the tests
@@ -82,6 +91,32 @@ class B2noteappTest(TestCase):
         connection.drop_database(self.mongodb_name)
         disconnect()
         super(B2noteappTest, self)._post_teardown()
+        
+    def setUp(self):
+        self.username='test'
+        self.password='123456'
+        self.email='test@test.com'
+        self.user = UserCred.objects.create_user(username=self.username, email=self.email, password=self.password)
+        settings.SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+        engine = import_module(settings.SESSION_ENGINE)
+        store = engine.SessionStore()
+        store.save()
+        self.session = store
+        self.client.cookies[settings.SESSION_COOKIE_NAME] = store.session_key
+        
+    def login(self):
+        user = authenticate(email=self.email,password=self.password,db=self.user.getDB())
+        response = self.client.post('/login', {'username': self.email, 'password': self.password})
+        self.assertNotEqual(user, None)
+        self.assertTrue(user.is_active)
+        session = self.client.session
+        session['user'] = user.annotator_id.annotator_id
+        session.save()
+        req = MyRequest(response.request, self.client.session, user)
+        print req.session.items()
+        django_login(req, user)
+        print req.session.items()
+
         
     def create_annotation(self, jsonld_id="test", type=["others"]):
         return Annotation.objects.create(jsonld_id=jsonld_id, type=type)
@@ -166,13 +201,15 @@ class B2noteappTest(TestCase):
         json_dict['subject_tofeed'] = 'subject_test'
         json_dict['ontology_json'] = json.dumps({'labels' : 'annotation_test',
                                                 'uris': 'uri_test'})
-
+        self.login()
         # DB just created with no annotations in there
         before = Annotation.objects.filter().count()
         self.assertEqual(before, 0)
         resp = self.client.post(url, json_dict )
-        self.assertEqual(resp.status_code, 200)
-        self.assertIn("annotation_test", resp.content)
+        print resp.content
+        self.assertEqual(resp.status_code, 302)
+        print resp.content
+        #self.assertIn("annotation_test", resp.content)
         # DB with 1 annotations created
         after = Annotation.objects.filter().count()
         self.assertEqual(after, 1)
@@ -208,7 +245,12 @@ class B2noteappTest(TestCase):
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertIn("annotation_test", resp.content)
-
+    
+    def test_settings_view(self):
+        self.login()
+        url = reverse("b2note_app.views.settings")
+        resp = self.client.post(url, {'pid_tofeed': 'pid_test', 'subject_tofeed': 'subject_test'})
+        print resp.status_code
     
     # http://stackoverflow.com/questions/1828187/determine-complete-django-url-configuration    
     def parse_urls(self):
