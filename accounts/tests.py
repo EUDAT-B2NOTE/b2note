@@ -6,42 +6,58 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
-from django.test.client import Client
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 from accounts.models import UserCred
 from accounts.views import login
+from b2note_app.views import homepage, download_json, settings as b2setts
+from django.conf import settings
+from django.utils.importlib import import_module
+
+class MyRequest(dict):
+    def __init__(self, req, session, user):
+        self.__dict__ = req
+        self.session = session
+        self.user = user
+        self.__dict__['META'] = {}
 
 class AccountTest(TestCase):
     username='test'
     password='123456'
     email='test@test.com'
+    db_user = None
     user = None
-    c = Client()
+    req = None
     
     def setUp(self):
-        self.user = UserCred.objects.create_user(username=self.username, email=self.email, password=self.password)
+        self.db_user = UserCred.objects.create_user(username=self.username, email=self.email, password=self.password)
+        settings.SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+        engine = import_module(settings.SESSION_ENGINE)
+        store = engine.SessionStore()
+        store.save()
+        self.session = store
+        self.client.cookies[settings.SESSION_COOKIE_NAME] = store.session_key
+        
+    def test_login(self):
+        self.user = authenticate(email=self.email,password=self.password,db=self.db_user.getDB())
+        response = self.client.post('/login', {'username': self.email, 'password': self.password}, follow=True)
+        self.assertNotEqual(self.user, None)
+        self.assertTrue(self.user.is_active)
+        session = self.client.session
+        session['user'] = self.user.annotator_id.annotator_id
+        session.save()
+        self.req = MyRequest(response.request, self.client.session)
+        print self.req.session.items()
+        django_login(self.req, self.user)
+        self.assertTrue(self.user.is_authenticated())
+        print self.req.session.items()
         
     def is_created(self):
-        print UserCred.objects.get(username=self.email)
-    
-    def test_login(self):
-        response = self.c.get('/login')
-        self.assertEqual(response.status_code, 200)
-        #auth = authenticate(email=self.email,password=self.password,db=self.user.getDB())
-        auth = self.c.login(email=self.email,password=self.password,db=self.user.getDB())
-        self.assertTrue(auth)
-        response = self.c.post('/login', {'username': self.email, 'password': self.password})
-        self.assertEqual(response.status_code, 200)
-        #print response.content
-        response = self.c.get('/homepage')
-        self.assertEqual(response.status_code, 200)
+        return UserCred.objects.get(username=self.email)        
         
-        
-    
     def test_logout(self):
-        #self.test_create_user()
         self.test_login()
-        response = self.c.get('/logout')
-        self.assertEqual(response.status_code, 302)
-            
+        print self.req.session.items()
+        django_logout(self.req)
+        print self.req.session.items()
+
         
