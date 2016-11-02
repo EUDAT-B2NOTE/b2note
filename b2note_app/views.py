@@ -85,6 +85,9 @@ def export_annotations(request):
                  with likely origin of trouble being CORS.
                 As a consequence we resort here to embedding rather than linking to the context.
                 """
+                now = datetime.datetime.now()
+                nowi = str(now.year) + str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(now.second)
+
                 #context_str = open(os.path.join(global_settings.STATIC_PATH, 'files/anno_context.jsonld'), 'r').read()
                 contextfile_name = "jsonld_context_b2note_20161027.json"
                 context_str = "https://b2note-dev.bsc.es/" + contextfile_name
@@ -96,7 +99,7 @@ def export_annotations(request):
 
                 # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
                 json_data = HttpResponse(json.dumps(response, indent=2), mimetype= 'application/json')
-                json_data['Content-Disposition'] = 'attachment; filename=' + contextfile_name
+                json_data['Content-Disposition'] = 'attachment; filename=' + "b2note_export_" + nowi
                 download_json.file_data = json_data
 
             navbarlinks = list_navbarlinks(request, ["Download"])
@@ -1163,18 +1166,32 @@ def interface_main(request):
     return render(request, 'b2note_app/interface_main.html', data_dict)
 
 
-def process_semantic_entry( query_dict, entry ):
+def extract_shortform( e=None ):
+    out=None
+    if e:
+        if isinstance(e, dict):
+            sf = "--"
+            if "short_form" in e.keys():
+                if e["short_form"] and isinstance(e["short_form"], (str, unicode)):
+                    sf = e["short_form"]
+                    if "ontology_acronym" in e.keys():
+                        if e["ontology_acronym"] and isinstance(e["ontology_acronym"], (str, unicode)):
+                            if e["ontology_acronym"] not in e["short_form"]:
+                                sf = e["ontology_acronym"] + ":" + e["short_form"]
+            elif "uris" in e.keys():
+                if e["uris"] and isinstance( e["uris"], (str,unicode) ):
+                    uri = e["uris"]
+                    sf = uri[::-1][:uri[::-1].find(" / ")][::-1]
+            out = sf
+    return out
 
+def process_semantic_entry( entry=None, query_dict=None, search_str=None ):
+    if not search_str: search_str = ""
     if query_dict and entry:
-
         if isinstance(query_dict, dict) and isinstance(entry, dict):
-
             if "search_param" in entry.keys():
-
                 if entry["search_param"]:
-
                     if isinstance(entry["search_param"], dict):
-
                         if "uris" in entry["search_param"].keys():
                             uri = None
                             uri = entry["search_param"]["uris"]
@@ -1184,8 +1201,11 @@ def process_semantic_entry( query_dict, entry ):
                                         for logic in ["AND", "OR", "NOT", "XOR"]:
                                             if entry["logical"] == logic:
                                                 query_dict["body_id_"+str(logic).lower()].append( uri )
+                                                search_str += " " + str(logic).upper() + \
+                                                              " " + str(extract_shortform( entry["search_param"] ))
                                     elif entry["logical"] is None:
                                         query_dict["body_id_or"].append( uri )
+                                        search_str += " " + extract_shortform(entry["search_param"])
 
                         if "syn_incl" in entry.keys() and entry["syn_incl"] is True:
                             if "synonyms" in entry["search_param"].keys():
@@ -1195,10 +1215,12 @@ def process_semantic_entry( query_dict, entry ):
                                     for syn in syns:
                                         if syn and isinstance(syn, (str, unicode)):
                                             query_dict["body_val_syn"].append( syn )
-    return query_dict
+                                            search_str += " SYN " + syn
+    return query_dict, search_str
 
 
-def process_keyword_entry( query_dict, entry ):
+def process_keyword_entry( entry=None, query_dict=None, search_str=None ):
+    if not search_str: search_str = ""
     if query_dict and entry:
         if isinstance(query_dict, dict) and isinstance(entry, dict):
             if "search_param" in entry.keys():
@@ -1212,9 +1234,11 @@ def process_keyword_entry( query_dict, entry ):
                                     for logic in ["AND", "OR", "NOT", "XOR"]:
                                         if entry["logical"] == logic:
                                             query_dict["body_val_"+str(logic).lower()].append( kwd )
+                                            search_str += " " + str(logic).upper() + " " + kwd
                                 elif entry["logical"] is None:
                                     query_dict["body_val_or"].append( kwd )
-    return query_dict
+                                    search_str += " " + kwd
+    return query_dict, search_str
 
 
 def process_search_query( form ):
@@ -1231,18 +1255,18 @@ def process_search_query( form ):
                   "commenting"  : False,
                   }
     search_str = ""
+
     for entry in form:
         if isinstance(entry, dict):
             if "type" in entry.keys():
                 if entry["type"] and isinstance(entry["type"], (str, unicode)):
                     if entry["type"] == "Semantic tag":
-                        query_dict = process_semantic_entry( query_dict, entry )
+                        query_dict, search_str = process_semantic_entry( entry, query_dict, search_str )
                     elif entry["type"] == "Free-text keyword":
-                        query_dict = process_keyword_entry(query_dict, entry)
+                        query_dict, search_str = process_keyword_entry( entry, query_dict, search_str )
                     elif entry["type"] == "Comment":
                         query_dict["commenting"] = True
-
-    print query_dict
+                        search_str += " ALL COMMENTED FILES"
 
     VA=""
     VX=""
@@ -1258,44 +1282,114 @@ def process_search_query( form ):
 
         if v and isinstance(v,list) and len(v)>0:
 
-            if k == "body_val_and": VA = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
-            if k == "body_val_or":  VO = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
-            if k == "body_val_not": VN = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
-            if k == "body_val_xor": VX = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
-            if k == "body_val_syn": VS = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+            if k == "body_val_and":
+                VA = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+            if k == "body_val_or":
+                VO = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+            if k == "body_val_not":
+                VN = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+            if k == "body_val_xor":
+                VX = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+            if k == "body_val_syn":
+                VS = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
 
-            if k == "body_id_and": IA = Annotation.objects.raw_query({"body.jsonld_id": {"$in": query_dict[ k ]}})
-            if k == "body_id_or":  IO = Annotation.objects.raw_query({"body.jsonld_id": {"$in": query_dict[ k ]}})
-            if k == "body_id_not": IN = Annotation.objects.raw_query({"body.jsonld_id": {"$in": query_dict[ k ]}})
-            if k == "body_id_xor": IX = Annotation.objects.raw_query({"body.jsonld_id": {"$in": query_dict[ k ]}})
-
-
-    print len(VA)
-    print len(VO)
-    print len(VN)
-    print len(VX)
-    print len(VS), VS
-    print len(IA)
-    print len(IO)
-    print len(IN)
-    print len(IX)
+            if k == "body_id_and":
+                IA = Annotation.objects.raw_query({"body.jsonld_id": {"$in": query_dict[ k ]}})
+            if k == "body_id_or":
+                IO = Annotation.objects.raw_query({"body.jsonld_id": {"$in": query_dict[ k ]}})
+            if k == "body_id_not":
+                IN = Annotation.objects.raw_query({"body.jsonld_id": {"$in": query_dict[ k ]}})
+            if k == "body_id_xor":
+                IX = Annotation.objects.raw_query({"body.jsonld_id": {"$in": query_dict[ k ]}})
 
     exact = []
     related = []
 
     if VA:
         for ann in VA:
-            v = set([ann.body[0].value])
+            v = { ann.body[0].value }
             for anno in VA:
                 if ann.target[0].jsonld_id == anno.target[0].jsonld_id:
-                    v.add( ann.body[0].value )
-            if v == set(query_dict["body_val_and"]):
+                    if ann.body[0].value: v.add( ann.body[0].value )
+            z = { ann.body[0].value }
+            if IA:
+                for anno in IA:
+                    if ann.target[0].jsonld_id == anno.target[0].jsonld_id:
+                        if ann.body[0].jsonld_id: z.add( ann.body[0].jsonld_id )
+            if v == set(query_dict["body_val_and"]) and z == set(query_dict["body_id_and"]):
                 exact.append( ann.target[0].jsonld_id )
+
     if VO:
         for ann in VO:
             exact.append(ann.target[0].jsonld_id)
 
-    return search_str
+    if IO:
+        for ann in IO:
+            exact.append(ann.target[0].jsonld_id)
+
+    if VS:
+        for ann in VS:
+            related.append( ann.target[0].jsonld_id )
+
+    if VX:
+        for ann in VX:
+            if exact:
+                if ann.target[0].jsonld_id: exact.add( ann.target[0].jsonld_id )
+                coll = set()
+                for url in exact:
+                    if url == ann.target[0].jsonld_id:
+                        coll.add( url )
+                for url in coll:
+                    exact.remove( url )
+
+    if IX:
+        for ann in IX:
+            if exact:
+                if ann.target[0].jsonld_id: exact.add( ann.target[0].jsonld_id )
+                coll = set()
+                for url in exact:
+                    if url == ann.target[0].jsonld_id:
+                        coll.add( url )
+                for url in coll:
+                    exact.remove( url )
+
+    if exact and VN:
+        for ann in VN:
+            for url in exact:
+                if ann.target[0].jsonld_id == url:
+                    exact.remove( url )
+
+    if exact and IN:
+        for ann in IN:
+            for url in exact:
+                if ann.target[0].jsonld_id == url:
+                    exact.remove( url )
+
+    if exact and query_dict["commenting"] is True:
+
+        C = None
+        C = Annotation.objects.raw_query({"target.jsonld_id": {"$in": [u for u in exact]}})
+
+        exact = set()
+        if C:
+            for ann in C:
+                if ann.target[0].jsonld_id not in exact:
+                    if ann.motivation and ann.motivation[0] == "commenting":
+                        exact.add( ann.target[0].jsonld_id )
+
+    if related and query_dict["commenting"] is True:
+
+        C = None
+        C = Annotation.objects.raw_query({"target.jsonld_id": {"$in": [u for u in related]}})
+
+        related = set()
+        if C:
+            for ann in C:
+                if ann.target[0].jsonld_id not in related:
+                    if ann.motivation and ann.motivation[0] == "commenting":
+                        related.add(ann.target[0].jsonld_id)
+
+    return exact, related, search_str
 
 
 @login_required
@@ -1306,6 +1400,9 @@ def search_annotations(request):
         userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
         user_nickname = userprofile.nickname
 
+    exact = None
+    related = None
+    search_str = None
     form = []
     cbc = True
     fmessage = None
@@ -1358,11 +1455,8 @@ def search_annotations(request):
         form.append( fdic )
 
     if request.POST.get("launch_search")!=None:
-        print 'LAUNCH'
-
         if form:
-
-            process_search_query( form )
+            exact, related, search_str = process_search_query( form )
 
     elif request.POST.get("plus")!=None:
         if form[len(form)-1]["search_param"] is not None or form[len(form)-1]["type"] == "Comment":
@@ -1387,6 +1481,23 @@ def search_annotations(request):
     navbarlinks = list_navbarlinks(request, ["Search"])
     shortcutlinks = list_shortcutlinks(request, ["Search"])
 
+    if search_str or exact or related:
+
+        data_dict = {
+            'exact': exact,
+            'related': related,
+            'search_str': search_str,
+            'user_nickname': user_nickname,
+            'navbarlinks': navbarlinks,
+            'shortcutlinks': shortcutlinks,
+        }
+
+        request.session["search_str"] = search_str
+        request.session["exact"] = list(exact)
+        request.session["related"] = list(related)
+
+        return render(request, "b2note_app/searchresult.html", data_dict)
+
     data_dict = {
         'fmessage': fmessage,
         'form': form,
@@ -1397,6 +1508,159 @@ def search_annotations(request):
 
     return render(request, "b2note_app/searchpage.html", data_dict)
 
+@login_required
+def select_search_results(request):
+
+    pid_tofeed = ""
+    if request.POST.get('pid_tofeed')!=None:
+        pid_tofeed = request.POST.get('pid_tofeed')
+        request.session["pid_tofeed"] = pid_tofeed
+    elif request.session.get('pid_tofeed'):
+        pid_tofeed = request.session.get('pid_tofeed')
+
+    subject_tofeed = ""
+    if request.POST.get('subject_tofeed')!=None:
+        subject_tofeed = request.POST.get('subject_tofeed')
+        request.session["subject_tofeed"] = subject_tofeed
+    elif request.session.get('subject_tofeed'):
+        subject_tofeed = request.session.get('subject_tofeed')
+
+    user_nickname = None
+    if request.session.get('user')!=None:
+        userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+        user_nickname = userprofile.nickname
+
+    navbarlinks = list_navbarlinks(request, ["Search"])
+    shortcutlinks = list_shortcutlinks(request, ["Search"])
+
+    search_str = None
+    exact = None
+    related = None
+    all_exact_cbox = True
+    all_related_cbox = True
+    export_dic = {
+        "exact": [],
+        "related": [],
+    }
+
+    if "search_str" in request.session.keys() and request.session["search_str"]:
+        if isinstance(request.session["search_str"], (str, unicode)):
+            search_str = request.session["search_str"]
+
+    if request.POST.get("submit_toselect") is not None:
+        if "search_str" in request.session.keys() and request.session["search_str"]:
+            if isinstance(request.session["search_str"], (str, unicode)):
+                search_str = request.session["search_str"]
+        if "exact" in request.session.keys() and request.session["exact"]:
+            if isinstance(request.session["exact"], (list,set)):
+                for url in request.session["exact"]:
+                    if url and isinstance(url, (str, unicode)):
+                        export_dic["exact"].append( {"checked": True, "url": url} )
+                        all_exact_cbox = True
+        if "related" in request.session.keys() and request.session["related"]:
+            if isinstance(request.session["related"], (list,set)):
+                for url in request.session["related"]:
+                    if url and isinstance(url, (str, unicode)):
+                        export_dic["related"].append( {"checked": True, "url": url} )
+                        all_related_cbox = True
+
+    if request.POST.get("submit_toexport") is not None:
+        iterator = 0
+        export_dic = {"exact":[], "related":[]}
+        while request.POST.get("exact_url"+str(iterator)) or request.POST.get("related_url"+str(iterator)):
+            if request.POST.get("exact_cbox"+str(iterator)) and request.POST.get("exact_url"+str(iterator)):
+                export_dic["exact"].append( request.POST.get("exact_url"+str(iterator)) )
+            if request.POST.get("related_cbox" + str(iterator)) and request.POST.get("related_url" + str(iterator)):
+                export_dic["related"].append(request.POST.get("related_url" + str(iterator)))
+            iterator += 1
+
+        response = {}
+        if export_dic and isinstance(export_dic, dict):
+            now = datetime.datetime.now()
+            nowi = str(now.year)+str(now.month)+str(now.day)+str(now.hour)+str(now.minute)+str(now.second)
+            contextfile_name = "jsonld_context_b2note_20161027.json"
+            context_str = "https://b2note-dev.bsc.es/" + contextfile_name
+
+            if search_str and isinstance(search_str, (str, unicode)): response["query string"] = search_str
+            if "exact" in export_dic.keys() and export_dic["exact"] and isinstance(export_dic["exact"], list):
+                response["exact_match"] = []
+
+                A = Annotation.objects.raw_query({"target.jsonld_id": {"$in": export_dic["exact"] }}).values()
+
+                for url in export_dic["exact"]:
+                    if isinstance(url, (str, unicode)):
+                        exac = {"@context": context_str}
+                        exac["@graph"] = readyQuerySetValuesForDumpAsJSONLD([ann for ann in A if
+                                                                             ann["target"][0][1]["jsonld_id"] == url])
+                        response["exact_match"].append(
+                            {"file_url": url,
+                            "annotations": exac,}
+                        )
+
+            if "related" in export_dic.keys() and export_dic["related"] and isinstance(export_dic["related"], list):
+                response["synonym_match"] = []
+
+                A = Annotation.objects.raw_query({"target.jsonld_id": {"$in": export_dic["related"]}}).values()
+
+                for url in export_dic["related"]:
+                    if isinstance(url, (str, unicode)):
+                        relat = {"@context": context_str}
+                        relat["@graph"] = readyQuerySetValuesForDumpAsJSONLD([ann for ann in A if
+                                                                             ann["target"][0][1]["jsonld_id"] == url])
+                        response["synonym_match"].append(
+                            {"file_url": url,
+                             "annotations": relat, }
+                        )
+
+            # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
+            json_data = HttpResponse(json.dumps(response, indent=2), mimetype='application/json')
+            json_data['Content-Disposition'] = 'attachment; filename=' + "b2note_search_" + nowi
+            download_json.file_data = json_data
+
+        data_dict = {
+            'annotations_of': "search_results",
+            'navbarlinks': navbarlinks,
+            'shortcutlinks': shortcutlinks,
+            'user_nickname': user_nickname,
+            'annotations_json': json.dumps(response, indent=2),
+            "subject_tofeed": subject_tofeed,
+            "pid_tofeed": pid_tofeed,
+        }
+
+        return render(request, 'b2note_app/export.html', data_dict)
+
+    elif request.POST.get("submit_toselect") is None:
+        if request.POST.get("exact_cbox") == "on":
+            all_exact_cbox = True
+        else:
+            all_exact_cbox = False
+        if "exact" in request.session.keys() and request.session["exact"]:
+            if isinstance(request.session["exact"], (list, set)):
+                for url in request.session["exact"]:
+                    if url and isinstance(url, (str, unicode)):
+                        export_dic["exact"].append({"checked": all_exact_cbox, "url": url})
+
+        if request.POST.get("related_cbox") == "on":
+            all_related_cbox = True
+        else:
+            all_related_cbox = False
+        if "related" in request.session.keys() and request.session["related"]:
+            if isinstance(request.session["related"], (list, set)):
+                for url in request.session["related"]:
+                    if url and isinstance(url, (str, unicode)):
+                        export_dic["related"].append({"checked": all_related_cbox, "url": url})
+
+    data_dict = {
+        'all_exact_cbox': all_exact_cbox,
+        'all_related_cbox': all_related_cbox,
+        'search_str': search_str,
+        'export_dic': export_dic,
+        'user_nickname': user_nickname,
+        'navbarlinks': navbarlinks,
+        'shortcutlinks': shortcutlinks,
+    }
+
+    return render(request, "b2note_app/select_search_results.html", data_dict)
 
 
 @login_required
