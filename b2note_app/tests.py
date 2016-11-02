@@ -74,6 +74,7 @@ class B2noteappTest(TestCase):
         TestCase class that clear the collection between the tests
     """
     mongodb_name = 'test_%s' % settings.MONGO_DATABASE_NAME
+    multi_db = True
     
     def _pre_setup(self):
         from mongoengine.connection import connect, disconnect
@@ -96,7 +97,8 @@ class B2noteappTest(TestCase):
         self.username='test'
         self.password='123456'
         self.email='test@test.com'
-        self.user = UserCred.objects.create_user(username=self.username, email=self.email, password=self.password)
+        self.db='users'
+        self.user = UserCred.objects.create_user(username=self.username, email=self.email, password=self.password, db=self.db)
         settings.SESSION_ENGINE = 'django.contrib.sessions.backends.file'
         engine = import_module(settings.SESSION_ENGINE)
         store = engine.SessionStore()
@@ -117,6 +119,20 @@ class B2noteappTest(TestCase):
         django_login(req, user)
         print req.session.items()
 
+        
+
+    
+    def test_hostpage_view(self):
+        url = reverse("b2note_app.views.hostpage")
+        resp = self.client.get(url)
+        print resp.status_code
+    
+    def test_settings_view(self):
+        r = self.client.login(email=self.email,password=self.password, db=self.db)
+        self.assertTrue(r)
+        url = reverse("b2note_app.views.settings")
+        resp = self.client.get(url) 
+        self.assertEqual(resp.status_code, 200)
         
     def create_annotation(self, jsonld_id="test", type=["others"]):
         return Annotation.objects.create(jsonld_id=jsonld_id, type=type)
@@ -201,15 +217,15 @@ class B2noteappTest(TestCase):
         json_dict['subject_tofeed'] = 'subject_test'
         json_dict['ontology_json'] = json.dumps({'labels' : 'annotation_test',
                                                 'uris': 'uri_test'})
-        self.login()
+
+        r = self.client.login(email=self.email,password=self.password, db=self.db)
+        self.assertTrue(r)
         # DB just created with no annotations in there
         before = Annotation.objects.filter().count()
         self.assertEqual(before, 0)
         resp = self.client.post(url, json_dict )
-        print resp.content
-        self.assertEqual(resp.status_code, 302)
-        print resp.content
-        #self.assertIn("annotation_test", resp.content)
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("annotation_test", resp.content)
         # DB with 1 annotations created
         after = Annotation.objects.filter().count()
         self.assertEqual(after, 1)
@@ -245,12 +261,6 @@ class B2noteappTest(TestCase):
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertIn("annotation_test", resp.content)
-    
-    def test_settings_view(self):
-        self.login()
-        url = reverse("b2note_app.views.settings")
-        resp = self.client.post(url, {'pid_tofeed': 'pid_test', 'subject_tofeed': 'subject_test'})
-        print resp.status_code
     
     # http://stackoverflow.com/questions/1828187/determine-complete-django-url-configuration    
     def parse_urls(self):
