@@ -45,7 +45,7 @@ class AccountTest(TestCase):
         session = self.client.session
         session['user'] = self.user.annotator_id.annotator_id
         session.save()
-        self.req = MyRequest(response.request, self.client.session)
+        self.req = MyRequest(response.request, self.client.session, self.user)
         print self.req.session.items()
         django_login(self.req, self.user)
         self.assertTrue(self.user.is_authenticated())
