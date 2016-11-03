@@ -1201,11 +1201,24 @@ def process_semantic_entry( entry=None, query_dict=None, search_str=None ):
                                         for logic in ["AND", "OR", "NOT", "XOR"]:
                                             if entry["logical"] == logic:
                                                 query_dict["body_id_"+str(logic).lower()].append( uri )
-                                                search_str += " " + str(logic).upper() + \
-                                                              " " + str(extract_shortform( entry["search_param"] ))
+                                                if "labels" in entry["search_param"].keys() and \
+                                                    entry["search_param"]["labels"] and \
+                                                    isinstance( entry["search_param"]["labels"], (str,unicode) ):
+                                                        search_str += " " + str(logic).upper() + \
+                                                                      " " + str(entry["search_param"]["labels"]) + \
+                                                                      "  (" + str(extract_shortform( entry["search_param"] )) + ")"
+                                                else:
+                                                    search_str += " " + str(logic).upper() + \
+                                                                  " " + str(extract_shortform( entry["search_param"] ))
                                     elif entry["logical"] is None:
-                                        query_dict["body_id_or"].append( uri )
-                                        search_str += " " + extract_shortform(entry["search_param"])
+                                        query_dict["body_id_or"].append(uri)
+                                        if "labels" in entry["search_param"].keys() and \
+                                                entry["search_param"]["labels"] and \
+                                                isinstance(entry["search_param"]["labels"], (str, unicode)):
+                                                search_str += " " + str(entry["search_param"]["labels"]) + \
+                                                              "  (" + str(extract_shortform(entry["search_param"])) + ")"
+                                        else:
+                                            search_str += " " + extract_shortform(entry["search_param"])
 
                         if "syn_incl" in entry.keys() and entry["syn_incl"] is True:
                             if "synonyms" in entry["search_param"].keys():
@@ -1388,6 +1401,10 @@ def process_search_query( form ):
                 if ann.target[0].jsonld_id not in related:
                     if ann.motivation and ann.motivation[0] == "commenting":
                         related.add(ann.target[0].jsonld_id)
+
+    exact = list(set( exact ))
+    related = list(set( related ))
+    related = [ u for u in related if u not in exact ]
 
     return exact, related, search_str
 
