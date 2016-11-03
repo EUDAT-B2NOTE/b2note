@@ -574,7 +574,7 @@ def CreateFreeTextKeyword( subject_url=None, text=None ):
                     db_id = None
                     db_id = MakeAnnotationFreeText(my_id, text)
 
-                    #db_id = SetAnnotationMotivation( db_id, "tagging" )
+                    db_id = SetAnnotationMotivation( db_id, "tagging" )
 
                     if db_id:
                         print "CreateFreeTextKeyword function, created free-text keyword annotation:", str(db_id)
