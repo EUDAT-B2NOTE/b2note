@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+	<head>
+
+		<meta charset="UTF-8">
+
+		{% load staticfiles i18n %}
+
+		<!-- https://oncampus.oberlin.edu/webteam/2012/09/architecture-django-templates -->
+		{% block meta_tags %}{% endblock %}
+
+		<title>
+            {% block title %}{% trans "B2Note service prototype" %}{% endblock %}
+        </title>
+
+		{% block stylesheets %}
+			<link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
+			<link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
+			<link rel='stylesheet' type='text/css' href="{% static 'css/dashboard.css' %}" />
+			<link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
+		{% endblock %}
+
+		{% block javascript %}
+			<script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+			<script src="{% static 'js/utils.js' %}"></script>
+			<script src="{% static 'js/bootstrap.min.js' %}"></script>
+			<script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+			<script src="{% static 'js/bloodhound.js' %}"></script>
+			<script src="{% static 'js/handlebars-v4.0.0.js' %}"></script>
+			<script src="{% static 'js/bootstrap.min.js' %}"></script>
+			<script src="{% static 'js/ontology-typeahead.js' %}"></script>
+			<script src="{% static 'js/underscore-min.js' %}"></script>
+			<script src="{% static 'js/typeahead.min.js' %}"></script>
+			<script src="{% static 'js/jquery.redirect.js' %}"></script>
+			<script src="{% static 'js/utils.js' %}"></script>
+		{% endblock %}
+
+		{% block extra_head %}{% endblock %}
+
+	</head>
+
+    <body id="consolepagebody">
+        <header>
+            {% include "b2note_app/_navigation.html" %}
+        </header>
+        <div id="main" role="main">
+            <div class="container">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </body>
+
+</html>

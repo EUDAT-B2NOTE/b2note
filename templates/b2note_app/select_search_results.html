@@ -1,0 +1,79 @@
+{% extends "b2note_app/__base.html" %}
+
+{% block content %}
+
+    <h3>Export search results</h3>
+
+    <textarea rows="3" readonly>{{ search_str }}</textarea>
+
+    <a href="/search_annotations" class="btn btn-default">New search</a>
+
+    <form action="/select_search_results" method="post">
+
+        {% csrf_token %}
+        <input type="submit" name="submit_toexport" value="Generate JSON export" class="btn btn-default"/>
+
+        <h4>Exact match</h4>
+
+        {% if export_dic and export_dic.exact %}
+
+            <table>
+
+                <tr>
+                    <td><input type="checkbox" name="exact_cbox" onchange="this.form.submit()" {% if all_exact_cbox %}checked{% endif %}/><label>Select </label> </td>
+                    <td> <label> File</label></td>
+                </tr>
+
+                {% for f in export_dic.exact %}
+
+                    <tr>
+                        <td><input type="checkbox" name="exact_cbox{{forloop.counter0}}" {% if f.checked %}checked{% endif %}/></td>
+                        <input type="hidden" name="exact_url{{forloop.counter0}}" value="{{f.url}}" />
+                        <td><a href="{{f.url}}" target="_parent" title="Click to view on B2Share">{{ f.url }}</a></td>
+                    </tr>
+
+                {% endfor %}
+
+            </table>
+
+        {% else %}
+
+            <p>No file retrieved on exact match to the query.</p>
+
+        {% endif %}
+
+        <h4>Related match (synonyms)</h4>
+
+        {% if export_dic and export_dic.related %}
+
+            <table>
+
+                <tr>
+                    <td><input type="checkbox" name="related_cbox" onchange="this.form.submit()" {% if all_related_cbox %}checked{% endif %}/><label>Select </label></td>
+                    <td> <label> File</label></td>
+                </tr>
+
+                {% for f in export_dic.related %}
+                    <tr>
+                        <td><input type="checkbox" name="related_cbox{{forloop.counter0}}" {% if f.checked %}checked{% endif %}/></td>
+                        <input type="hidden" name="related_url{{forloop.counter0}}" value="{{f.url}}"/>
+                        <td><a href="{{f.url}}" target="_parent" title="Click to view on B2Share">{{ f.url}}</a></td>
+                    </tr>
+                {% endfor %}
+
+            </table>
+
+        {% else %}
+
+            <p>No file retrieved on synonym match.</p>
+
+        {% endif %}
+
+    </form>
+
+
+    <br>
+    <br>
+    <br>
+
+{% endblock %}

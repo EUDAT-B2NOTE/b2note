@@ -1,315 +1,103 @@
-<!DOCTYPE html>
+{% extends "b2note_app/__base.html" %}
 
-<html lang="en">
+{% block content %}
 
-    <head>
+    <h3>Search</h3>
 
-        <meta charset="UTF-8">
-
-        {% load staticfiles %}
-
-        <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
-        <link rel='stylesheet' type='text/css' href="{% static 'css/dashboard.css' %}" />
-        <link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
-
-        <script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
-        <script src="{% static 'js/bloodhound.js' %}"></script>
-        <script src="{% static 'js/handlebars-v4.0.0.js' %}"></script>
-        <script src="{% static 'js/bootstrap.min.js' %}"></script>
-        <script src="{% static 'js/ontology-typeahead.js' %}"></script>
-        <script src="{% static 'js/underscore-min.js' %}"></script>
-        <script src="{% static 'js/typeahead.min.js' %}"></script>
-        <script src="{% static 'js/jquery.redirect.js' %}"></script>
-        <script src="{% static 'js/utils.js' %}"></script>
-
-        <title>B2Note service demo</title>
-
-    </head>
-
-    <body id="search_annotation_page">
+    <form action="/search" method="post">
 
         {% csrf_token %}
 
-        <header>
+        {% for f in form %}
 
-            <div id="header-top">
+            {% if f.logicals %}
 
-                <a href="http://www.eudat.eu" target="_blank">GO TO EUDAT WEBSITE</a>
+                <select name="logical{{forloop.counter0}}" onchange="this.form.submit()">
 
-            </div>
+                    {% for op in f.logicals %}
 
-            <div class = "container" id="header">
+                        {% if op == f.logical %}
 
-                <section class="row">
+                            <option value="{{op}}" selected>{{ op }}</option>
 
-                    <div class="col-xs-8 col-sm-4 col-md-2">
-
-                        <img alt="EUDAT" title="EUDAT" src="{% static 'images/EUDAT-logo_3.png' %}" />
-
-                    </div>
-
-                    <div class="col-xs-12 col-sm-6 col-md-2">
-
-                        <img alt="B2NOTE" title="B2NOTE" src="{% static 'images/B2NOTE-logo.png' %}" />
-
-                    </div>
-
-                    <div class="clear"> </div>
-
-                </section>
-
-            </div>
-
-            <div class="clear"> </div>
-
-        </header>
-
-        <div class="container" id="search_annotation_form">
-
-            <div class="row">
-
-    			<div class="col-sm-6">
-
-                    <h2>Search annotation</h2>
-
-                </div>
-
-            </div>
-
-            <div class="row">
-
-                <div class="btn-group" role="group">
-
-                    <a href="accounts/logout" target="_self" alt="Logout" title="Logout, terminate session">
-                        <button type="submit" class="btn btn-default">
-                            <img src="{% static "images/Off_font_awesome.svg" %}" height="16px"/>
-                            Logout
-                        </button>
-                    </a>
-
-                    <a href="/homepage">
-                        <button type="submit" class="btn btn-default">
-                            <img src="{% static "images/Home-icon.svg" %}" height="16px"/>
-                            Homepage
-                        </button>
-                    </a>
-
-                </div>
-
-            </div>
-
-            <br>
-
-            <div class="container">
-
-                <div class="row"><br></div>
-
-                <form action="search_annotation" method="post" class="form-horizontal">
-
-                    {% csrf_token %}
-
-                    <div class="form-group">
-                        <div class="col-sm-2"><Label for="id_q">Search on keyword:</Label></div>
-                        {% if keywd_json %}
-                            <div id="keyword" class="tab-pane fade in active form-group col-sm-10">
-                                <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"
-                                       placeholder="{{ keywd_json.labels }} ({{ keywd_json.ontology_acronym }}:{{ keywd_json.short_form }})"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
-                            </div>
                         {% else %}
-                            <div id="keyword" class="tab-pane fade in active form-group">
-                                <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"
-                                       placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
-                            </div>
+
+                             <option value="{{op}}">{{ op }}</option>
+
                         {% endif %}
-                    </div>
 
-                </form>
+                    {% endfor %}
 
-            </div>
+                </select>
 
+            {% endif %}
 
-            {% if keywd_json %}
+            {% if f.types %}
 
-                <h3>Exact match</h3>
+                <select name="select{{forloop.counter0}}" onchange="this.form.submit()">
 
-                {% if label_match %}
+                    {% for op in f.types %}
 
-                <div class="table-responsive">
+                        {% if op == f.type %}
 
-                    <table class="table table-condensed">
+                            <option value="{{op}}" selected>{{ op }}</option>
 
-                        <th>Annot.</th>
+                        {% else %}
 
-                        <th>About</th>
+                            <option value="{{op}}">{{ op }}</option>
 
-                        <th>By (pseudonym)</th>
+                        {% endif %}
 
-                        <th>As</th>
+                    {% endfor %}
 
-                        <th>Created</th>
+                </select>
 
-                        <th>Modified</th>
+                {% if f.type %}
 
-                        <th>Annot. id</th>
+                    {% if f.type == "Semantic tag" %}
 
-                        {% for ann in label_match %}
+                        <div id="select_semantic">
 
-                        <tr>
+                            <input type="hidden" name="ontology_json{{forloop.counter0}}" id="ontology_json{{forloop.counter0}}" {% if f.search_json %}value="{{f.search_json}}"{% endif %}>
+                            <input type="text" class="form-control" name="q{{forloop.counter0}}" id="id_q{{forloop.counter0}}" value="{% if query %}{{ query }}{% elif f.search_param %}{{f.search_param.labels}} ({{f.search_param.short_form}}){% endif %}" placeholder="Type-in to select a tag"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
 
-                            {% if ann.body.0.jsonld_id %}
+                            <br>
+                            <input type="checkbox" name="cbox{{forloop.counter0}}" id="cbox{{forloop.counter0}}" value="syn" {% if f.syn_incl %}checked{% endif %}>Include synonym matches
 
-                                {% if "http" in ann.body.0.jsonld_id %}
+                        </div>
 
-                                <td><a href="{{ ann.body.0.jsonld_id }}" target="_blank">{{ ann.body.0.value }}</a></td>
+                    {% elif f.type == "Free-text keyword" %}
 
-                                {% else %}
+                        <input type="text" name="keyword{{forloop.counter0}}" {% if f.search_param %}value="{{f.search_param}}"{% endif %} id="keyword{{forloop.counter0}}" placeholder="Type-in a free-text keyword"/>
 
-                                <td>{{ ann.body.0.value }}</td>
+                    {% elif f.type == "Comment" %}
 
-                                {% endif %}
+                        <p>Return all files with comment annotations (combines with the other search parameters).</p>
 
-                            {% else %}
-
-                                <td>{{ ann.body.0.value }}</td>
-
-                            {% endif %}
-
-                            <td>{{ ann.target.0.jsonld_id }}</td>
-
-                            <td>{{ ann.creator.0.nickname }}</td>
-
-                            <td>{{ ann.motivation.0 }}</td>
-
-                            <td title="{{ ann.created }}">{{ ann.created|date:"Y" }}</td>
-
-                            <td title="{{ ann.modified }}">{{ ann.modified|date:"Y" }}</td>
-
-                            <td title="{{ ann.jsonld_id }}"><input type="text" class="form-control col-sm-2" value="{{ ann.jsonld_id }}" title="{{ ann.jsonld_id }}" readonly/></td>
-
-                        </tr>
-
-                        {% endfor %}
-
-                    </table>
-
-                </div>
-
-                {% elif keywd_json %}
-
-                <div class="container">
-                    <div class="tab-content col-sm-8 col-sm-offset-1">
-                        The keyword
-                        <label>{{keywd_json.labels}}</label>
-                        ({{keywd_json.ontology_acronym}}:{{keywd_json.short_form}})
-                        is <label>not used </label> in any annotation.
-                    </div>
-                    <div class="col-sm-12">
-                        <label>  </label>
-                    </div>
-                </div>
-
-                {% endif %}
-
-
-                <h3>Related annotations</h3>
-
-                {% if synonym_match %}
-
-                <div class="table-responsive">
-
-                    <table class="table table-condensed">
-
-                        <th>Annot.</th>
-
-                        <th>About</th>
-
-                        <th>By (pseudonym)</th>
-
-                        <th>As</th>
-
-                        <th>Created</th>
-
-                        <th>Modified</th>
-
-                        <th>Annot. id</th>
-
-                        {% for qset in synonym_match %}
-
-                            {% for ann in qset %}
-
-                            <tr>
-
-                                {% if ann.body.0.jsonld_id %}
-
-                                    {% if "http" in ann.body.0.jsonld_id %}
-
-                                    <td><a href="{{ ann.body.0.jsonld_id }}" target="_blank">{{ ann.body.0.value }}</a></td>
-
-                                    {% else %}
-
-                                    <td>{{ ann.body.0.value }}</td>
-
-                                    {% endif %}
-
-                                {% else %}
-
-                                    <td>{{ ann.body.0.value }}</td>
-
-                                {% endif %}
-
-                                <td>{{ ann.target.0.jsonld_id }}</td>
-
-                                <td>{{ ann.creator.0.nickname }}</td>
-
-                                <td>{{ ann.motivation.0 }}</td>
-
-                                <td title="{{ ann.created }}">{{ ann.created|date:"Y" }}</td>
-
-                                <td title="{{ ann.modified }}">{{ ann.modified|date:"Y" }}</td>
-
-                                <td title="{{ ann.jsonld_id }}"><input type="text" class="form-control col-sm-2" value="{{ ann.jsonld_id }}" title="{{ ann.jsonld_id }}" readonly/></td>
-
-                            </tr>
-
-                            {% endfor %}
-
-                        {% endfor %}
-
-                    </table>
-
-                </div>
-
-                {% elif keywd_json %}
-
-                <div class="container">
-                    <div class="tab-content col-sm-8 col-sm-offset-1">
-                        No annotation using
-                        <label>synonyms</label>
-                        of
-                        <label>{{keywd_json.labels}}</label>
-                        ({{keywd_json.ontology_acronym}}:{{keywd_json.short_form}}) was found.
-                    </div>
-                    <div class="col-sm-12">
-                        <label>  </label>
-                    </div>
-                </div>
+                    {% endif %}
 
                 {% endif %}
 
             {% endif %}
 
-        </div>
+            <br>
 
-        <footer>
-            <div id="footer-content">
-                <img alt="CE logo" title="CE logo" src="{% static 'images/logo_ce.jpg' %}" />
-                <p>
-                    EUDAT receives funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No. 654065.
-                    <a href="http://www.eudat.eu/legal-notice" target="_blank">Legal Notice</a>
-                </p>
-            </div>
-        </footer>
+        {% endfor %}
 
-    </body>
+        {% if fmessage %}<p>{{fmessage}}</p>{% endif %}
 
-</html>
+        <br>
+        <input type="submit" name="plus" value="+"/>
+
+        <br>
+        <button type="submit" class="btn btn-default" name="launch_search" title="Search for files">
+            <span class="glyphicon glyphicon-search"></span>
+        </button>
+
+    </form>
+
+    <br>
+    <br>
+    <br>
+
+{% endblock %}

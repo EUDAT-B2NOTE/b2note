@@ -1,296 +1,252 @@
-<!DOCTYPE html>
+{% extends "b2note_app/__base.html" %}
 
-<html lang="en">
+{% block content %}
 
-    <head>
+    {% if subject_tofeed|length = 0 %}
 
-    	<meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>hide_iframe();</script>
 
-    	{% load staticfiles %}
+    {% else %}
 
-        <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.css' %}" />
-        <link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
-        <link rel='stylesheet' type='text/css' href="{% static 'css/dashboard.css' %}" />
-        <link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
+    <script>show_iframe();</script>
 
-        <script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
-        <script src="{% static 'js/bloodhound.js' %}"></script>
-        <script src="{% static 'js/handlebars-v4.0.0.js' %}"></script>
-        <script src="{% static 'js/bootstrap.min.js' %}"></script>
-        <script src="{% static 'js/ontology-typeahead.js' %}"></script>
-        <script src="{% static 'js/underscore-min.js' %}"></script>
-        <script src="{% static 'js/typeahead.min.js' %}"></script>
-        <script src="{% static 'js/jquery.redirect.js' %}"></script>
-    	<script src="{% static 'js/utils.js' %}"></script>
+    {% endif %}
 
+    <div class="container" id="section_create">
 
-	    <title>B2Note prototype interface</title>
+        <div class="container" id="user_area">
 
-    </head>
+            {% if duplicate %}
 
-    <body id="interface_main">
+                <p>Not created, an identical annotation already exists. <a href="/interface_main" class="btn btn-default">OK</a></p>
 
-        {% if subject_tofeed|length = 0 %}
+                <br>
 
-            <script>hide_iframe();</script>
+                {% if duplicate.shortform %}
 
-        {% else %}
+                    <input type="text" value="{{duplicate.label}} ({{duplicate.shortform}})" readonly>
 
-            <script>show_iframe();</script>
+                {% else %}
 
-            <!-- https://www.youtube.com/watch?v=qpWlaOeGZ_4#t=586.470113308 -->
-            <div class="navbar navbar-default navbar-static-top">
+                    <input type="text" value="{{duplicate.label}}" readonly>
 
-                <div class="container">
+                {% endif %}
 
-                    <div class="navbar-brand">B2Note console</div>
+            {% elif new_semantic %}
 
-                    <button class = "navbar-toggle" data-toggle = "collapse" data-target = ".navHeaderCollapse">
+                <p>The semantic annotation was created. <a href="/interface_main" class="btn btn-default">OK</a></p>
 
-                        <span class = "icon-bar"></span>
-                        <span class = "icon-bar"></span>
-                        <span class = "icon-bar"></span>
+                <br>
 
-                    </button>
+                <input type="text" value="{{new_semantic.label}} ({{new_semantic.shortform}})" readonly>
 
-                    <div class = "collapse navbar-collapse navHeaderCollapse">
+            {% elif new_keyword %}
 
-                        <ul class = "nav navbar-nav navbar-right">
+                <p>The free-text keyword annotation was created. <a href="/interface_main" class="btn btn-default">OK</a></p>
 
-                            <li>
+                <br>
 
-                                <!-- http://stackoverflow.com/questions/11828829/twitter-bootstrap-how-to-get-rid-of-underlined-button-text-when-hovering-over-a -->
-                                <a href="/homepage" target="_parent" class="btn btn-link" value="Homepage" title="User homepage">Home</a>
+                <input type="text" value="{{new_keyword.label}}" readonly>
 
-                            </li>
+            {% elif new_comment %}
 
-                            <li>
+                <p>The comment annotation was created. <a href="/interface_main" class="btn btn-default">OK</a></p>
 
-                                <form action="/export_annotations" method="post">
+                <br>
 
-                                    {% csrf_token %}
+                <textarea name="comment_text" rows="3" class="form-control custom-control" id="created_comment_input" readonly>{{new_comment.label}}</textarea>
 
-                                    <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-                                    <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-                                    <input type="Submit" class="btn btn-link" value="Export" title="All your annotations as JSON" />
-                                    <!-- http://stackoverflow.com/questions/19981949/how-to-make-a-button-in-bootstrap-look-like-a-normal-link-in-nav-tabs -->
+           {% elif annotation_deleted %}
 
-                                </form>
+                {% if annotation_deleted == "success" %}
 
-                            </li>
+                    <p>The annotation was deleted. <a href="/interface_main" class="btn btn-default">OK</a></p>
 
-                            <li>
+                    <br>
 
-                                <form action="/publish_annotations" method="post">
+                {% elif annotation_deleted == "abort" %}
 
-                                    {% csrf_token %}
+                    <p>The annotation could not be deleted. <a href="/interface_main" class="btn btn-default">OK</a></p>
 
-                                    <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-                                    <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-                                    <input type="Submit" class="btn btn-link" value = "Publish" title = "Make annotations available to SPARQL queries"/>
+                    <br>
 
-                                </form>
+                {% endif %}
 
-                            </li>
+            {% elif has_semantic_equivalent %}
 
-                            <li>
+                <p>We detected semantic terms matching your keyword.</p>
 
-                                <form action="/settings" method="post">
+                <p>Would you like to select one?</p>
 
-                                    {% csrf_token %}
+                <p>Or carry on with free-text?</p>
 
-                                    <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-                                    <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-                                    <input type="Submit" class="btn btn-link" value = "Settings" title = "Manage source ontologies"/>
+                <form action="/interface_main" method="post">
+                    {% csrf_token %}
+                    <input type="text" name="subject_tofeed" value="{{subject_tofeed}}" hidden>
+                    <input type="text" name="textinput_primer" value="{{has_semantic_equivalent}}" hidden>
+                    <input type="submit" class="btn btn-default" name="semantic_submit" id="primed_semantic_submit" value="Semantic" title="Create a semantic annotation."/>
+                </form>
 
-                                </form>
+                <form action="/create_annotation" method="post">
+                    {% csrf_token %}
+                    <input type="text" name="subject_tofeed" value="{{subject_tofeed}}" hidden>
+                    <input type="text" name="confirm_flag" value="confirmed" hidden>
+                    <input type="text" name="keyword_text" value="{{has_semantic_equivalent}}" hidden>
+                    <input type="submit" class="btn btn-default" name="keyword_submit" id="confirmed_keyword_submit" value="Keyword" title="Create the free-text keyword annotation."/>
+                </form>
 
-                            </li>
+                <a href="/interface_main" class="btn btn-default">Cancel</a>
 
-                            <li>
+            {% elif long_keyword %}
 
-                                <!-- http://stackoverflow.com/questions/11828829/twitter-bootstrap-how-to-get-rid-of-underlined-button-text-when-hovering-over-a -->
-                                <a href = "#" class = "btn btn-link" value = "Close" title = "Close B2Note interface" onClick = "hide_iframe()">Close</a>
-
-                            </li>
-
-                        </ul>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="container" id="section_subject">
-
-                <h3>Subject</h3>
-
-                <div class="table-responsive">
-
-                   <div class="row">
-
-                       <div class="col-md-6" id="col_table">
-
-                           <table class="table table-condensed">
-
-                               <tr>
-
-                                   <td>URL:</td>
-
-                                   <!-- http://stackoverflow.com/questions/19819322/preselect-text-input-on-page-load -->
-                                   <td><strong><a href="{{subject_tofeed}}" target="_blank">{{subject_tofeed}}</a></strong></td>
-
-                               </tr>
-
-                               {% if pid_tofeed != "" %}
-
-                                <tr>
-
-                                    <td>PID:</td>
-
-                                    <td><a href="{{pid_tofeed}}" target="_blank" class="pid_link">{{ pid_tofeed }}</a></td>
-
-                                </tr>
-
-                               {% endif %}
-
-                           </table>
-
-                       </div>
-
-                   </div>
-
-                </div>
-
-            </div>
-
-            <div class="container" id="section_create">
-
-                <h3>Create annotation</h3>
-
-                <!-- http://stackoverflow.com/questions/18036315/centering-bootstrap-input-fields -->
-                <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" href="#keyword">keyword</a></li>
-                    <li><a data-toggle="tab" href="#comment">comment</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div id="keyword" class="tab-pane fade in active form-group">
+                <p>This text seems long for a keyword (>60 characters).</p>
+
+                <p>Do you want to use it as ... ?</p>
+
+                <form action="/create_annotation" method="post">
+                    {% csrf_token %}
+                    <input type="text" name="subject_tofeed" value="{{subject_tofeed}}" hidden>
+                    <input type="text" name="enforce_flag" value="confirmed" hidden>
+                    <input type="text" name="confirm_flag" value="confirmed" hidden>
+                    <input type="text" name="keyword_text" value="{{long_keyword}}" hidden>
+                    <input type="submit" class="btn btn-default" name="keyword_submit" id="enforced_keyword_submit" value="Keyword" title="Create the free-text keyword annotation."/>
+                </form>
+
+                <form action="/create_annotation" method="post">
+                    {% csrf_token %}
+                    <input type="text" name="subject_tofeed" value="{{subject_tofeed}}" hidden>
+                    <input type="text" name="comment_text" value="{{long_keyword}}" hidden>
+                    <input type="submit" class="btn btn-default" name="comment_submit" id="primed_comment_submit" value="Comment" title="Create a comment annotation."/>
+                </form>
+
+                <a href="/interface_main" class="btn btn-default">Cancel</a>
+
+            {% else %}
+
+            <!-- http://stackoverflow.com/questions/18036315/centering-bootstrap-input-fields -->
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#semantic">Semantic tag</a></li>
+                <li><a data-toggle="tab" href="#keyword">Free-text keyword</a></li>
+                <li><a data-toggle="tab" href="#comment">Comment</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="semantic" class="tab-pane fade in active form-group">
+                    <form action="/create_annotation" method="post">
                         {% csrf_token %}
-                        <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}"  placeholder="Type keyword"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
-                    </div>
-                    <div id="comment" class="tab-pane fade form-group">
+                        <input type="hidden" name="ontology_json" id="ontology_json">
+                        <input type="text" name="subject_tofeed" id="semantic_target_id" value="{{subject_tofeed}}" hidden>
+                        {% if textinput_primer %}
+                            <input type="text" class="form-control" name="q" id="id_q" value="{% if query %}{{ query }}{% else %}{{textinput_primer}}{% endif %}" autocomplete="off" spellcheck="false" dir="auto" autofocus/>
+                        {% else %}
+                            <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}" placeholder="Type-in to select a tag." autocomplete="off" spellcheck="false" dir="auto" autofocus/>
+                        {% endif %}
+                        <input type="submit" name="semantic_submit" id="semantic_submit" value="Create" title="Create an annotation using my selected tag."/>
+                    </form>
+                </div>
+                <div id="keyword" class="tab-pane fade form-group">
+                    <form action="/create_annotation" method="post">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="text" name="subject_tofeed" id="keyword_target_id" value="{{subject_tofeed}}" hidden>
+                            <input type="text" name="keyword_text" class="form-control custom-control" id="keyword_input" placeholder="Type-in your free-text keyword."/>
+                            <!--<span class="input-group-addon btn btn-primary" title="Create an annotation using my free-text keyword." onClick="get_free_text()">Create</span>-->
+                            <input type="submit" name="keyword_submit" id="keyword_submit" value="Create" title="Create an annotation using my free-text keyword."/>
+                        </div>
+                    </form>
+                </div>
+                <div id="comment" class="tab-pane fade form-group">
+                    <form action="/create_annotation" method="post">
+                        {% csrf_token %}
                         <div class="input-group">
                             {% csrf_token %}
-                            <textarea class="form-control custom-control" rows="2" id="free-text" placeholder="Type a comment"></textarea>
-                            <span class="input-group-addon btn btn-primary" onClick="get_free_text()">Send</span>
+                            <input type="text" name="subject_tofeed" id="comment_target_id" value="{{subject_tofeed}}" hidden>
+                            <textarea name="comment_text" rows="2" class="form-control custom-control" id="comment_input" placeholder="Type your comment."></textarea>
+                            <input type="submit" name="comment_submit" id="comment_submit" value="Create" title="Create an annotation using my comment."/>
                         </div>
+                    </form>
+                </div>
+            </div>
+
+            {% endif %}
+
+            <hr>
+
+            <div>
+                <a class="btn btn-link" data-toggle="collapse" href="#myannotation_collapse">
+                    <i class="glyphicon glyphicon-triangle-right"></i>
+                </a>
+                <h5><a href="/myannotations">My annotations</a></h5>
+                <div id="myannotation_collapse" class="panel-collapse collapse">
+
+                    <div class = "row">
+                        {% if my_s != None %}
+                        <a href="/myannotations#semantic" title="Click for full list.">Semantic tag</a>
+                        <a href="/myannotations#semantic" title="Click for full list."> {{my_s}} </a>
+                        {% endif %}
                     </div>
-                </div>
-            </div>
 
-            <div class="container" id="section_existing">
+                    <div class = "row">
+                        {% if my_k != None %}
+                        <a href="/myannotations#keyword" title="Click for full list.">Free-text keyword</a>
+                        <a href="/myannotations#keyword" title="Click for full list."> {{my_k}} </a>
+                        {% endif %}
+                    </div>
 
-                <h3>Existing annotations</h3>
-
-                <div class="container" id="container_table_existing">
-
-                    <table class="table table-responsive table-striped">
-
-                        {% for annotation in annotation_list %}
-
-                            {% for target in annotation.target %}
-
-                                {% if target.jsonld_id or target.source.jsonld_id %}
-
-                                    <!-- http://stackoverflow.com/questions/1275735/how-to-access-dictionary-element-in-django-template -->
-                                    {% if target.jsonld_id == subject_tofeed or target.source.jsonld_id == subject_tofeed %}
-
-                                        {% for body in annotation.body %}
-
-                                            {% if body.jsonld_id or body.value %}
-
-                                                <tr>
-
-                                                {% if "http://" in body.jsonld_id %}
-
-                                                    <!--
-                                                    <td id="predicateLabel"><a target="_blank" href={{annotation.triple.predicate.iri}}>{{annotation.triple.predicate.label}}</a></td>
-                                                    -->
-                                                    <!-- http://stackoverflow.com/questions/15712880/load-iframe-links-into-parent-window -->
-                                                    <td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">
-                                                        <a target="_blank" href={{body.jsonld_id}}>{{body.value}}</a>
-                                                    </td>
-
-                                                {% else %}
-
-                                                    <!--
-                                                    <td id="predicateLabel">{{annotation.triple.predicate.label}}</td>
-                                                    -->
-                                                    <td id="objectLabel" title="Created by {{annotation.creator.0.nickname}}&#13;On {{annotation.created}}">{{body.value}}</td>
-
-                                                {% endif %}
-
-                                                    <form action="/edit_annotation" method="post" target="_blank">
-
-                                                        {% csrf_token %}
-
-                                                        <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
-                                                        <!--<input type="hidden" name="pagefrom" value="homepage" readonly="readonly" />-->
-
-                                                        <td id="editAnnotation"><input type="image" id="pen-icon" src="{% static "images/Black_pencil.svg" %}" height="16px" title="Edit annotation" alt="Edit annotation" /></td>
-
-                                                    </form>
-
-                                                {% if user_nickname = annotation.creator.0.nickname %}
-
-                                                    <form action="/delete_annotation" method="post">
-
-                                                        {% csrf_token %}
-
-                                                        <input type="hidden" name="db_id" value="{{annotation.id}}" readonly="readonly" />
-                                                        <input type="hidden" name="subject_tofeed" value="{{subject_tofeed}}" readonly="readonly" />
-                                                        <input type="hidden" name="pid_tofeed" value="{{pid_tofeed}}" readonly="readonly" />
-
-                                                        <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" height="16px" title="Delete annotation" alt="Delete annotation" /></td>
-
-                                                    </form>
-
-                                                {% else %}
-
-                                                    <!-- Empty slot for bin icon for annotations of which logged-in user is not owner. -->
-                                                    <td></td>
-
-                                                {% endif %}
-
-                                                    <!-- "Octicons-trashcan" by GitHub - https://github.com/github/octicons. Licensed under MIT via Wikimedia Commons - https://commons.wikimedia.org/wiki/File:Octicons-trashcan.svg#/media/File:Octicons-trashcan.svg
-                                                    <td id="delAnnotation"><input type="image" id="trash-icon" src="{% static "images/Octicons-trashcan.svg" %}" title="Delete annotation" alt="Delete annotation" /></td> -->
-
-                                                </tr>
-
-                                            {% endif %}
-
-                                        {% endfor %}
-
-                                    {% endif %}
-
-                                {% endif %}
-
-                            {% endfor %}
-
-                        {% endfor %}
-
-                    </table>
+                    <div class = "row">
+                        {% if my_c != None %}
+                        <a href="/myannotations#comment" title="Click for full list.">Comment</a>
+                        <a href="/myannotations#comment" title="Click for full list."> {{my_c}} </a>
+                        {% endif %}
+                    </div>
 
                 </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="container" id="pulledarea">
+        <a class="btn btn-link" data-toggle="collapse" href="#allannotations_collapse">
+            <i class="glyphicon glyphicon-triangle-right"></i>
+        </a>
+        <h5><a href="/allannotations">All annotations</a></h5>
+        <div id="allannotations_collapse" class="panel-collapse collapse">
+
+            <div class = "row">
+                <a href="/allannotations#semantic">Semantic tag</a>
+                {% if all_s != None %}
+                <a href="/allannotations#semantic" title="All semantic annotations, click for full list."> {{all_s}} </a>
+                {% endif %}
+                {% if my_s != None %}
+                <a href="/myannotations#semantic" title="Only my semantic annotations, click for full list."> {{my_s}} </a>
+                {% endif %}
             </div>
 
-        {% endif %}
+            <div class = "row">
+                <a href="/allannotations#keyword">Free-text keyword</a>
+                {% if all_k != None %}
+                <a href="/allannotations#keyword" title="All keyword annotations, click for full list."> {{all_k}} </a>
+                {% endif %}
+                {% if my_k != None %}
+                <a href="/myannotations#keyword" title="Only my keyword annotations, click for full list."> {{my_k}} </a>
+                {% endif %}
+            </div>
 
-		</div>
+            <div class = "row">
+                <a href="/allannotations#comment">Comment</a>
+                {% if all_c != None %}
+                <a href="/allannotations#comment" title="All comment annotations, click for full list."> {{all_c}} </a>
+                {% endif %}
+                {% if my_c != None %}
+                <a href="/myannotations#comment" title="Only my comment annotations, click for full list."> {{my_c}} </a>
+                {% endif %}
+            </div>
 
-    </body>
+        </div>
+    </div>
 
-</html>
+    <br>
+    <br>
+    <br>
+    <br>
+
+{% endblock %}

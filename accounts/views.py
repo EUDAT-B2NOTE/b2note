@@ -5,6 +5,8 @@ from django.forms.models import model_to_dict
 from accounts.forms import AuthenticationForm, RegistrationForm, ProfileForm
 from accounts.models import AnnotatorProfile, UserCred
 
+from b2note_app.nav_support_functions import list_navbarlinks, list_shortcutlinks
+
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -26,6 +28,10 @@ def request_account_retrieval(request):
     """
     Request account retrieval view.
     """
+
+    navbarlinks = list_navbarlinks(request, [])
+    shortcutlinks = list_shortcutlinks(request, [])
+
     if request.method == 'POST':
         form = AccountRetrieveForm(data=request.POST)
         print form.is_valid()
@@ -49,12 +55,15 @@ def request_account_retrieval(request):
             messages.error(request, "Information does not qualify.")
     else:
         form = AccountRetrieveForm()
-    return render_to_response('accounts/request_account_retrieval.html', {'form': form,}, context_instance=RequestContext(request))
+    return render_to_response('accounts/request_account_retrieval.html', {
+        'shortcutlinks': shortcutlinks,
+        'navbarlinks': navbarlinks,
+        'form': form,}, context_instance=RequestContext(request))
 
 
 # http://ruddra.com/2015/09/18/implementation-of-forgot-reset-password-feature-in-django/
 class PasswordResetConfirmView(FormView):
-    template_name = "accounts/test_template.html"
+    template_name = "accounts/reset_password.html"
     success_url = "accounts/reset_password"
     form_class = SetPasswordForm
 
@@ -76,7 +85,7 @@ class PasswordResetConfirmView(FormView):
 
         if user is not None and default_token_generator.check_token(user, token):
             if form.is_valid():
-                new_password= form.cleaned_data['new_password2']
+                new_password = form.cleaned_data['new_password2']
                 user.set_password(new_password)
                 user.save()
                 messages.success(request, 'Password has been reset.')
@@ -90,8 +99,8 @@ class PasswordResetConfirmView(FormView):
 
 
 class ResetPasswordRequestView(FormView):
-    template_name = "accounts/test_template.html"  # code for template is given below the view's code
-    success_url = '/accounts/reset_password'
+    template_name = "accounts/reset_password.html"  # code for template is given below the view's code
+    success_url = "/accounts/reset_password"
     form_class = PasswordResetRequestForm
 
     @staticmethod
@@ -105,6 +114,12 @@ class ResetPasswordRequestView(FormView):
         except ValidationError:
             return False
 
+    #http://stackoverflow.com/questions/19687375/django-formview-does-not-have-form-context
+    def get_context_data(self, **kwargs):
+        context = super(ResetPasswordRequestView, self).get_context_data(**kwargs)
+        context['navbarlinks'] = list_navbarlinks()
+        context['shortcutlinks'] = list_shortcutlinks()
+        return context
 
     def post(self, request, *args, **kwargs):
         '''
@@ -159,11 +174,19 @@ def profilepage(request):
     """
     User profile view.
     """
+
+    navbarlinks = list_navbarlinks(request, [])
+    shortcutlinks = list_shortcutlinks(request, [])
+
     try:
         if request.session.get("user"):
             userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
             form = ProfileForm(initial = model_to_dict(userprofile) )
-            return render_to_response('accounts/profilepage.html', {'form': form}, context_instance=RequestContext(request))
+            return render_to_response('accounts/profilepage.html', {
+                'user_nickname': userprofile.nickname,
+                'navbarlinks': navbarlinks,
+                'shortcutlinks': shortcutlinks,
+                'form': form}, context_instance=RequestContext(request))
         else:
             return redirect('/logout')
     except Exception:
@@ -176,33 +199,8 @@ def login(request):
     Log in view
     """
 
-    if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            user = authenticate(email=request.POST['username'], password=request.POST['password'])
-            if user is not None:
-                if user.is_active:
-                    print type(user), isinstance(user, unicode), user
-                    django_login(request, user)
-                    print ">>>", user.annotator_id.annotator_id
-                    request.session["user"] = user.annotator_id.annotator_id
-                    return redirect('/homepage')
-    else:
-        if request.session.get("user"):
-            return redirect('/homepage', context=RequestContext(request))
-        else:
-            form = AuthenticationForm()
-
-    return render_to_response('accounts/login.html',{'form': form, 'is_console_access': False},
-                              context_instance=RequestContext(request, {
-                                  "pid_tofeed": request.session.get("pid_tofeed"),
-                                  "subject_tofeed": request.session.get("subject_tofeed")
-                              }))
-
-def consolelogin(request):
-    """
-    Log in view
-    """
+    navbarlinks = list_navbarlinks(request, ["Login"])
+    shortcutlinks = []
 
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
@@ -221,8 +219,10 @@ def consolelogin(request):
         else:
             form = AuthenticationForm()
 
-    return render_to_response('accounts/login.html',{'form': form, 'is_console_access': True},
+    return render_to_response('accounts/login.html',{'form': form},
                               context_instance=RequestContext(request, {
+                                  'navbarlinks': navbarlinks,
+                                  'shortcutlinks': shortcutlinks,
                                   "pid_tofeed": request.session.get("pid_tofeed"),
                                   "subject_tofeed": request.session.get("subject_tofeed")
                               }))
@@ -232,6 +232,10 @@ def register(request):
     """
     User registration view.
     """
+
+    navbarlinks = list_navbarlinks(request, ["Registration"])
+    shortcutlinks = list_shortcutlinks(request, ["Registration"])
+
     if request.method == 'POST':
         form = RegistrationForm(data=request.POST)
         if form.is_valid():
@@ -241,13 +245,15 @@ def register(request):
             print form.errors
     else:
         form = RegistrationForm()
-    return render_to_response('accounts/register.html', {'form': form,}, context_instance=RequestContext(request))
+    return render_to_response('accounts/register.html', {
+        'navbarlinks': navbarlinks,
+        'shortcutlinks': shortcutlinks,
+        'form': form,}, context_instance=RequestContext(request))
 
 
 def logout(request):
     """
     Log out view
     """
-    request.session["is_console_access"] = False
     django_logout(request)
-    return redirect('/')
+    return redirect('/accounts/login')
