@@ -9,7 +9,6 @@ from django.test import TestCase
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 from accounts.models import UserCred
 from accounts.views import login
-from b2note_app.views import homepage, download_json, settings as b2setts
 from django.conf import settings
 from django.utils.importlib import import_module
 

@@ -237,3 +237,4 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ['SUPPORT_EMAIL_ADDR']
 EMAIL_HOST_PASSWORD = os.environ['SUPPORT_EMAIL_PWD']
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+

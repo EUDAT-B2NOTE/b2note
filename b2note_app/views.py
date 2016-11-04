@@ -704,8 +704,6 @@ def annotation_summary(request):
     return render(request, 'b2note_app/annotation_summary.html', data_dict)
 
 
-
-
 @login_required
 def myannotations(request):
     """
@@ -856,7 +854,6 @@ def myannotations(request):
         'user_nickname': user_nickname}
 
     return render(request, 'b2note_app/myannotations.html', data_dict)
-
 
 
 @login_required
@@ -1255,7 +1252,6 @@ def process_keyword_entry( entry=None, query_dict=None, search_str=None ):
 
 
 def process_search_query( form ):
-
     query_dict = {"body_val_and": [],
                   "body_val_or" : [],
                   "body_val_not": [],
@@ -1411,7 +1407,6 @@ def process_search_query( form ):
 
 @login_required
 def search_annotations(request):
-
     user_nickname = None
     if request.session.get('user')!=None:
         userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
@@ -1527,7 +1522,6 @@ def search_annotations(request):
 
 @login_required
 def select_search_results(request):
-
     pid_tofeed = ""
     if request.POST.get('pid_tofeed')!=None:
         pid_tofeed = request.POST.get('pid_tofeed')
@@ -1682,7 +1676,6 @@ def select_search_results(request):
 
 @login_required
 def search_annotations_bck(request):
-
     keywd_json = None
     label_match = None
     synonym_match = None

@@ -10,12 +10,10 @@ from b2note_app.models import Annotation
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db import connections
-from accounts.tests import *
 from b2note_app.mongo_support_functions import *
 from b2note_devel.urls import urlpatterns
-import json
-from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 from accounts.models import UserCred
+import json
 
 #class B2noteappFailTest(TestCase):
     #"""
@@ -62,13 +60,6 @@ def check_urls(urllist, depth=0):
                     return False
     return True
 
-class MyRequest(dict):
-    def __init__(self, req, session, user):
-        self.__dict__ = req
-        self.session = session
-        self.__dict__['META'] = {}
-        self.user = user
-
 class B2noteappTest(TestCase):
     """
         TestCase class that clear the collection between the tests
@@ -99,46 +90,28 @@ class B2noteappTest(TestCase):
         self.email='test@test.com'
         self.db='users'
         self.user = UserCred.objects.create_user(username=self.username, email=self.email, password=self.password, db=self.db)
-        settings.SESSION_ENGINE = 'django.contrib.sessions.backends.file'
-        engine = import_module(settings.SESSION_ENGINE)
-        store = engine.SessionStore()
-        store.save()
-        self.session = store
-        self.client.cookies[settings.SESSION_COOKIE_NAME] = store.session_key
         
-    def login(self):
-        user = authenticate(email=self.email,password=self.password,db=self.user.getDB())
-        response = self.client.post('/login', {'username': self.email, 'password': self.password})
-        self.assertNotEqual(user, None)
-        self.assertTrue(user.is_active)
-        session = self.client.session
-        session['user'] = user.annotator_id.annotator_id
-        session.save()
-        req = MyRequest(response.request, self.client.session, user)
-        print req.session.items()
-        django_login(req, user)
-        print req.session.items()
-
-        
-
-    
-    def test_hostpage_view(self):
-        url = reverse("b2note_app.views.hostpage")
-        resp = self.client.get(url)
-        print resp.status_code
-    
     def test_settings_view(self):
         r = self.client.login(email=self.email,password=self.password, db=self.db)
         self.assertTrue(r)
         url = reverse("b2note_app.views.settings")
         resp = self.client.get(url) 
         self.assertEqual(resp.status_code, 200)
+        self.client.logout()
+        resp = self.client.get(url) 
+        self.assertEqual(resp.status_code, 302)
+
+    
+    def test_hostpage_view(self):
+        url = reverse("b2note_app.views.hostpage")
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
         
-    def create_annotation(self, jsonld_id="test", type=["others"]):
+    def create_annotation_db(self, jsonld_id="test", type=["others"]):
         return Annotation.objects.create(jsonld_id=jsonld_id, type=type)
     
-    def test_annotation_creation(self):
-        a = self.create_annotation()
+    def test_create_annotation_db(self):
+        a = self.create_annotation_db()
         self.assertTrue(isinstance(a, Annotation))
         self.assertEqual(a.jsonld_id, "test")
         
@@ -183,7 +156,7 @@ class B2noteappTest(TestCase):
         a = CreateSemanticTag(u"https://b2share.eudat.eu/record/30", '{"labels": "test_label"}')
         self.assertTrue(not a)
         
-    def test_create_free_text(self):
+    def test_create_free_text_keyword(self):
         # DB just created with no annotations in there
         before = Annotation.objects.filter().count()
         self.assertEqual(before, 0)
@@ -196,7 +169,7 @@ class B2noteappTest(TestCase):
         db_id = Annotation.objects.filter()[0].id
         self.assertEqual(a, db_id)
         
-    def test_dont_create_free_text(self):
+    def test_dont_create_free_text_keyword(self):
         a = CreateFreeTextKeyword(u"https://b2share.eudat.eu/record/30", 1234)
         self.assertTrue(not a)
         a = CreateFreeTextKeyword(u"https://b2share.eudat.eu/record/30", "")
@@ -211,15 +184,15 @@ class B2noteappTest(TestCase):
 
 
     def test_create_annotation_view(self):
-        url = reverse("b2note_app.views.create_annotation")
+        url = reverse("b2note_app.views.settings")
         json_dict = {}
         json_dict['pid_tofeed'] = 'pid_test'
         json_dict['subject_tofeed'] = 'subject_test'
         json_dict['ontology_json'] = json.dumps({'labels' : 'annotation_test',
                                                 'uris': 'uri_test'})
 
-        r = self.client.login(email=self.email,password=self.password, db=self.db)
-        self.assertTrue(r)
+        #r = self.client.login(email=self.email,password=self.password, db=self.db)
+        #self.assertTrue(r)
         # DB just created with no annotations in there
         before = Annotation.objects.filter().count()
         self.assertEqual(before, 0)
