@@ -13,6 +13,8 @@ from django.db import connections
 from b2note_app.mongo_support_functions import *
 from b2note_devel.urls import urlpatterns
 from accounts.models import UserCred
+from django.contrib.auth import authenticate
+from django.utils.importlib import import_module
 import json
 
 #class B2noteappFailTest(TestCase):
@@ -89,8 +91,24 @@ class B2noteappTest(TestCase):
         self.password='123456'
         self.email='test@test.com'
         self.db='users'
-        self.user = UserCred.objects.create_user(username=self.username, email=self.email, password=self.password, db=self.db)
+        self.db_user = UserCred.objects.create_user(username=self.username, email=self.email, password=self.password, db=self.db)
+        settings.SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+        engine = import_module(settings.SESSION_ENGINE)
+        store = engine.SessionStore()
+        store.save()
+        self.session = store
+        self.client.cookies[settings.SESSION_COOKIE_NAME] = store.session_key
         
+    def login(self):
+        self.user = authenticate(email=self.email,password=self.password,db=self.db)
+        self.assertNotEqual(self.user, None)
+        self.assertTrue(self.user.is_active)
+        session = self.client.session
+        session['user'] = self.user.annotator_id.annotator_id
+        session.save()
+        r = self.client.login(email=self.email,password=self.password, db=self.db)
+        self.assertTrue(r)
+    
     def test_settings_view(self):
         r = self.client.login(email=self.email,password=self.password, db=self.db)
         self.assertTrue(r)
@@ -176,7 +194,10 @@ class B2noteappTest(TestCase):
         self.assertTrue(not a)
         
     def test_interface_main_view(self):
-        a = self.create_annotation()
+        # Creates on annotation on the DB
+        a = self.create_annotation_db()
+        # Login
+        self.login()
         url = reverse("b2note_app.views.interface_main")
         resp = self.client.post(url, {'pid_tofeed': 'pid_test', 'subject_tofeed': 'subject_test'} )
         self.assertEqual(resp.status_code, 200)
@@ -190,9 +211,11 @@ class B2noteappTest(TestCase):
         json_dict['subject_tofeed'] = 'subject_test'
         json_dict['ontology_json'] = json.dumps({'labels' : 'annotation_test',
                                                 'uris': 'uri_test'})
+        json_dict['semantic_submit'] = 'test'
+        #json_dict['keyword_submit'] = 'test'
+        #json_dict['comment_submit'] = 'test'
 
-        #r = self.client.login(email=self.email,password=self.password, db=self.db)
-        #self.assertTrue(r)
+        self.login()
         # DB just created with no annotations in there
         before = Annotation.objects.filter().count()
         self.assertEqual(before, 0)
