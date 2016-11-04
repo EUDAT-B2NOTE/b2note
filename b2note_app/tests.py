@@ -194,69 +194,73 @@ class B2noteappTest(TestCase):
         self.assertTrue(not a)
         
     def test_interface_main_view(self):
+        url = reverse("b2note_app.views.interface_main")
         # Creates on annotation on the DB
         a = self.create_annotation_db()
         # Login
         self.login()
-        url = reverse("b2note_app.views.interface_main")
         resp = self.client.post(url, {'pid_tofeed': 'pid_test', 'subject_tofeed': 'subject_test'} )
         self.assertEqual(resp.status_code, 200)
         self.assertIn("subject_test", resp.content)
 
 
-    #def test_create_annotation_view(self):
-        #url = reverse("b2note_app.views.settings")
-        #json_dict = {}
-        #json_dict['pid_tofeed'] = 'pid_test'
-        #json_dict['subject_tofeed'] = 'subject_test'
-        #json_dict['ontology_json'] = json.dumps({'labels' : 'annotation_test',
-                                                #'uris': 'uri_test'})
-        #json_dict['semantic_submit'] = 'test'
-        ##json_dict['keyword_submit'] = 'test'
-        ##json_dict['comment_submit'] = 'test'
+    def test_create_annotation_view(self):
+        url = reverse("b2note_app.views.create_annotation")
+        json_dict = {}
+        json_dict['pid_tofeed'] = 'pid_test'
+        json_dict['subject_tofeed'] = 'subject_test'
+        json_dict['ontology_json'] = json.dumps({'labels' : 'annotation_test',
+                                                'uris': 'uri_test'})
+        json_dict['semantic_submit'] = 'test'
 
-        #self.login()
-        ## DB just created with no annotations in there
-        #before = Annotation.objects.filter().count()
-        #self.assertEqual(before, 0)
-        #resp = self.client.post(url, json_dict )
-        #self.assertEqual(resp.status_code, 200)
-        #self.assertIn("annotation_test", resp.content)
-        ## DB with 1 annotations created
-        #after = Annotation.objects.filter().count()
-        #self.assertEqual(after, 1)
-        ## get the ID of the created annotation
-        #db_id = Annotation.objects.filter()[0].id
-        ## check that the ID is present in the response 
-        #self.assertIn(db_id, resp.content)
-        ## return the db_id value for deleting the annotation from DB
-        #return db_id
+        self.login()
+        # DB just created with no annotations in there
+        before = Annotation.objects.filter().count()
+        self.assertEqual(before, 0)
+        resp = self.client.post(url, json_dict, follow=True)
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("annotation_test", resp.content)
+        # DB with 1 annotations created
+        after = Annotation.objects.filter().count()
+        self.assertEqual(after, 1)
+        # get the ID of the created annotation
+        db_id = Annotation.objects.filter()[0].id
+        # return the db_id value for deleting the annotation from DB
+        return db_id
         
         
-    #def test_delete_annotation_view(self):
-        #db_id = self.test_create_annotation_view()
-        #url = reverse("b2note_app.views.delete_annotation")
-        #resp = self.client.post(url, {'pid_tofeed': 'pid_test', 'subject_tofeed': 'subject_test', 'db_id': db_id})
-        #self.assertEqual(resp.status_code, 200)
-        #self.assertNotIn("annotation_test", resp.content)
-        ## check that there is no annotations in the DB
-        #self.assertEqual(Annotation.objects.filter().count(), 0)
+    def test_delete_annotation_view(self):
+        url = reverse("b2note_app.views.delete_annotation")
+        db_id = self.test_create_annotation_view()
+        json_dict = {}
+        json_dict['pid_tofeed'] = 'pid_test'
+        json_dict['subject_tofeed'] = 'subject_test'
+        json_dict['db_id'] = db_id
+        json_dict['delete_confirmed'] = 1
+        resp = self.client.post(url, json_dict, follow=True)
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotIn("annotation_test", resp.content)
+        # check that there is no annotations in the DB
+        self.assertEqual(Annotation.objects.filter().count(), 0)
         
     
-    #def test_export_annotations_view(self):
-        #db_id = self.test_create_annotation_view()
-        #url = reverse("b2note_app.views.export_annotations")    
-        #resp = self.client.post(url, {'pid_tofeed': 'pid_test', 'subject_tofeed': 'subject_test'})
-        #self.assertEqual(resp.status_code, 200)
-        #self.assertIn("annotation_test", resp.content)
+    def test_export_annotations_view(self):
+        url = reverse("b2note_app.views.export_annotations") 
+        db_id = self.test_create_annotation_view()
+        json_dict = {}
+        json_dict['pid_tofeed'] = 'pid_test'
+        json_dict['subject_tofeed'] = 'subject_test'
+        json_dict['all_annotations'] = 1
+        resp = self.client.post(url, json_dict)
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("annotation_test", resp.content)
         
-    #def test_download_json_view(self):
-        #self.test_export_annotations_view()
-        
-        #url = reverse("b2note_app.views.download_json")    
-        #resp = self.client.get(url)
-        #self.assertEqual(resp.status_code, 200)
-        #self.assertIn("annotation_test", resp.content)
+    def test_download_json_view(self):
+        url = reverse("b2note_app.views.download_json")
+        self.test_export_annotations_view()
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("annotation_test", resp.content)
     
     # http://stackoverflow.com/questions/1828187/determine-complete-django-url-configuration    
     def parse_urls(self):
