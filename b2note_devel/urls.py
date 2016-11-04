@@ -12,7 +12,6 @@ urlpatterns = patterns('',
     url(r'^$', 'b2note_app.views.hostpage', name='index'),
     url(r'^login', 'accounts.views.login'),
     url(r'^logout', 'accounts.views.logout'),
-
     url(r'^hostpage', 'b2note_app.views.hostpage'),
     url(r'^interface_main', 'b2note_app.views.interface_main'),
     url(r'^create_annotation', 'b2note_app.views.create_annotation'),

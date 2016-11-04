@@ -578,7 +578,7 @@ def CreateFreeTextKeyword( subject_url=None, text=None ):
 
                     if db_id:
                         print "CreateFreeTextKeyword function, created free-text keyword annotation:", str(db_id)
-                        stdlogger.info("CreateFreeTextKeyword function, created free-text keyword annotation:", str(db_id))
+                        stdlogger.info("CreateFreeTextKeyword function, created free-text keyword annotation:" + str(db_id))
                         return db_id
                     else:
                         print "CreateFreeTextKeyword function, free-text keyword annotation make unreturned."
