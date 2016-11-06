@@ -768,8 +768,8 @@ def myannotations(request):
         link_info_modified = ""
 
         if A.body and A.body[0] and A.body[0].value:
-            if len(A.body[0].value) > 30: link_label = '...'
-            link_label = A.body[0].value[:30] + link_label
+            if len(A.body[0].value) > 25: link_label = '...'
+            link_label = A.body[0].value[:25] + link_label
             if len(A.body[0].value) > 50: link_info_label = '...'
             link_info_label = A.body[0].value[:50] + link_info_label
 
@@ -923,8 +923,8 @@ def allannotations(request):
         link_info_modified = ""
 
         if A.body and A.body[0] and A.body[0].value:
-            if len(A.body[0].value) > 30: link_label = '...'
-            link_label = A.body[0].value[:30] + link_label
+            if len(A.body[0].value) > 25: link_label = '...'
+            link_label = A.body[0].value[:25] + link_label
             if len(A.body[0].value) > 50: link_info_label = '...'
             link_info_label = A.body[0].value[:50] + link_info_label
 

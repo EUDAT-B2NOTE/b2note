@@ -82,6 +82,7 @@
 }
 
 #b2note_iframe {
+	height: 500px !important;
     visibility: hidden;
 	/* float: right; */
 	margin: 5px 5px 15px 5px;
@@ -91,7 +92,6 @@
 	text-align: center;
 	position: fixed;
 	right: 5px;
-	height: 500px;
 	overflow: scroll;
 }
 
@@ -118,6 +118,35 @@
     padding: 10px;
 }
 
+#wayback .btn {
+    padding: 2px;
+}
+
+#consolepagebody {
+    height: 500px !important;
+    overflow: scroll;
+}
+
+#registration-form .h3, h3 {
+    padding: 0px;
+    margin: 8px;
+    margin-bottom: 10px;
+}
+
+#registration-form .img, img {
+    margin-left: 15px;
+    margin-top: 5px;
+}
+
+#disclaimer_paragraph {
+    font-size: 11px;
+    text-align: justify;
+}
+
+#registration_submit {
+    margin-top: 10px;
+}
+
 #user_area {
     padding: 2px;
     border: 2px solid black;
@@ -127,9 +156,13 @@
     padding: 0px;
 }
 
-.nav > li > a {
-    padding: 10px 9px;
-    font-size: 12px;
+.nav-tabs > li > a {
+    padding: 5px;
+}
+
+#create_tabs {
+    font-size: 13px;
+    float: left;
 }
 
 #homepage_tab_contents {
@@ -148,6 +181,7 @@
 }
 
 #semantic_formgroup {
+    margin-top: 30px;
     margin-bottom: 5px;
 }
 
@@ -161,6 +195,7 @@
 }
 
 #keyword_formgroup {
+    margin-top: 30px;
     margin-bottom: 5px;
 }
 
@@ -171,10 +206,29 @@
 }
 
 #comment_formgroup {
+    margin-top: 40px;
     margin-bottom: 5px;
 }
 
 #comment_submit {
     padding-top: 17px;
     padding-bottom: 16px;
+}
+
+#myannot_table_main {
+    width: 70%;
+    margin-left: 30px;
+}
+
+#allannot_table_main {
+    width: 70%;
+    margin-left: 30px;
+}
+
+#comment_input_edit {
+    width: 100%;
+}
+
+#id_q_edit {
+    width: 150% !important;
 }
