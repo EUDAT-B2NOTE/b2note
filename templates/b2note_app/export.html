@@ -4,13 +4,12 @@
 
 	<h3>Export</h3>
 
-	<br>
-
 	{% if not annotations_json or annotations_json == "null" %}
 
-		<p>Download annotations about the file:</p>
+		<div class="container pull-center" style="margin-top:20px;">
 
-		<div class="container pull-center">
+			<p>Download annotations about the file:</p>
+
 			<form action="/export_annotations" method="post">
 				{% csrf_token %}
 				<input type="submit" class="btn btn-default" name="user_annotations" value="My annotations" title="Only the annotations that I created." />
@@ -20,7 +19,7 @@
 
 	{% else %}
 
-		<div class="container" id="export-download">
+		<div class="container" id="export-download" style="margin-top:20px;">
 
 			{% if annotations_of %}
 
@@ -66,7 +65,7 @@
 
 			{% if annotations_json %}
 
-				<pre id="ann_json" style="font-size:9px;">{{annotations_json|safe}}</pre>
+				<pre id="ann_json" style="font-size:9px;padding: 1px;height: 270px;">{{annotations_json|safe}}</pre>
 
 			{% endif %}
 

@@ -12,38 +12,19 @@
                         <td>
                             {% if all_s != None %}
 								<a href="#semantic" title="All semantic annotations,&#13click for full list.">
-                                    <svg height="20" width="20">
-                                        {% if all_s > 9 %}
-                                            <circle cx="10" cy="10" r="10" style="fill:rgb(64,96,196);fill-opacity:0.5;" />
-                                            <text x="1" y="15" fill="black">{{all_s}}</text>
-                                        {% else %}
-                                            <circle cx="10" cy="10" r="10" style="fill:rgb(64,96,196);fill-opacity:0.5;" />
-                                            <text x="5" y="15" fill="black">{{all_s}}</text>
-                                        {% endif %}
-                                    </svg>
-                                </a>
+                                	<span class="badge" style="font-weight: 400;opacity: 0.8;background: #2040a4;font-size:14px;">{{all_s}}</span>
+								</a>
                             {% endif %}
                         </td>
 						{% if my_s != None %}
 							<td>
 								{% if my_s == 0 %}
 									<a href="/myannotations#semantic" title="No semantic annotation was created by me.">
-										<svg height="20" width="20">
-											<circle cx="10" cy="10" r="10" style="fill:rgb(64,196,96);fill-opacity:0.5;" />
-											<text x="5" y="15" fill="black">0</text>
-										</svg>
+										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_s}}</span>
 									</a>
 								{% else %}
 									<a href="/myannotations#semantic" title="My semantic annotations,&#13click for full list.">
-										<svg height="20" width="20">
-											{% if my_s > 9 %}
-												<circle cx="10" cy="10" r="10" style="fill:rgb(64,196,96);fill-opacity:0.5;" />
-												<text x="1" y="15" fill="black">{{my_s}}</text>
-											{% else %}
-												<circle cx="10" cy="10" r="10" style="fill:rgb(64,196,96);fill-opacity:0.5;" />
-												<text x="5" y="15" fill="black">{{my_s}}</text>
-											{% endif %}
-										</svg>
+										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_s}}</span>
 									</a>
 								{% endif %}
 							</td>
@@ -56,38 +37,19 @@
                         <td>
                             {% if all_k != None %}
 								<a href="#keyword" title="All keyword annotations,&#13click for full list.">
-                                    <svg height="20" width="20">
-                                        {% if all_k > 9 %}
-                                            <circle cx="10" cy="10" r="10" style="fill:rgb(64,96,196);fill-opacity:0.5;" />
-                                            <text x="1" y="15" fill="black">{{all_k}}</text>
-                                        {% else %}
-                                            <circle cx="10" cy="10" r="10" style="fill:rgb(64,96,196);fill-opacity:0.5;" />
-                                            <text x="5" y="15" fill="black">{{all_k}}</text>
-                                        {% endif %}
-                                    </svg>
-                                </a>
+                                	<span class="badge" style="font-weight: 400;opacity: 0.8;background: #2040a4;font-size:14px;">{{all_k}}</span>
+								</a>
                             {% endif %}
                         </td>
 						{% if my_k != None %}
 							<td>
 								{% if my_k == 0 %}
 									<a href="/myannotations#keyword" title="No free-text keyword annotation was created by me.">
-										<svg height="20" width="20">
-											<circle cx="10" cy="10" r="10" style="fill:rgb(64,196,96);fill-opacity:0.5;" />
-											<text x="5" y="15" fill="black">0</text>
-										</svg>
+										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_k}}</span>
 									</a>
 								{% else %}
-									<a href="/myannotations#keyword" title="Only my keyword annotations,&#13click for full list.">
-										<svg height="20" width="20">
-											{% if my_k > 9 %}
-												<circle cx="10" cy="10" r="10" style="fill:rgb(64,196,96);fill-opacity:0.5;" />
-												<text x="1" y="15" fill="black">{{my_k}}</text>
-											{% else %}
-												<circle cx="10" cy="10" r="10" style="fill:rgb(64,196,96);fill-opacity:0.5;" />
-												<text x="5" y="15" fill="black">{{my_k}}</text>
-											{% endif %}
-										</svg>
+									<a href="/myannotations#keyword" title="My keyword annotations,&#13click for full list.">
+										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_k}}</span>
 									</a>
 								{% endif %}
 							</td>
@@ -100,38 +62,19 @@
                         <td>
                             {% if all_c != None %}
 								<a href="#comment" title="All comment annotations,&#13click for full list.">
-                                    <svg height="20" width="20">
-                                        {% if all_c > 9 %}
-                                            <circle cx="10" cy="10" r="10" style="fill:rgb(64,96,196);fill-opacity:0.5;" />
-                                            <text x="1" y="15" fill="black">{{all_c}}</text>
-                                        {% else %}
-                                            <circle cx="10" cy="10" r="10" style="fill:rgb(64,96,196);fill-opacity:0.5;" />
-                                            <text x="5" y="15" fill="black">{{all_c}}</text>
-                                        {% endif %}
-                                    </svg>
-                                </a>
+                                	<span class="badge" style="font-weight: 400;opacity: 0.8;background: #2040a4;font-size:14px;">{{all_c}}</span>
+								</a>
                             {% endif %}
                         </td>
 						{% if my_c != None %}
 							<td>
 								{% if my_c == 0 %}
 									<a href="/myannotations#comment" title="No comment annotation was created by me.">
-										<svg height="20" width="20">
-											<circle cx="10" cy="10" r="10" style="fill:rgb(64,196,96);fill-opacity:0.5;" />
-											<text x="5" y="15" fill="black">0</text>
-										</svg>
+										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_c}}</span>
 									</a>
 								{% else %}
-									<a href="/myannotations#comment" title="Only my comment annotations,&#13click for full list.">
-										<svg height="20" width="20">
-											{% if my_c > 9 %}
-												<circle cx="10" cy="10" r="10" style="fill:rgb(64,196,96);fill-opacity:0.5;" />
-												<text x="1" y="15" fill="black">{{my_c}}</text>
-											{% else %}
-												<circle cx="10" cy="10" r="10" style="fill:rgb(64,196,96);fill-opacity:0.5;" />
-												<text x="5" y="15" fill="black">{{my_c}}</text>
-											{% endif %}
-										</svg>
+									<a href="/myannotations#comment" title="My comment annotations,&#13click for full list.">
+										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_c}}</span>
 									</a>
 								{% endif %}
 							</td>
@@ -153,45 +96,48 @@
 								<td>
 									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"
 										   title="{% if ann.link_info_label %}{{ann.link_info_label}}{% endif %}
-	{% if ann.link_info_ontologyacronym %}{{ann.link_info_ontologyacronym}}{% endif %}: {% if ann.link_info_shortform %}{{ann.link_info_shortform}}{% endif %}
-	{% if ann.link_info_creatornickname %}By: {{ann.link_info_creatornickname}}{% endif %}
-	{% if ann.link_info_modified %}On: {{ann.link_info_modified}}{% endif %}
-	Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
+{% if ann.link_info_ontologyacronym %}{{ann.link_info_ontologyacronym}}{% endif %}: {% if ann.link_info_shortform %}{{ann.link_info_shortform}}{% endif %}
+{% if ann.link_info_creatornickname %}By: {{ann.link_info_creatornickname}}{% endif %}
+{% if ann.link_info_modified %}On: {{ann.link_info_modified}}{% endif %}
+Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 								</td>
 								<td>
-									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}"
-										   title="In any annotations,&#13click for full list." style="padding:2px;margin-right:4px;"/>
+									<button class="btn btn-link" name="about_allsimilar" type="submit" title="In other annotations,&#13click for full list." style="padding:2px">
+										<span class="badge" id="all_sem_{{ forloop.counter0 }}">{{ann.all_similar}}</span>
+									</button>
+									<!--<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}"
+										   title="In any annotations,&#13click for full list." style="padding:2px;margin-right:4px;"/>-->
 								</td>
 								<td>
 									{% if ann.my_similar == 0 %}
-										<span title="No similar annotation was created by me." style="padding:2px;margin-right:4px;"> 0 </span>
+										<span title="No similar annotation was created by me." style="padding:2px;margin-right:4px;"> </span>
 									{% else %}
-										<input type="submit" class="btn btn-link" name="about_mysimilar" value="{{ann.my_similar}}"
-										   title="In my annotations,&#13click for full list." style="padding:2px;margin-right:4px;"/>
+										<button class="btn btn-link" name="about_mysimilar" type="submit" title="In my annotations,&#13click for full list." style="padding:2px;">
+											<span class="badge" id="my_sem_{{ forloop.counter0 }}">{{ann.my_similar}}</span>
+										</button>
+										<!--<input type="submit" class="btn btn-link" name="about_mysimilar" value="{{ann.my_similar}}"
+										   title="In my annotations,&#13click for full list." style="padding:2px;margin-right:4px;"/>-->
 									{% endif %}
 								</td>
 							</form>
+							<td>
+								<form action="/edit_annotation" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
+									<button type="submit" class="btn btn-link" title="Edit this annotation" {% if ann.link_info_creatornickname != user_nickname %}disabled{% endif %} style="padding: 2px;">
+										<span class="glyphicon glyphicon-pencil"></span>
+									</button>
+								</form>
 							</td>
-							{% if ann.link_info_creatornickname == user_nickname %}
-								<td>
-									<form action="/edit_annotation" method="post">
-										{% csrf_token %}
-										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link" title="Edit this annotation" style="padding: 2px;">
-											<span class="glyphicon glyphicon-pencil"></span>
-										</button>
-									</form>
-								</td>
-								<td>
-									<form action="/delete_annotation" method="post">
-										{% csrf_token %}
-										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link" title="Delete this annotation" style="padding: 2px;">
-											<span class="glyphicon glyphicon-trash"></span>
-										</button>
-									</form>
-								</td>
-							{% endif %}
+							<td>
+								<form action="/delete_annotation" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
+									<button type="submit" class="btn btn-link" title="Delete this annotation" {% if ann.link_info_creatornickname != user_nickname %}disabled{% endif %} style="padding: 2px;">
+										<span class="glyphicon glyphicon-trash"></span>
+									</button>
+								</form>
+							</td>
 						</tr>
 					{% endfor %}
 				</table>
@@ -217,40 +163,43 @@
 Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 								</td>
 								<td>
-									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}"
-										   title="In any annotations,&#13click for full list." style="padding:2px;margin-right:4px;"/>
+									<button class="btn btn-link" name="about_allsimilar" type="submit" title="In other annotations,&#13click for full list." style="padding:2px">
+										<span class="badge" id="all_key_{{ forloop.counter0 }}">{{ann.all_similar}}</span>
+									</button>
+									<!--<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}"
+										   title="In any annotations,&#13click for full list." style="padding:2px;margin-right:4px;"/>-->
 								</td>
 								<td>
 									{% if ann.my_similar == 0 %}
-										<span title="No similar annotation was created by me." style="padding:2px;margin-right:4px;"> 0 </span>
+										<span title="No similar annotation was created by me." style="padding:2px;margin-right:4px;"> </span>
 									{% else %}
-										<input type="submit" class="btn btn-link" name="about_mysimilar" value="{{ann.my_similar}}"
-											   title="In my annotations,&#13click for full list." style="padding:2px;margin-right:4px;"/>
+										<button class="btn btn-link" name="about_mysimilar" type="submit" title="In my annotations,&#13click for full list." style="padding:2px">
+											<span class="badge" id="my_key_{{ forloop.counter0 }}">{{ann.all_similar}}</span>
+										</button>
+										<!--<input type="submit" class="btn btn-link" name="about_mysimilar" value="{{ann.my_similar}}"
+											   title="In my annotations,&#13click for full list." style="padding:2px;margin-right:4px;"/>-->
 									{% endif %}
 								</td>
 							</form>
+							<td>
+								<form action="/edit_annotation" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
+									<button type="submit" class="btn btn-link" title="Edit this annotation" {% if ann.link_info_creatornickname != user_nickname %}disabled{% endif %} style="padding: 2px;">
+										<span class="glyphicon glyphicon-pencil"></span>
+									</button>
+								</form>
 							</td>
-							{% if ann.link_info_creatornickname == user_nickname %}
-								<td>
-									<form action="/edit_annotation" method="post">
-										{% csrf_token %}
-										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link" title="Edit this annotation" style="padding: 2px;">
-											<span class="glyphicon glyphicon-pencil"></span>
-										</button>
-									</form>
-								</td>
 
-								<td>
-									<form action="/delete_annotation" method="post">
-										{% csrf_token %}
-										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link" title="Delete this annotation" style="padding: 2px;">
-											<span class="glyphicon glyphicon-trash"></span>
-										</button>
-									</form>
-								</td>
-							{% endif %}
+							<td>
+								<form action="/delete_annotation" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
+									<button type="submit" class="btn btn-link" title="Delete this annotation" {% if ann.link_info_creatornickname != user_nickname %}disabled{% endif %} style="padding: 2px;">
+										<span class="glyphicon glyphicon-trash"></span>
+									</button>
+								</form>
+							</td>
 						</tr>
 					{% endfor %}
 				</table>
@@ -276,27 +225,25 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 								</form>
 							</td>
-							{% if ann.link_info_creatornickname == user_nickname %}
-								<td>
-									<form action="/edit_annotation" method="post">
-										{% csrf_token %}
-										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link" title="Edit this annotation" style="padding: 2px;">
-											<span class="glyphicon glyphicon-pencil"></span>
-										</button>
-									</form>
-								</td>
+							<td>
+								<form action="/edit_annotation" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
+									<button type="submit" class="btn btn-link" title="Edit this annotation" {% if ann.link_info_creatornickname != user_nickname %}disabled{% endif %} style="padding: 2px;">
+										<span class="glyphicon glyphicon-pencil"></span>
+									</button>
+								</form>
+							</td>
 
-								<td>
-									<form action="/delete_annotation" method="post">
-										{% csrf_token %}
-										<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-										<button type="submit" class="btn btn-link" title="Delete this annotation" style="padding: 2px;">
-											<span class="glyphicon glyphicon-trash"></span>
-										</button>
-									</form>
-								</td>
-							{% endif %}
+							<td>
+								<form action="/delete_annotation" method="post">
+									{% csrf_token %}
+									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
+									<button type="submit" class="btn btn-link" title="Delete this annotation" {% if ann.link_info_creatornickname != user_nickname %}disabled{% endif %} style="padding: 2px;">
+										<span class="glyphicon glyphicon-trash"></span>
+									</button>
+								</form>
+							</td>
 						</tr>
 					{% endfor %}
 				</table>
