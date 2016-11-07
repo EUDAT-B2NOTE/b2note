@@ -35,10 +35,12 @@
 
 			<h3>Free-text keyword</h3>
 
+				<br>
+
 				<table>
 
 					{% if annotation_list.0.body and annotation_list.0.body.0 and annotation_list.0.body.0.value %}
-						<tr><td><strong>{{ annotation_list.0.body.0.value }}</strong></td></tr>
+						<tr><td><span>{{ annotation_list.0.body.0.value }}</span></td></tr>
 						<tr><td><br></td></tr>
 					{% endif %}
 
@@ -56,21 +58,32 @@
 
 			<h3>Comment</h3>
 
+				<br>
+
 				{% if annotation_list.body and annotation_list.body.0 and annotation_list.body.0.value %}
-					<textarea rows="6" readonly>{{ annotation_list.body.0.value }}</textarea>
+					<div class="container">
+						<!--<textarea rows="6" readonly>{{ annotation_list.body.0.value }}</textarea>-->
+						<span>{{ annotation_list.body.0.value }}</span>
+					</div>
 				{% endif %}
 
-				<table>
+				<br>
 
-					{% if annotation_list.modified %}
-						<tr><td><label>On: </label> {{ annotation_list.modified }}</td></tr>
-					{% endif %}
+				<div class="container">
 
-					{% if annotation_list.creator and annotation_list.creator.0 and annotation_list.creator.0.nickname %}
-						<tr><td><label>By: </label> {{ annotation_list.creator.0.nickname }}</td></tr>
-					{% endif %}
+					<table>
 
-				</table>
+						{% if annotation_list.modified %}
+							<tr><td><label>On: </label> {{ annotation_list.modified }}</td></tr>
+						{% endif %}
+
+						{% if annotation_list.creator and annotation_list.creator.0 and annotation_list.creator.0.nickname %}
+							<tr><td><label>By: </label> {{ annotation_list.creator.0.nickname }}</td></tr>
+						{% endif %}
+
+					</table>
+
+				</div>
 
 		{% endif %}
 
@@ -115,7 +128,7 @@ Click to acces on B2Share.">{{ ann.target.0.jsonld_id }}</a></td>
 
 		{% elif annotation_list and annotation_list.creator.0.nickname == user_nickname %}
 
-			<table>
+			<table style="float:right;">
 
 				<td>
 					<form action="/edit_annotation" method="post">

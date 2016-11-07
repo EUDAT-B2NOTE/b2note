@@ -18,48 +18,51 @@
 
         <br>
 
-        <form action="login" method="post" class="form-horizontal">
+        <div class="container">
 
-            {% csrf_token %}
+            <form action="login" method="post" class="form-horizontal">
 
-            {% for f in form %}
+                {% csrf_token %}
 
-            <div class="form-group">
-                <div class="col-sm-4">
-                    <input type="{{ f.label|lower }}" name="{{ f.id_for_label|slice:'3:' }}" class="form-control" id="formfield" placeholder="Enter {{ f.label|lower }}" />
-                </div>
-            </div>
+                {% for f in form %}
 
-            {% endfor %}
-
-            <!--<div class="form-group">
-                <div class="col-sm-offset-2 col-sm-4">
-                    <div class="checkbox">
-                        <label><input type="checkbox" name="keeplog"> Keep me logged in.</label>
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        <input type="{{ f.label|lower }}" name="{{ f.id_for_label|slice:'3:' }}" class="form-control" id="formfield" placeholder="Enter {{ f.label|lower }}" />
                     </div>
                 </div>
-            </div>-->
 
-            <div class="form-group">
-                <table class="col-sm-offset-2 col-sm-6">
-                    <tr>
-                        <td>
-                            <div class="col-sm-2">
-                                <button type="submit" class="btn btn-default">Login</button>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="col-sm-6">
-                                <a target="_self" href="/accounts/register">New user? Register.</a>
-                            </div>
-                            <div class="col-sm-6">
-                                <a target="_self" href="/accounts/reset_password">Forgot password.</a>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </form>
+                {% endfor %}
+
+                <!--<div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-4">
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="keeplog"> Keep me logged in.</label>
+                        </div>
+                    </div>
+                </div>-->
+
+                <div class="form-group">
+                    <table class="col-sm-offset-2 col-sm-6">
+                        <tr>
+                            <td>
+                                <div class="col-sm-2">
+                                    <button type="submit" class="btn btn-default">Login</button>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="col-sm-6">
+                                    <a target="_self" href="/accounts/register">New user? Register.</a>
+                                </div>
+                                <div class="col-sm-6">
+                                    <a target="_self" href="/accounts/reset_password">Forgot password.</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
 
     </div>
 

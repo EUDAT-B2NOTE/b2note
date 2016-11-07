@@ -14,7 +14,7 @@ def list_navbarlinks(request=None, links_out=[]):
     else:
         lnks = [
             {"url": "/accounts/login", "title": "Login", "icon": "user"},
-            {"url": "/accounts/register", "title": "Registration", "icon": "record"},
+            {"url": "/accounts/register", "title": "Registration", "icon": "plus"},
             {"url": "/help", "title": "Help page", "icon": "question-sign"},
         ]
     lnks = [lnk for lnk in lnks if lnk["title"] not in links_out]

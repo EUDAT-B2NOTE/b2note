@@ -81,62 +81,70 @@
     clear: both;
 }
 
-#consolepagebody {
-    padding-top: 0px;
-}
-
-#content {
-	margin-left: 20px;
-	margin-bottom: 50px;
-}
-
 #b2note_iframe {
+	height: 500px !important;
     visibility: hidden;
-	float: right;
+	/* float: right; */
 	margin: 5px 5px 15px 5px;
 	border: 2px solid gray;
 	-moz-border-radius: 20px;
 	border-radius: 20px;
 	text-align: center;
 	position: fixed;
-	right: 5px;`
-	height: 400px;
+	right: 5px;
 	overflow: scroll;
 }
 
-#interface_main, #export {
-	padding: 0;
-	margin: 0;
-	height: 100%;
-    background: rgba(255,255,255,0.95);
+#consolepagebody {
+    padding-top: 0px;
 }
 
-#interface_main * {
-	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+#consolepagebody header {
+    height: 75px;
 }
 
-#interface_main .navbar {
-    margin: 0px;
+.navbar-brand {
+    height: 45px;
+    pqdding-top: 5px;
+    padding-left: 10px;
 }
 
-#interface_main .btn-link,
-#export .btn-link {
+#icon-nav-bar {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+#main_container {
+    padding: 10px;
+}
+
+#wayback .btn {
     padding: 2px;
-    text-align: left;
 }
 
-#interface_main h3 {
-    text-align: center;
-    margin: 2px 2px 5px 2px;
-    padding: 2px;
+#consolepagebody {
+    height: 500px !important;
+    overflow: scroll;
 }
 
-#section_subject {
-	float: right;
-	/*height: 120px;*/
-	width: 100%;
-	padding: 2px 2px 5px 2px;
-	border-bottom: thin solid lightgrey;
+#registration-form .h3, h3 {
+    padding: 0px;
+    margin: 8px;
+    margin-bottom: 10px;
+}
+
+#registration-form .img, img {
+    margin-left: 15px;
+    margin-top: 5px;
+}
+
+#disclaimer_paragraph {
+    font-size: 11px;
+    text-align: justify;
+}
+
+#registration_submit {
+    margin-top: 10px;
 }
 
 #user_area {
@@ -144,165 +152,83 @@
     border: 2px solid black;
 }
 
-#section_subject .table-responsive {
-    border: none;
-    margin: 0 auto;
-    margin-bottom: 2px;
-    float: none;
-    padding: 0;
-    /*word-wrap: break-word;*/
-}
-
-#section_subject .row {
-    margin: 0;
-    padding: 0;
-}
-
-#section_subject .table,
-#section_subject .table td,
-#section_subject .table tr {
-    border: none;
-    padding: 1px 2px 1px 1px;
-    margin: 0;
-    word-wrap: break-word;
-    line-height: 1;
-}
-
-#section_subject .pid_link {
-	font-size: 10px;
-}
-
 #section_create {
-	float: right;
-	/*height: 160px;*/
-	width: 100%;
-	padding: 5px 5px 0px 5px;
-	border-bottom: thin solid lightgrey;
-}
-
-#section_create input {
-	width: 250px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-#section_create .form-group {
-    width: 250px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-#section_create .tt-menu {
-	width: 290px;
-	margin-left: -20px;
-}
-
-#section_create .tt-menu * {
-    /* http://stackoverflow.com/questions/23981704/typeahead-always-shows-only-5-suggestions-maximum*/
-    max-height: 150px;
-    overflow-y: auto;
-	font-size: 14px;
-	word-break: break-all;
-}
-
-#section_existing {
-	float: right;
-	width: 100%;
-	padding: 5px;
-	text-align: center;
-}
-
-
-#container_table_existing {
-    padding: 2px;
-    height: 150px;
-    overflow: auto;
-}
-
-#section_existing input {
-    margin: 0px;
-    padding: 3px 1px 0px 0px;
-	width: 12px;
-}
-
-/*
-	http://stackoverflow.com/questions/28222672/navigate-html-table-rows-with-javascript
-	http://jsfiddle.net/vsgkjssq/5/
-*/
-#section_existing table {
-	border: 1px solid black;
-	width: 100%;
-	max-height: 50px;
-	margin-bottom: 10px;
-}
-
-#section_existing table,
-#section_existing tr,
-#section_existing td {
-	border: 1px solid lightgray;
-	padding: 2px 1px 1px 1px;
-}
-
-#section_existing table,
-#section_existing td {
-	border-collapse: collapse;
-	border: solid 1px #ccc;
-	text-align: center;
-}
-
-footer {
-	height: 70px;
-	background: transparent url("../images/decor-footer.png") no-repeat scroll right bottom;
-	background-color: #dddddd;
-	padding: 10px 40px;
-}
-
-#footer-content {
-	display: table;
-	margin: 0 auto;
-	padding-top: 10px;
-}
-
-#footer-content img {
-	float: left;
-	margin-right: 10px;
-	
-}
-#footer-content p {
-	font-size: 10px;
-	width: 100%;
-}
-
-#footer-content a {
-	color: #e5601e;
-}
-
-#export * {
-	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-}
-
-#export-download {
-	padding: 10px 10px 0;
-	margin-bottom: 10px;
-}
-
-#export-content {
-	height: 300px;
-	overflow: auto;
-	padding: 10px;
-}
-
-#export-content pre {
     padding: 0px;
-    margin: 0px;
-    border: none;
-    font-size: 10px;
 }
 
-#edit_annotation_page {
-    padding-top: 0px;
+.nav-tabs > li > a {
+    padding: 5px;
 }
 
-#search_annotation_page {
-    padding-top: 0px;
+#create_tabs {
+    font-size: 13px;
+    float: left;
+}
+
+#homepage_tab_contents {
+    padding-top: 15px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 5px;
+}
+
+#semantic_container {
+    padding-top: 10px;
+}
+
+#semantic_submit {
+    vertical-align: top;
+}
+
+#semantic_formgroup {
+    margin-top: 30px;
+    margin-bottom: 5px;
+}
+
+#keyword_container {
+    padding-top: 10px;
+}
+
+#keyword_input {
+    width: 70%;
+    margin-right: 5px;
+}
+
+#keyword_formgroup {
+    margin-top: 30px;
+    margin-bottom: 5px;
+}
+
+#comment_input {
+    width: 70%;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+#comment_formgroup {
+    margin-top: 40px;
+    margin-bottom: 5px;
+}
+
+#comment_submit {
+    padding-top: 17px;
+    padding-bottom: 16px;
+}
+
+#myannot_table_main {
+    width: 70%;
+    margin-left: 30px;
+}
+
+#allannot_table_main {
+    width: 70%;
+    margin-left: 30px;
+}
+
+#comment_input_edit {
+    width: 100%;
+}
+
+#id_q_edit {
+    width: 150% !important;
 }

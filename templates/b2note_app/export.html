@@ -4,45 +4,59 @@
 
 	<h3>Export</h3>
 
+	<br>
+
 	{% if not annotations_json or annotations_json == "null" %}
 
 		<p>Download annotations about the file:</p>
 
-		<form action="/export_annotations" method="post">
-			{% csrf_token %}
-			<input type="submit" class="btn btn-default" name="user_annotations" value="My annotations" title="Only the annotations that I created."/>
-			<input type="submit" class="btn btn-default" name="all_annotations" value="All annotations" title="All the annotations about the file.">
-		</form>
+		<div class="container pull-center">
+			<form action="/export_annotations" method="post">
+				{% csrf_token %}
+				<input type="submit" class="btn btn-default" name="user_annotations" value="My annotations" title="Only the annotations that I created." />
+				<input type="submit" class="btn btn-default" name="all_annotations" value="All annotations" title="All the annotations about the file." />
+			</form>
+		</div>
 
 	{% else %}
 
-		{% if annotations_of %}
+		<div class="container" id="export-download">
 
-			{% if annotations_of == "mine" %}
+			{% if annotations_of %}
 
-				<p><strong>My annotations</strong> about the file.</p>
+				{% if annotations_of == "mine" %}
 
-			{% elif annotations_of == "all" %}
+					<div class="container col-xs-5">
+						<p style="margin-left:0px;font-size:12px;"><strong>My</strong> annotations about the file.</p>
+					</div>
 
-				<p><strong>All</strong> annotations about the file.</p>
+				{% elif annotations_of == "all" %}
 
-			{% elif annotations_of == "search_results" %}
+					<div class="container col-xs-5">
+						<p style="margin-left:0px;font-size:12px;"><strong>All</strong> annotations about the file.</p>
+					</div>
 
-				<p>Selected files information.</p>
+				{% elif annotations_of == "search_results" %}
+
+					<div class="container col-xs-5">
+						<p style="margin-left:0px;font-size:12px;">Selected files information.</p>
+					</div>
+
+				{% endif %}
 
 			{% endif %}
 
-		{% endif %}
-
-		<div class="container" id="export-download" align="right">
-
 			{% if annotations_of == "search_results" %}
 
-				<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default">Download JSON</a>
+				<div class="container col-xs-2">
+					<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default">Download JSON</a>
+				</div>
 
 			{% else %}
 
-				<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default">Download JSON-LD</a>
+				<div class="container col-xs-2">
+					<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default">Download JSON-LD</a>
+				</div>
 
 			{% endif %}
 
@@ -52,7 +66,7 @@
 
 			{% if annotations_json %}
 
-				<pre id="ann_json">{{annotations_json|safe}}</pre>
+				<pre id="ann_json" style="font-size:9px;">{{annotations_json|safe}}</pre>
 
 			{% endif %}
 

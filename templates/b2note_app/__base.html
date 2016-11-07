@@ -26,10 +26,8 @@
 			<script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
 			<script src="{% static 'js/utils.js' %}"></script>
 			<script src="{% static 'js/bootstrap.min.js' %}"></script>
-			<script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
 			<script src="{% static 'js/bloodhound.js' %}"></script>
 			<script src="{% static 'js/handlebars-v4.0.0.js' %}"></script>
-			<script src="{% static 'js/bootstrap.min.js' %}"></script>
 			<script src="{% static 'js/ontology-typeahead.js' %}"></script>
 			<script src="{% static 'js/underscore-min.js' %}"></script>
 			<script src="{% static 'js/typeahead.min.js' %}"></script>
@@ -46,7 +44,7 @@
             {% include "b2note_app/_navigation.html" %}
         </header>
         <div id="main" role="main">
-            <div class="container">
+            <div id="main_container" class="container">
                 {% block content %}
                 {% endblock %}
             </div>
