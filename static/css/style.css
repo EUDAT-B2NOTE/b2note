@@ -240,11 +240,13 @@
 #myannot_table_main {
     width: 70%;
     margin-left: 30px;
+    font-size: 15px;
 }
 
 #allannot_table_main {
     width: 70%;
     margin-left: 30px;
+    font-size: 15px;
 }
 
 #myannot_table_main .badge {
@@ -307,3 +309,15 @@
     background: #2040a4;
 }
 
+#select_semantic .twitter-typeahead {
+    margin-top: 5px;
+    width: 100%;
+}
+
+#select_keyword .form-control.custom-control[id^="keyword"] {
+    margin-top: 40px;
+}
+
+#select_comment {
+    margin-top: 5px;
+}
