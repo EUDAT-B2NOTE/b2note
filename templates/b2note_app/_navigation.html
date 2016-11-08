@@ -1,4 +1,4 @@
-<div class="navbar navbar-default navbar-static-top">
+<nav class="navbar navbar-default navbar-fixed-top">
 
 	<div class="container">
 
@@ -21,29 +21,4 @@
 
 	</div>
 
-</div>
-
-<div class="container col-xs-3" id="wayback" align="left">
-
-	{% for link in shortcutlinks %}
-
-		{% if "Previous page" in link.title %}
-
-			<!-- http://stackoverflow.com/questions/524992/django-templates-create-a-back-link -->
-			<button type="submit" class="btn btn-link" onClick="javascript:history.go(-1);" title="{{link.title}}">
-				<i class="glyphicon glyphicon-{{link.icon}}"></i>
-			</button>
-
-		{% else %}
-
-			<a href="{{link.url}}" title="{{link.title}}">
-				<button type="submit" class="btn btn-link">
-					<i class="glyphicon glyphicon-{{link.icon}}"></i>
-				</button>
-			</a>
-
-		{% endif %}
-
-	{% endfor %}
-
-</div>
+</nav>
