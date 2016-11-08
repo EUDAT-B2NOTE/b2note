@@ -198,6 +198,10 @@
     border: 2px solid black;
 }
 
+#for_padding_adjsutement {
+    padding-left: 4px;
+}
+
 #section_create {
     padding: 0px;
 }
@@ -262,15 +266,29 @@
 }
 
 #myannot_table_main {
-    width: 70%;
-    margin-left: 30px;
+    border: 0px !important;
+    width: 75%;
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-bottom: 0px;
     font-size: 15px;
 }
 
+#myannot_table_main td {
+    border: 0px !important;
+}
+
 #allannot_table_main {
-    width: 70%;
-    margin-left: 30px;
+    border: 0px !important;
+    width: 85%;
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-bottom: 0px;
     font-size: 15px;
+}
+
+#allannot_table_main td {
+    border: 0px !important;
 }
 
 #myannot_table_main .badge {
@@ -307,6 +325,14 @@
     width: 150% !important;
 }
 
+#myannotations_summary #semantic.container {
+    padding-left: 0px !important;
+}
+
+#allannotations_summary #semantic.container {
+    padding-left: 0px !important;
+}
+
 #semantic .badge {
     font-weight: 400;
     opacity: 0.8;
@@ -318,6 +344,81 @@
 
 #semantic .badge[id^="all_sem_"] {
     background: #2040a4;
+}
+
+#semantic table {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    border: 0px !important;
+}
+
+#semantic table th {
+    font-size: 12px;
+    border: 0px !important;
+}
+
+#semantic table td {
+    border: 0px !important;
+    padding: 0px;
+}
+
+#myannotations_summary #keyword.container {
+    padding-left: 0px !important;
+}
+
+#allannotations_summary #keyword.container {
+    padding-left: 0px !important;
+}
+
+#keyword {
+    padding-left: 0px;
+}
+
+#keyword table {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    border: 0px !important;
+}
+
+#keyword table th {
+    font-size: 12px;
+    border: 0px !important;
+}
+
+#keyword table td {
+    border: 0px !important;
+    padding: 0px;
+}
+
+#myannotations_summary #comment.container {
+    padding-left: 0px !important;
+}
+
+#allannotations_summary #comment.container {
+    padding-left: 0px !important;
+}
+
+#comment {
+    padding-left: 0px;
+}
+
+#comment table {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    border: 0px !important;
+}
+
+#comment table th {
+    font-size: 12px;
+    border: 0px !important;
+}
+
+#comment table td {
+    border: 0px !important;
+    padding: 0px;
 }
 
 #keyword .badge {
@@ -348,4 +449,9 @@
 
 #exact_match_export_select_table .container {
     padding: 0;
+}
+
+#link_to_top {
+    font-size:10px;
+    opacity:0.3;
 }
