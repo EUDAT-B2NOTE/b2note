@@ -125,10 +125,13 @@
 	text-align: center;
 	position: fixed;
 	right: 5px;
-	overflow: scroll;
+	/*overflow: scroll;*/
+	/*overflow: hidden;*/
 }
 
 #consolepagebody {
+    height: 500px !important;
+    /*overflow-y: auto;*/
     padding-top: 0px;
 }
 
@@ -147,17 +150,17 @@
     padding-bottom: 0px;
 }
 
+#main {
+    height: 425px;
+    overflow-y: scroll;
+}
+
 #main_container {
     padding: 10px;
 }
 
 #wayback .btn {
     padding: 2px;
-}
-
-#consolepagebody {
-    height: 500px !important;
-    overflow: scroll;
 }
 
 #registration-form .h3, h3 {
