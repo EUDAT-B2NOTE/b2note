@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <h3>Search</h3>
+    <h3 style="margin-bottom:20px;">Search</h3>
 
     <div class="container">
 
@@ -14,50 +14,31 @@
 
                 {% if f.logicals %}
 
-                    <div class="container col-xs-5">
-
+                    <div class="container col-xs-4">
                         <select name="logical{{forloop.counter0}}" class="form-control" onchange="this.form.submit()">
-
                             {% for op in f.logicals %}
-
                                 {% if op == f.logical %}
-
                                     <option value="{{op}}" selected>{{ op }}</option>
-
                                 {% else %}
-
                                      <option value="{{op}}">{{ op }}</option>
-
                                 {% endif %}
-
                             {% endfor %}
-
                         </select>
-
                     </div>
 
                 {% endif %}
 
                 {% if f.types %}
 
-                    <div class="container col-xs-7">
-
+                    <div class="container col-xs-8">
                         <select name="select{{forloop.counter0}}" class="form-control" onchange="this.form.submit()">
-
                             {% for op in f.types %}
-
                                 {% if op == f.type %}
-
                                     <option value="{{op}}" selected>{{ op }}</option>
-
                                 {% else %}
-
                                     <option value="{{op}}">{{ op }}</option>
-
                                 {% endif %}
-
                             {% endfor %}
-
                         </select>
 
                     </div>
@@ -66,7 +47,7 @@
 
                         {% if f.type == "Semantic tag" %}
 
-                            <div class="container" id="select_semantic">
+                            <div class="container col-xs-12 col-sm-12" id="select_semantic">
 
                                 <input type="hidden" name="ontology_json{{forloop.counter0}}" id="ontology_json{{forloop.counter0}}" {% if f.search_json %}value="{{f.search_json}}"{% endif %}>
                                 <input type="text" class="form-control" name="q{{forloop.counter0}}" id="id_q_search{{forloop.counter0}}" value="{% if query %}{{ query }}{% elif f.search_param %}{{f.search_param.labels}} ({{f.search_param.short_form}}){% endif %}" placeholder="Type-in to select a tag"  autocomplete="off" spellcheck="false" dir="auto" autofocus/>
@@ -78,7 +59,7 @@
 
                         {% elif f.type == "Free-text keyword" %}
 
-                            <div class="container" id="select_keyword">
+                            <div class="container col-xs-12 col-sm-12" id="select_keyword">
 
                                 <input type="text" name="keyword{{forloop.counter0}}" class="form-control custom-control"{% if f.search_param %}value="{{f.search_param}}"{% endif %} id="keyword{{forloop.counter0}}" placeholder="Type-in a free-text keyword"/>
 
@@ -102,10 +83,15 @@
 
             {% endfor %}
 
-            {% if fmessage %}<p>{{fmessage}}</p>{% endif %}
+            {% if fmessage %}
+                <div class="container col-xs-12 col-sm-12">
+                    <p>{{fmessage}}</p>
+                </div>
+            {% endif %}
 
-            <br>
-            <div class="container">
+
+
+            <div class="container col-xs-12 col-sm-12" style="margin-top:15px;">
                 <input type="submit" name="plus" value="+"/>
 
                 <br>

@@ -4,32 +4,27 @@
 
 	<h3>User account</h3>
 
-	<div class="container" id="homepageform">
-
-		<div class="row">
-
-			<div class="container" id="profileform">
-
-				<form action="register" method="post" class="form-horizontal">
-
-					{% for f in form %}
-
-					<div class="form-group">
-						<label class="control-label col-sm-2">{{ f.label }}:</label>
-
-						<div class="col-sm-4">
-							<input type="text" class="form-control" id="some-id" value="{{ f.value }}" readonly="readonly"/>
-						</div>
-					</div>
-
-					{% endfor %}
-
-				</form>
-
-			</div>
-
-		</div>
-
-	</div>
+	<table class="table table-condensed table-responsive table-striped" style="font-size:12px;">
+		{% for f in form %}
+			<tr>
+				<td class="col-xs-4 col-md-4">
+					<strong>{{ f.label }}:</strong>
+				</td>
+				<td class="col-xs-8 col-md-8">
+					{% if f.label == "Annotator experience" %}
+						{% if f.value == "b" %}
+							beginner
+						{% elif f.value == "i" %}
+							intermediate
+						{% elif f.value == "e" %}
+							expert
+						{% endif %}
+					{% else %}
+						{{ f.value }}
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
 
 {% endblock %}

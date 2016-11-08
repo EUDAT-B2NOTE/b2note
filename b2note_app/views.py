@@ -768,10 +768,10 @@ def myannotations(request):
         link_info_modified = ""
 
         if A.body and A.body[0] and A.body[0].value:
-            if len(A.body[0].value) > 25: link_label = '...'
-            link_label = A.body[0].value[:25] + link_label
-            if len(A.body[0].value) > 50: link_info_label = '...'
-            link_info_label = A.body[0].value[:50] + link_info_label
+            if len(A.body[0].value) > 23: link_label = '...'
+            link_label = A.body[0].value[:23] + link_label
+            if len(A.body[0].value) > 40: link_info_label = '...'
+            link_info_label = A.body[0].value[:40] + link_info_label
 
         if A.creator and A.creator[0] and A.creator[0].nickname:
             link_info_creatornickname = A.creator[0].nickname
@@ -923,10 +923,10 @@ def allannotations(request):
         link_info_modified = ""
 
         if A.body and A.body[0] and A.body[0].value:
-            if len(A.body[0].value) > 25: link_label = '...'
-            link_label = A.body[0].value[:25] + link_label
-            if len(A.body[0].value) > 50: link_info_label = '...'
-            link_info_label = A.body[0].value[:50] + link_info_label
+            if len(A.body[0].value) > 23: link_label = '...'
+            link_label = A.body[0].value[:23] + link_label
+            if len(A.body[0].value) > 40: link_info_label = '...'
+            link_info_label = A.body[0].value[:40] + link_info_label
 
         if A.creator and A.creator[0] and A.creator[0].nickname:
             link_info_creatornickname = A.creator[0].nickname
@@ -1266,17 +1266,18 @@ def process_search_query( form ):
                   }
     search_str = ""
 
-    for entry in form:
-        if isinstance(entry, dict):
-            if "type" in entry.keys():
-                if entry["type"] and isinstance(entry["type"], (str, unicode)):
-                    if entry["type"] == "Semantic tag":
-                        query_dict, search_str = process_semantic_entry( entry, query_dict, search_str )
-                    elif entry["type"] == "Free-text keyword":
-                        query_dict, search_str = process_keyword_entry( entry, query_dict, search_str )
-                    elif entry["type"] == "Comment":
-                        query_dict["commenting"] = True
-                        search_str += " ALL COMMENTED FILES"
+    if form:
+        for entry in form:
+            if isinstance(entry, dict):
+                if "type" in entry.keys():
+                    if entry["type"] and isinstance(entry["type"], (str, unicode)):
+                        if entry["type"] == "Semantic tag":
+                            query_dict, search_str = process_semantic_entry( entry, query_dict, search_str )
+                        elif entry["type"] == "Free-text keyword":
+                            query_dict, search_str = process_keyword_entry( entry, query_dict, search_str )
+                        elif entry["type"] == "Comment":
+                            query_dict["commenting"] = True
+                            search_str += " ALL COMMENTED FILES"
 
     VA=""
     VX=""
