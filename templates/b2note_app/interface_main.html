@@ -238,9 +238,9 @@
                 <span class="caret caret-lg" data-toggle="collapse" href="#myannotation_collapse" style="border-width:8px;"></span>
                 <a href="/myannotations"><span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">My annotations</span></a>
                 <div id="myannotation_collapse" class="panel-collapse collapse">
-                    <table id="myannot_table_main">
+                    <table class="table table-condensed table-responsive" id="myannot_table_main">
                         <tr>
-                            <div class = "container">
+                            <!--<div class = "container">-->
                                 {% if my_s != None %}
                                     <td><a href="/myannotations#semantic" title="Click for full list.">Semantic tag</a></td>
                                     <td>
@@ -260,7 +260,7 @@
                                         </a>-->
                                     </td>
                                 {% endif %}
-                            </div>
+                            <!--</div>-->
                         </tr>
                         <tr>
                             <div class = "container">
@@ -296,71 +296,73 @@
     <br>
 
     <div class="container" id="pulledarea">
-        <!--<a class="btn btn-link" data-toggle="collapse" href="#allannotations_collapse">
-            <i class="glyphicon glyphicon-triangle-right"></i>
-        </a>-->
-        <span class="caret caret-lg" data-toggle="collapse" href="#allannotations_collapse" style="border-width:8px;"></span>
-        <a href="/allannotations"><span class="badge" style="font-weight: 400;opacity: 0.8;background: #2040a4;font-size:14px;">All annotations</span></a>
-        <div id="allannotations_collapse" class="panel-collapse collapse">
-            <table id="allannot_table_main">
-                <tr>
-                    <div class = "container">
-                        <td><a href="/allannotations#semantic">Semantic tag</a></td>
-                        <td>
-                            {% if all_s != None %}
-                                <a href="/allannotations#semantic" title="All semantic annotations,&#13click for full list." style="padding:2px">
-                                    <span class="badge">{{all_s}}</span>
-                                </a>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if my_s != None %}
-                                <a href="/myannotations#semantic" title="My semantic annotations,&#13click for full list." style="padding:2px">
-                                    <span class="badge" id="my_sem_{{ forloop.counter0 }}">{{my_s}}</span>
-                                </a>
-                            {% endif %}
-                        </td>
-                    </div>
-                </tr>
-                <tr>
-                    <div class="container">
-                        <td><a href="/allannotations#keyword">Free-text keyword</a></td>
-                        <td>
-                            {% if all_k != None %}
-                                <a href="/allannotations#keyword" title="All keyword annotations,&#13click for full list." style="padding:2px">
-                                    <span class="badge">{{all_k}}</span>
-                                </a>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if my_k != None %}
-                                <a href="/myannotations#keyword" title="My keyword annotations,&#13click for full list." style="padding:2px">
-                                    <span class="badge" id="my_key_{{ forloop.counter0 }}">{{my_k}}</span>
-                                </a>
-                            {% endif %}
-                        </td>
-                    </div>
-                </tr>
-                <tr>
-                    <div class = "container">
-                        <td><a href="/allannotations#comment">Comment</a></td>
-                        <td>
-                            {% if all_c != None %}
-                                <a href="/allannotations#comment" title="All comment annotations,&#13click for full list." style="padding:2px">
-                                    <span class="badge">{{all_c}}</span>
-                                </a>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if my_c != None %}
-                                <a href="/myannotations#comment" title="My comment annotations,&#13click for full list." style="padding:2px">
-                                    <span class="badge" id="my_com_{{ forloop.counter0 }}">{{my_c}}</span>
-                                </a>
-                            {% endif %}
-                        </td>
-                    </div>
-                </tr>
-            </table>
+        <div class="container" id="for_padding_adjsutement">
+            <!--<a class="btn btn-link" data-toggle="collapse" href="#allannotations_collapse">
+                <i class="glyphicon glyphicon-triangle-right"></i>
+            </a>-->
+            <span class="caret caret-lg" data-toggle="collapse" href="#allannotations_collapse" style="border-width:8px;"></span>
+            <a href="/allannotations"><span class="badge" style="font-weight: 400;opacity: 0.8;background: #2040a4;font-size:14px;">All annotations</span></a>
+            <div id="allannotations_collapse" class="panel-collapse collapse">
+                <table  class="table table-condensed table-responsive" id="allannot_table_main">
+                    <tr>
+                        <div class = "container">
+                            <td><a href="/allannotations#semantic">Semantic tag</a></td>
+                            <td>
+                                {% if all_s != None %}
+                                    <a href="/allannotations#semantic" title="All semantic annotations,&#13click for full list." style="padding:2px">
+                                        <span class="badge">{{all_s}}</span>
+                                    </a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if my_s != None %}
+                                    <a href="/myannotations#semantic" title="My semantic annotations,&#13click for full list." style="padding:2px">
+                                        <span class="badge" id="my_sem_{{ forloop.counter0 }}">{{my_s}}</span>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="container">
+                            <td><a href="/allannotations#keyword">Free-text keyword</a></td>
+                            <td>
+                                {% if all_k != None %}
+                                    <a href="/allannotations#keyword" title="All keyword annotations,&#13click for full list." style="padding:2px">
+                                        <span class="badge">{{all_k}}</span>
+                                    </a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if my_k != None %}
+                                    <a href="/myannotations#keyword" title="My keyword annotations,&#13click for full list." style="padding:2px">
+                                        <span class="badge" id="my_key_{{ forloop.counter0 }}">{{my_k}}</span>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class = "container">
+                            <td><a href="/allannotations#comment">Comment</a></td>
+                            <td>
+                                {% if all_c != None %}
+                                    <a href="/allannotations#comment" title="All comment annotations,&#13click for full list." style="padding:2px">
+                                        <span class="badge">{{all_c}}</span>
+                                    </a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if my_c != None %}
+                                    <a href="/myannotations#comment" title="My comment annotations,&#13click for full list." style="padding:2px">
+                                        <span class="badge" id="my_com_{{ forloop.counter0 }}">{{my_c}}</span>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </div>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 
