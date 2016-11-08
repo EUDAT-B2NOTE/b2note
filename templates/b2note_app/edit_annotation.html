@@ -7,7 +7,7 @@
     {% if edited_semantic %}
 
         {% if edited_semantic == True %}
-            <span style="float:left;margin:10px;">
+            <div style="float:left;margin:10px;">
                 <table>
                     <tr>
                         <td>The semantic annotation was modified.</td>
@@ -159,7 +159,8 @@
                             {% endif %}
                         {% endif %}
                     </tr>
-
+                </table>
+            </div>
         {% endif %}
 
     {% elif edited_comment %}
@@ -205,7 +206,7 @@
 
         {% if ann.body.0.jsonld_id or textinput_primer %}
 
-            <div class="container" id="semantic">
+            <div class="container" id="edit_semantic">
                 <p><strong>Type-in</strong> to select an other tag.</p>
                 <form action="edit_annotation" method="post">
                     {% csrf_token %}
@@ -234,7 +235,7 @@
 
         {% elif ann.motivation and ann.motivation.0 = "tagging" %}
 
-            <div id="keyword">
+            <div id="edit_keyword">
                 <p><strong>Type-in</strong> to change the keyword.</p>
                 <form action="/edit_annotation" method="post">
                     {% csrf_token %}
@@ -259,7 +260,7 @@
 
         {% elif ann.motivation and ann.motivation.0 = "commenting" %}
 
-            <div class="container" id="comment">
+            <div class="container" id="edit_comment">
                 <p><strong>Type-in</strong> to change the comment.</p>
                 <form action="/edit_annotation" method="post">
                     {% csrf_token %}
