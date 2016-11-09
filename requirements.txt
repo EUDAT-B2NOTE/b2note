@@ -5,3 +5,5 @@ requests==2.10.0
 django-countries==4.0
 eve-swagger==0.0.4
 django-simple-captcha==0.5.2
+beautifulsoup4==4.5.1
+

@@ -516,7 +516,6 @@ def create_annotation(request):
                                 D = None
                                 D = CheckDuplicateAnnotation( request.POST.get('subject_tofeed'), newbody )
                                 if not D:
-                                    print "NOT"
                                     ann_id1 = CreateSemanticTag( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
                                     ann_id2 = SetUserAsAnnotationCreator( request.session.get('user'), ann_id1 )
                                     A = Annotation.objects.get( id = ann_id2 )
@@ -525,7 +524,6 @@ def create_annotation(request):
                                         "shortform": A.body[0].jsonld_id[::-1][:A.body[0].jsonld_id[::-1].find("/")][::-1],
                                     }
                                 else:
-                                    print "YES"
                                     request.session["duplicate"] = {
                                         "label": D[0].body[0].value,
                                         "shortform": D[0].body[0].jsonld_id[::-1][:D[0].body[0].jsonld_id[::-1].find("/")][::-1],
