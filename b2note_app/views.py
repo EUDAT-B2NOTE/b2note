@@ -1057,7 +1057,7 @@ def interface_main(request):
         request.session["new_keyword"] = None
 
     new_comment = None
-    if request.session.get("new_comment"):
+    if request.session.get("new_comment") is not None:
         new_comment = request.session.get("new_comment")
         request.session["new_comment"] = None
 
