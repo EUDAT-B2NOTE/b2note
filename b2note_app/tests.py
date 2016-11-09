@@ -62,7 +62,7 @@ def check_urls(urllist, depth=0):
                     return False
     return True
 
-def check_internal_urls(f):
+def check_internal_urls(f, app):
     from bs4 import BeautifulSoup
     soup = BeautifulSoup(open(f), "html.parser")
     links = soup.find_all('a')
@@ -71,19 +71,47 @@ def check_internal_urls(f):
     for tag in links:
         link = tag.get('href', None)
         if link is not None:
-            if link[0] == "/":
-                response = c.get(link)
+            if link[0] != "{" and 'http' not in link:
+                url = link
+                if link[0] != "/":
+                    if link[0] == "#":
+                        if len(link) > 1: # avoid links with '#'
+                            url = "/" + app + "/" + os.path.splitext(os.path.basename(f))[0] + link
+                        else: 
+                            pass
+                    else:
+                        link = "/" + link
+                        url = "/" + app + link
+                response = c.get(url)
                 if response.status_code != 200 and response.status_code != 302:
-                    return False
+                    response = c.get(link) # second try with the original link
+                    if response.status_code != 200 and response.status_code != 302:
+                        return False
+        else:
+            return False
             
     links = soup.find_all('form')
     for tag in links:
         link = tag.get('action', None)
         if link is not None:
-            if link[0] == "/":
-                response = c.get(link)
+            if link[0] != "{" and 'http' not in link:
+                url = link
+                if link[0] != "/":
+                    if link[0] == "#":
+                        if len(link) > 1: # avoid links with '#'
+                            url = "/" + app + "/" + os.path.splitext(os.path.basename(f))[0] + link
+                        else:
+                            pass
+                    else:
+                        link = "/" + link
+                        url = "/" + app + link
+                response = c.get(url)
                 if response.status_code != 200 and response.status_code != 302:
-                    return False
+                    response = c.get(link) # second try with the original link
+                    if response.status_code != 200 and response.status_code != 302:
+                        return False
+        else:
+            return False
     
     return True
 
@@ -294,8 +322,8 @@ class B2noteappTest(TestCase):
     def parse_internal_urls(self):
         self.login()
         for d in os.listdir(settings.TEMPLATE_PATH):
-            for f in os.listdir(settings.TEMPLATE_PATH + "/" + "b2note_app"):
+            for f in os.listdir(settings.TEMPLATE_PATH + "/" + d):
                 if os.path.splitext(f)[1] == '.html':
-                    path = settings.TEMPLATE_PATH + "/" + "b2note_app" + "/" + f
-                    self.assertTrue(check_internal_urls(path))
+                    path = settings.TEMPLATE_PATH + "/" + d + "/" + f
+                    self.assertTrue(check_internal_urls(path, d))
 
