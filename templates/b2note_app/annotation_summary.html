@@ -8,26 +8,26 @@
 
 			{% if r.labels %}<h3>{{ r.labels }}</h3>{% endif %}
 
-			<table>
+			<table class="table table-responsive table-condensed table-striped">
 
 				{% if r.description %}
 					{% if r.description.items|length > 1 %}
 						{% for def in r.description %}
 							{% if forloop.counter0 == 0 %}
-								<tr><td><Label>Definition:</Label> {{ def }}</td></tr>
+								<tr><td><Label>Definition:</Label></td><td>{{ def }}</td></tr>
 							{% else %}
-								<tr><td>{{ def }}</td></tr>
+								<tr><td colspan="2">{{ def }}</td></tr>
 							{% endif %}
 						{% endfor %}
 					{% elif r.description|length > 0 %}
-						<tr><td><Label>Definition:</Label> {{ r.description.0 }}</td></tr>
+						<tr><td><Label>Definition:</Label></td><td> {{ r.description.0 }}</td></tr>
 					{% endif %}
 				{% endif %}
-				{% if r.synonyms %}<tr><td><Label>Synonyms:</Label> {{ r.synonyms }}</td></tr>{% endif %}
-				{% if r.short_form %}<tr><td><Label>Short-form:</Label> {{ r.short_form }}</td></tr>{% endif %}
-				{% if r.ontology_acronym %}<tr><td><Label>Ontology acronym:</Label> {{ r.ontology_acronym }}</td></tr>{% endif %}
-				{% if r.ontology_name %}<tr><td><Label>Ontology name:</Label> {{ r.ontology_name }}</td></tr>{% endif %}
-				{% if r.uris %}<tr><td><Label>URI:</Label> <a href="{{r.uris}}" target="_blank">{{ r.uris }}</a></td></tr>{% endif %}
+				{% if r.synonyms %}<tr><td><Label>Synonyms:</Label></td><td> {{ r.synonyms }}</td></tr>{% endif %}
+				{% if r.short_form %}<tr><td><Label>Short-form:</Label></td><td> {{ r.short_form }}</td></tr>{% endif %}
+				{% if r.ontology_acronym %}<tr><td><Label>Ontology acronym:</Label></td><td> {{ r.ontology_acronym }}</td></tr>{% endif %}
+				{% if r.ontology_name %}<tr><td><Label>Ontology name:</Label></td><td> {{ r.ontology_name }}</td></tr>{% endif %}
+				{% if r.uris %}<tr><td><Label>URI:</Label></td><td><a href="{{r.uris}}" target="_blank">{{ r.uris }}</a></td></tr>{% endif %}
 
 			</table>
 
