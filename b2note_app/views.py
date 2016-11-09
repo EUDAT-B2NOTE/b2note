@@ -768,8 +768,8 @@ def myannotations(request):
         link_info_modified = ""
 
         if A.body and A.body[0] and A.body[0].value:
-            if len(A.body[0].value) > 22: link_label = '...'
-            link_label = A.body[0].value[:22] + link_label
+            if len(A.body[0].value) > 20: link_label = '...'
+            link_label = A.body[0].value[:20] + link_label
             if len(A.body[0].value) > 40: link_info_label = '...'
             link_info_label = A.body[0].value[:40] + link_info_label
 
@@ -923,8 +923,8 @@ def allannotations(request):
         link_info_modified = ""
 
         if A.body and A.body[0] and A.body[0].value:
-            if len(A.body[0].value) > 22: link_label = '...'
-            link_label = A.body[0].value[:22] + link_label
+            if len(A.body[0].value) > 20: link_label = '...'
+            link_label = A.body[0].value[:20] + link_label
             if len(A.body[0].value) > 40: link_info_label = '...'
             link_info_label = A.body[0].value[:40] + link_info_label
 
@@ -1202,6 +1202,7 @@ def process_semantic_entry( entry=None, query_dict=None, search_str=None ):
                                                 if "labels" in entry["search_param"].keys() and \
                                                     entry["search_param"]["labels"] and \
                                                     isinstance( entry["search_param"]["labels"], (str,unicode) ):
+                                                        query_dict["body_val_" + str(logic).lower()].append( str(entry["search_param"]["labels"]) )
                                                         search_str += " " + str(logic).upper() + \
                                                                       " " + str(entry["search_param"]["labels"]) + \
                                                                       "  (" + str(extract_shortform( entry["search_param"] )) + ")"
@@ -1213,10 +1214,11 @@ def process_semantic_entry( entry=None, query_dict=None, search_str=None ):
                                         if "labels" in entry["search_param"].keys() and \
                                                 entry["search_param"]["labels"] and \
                                                 isinstance(entry["search_param"]["labels"], (str, unicode)):
+                                                query_dict["body_val_or"].append(str(entry["search_param"]["labels"]))
                                                 search_str += " " + str(entry["search_param"]["labels"]) + \
                                                               "  (" + str(extract_shortform(entry["search_param"])) + ")"
                                         else:
-                                            search_str += " " + extract_shortform(entry["search_param"])
+                                            search_str += " " + str(extract_shortform(entry["search_param"]))
 
                         if "syn_incl" in entry.keys() and entry["syn_incl"] is True:
                             if "synonyms" in entry["search_param"].keys():
