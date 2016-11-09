@@ -15,8 +15,16 @@ $(document).ready( function() {
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         remote: {
             // What may be a relevant size of class subset for the user to select from VS. transaction size x user population?
-            url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select?q="%QUERY"&wt=json&indent=true&rows=1000',
-            wildcard: '%QUERY',
+            /*url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select?q=labels:%QUERY&wt=json&indent=true&rows=1000',*/
+            url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select',
+            /* 20161109, abremaud@escienceafactory.com
+                Boosting exact match on term label from Solr.
+                http://stackoverflow.com/questions/37712129/how-to-use-typeahead-wildcard */
+            /*wildcard: '%QUERY',*/
+            prepare: function(query, settings) {
+                settings.url += '?q=labels:' + query +"^10%20OR%20labels:*" + query + "*&wt=json&indent=true&rows=1000" ;
+                return settings;
+            },
             filter: function (data) {
                 return $.map(data.response.docs, function (suggestionSet) {
                     return{
