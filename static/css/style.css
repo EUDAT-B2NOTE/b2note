@@ -288,6 +288,11 @@
     font-size: 15px;
 }
 
+#pulledarea #allannot_table_main {
+    width: 95%;
+}
+
+
 #allannot_table_main td {
     border: 0px !important;
 }
