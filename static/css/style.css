@@ -9,13 +9,13 @@
 	font-size: 14px;
 }
 
-
 #section_create .tt-menu * {
     /* http://stackoverflow.com/questions/23981704/typeahead-always-shows-only-5-suggestions-maximum*/
     width: 290px;
 	margin-left: 0px;
     max-height: 300px;
-    overflow-y: auto;
+    /*overflow-y: auto;*/
+    overflow-y: scroll;
 	font-size: 14px;
 	word-break: break-all;
 	background: white;
@@ -216,11 +216,17 @@
     float: left;
 }
 
+#homepage_tab_contents {
+    margin-top: 75px;
+    padding-top: 15px;
+}
+
 #create_tabs a[href="#semantic"] {
     width: 100px;
     white-space:normal !important;
     /*word-wrap:break-word;*/
     /*word-break: normal;*/
+    padding-bottom: 10px;
 }
 
 #create_tabs a[href="#keyword"] {
@@ -228,20 +234,17 @@
     white-space:normal !important;
     /*word-wrap:break-word;*/
     /*word-break: normal;*/
+    padding-bottom: 10px;
 }
 
 #create_tabs a[href="#comment"] {
     text-align: center;
     padding-top: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 20px;
 }
 
-#homepage_tab_contents {
-    margin-top: 70px;
-    padding-top: 15px;
-    padding-bottom: 0px;
-    padding-left: 0px;
-    padding-right: 5px;
-}
 
 #semantic_submit {
     vertical-align: top;
