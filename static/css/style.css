@@ -198,6 +198,10 @@
     border: 2px solid black;
 }
 
+#user_area .table td {
+    border:0px;
+}
+
 #for_padding_adjsutement {
     padding-left: 4px;
 }

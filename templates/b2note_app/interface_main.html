@@ -17,19 +17,21 @@
         <div class="container" id="user_area">
 
             {% if duplicate %}
-                <div class="container" style="float:left;margin:10px;">
-                    <table>
+                <div class="container" style="float:left;margin:10px;margin-bottom:25px;">
+                    <table class="table table-condensed">
                         <tr>
-                            <td>Not created, an identical annotation already exists.</td>
-                            <td rowspan="2"><a href="/interface_main" class="btn btn-default" style="margin:5px;">OK</a></td>
+                            <td class="col-xs-9">Not created, an identical annotation already exists.</td>
+                            <td class="col-xs-3"><a href="/interface_main" class="btn btn-default" style="margin:5px;">OK</a></td>
                         </tr>
                         <tr>
-                            <td>
-                                {% if duplicate.shortform %}
-                                    <input type="text" value="{{duplicate.label}} ({{duplicate.shortform}})" readonly>
-                                {% else %}
-                                    <input type="text" value="{{duplicate.label}}" readonly>
-                                {% endif %}
+                            <td colspan="2" style="margin-top:15px;font-size:12px;">
+                                <div class="container col-xs-12">
+                                    {% if duplicate.shortform %}
+                                        {{duplicate.label}} ({{duplicate.shortform}})
+                                    {% else %}
+                                        {{duplicate.label}}"
+                                    {% endif %}
+                                </div>
                             </td>
                         </tr>
                     </table>
@@ -37,43 +39,53 @@
 
             {% elif new_semantic %}
 
-                <div class="container" style="float:left;margin:10px;">
-                    <table>
+                <div class="container" style="float:left;margin:10px;margin-bottom:25px;">
+                    <table class="table table-condensed">
                         <tr>
-                            <td>The semantic annotation was created.</td>
-                            <td rowspan="2"><a href="/interface_main" class="btn btn-default" style="margin:5px;">OK</a></td>
+                            <td class="col-xs-9">The semantic annotation was created.</td>
+                            <td class="col-xs-3"><a href="/interface_main" class="btn btn-default" style="margin:5px;">OK</a></td>
                         </tr>
                         <tr>
-                            <td><input type="text" value="{{new_semantic.label}} ({{new_semantic.shortform}})" readonly></td>
+                            <td colspan="2">
+                                <div class="container col-xs-12" style="margin-top:15px;font-size:12px;">
+                                    {{new_semantic.label}} ({{new_semantic.shortform}})"
+                                </div>
+                            </td>
                         </tr>
                     </table>
                 </div>
 
             {% elif new_keyword %}
 
-                <div class="container" style="float:left;margin:10px;">
-                    <table>
+                <div class="container" style="float:left;margin:10px;margin-bottom:25px;">
+                    <table class="table table-condensed">
                         <tr>
-                            <td>The free-text keyword annotation was created.</td>
-                            <td rowspan="2"><a href="/interface_main" class="btn btn-default" style="margin:5px;">OK</a></td>
+                            <td class="col-xs-9">The free-text keyword annotation was created.</td>
+                            <td class="col-xs-3"><a href="/interface_main" class="btn btn-default" style="margin:5px;">OK</a></td>
                         </tr>
                         <tr>
-                            <td><input type="text" value="{{new_keyword.label}}" readonly></td>
+                            <td colspan="2" >
+                                <div class="container col-xs-12" style="margin-top:15px;font-size:12px;">
+                                    {{new_keyword.label}}
+                                </div>
+                            </td>
                         </tr>
                     </table>
                 </div>
 
             {% elif new_comment %}
 
-                <div class="container" style="float:left;margin:10px;">
-                    <table>
+                <div class="container" style="float:left;margin:10px;margin-bottom:25px;">
+                    <table class="table table-condensed">
                         <tr>
-                            <td>The comment annotation was created.</td>
-                            <td rowspan="2"><a href="/interface_main" class="btn btn-default" style="margin:5px;">OK</a></td>
+                            <td class="col-xs-9">The comment annotation was created.</td>
+                            <td class="col-xs-3"><a href="/interface_main" class="btn btn-default" style="margin:5px;">OK</a></td>
                         </tr>
                         <tr>
-                            <td>
-                                <textarea name="comment_text" rows="3" class="form-control custom-control" id="created_comment_input" readonly>{{new_comment.label}}</textarea>
+                            <td colspan="2" >
+                                <div class="container col-xs-12" style="margin-top:15px;">
+                                    <textarea name="comment_text" rows="5" class="form-control custom-control" id="created_comment_input" style="font-size:12px;" readonly>{{new_comment.label}}</textarea>
+                                </div>
                             </td>
                         </tr>
                     </table>
@@ -83,22 +95,22 @@
 
                 {% if annotation_deleted == "success" %}
 
-                    <div class="container" style="float:left;margin:10px;">
-                        <table>
+                    <div class="container" style="float:left;margin:10px;margin-bottom:25px;">
+                        <table class="table table-condensed">
                             <tr>
-                                <td>The annotation was deleted.</td>
-                                <td><a href="/interface_main" class="btn btn-default" style="margin:5px;">OK</a></td>
+                                <td class="col-xs-9">The annotation was deleted.</td>
+                                <td class="col-xs-3"><a href="/interface_main" class="btn btn-default" style="margin:5px;">OK</a></td>
                             </tr>
                         </table>
                     </div>
 
                 {% elif annotation_deleted == "abort" %}
 
-                    <div class="container" style="float:left;margin:10px;">
-                        <table>
+                    <div class="container" style="float:left;margin:10px;margin-bottom:25px;">
+                        <table class="table table-condensed">
                             <tr>
-                                <td>The annotation was not be deleted.</td>
-                                <td><a href="/interface_main" class="btn btn-default" style="margin:5px;">OK</a></td>
+                                <td class="col-xs-9">The annotation was not be deleted.</td>
+                                <td class="col-xs-3"><a href="/interface_main" class="btn btn-default" style="margin:5px;">OK</a></td>
                             </tr>
                         </table>
                     </div>
@@ -107,7 +119,7 @@
 
             {% elif has_semantic_equivalent %}
 
-                <div class="container" style="float:left;margin:10px;text-align:center;">
+                <div class="container" style="float:left;margin:10px;margin-bottom:25px;text-align:center;">
                     <table>
                         <tr><td colspan="3">We detected <strong>semantic terms</strong> matching your keyword.</td></tr>
                         <tr><td colspan="3">Would you like to select one?</td></tr>
@@ -140,7 +152,7 @@
 
             {% elif long_keyword %}
 
-                <div class="container" style="float:left;margin:10px;text-align:center;">
+                <div class="container" style="float:left;margin:10px;margin-bottom:25px;text-align:center;">
                     <table>
                         <tr><td colspan="3">This text seems <strong>long</strong> for a keyword (>60 characters).</td></tr>
                         <tr><td colspan="3">Do you want to use it as ... ?</td></tr>
