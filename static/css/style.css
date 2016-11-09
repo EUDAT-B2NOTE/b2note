@@ -211,32 +211,40 @@
 }
 
 #create_tabs {
-    font-size: 13px;
+    text-align: center;
+    /*font-size: 16px;*/
     float: left;
 }
 
+#create_tabs a[href="#semantic"] {
+    width: 100px;
+    white-space:normal !important;
+    /*word-wrap:break-word;*/
+    /*word-break: normal;*/
+}
+
+#create_tabs a[href="#keyword"] {
+    width: 100px;
+    white-space:normal !important;
+    /*word-wrap:break-word;*/
+    /*word-break: normal;*/
+}
+
+#create_tabs a[href="#comment"] {
+    text-align: center;
+    padding-top: 15px;
+}
+
 #homepage_tab_contents {
+    margin-top: 70px;
     padding-top: 15px;
     padding-bottom: 0px;
     padding-left: 0px;
     padding-right: 5px;
 }
 
-#semantic_container {
-    padding-top: 10px;
-}
-
 #semantic_submit {
     vertical-align: top;
-}
-
-#semantic_formgroup {
-    margin-top: 30px;
-    margin-bottom: 5px;
-}
-
-#keyword_container {
-    padding-top: 10px;
 }
 
 #keyword_input {
@@ -244,19 +252,9 @@
     margin-right: 5px;
 }
 
-#keyword_formgroup {
-    margin-top: 30px;
-    margin-bottom: 5px;
-}
-
 #comment_input {
     width: 70%;
     margin-right: 5px;
-    margin-bottom: 5px;
-}
-
-#comment_formgroup {
-    margin-top: 40px;
     margin-bottom: 5px;
 }
 
