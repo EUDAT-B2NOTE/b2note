@@ -6,28 +6,28 @@
 
 		{% if r %}
 
-			{% if r.labels %}<h3>{{ r.labels }}</h3>{% endif %}
+			{% if r.labels %}<h3 style="padding-bottom:10px;">{{ r.labels }}</h3>{% endif %}
 
-			<table class="table table-responsive table-condensed table-striped">
+			<table class="table table-striped table-condensed table-responsive" style="font-size:12px;word-break: break-word;">
 
 				{% if r.description %}
 					{% if r.description.items|length > 1 %}
 						{% for def in r.description %}
 							{% if forloop.counter0 == 0 %}
-								<tr><td><Label>Definition:</Label></td><td>{{ def }}</td></tr>
+								<tr><td style="width:30%;"><Label>Definition:</Label></td><td style="width:70%;">{{ def }}</td></tr>
 							{% else %}
 								<tr><td colspan="2">{{ def }}</td></tr>
 							{% endif %}
 						{% endfor %}
 					{% elif r.description|length > 0 %}
-						<tr><td><Label>Definition:</Label></td><td> {{ r.description.0 }}</td></tr>
+						<tr><td style="width:30%;"><Label>Definition:</Label></td><td style="width:70%;"> {{ r.description.0 }}</td></tr>
 					{% endif %}
 				{% endif %}
-				{% if r.synonyms %}<tr><td><Label>Synonyms:</Label></td><td> {{ r.synonyms }}</td></tr>{% endif %}
-				{% if r.short_form %}<tr><td><Label>Short-form:</Label></td><td> {{ r.short_form }}</td></tr>{% endif %}
-				{% if r.ontology_acronym %}<tr><td><Label>Ontology acronym:</Label></td><td> {{ r.ontology_acronym }}</td></tr>{% endif %}
-				{% if r.ontology_name %}<tr><td><Label>Ontology name:</Label></td><td> {{ r.ontology_name }}</td></tr>{% endif %}
-				{% if r.uris %}<tr><td><Label>URI:</Label></td><td><a href="{{r.uris}}" target="_blank">{{ r.uris }}</a></td></tr>{% endif %}
+				{% if r.synonyms %}<tr><td style="width:30%;"><Label>Synonyms:</Label></td><td style="width:70%;"> {{ r.synonyms }}</td></tr>{% endif %}
+				{% if r.short_form %}<tr><td style="width:30%;"><Label>Short-form:</Label></td><td style="width:70%;"> {{ r.short_form }}</td></tr>{% endif %}
+				{% if r.ontology_acronym %}<tr><td style="width:30%;"><Label>Ontology acronym:</Label></td><td style="width:70%;"> {{ r.ontology_acronym }}</td></tr>{% endif %}
+				{% if r.ontology_name %}<tr><td style="width:30%;"><Label>Ontology name:</Label></td><td style="width:70%;"> {{ r.ontology_name }}</td></tr>{% endif %}
+				{% if r.uris %}<tr><td style="width:30%;"><Label>URI:</Label></td><td style="width:70%;"><a href="{{r.uris}}" target="_blank">{{ r.uris }}</a></td></tr>{% endif %}
 
 			</table>
 
