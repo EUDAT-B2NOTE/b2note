@@ -5,7 +5,7 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 
-from django.test import TestCase
+from django.test import TestCase, Client
 from b2note_app.models import Annotation
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -15,7 +15,7 @@ from b2note_devel.urls import urlpatterns
 from accounts.models import UserCred
 from django.contrib.auth import authenticate
 from django.utils.importlib import import_module
-import json
+import json, os
 
 #class B2noteappFailTest(TestCase):
     #"""
@@ -60,6 +60,31 @@ def check_urls(urllist, depth=0):
                 if response.status_code != 200 and response.status_code != 302:
                     print test_url + ": " + str(response.status_code)
                     return False
+    return True
+
+def check_internal_urls(f):
+    from bs4 import BeautifulSoup
+    soup = BeautifulSoup(open(f), "html.parser")
+    links = soup.find_all('a')
+    c = Client()
+    
+    for tag in links:
+        link = tag.get('href', None)
+        if link is not None:
+            if link[0] == "/":
+                response = c.get(link)
+                if response.status_code != 200 and response.status_code != 302:
+                    return False
+            
+    links = soup.find_all('form')
+    for tag in links:
+        link = tag.get('action', None)
+        if link is not None:
+            if link[0] == "/":
+                response = c.get(link)
+                if response.status_code != 200 and response.status_code != 302:
+                    return False
+    
     return True
 
 class B2noteappTest(TestCase):
@@ -265,4 +290,12 @@ class B2noteappTest(TestCase):
     # http://stackoverflow.com/questions/1828187/determine-complete-django-url-configuration    
     def parse_urls(self):
         self.assertTrue(check_urls(urlpatterns))
+        
+    def parse_internal_urls(self):
+        self.login()
+        for d in os.listdir(settings.TEMPLATE_PATH):
+            for f in os.listdir(settings.TEMPLATE_PATH + "/" + "b2note_app"):
+                if os.path.splitext(f)[1] == '.html':
+                    path = settings.TEMPLATE_PATH + "/" + "b2note_app" + "/" + f
+                    self.assertTrue(check_internal_urls(path))
 
