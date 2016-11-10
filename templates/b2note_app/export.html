@@ -19,45 +19,43 @@
 
 	{% else %}
 
-		<div class="container" id="export-download" style="margin-top:20px;">
+		<div class="container col-xs-12 col-md-12" id="export-download" style="margin-top:20px;">
 
 			{% if annotations_of %}
 
-				{% if annotations_of == "mine" %}
+				<div class="container col-xs-6 col-md-6 pull-left" style="margin-left:0px;font-size:12px;">
 
-					<div class="container col-xs-5">
-						<p style="margin-left:0px;font-size:12px;"><strong>My</strong> annotations about the file.</p>
-					</div>
+					{% if annotations_of == "mine" %}
 
-				{% elif annotations_of == "all" %}
+						<strong>My</strong> annotations about the file.
 
-					<div class="container col-xs-5">
-						<p style="margin-left:0px;font-size:12px;"><strong>All</strong> annotations about the file.</p>
-					</div>
+					{% elif annotations_of == "all" %}
 
-				{% elif annotations_of == "search_results" %}
+						<strong>All</strong> annotations about the file.
 
-					<div class="container col-xs-5">
-						<p style="margin-left:0px;font-size:12px;">Selected files information.</p>
-					</div>
+					{% elif annotations_of == "search_results" %}
+
+						<strong>Selected files</strong> information.
+
+					{% endif %}
+
+				</div>
+
+			{% endif %}
+
+			<div class="container col-xs-6 col-md-6" style="margin-bottom:10px;">
+
+				{% if annotations_of == "search_results" %}
+
+					<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default" style="whitespace:normal !important;">Download JSON</a>
+
+				{% else %}
+
+					<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default" style="whitespace:normal !important;">Download JSON-LD</a>
 
 				{% endif %}
 
-			{% endif %}
-
-			{% if annotations_of == "search_results" %}
-
-				<div class="container col-xs-2">
-					<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default">Download JSON</a>
-				</div>
-
-			{% else %}
-
-				<div class="container col-xs-2">
-					<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default">Download JSON-LD</a>
-				</div>
-
-			{% endif %}
+			</div>
 
 		</div>
 
