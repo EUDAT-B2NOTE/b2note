@@ -1205,6 +1205,14 @@ def interface_main(request):
     navbarlinks = list_navbarlinks(request, [])
     shortcutlinks = []
 
+    if all_s and myf_s: all_s = all_s - myf_s
+    if all_k and myf_k: all_k = all_k - myf_k
+    if all_c and myf_c: all_c = all_c - myf_c
+
+    if all_s <0: all_s = 0
+    if all_k <0: all_k = 0
+    if all_c <0: all_c = 0
+
     data_dict = {
         'annotation_deleted': annotation_deleted,
         'new_comment': new_comment,

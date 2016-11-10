@@ -320,16 +320,28 @@
                             <td><a href="/allannotations#semantic">Semantic tag</a></td>
                             <td>
                                 {% if all_s != None %}
-                                    <a href="/allannotations#semantic" title="All semantic annotations,&#13click for full list." style="padding:2px">
-                                        <span class="badge">{{all_s}}</span>
-                                    </a>
+                                    {% if all_s == 0 %}
+                                        <a href="#" title="No semantic annotation by other users." style="padding:2px">
+                                            <span class="badge" id="all_sem_{{ forloop.counter0 }}">{{all_s}}</span>
+                                        </a>
+                                    {% else %}
+                                        <a href="/allannotations#semantic" title="Semantic annotations by other users,&#13click for full list." style="padding:2px">
+                                            <span class="badge" id="all_sem_{{ forloop.counter0 }}">{{all_s}}</span>
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
                             </td>
                             <td>
                                 {% if myf_s != None %}
-                                    <a href="/myannotations#semantic" title="My semantic annotations,&#13click for full list." style="padding:2px">
-                                        <span class="badge" id="myf_sem_{{ forloop.counter0 }}">{{myf_s}}</span>
-                                    </a>
+                                    {% if myf_s == 0 %}
+                                        <a href="#" title="No semantic annotation was created by me." style="padding:2px" >
+                                            <span class="badge" id="myf_sem_{{ forloop.counter0 }}">{{myf_s}}</span>
+                                        </a>
+                                    {% else %}
+                                        <a href="/allannotations#semantic" title="My semantic annotations,&#13click for full list." style="padding:2px">
+                                            <span class="badge" id="myf_sem_{{ forloop.counter0 }}">{{myf_s}}</span>
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
                             </td>
                         </div>
@@ -339,16 +351,28 @@
                             <td><a href="/allannotations#keyword">Free-text keyword</a></td>
                             <td>
                                 {% if all_k != None %}
-                                    <a href="/allannotations#keyword" title="All keyword annotations,&#13click for full list." style="padding:2px">
-                                        <span class="badge">{{all_k}}</span>
-                                    </a>
+                                    {% if all_k == 0 %}
+                                        <a href="#" title="No keyword annotation by other users." style="padding:2px" >
+                                            <span class="badge" id="all_key_{{ forloop.counter0 }}">{{all_k}}</span>
+                                        </a>
+                                    {% else %}
+                                        <a href="/allannotations#keyword" title="Keyword annotations by other users,&#13click for full list." style="padding:2px">
+                                            <span class="badge" id="all_key_{{ forloop.counter0 }}">{{all_k}}</span>
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
                             </td>
                             <td>
                                 {% if myf_k != None %}
-                                    <a href="/myannotations#keyword" title="My keyword annotations,&#13click for full list." style="padding:2px">
-                                        <span class="badge" id="myf_key_{{ forloop.counter0 }}">{{myf_k}}</span>
-                                    </a>
+                                    {% if myf_k == 0 %}
+                                        <a href="#" title="No keyword annotation was created by me." style="padding:2px" >
+                                            <span class="badge" id="myf_key_{{ forloop.counter0 }}">{{myf_k}}</span>
+                                        </a>
+                                    {% else %}
+                                        <a href="/allannotations#keyword" title="My keyword annotations,&#13click for full list." style="padding:2px">
+                                            <span class="badge" id="myf_key_{{ forloop.counter0 }}">{{myf_k}}</span>
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
                             </td>
                         </div>
@@ -358,16 +382,28 @@
                             <td><a href="/allannotations#comment">Comment</a></td>
                             <td>
                                 {% if all_c != None %}
-                                    <a href="/allannotations#comment" title="All comment annotations,&#13click for full list." style="padding:2px">
-                                        <span class="badge">{{all_c}}</span>
-                                    </a>
+                                    {% if all_c == 0 %}
+                                        <a href="#" title="No comment annotation by other users." style="padding:2px" >
+                                            <span class="badge" id="all_com_{{ forloop.counter0 }}">{{all_c}}</span>
+                                        </a>
+                                    {% else %}
+                                        <a href="/allannotations#comment" title="Comment annotations by other users,&#13click for full list." style="padding:2px">
+                                            <span class="badge" id="all_com_{{ forloop.counter0 }}">{{all_c}}</span>
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
                             </td>
                             <td>
                                 {% if myf_c != None %}
-                                    <a href="/myannotations#comment" title="My comment annotations,&#13click for full list." style="padding:2px">
-                                        <span class="badge" id="myf_com_{{ forloop.counter0 }}">{{myf_c}}</span>
-                                    </a>
+                                    {% if myf_c == 0 %}
+                                        <a href="#" title="No comment annotation was created by me." style="padding:2px" >
+                                            <span class="badge" id="myf_com_{{ forloop.counter0 }}">{{myf_c}}</span>
+                                        </a>
+                                    {% else %}
+                                        <a href="/allannotations#comment" title="My comment annotations,&#13click for full list." style="padding:2px">
+                                            <span class="badge" id="myf_com_{{ forloop.counter0 }}">{{myf_c}}</span>
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
                             </td>
                         </div>
