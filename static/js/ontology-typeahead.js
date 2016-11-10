@@ -22,7 +22,7 @@ $(document).ready( function() {
                 http://stackoverflow.com/questions/37712129/how-to-use-typeahead-wildcard */
             /*wildcard: '%QUERY',*/
             prepare: function(query, settings) {
-                settings.url += '?q=labels:' + query +"^10%20OR%20labels:*" + query + "*&wt=json&indent=true&rows=1000" ;
+                settings.url += '?q=labels:"' + query +'"^10%20OR%20labels:*' + query + '*&wt=json&indent=true&rows=1000' ;
                 return settings;
             },
             filter: function (data) {
