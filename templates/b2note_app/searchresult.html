@@ -24,13 +24,13 @@
 
         {% if exact %}
 
-            <table>
+            <table class="table table-condensed" id="exact_search_result_table">
 
-                <tr><td><label>Files</label></td></tr>
+                <th><label>Files</label></th>
 
                 {% for f in exact %}
 
-                    <tr><td><a href="{{f}}" target="_parent" title="Click to view on B2Share">{{ f }}</a></td></tr>
+                    <tr><td class="col-xs-12"><a href="{{f}}" target="_parent" title="Click to view on B2Share">{{ f }}</a></td></tr>
 
                 {% endfor %}
 
@@ -46,13 +46,13 @@
 
         {% if related %}
 
-            <table>
+            <table class="table table-condensed" id="related_search_result_table">
 
-                <tr><td><label>Files</label></td></tr>
+                <th><label>Files</label></th>
 
                 {% for f in related %}
 
-                    <tr><td><a href="{{f}}" target="_parent" title="Click to view on B2Share"/>{{ f }}</td></tr>
+                    <tr><td class="col-xs-12"><a href="{{f}}" target="_parent" title="Click to view on B2Share"/>{{ f }}</td></tr>
 
                 {% endfor %}
 
