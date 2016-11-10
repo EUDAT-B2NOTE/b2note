@@ -356,6 +356,12 @@
     width: 140% !important;
 }
 
+/*#select_semantic .form-control[id^="id_q_search"] {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}*/
+
+
 #myannotations_summary #semantic.container {
     padding-left: 0px !important;
     padding-top: 20px !important;
