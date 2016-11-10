@@ -400,6 +400,16 @@
     padding-top: 20px !important;
 }
 
+#allannotations_summary .table th {
+    background-color: #EAEAEA;
+    padding: 4px;
+}
+
+#myannotations_summary .table th {
+    background-color: #EAEAEA;
+    padding: 4px;
+}
+
 #semantic .badge {
     font-weight: 400;
     opacity: 0.8;
@@ -542,6 +552,7 @@
 }
 
 #exact_search_result_table th {
+    font-size: 12px;
     border: 0px;
 }
 
@@ -550,6 +561,7 @@
 }
 
 #related_search_result_table th {
+    font-size: 12px;
     border: 0px;
 }
 

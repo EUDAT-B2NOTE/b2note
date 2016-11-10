@@ -88,13 +88,15 @@
 			<h4>Semantic tag <span><a href="#allannotations_summary" id="link_to_top">^top</a></h4>
 			{% if semantic_table %}
 				<table class="table table-condensed table-responsive table-striped" >
-					<th>Label</th><th colspan="2">Used</th><th colspan="2">Actions</th>
+					<tr class="table_header_grey">
+						<th>Label</th><th colspan="2">Nb Files</th><th colspan="2">Actions</th>
+					</tr>
 					{% for ann in semantic_table %}
 						<tr>
 							<form action="/annotation_summary" method="post">
 								{% csrf_token %}
 								<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-								<td  style="width:100%;">
+								<td style="width:100%;border-right: 0.1px solid #E1E1E1 !important;">
 									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"
 										   title="{% if ann.link_info_label %}{{ann.link_info_label}}{% endif %}
 {% if ann.link_info_ontologyacronym %}{{ann.link_info_ontologyacronym}}{% endif %}: {% if ann.link_info_shortform %}{{ann.link_info_shortform}}{% endif %}
@@ -102,14 +104,14 @@
 {% if ann.link_info_modified %}On: {{ann.link_info_modified}}{% endif %}
 Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 								</td>
-								<td>
+								<td style="border-right: 0.1px solid #E1E1E1 !important;padding-left:2px;padding-right:2px;">
 									<button class="btn btn-link" name="about_allsimilar" type="submit" title="In other annotations,&#13click for full list." style="padding:2px">
 										<span class="badge" id="all_sem_{{ forloop.counter0 }}">{{ann.all_similar}}</span>
 									</button>
 									<!--<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}"
 										   title="In any annotations,&#13click for full list." style="padding:2px;margin-right:4px;"/>-->
 								</td>
-								<td>
+								<td style="border-right: 0.1px solid #E1E1E1 !important;padding-left:2px;padding-right:2px;">
 									{% if ann.my_similar == 0 %}
 										<span title="No similar annotation was created by me." style="padding:2px;margin-right:4px;"> </span>
 									{% else %}
@@ -121,8 +123,8 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 									{% endif %}
 								</td>
 							</form>
-							<td>
-								<form action="/edit_annotation" method="post" style="padding:0px;margin-left:10px;">
+							<td style="padding-left:6px;">
+								<form action="/edit_annotation" method="post" style="padding:0px;">
 									{% csrf_token %}
 									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
 									<button type="submit" class="btn btn-link" {% if ann.link_info_creatornickname != user_nickname %}title="Edit is not possible,&#13This annotation was not crated by me." disabled style="color:grey;opacity:0.5;padding: 2px;" {% else %} title="Edit this annotation" style="padding: 2px;"{% endif %} >
@@ -151,27 +153,27 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 			<h4>Free-text keyword <span><a href="#allannotations_summary" id="link_to_top">^top</a></h4>
 			{% if keyword_table %}
 				<table class="table table-condensed table-responsive table-striped" >
-					<th>Label</th><th colspan="2">Used</th><th colspan="2">Actions</th>
+					<th>Label</th><th colspan="2">N Files</th><th colspan="2">Actions</th>
 					{% for ann in keyword_table %}
 						<tr>
 							<form action="/annotation_summary" method="post">
 								{% csrf_token %}
 								<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
-								<td style="width:100%;">
+								<td style="border-right: 0.1px solid #E1E1E1 !important;width:100%;">
 									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"
 										   title="{% if ann.link_info_label %}{{ann.link_info_label}}{% endif %}
 {% if ann.link_info_creatornickname %}By: {{ann.link_info_creatornickname}}{% endif %}
 {% if ann.link_info_modified %}On: {{ann.link_info_modified}}{% endif %}
 Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 								</td>
-								<td>
+								<td style="border-right: 0.1px solid #E1E1E1 !important;padding-left:2px;padding-right:2px;">
 									<button class="btn btn-link" name="about_allsimilar" type="submit" title="In other annotations,&#13click for full list." style="padding:2px">
 										<span class="badge" id="all_key_{{ forloop.counter0 }}">{{ann.all_similar}}</span>
 									</button>
 									<!--<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}"
 										   title="In any annotations,&#13click for full list." style="padding:2px;margin-right:4px;"/>-->
 								</td>
-								<td>
+								<td style="border-right: 0.1px solid #E1E1E1 !important;padding-left:2px;padding-right:2px;">
 									{% if ann.my_similar == 0 %}
 										<span title="No similar annotation was created by me." style="padding:2px;margin-right:4px;"> </span>
 									{% else %}
@@ -183,8 +185,8 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 									{% endif %}
 								</td>
 							</form>
-							<td>
-								<form action="/edit_annotation" method="post" style="padding:0px;margin-left:10px;">
+							<td style="padding-left:6px;">
+								<form action="/edit_annotation" method="post" style="padding:0px;">
 									{% csrf_token %}
 									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
 									<button type="submit" class="btn btn-link" {% if ann.link_info_creatornickname != user_nickname %}title="Edit is not possible,&#13This annotation was not crated by me." disabled style="color:grey;opacity:0.5;padding: 2px;" {% else %} title="Edit this annotation" style="padding: 2px;"{% endif %}>
@@ -193,7 +195,7 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 								</form>
 							</td>
 
-							<td>
+							<td style="padding-left:4px;">
 								<form action="/delete_annotation" method="post">
 									{% csrf_token %}
 									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
@@ -217,7 +219,7 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 					<th>Label</th><th colspan="2">Actions</th>
 					{% for ann in comment_table %}
 						<tr>
-							<td style="width:100%;">
+							<td style="border-right: 0.1px solid #E1E1E1 !important;width:100%;">
 								<form action="/annotation_summary" method="post">
 									{% csrf_token %}
 									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
@@ -228,8 +230,8 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 								</form>
 							</td>
-							<td>
-								<form action="/edit_annotation" method="post" style="padding:0px;margin-left:10px;">
+							<td style="padding-left:6px;">
+								<form action="/edit_annotation" method="post" style="padding:0px;">
 									{% csrf_token %}
 									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
 									<button type="submit" class="btn btn-link" {% if ann.link_info_creatornickname != user_nickname %}title="Edit is not possible,&#13This annotation was not crated by me." disabled style="color:grey;opacity:0.5;padding: 2px;" {% else %} title="Edit this annotation" style="padding: 2px;"{% endif %}>
@@ -238,7 +240,7 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 								</form>
 							</td>
 
-							<td>
+							<td style="padding-left:4px;">
 								<form action="/delete_annotation" method="post">
 									{% csrf_token %}
 									<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
