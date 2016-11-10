@@ -23,7 +23,7 @@
 
                 <table class="table table-condensed table-responsive" id="exact_match_export_select_table">
                     <th class="col-xs-1"><input type="checkbox" name="exact_cbox" onchange="this.form.submit()" {% if all_exact_cbox %}checked{% endif %}/></th>
-                    <th class="col-xs-11"><strong>Files</strong><span style="font-size:12px;"> (select all)</span></th>
+                    <th class="col-xs-11">Files (select all)</th>
                     {% for f in export_dic.exact %}
                         <tr>
                             <td class="col-xs-1">
@@ -50,7 +50,7 @@
                 <table class="table table-condensed table-responsive" id="related_match_export_select_table">
                     <div class="container" style="padding-left:2px;margin:0px;">
                         <th class="col-xs-1"><input type="checkbox" name="related_cbox" onchange="this.form.submit()" {% if all_related_cbox %}checked{% endif %}/></th>
-                        <th class="col-xs-11"><strong>Files</strong><span style="font-size:12px;"> (select all)</span></th>
+                        <th class="col-xs-11">Files (select all)</th>
                         {% for f in export_dic.related %}
                             <tr>
                                 <td class="col-xs-1">
