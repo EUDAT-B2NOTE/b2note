@@ -382,7 +382,11 @@
 }
 
 #semantic_formgroup #id_q {
-    width: 110%;
+    margin-right: 0px;
+    padding-right: 30px;
+    margin-left: 0px;
+    padding-left: 10px;
+    width: 100%;
 }
 
 /*#select_semantic .form-control[id^="id_q_search"] {
