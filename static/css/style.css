@@ -151,6 +151,7 @@
 }
 
 #main {
+    margin-top:15px;
     height: 425px;
     overflow-y: scroll;
 }
@@ -194,7 +195,7 @@
 }
 
 #user_area {
-    padding: 2px;
+    padding: 10px;
     border: 2px solid black;
 }
 
@@ -249,7 +250,6 @@
     padding-bottom: 20px;
 }
 
-
 #semantic_submit {
     vertical-align: top;
 }
@@ -257,6 +257,10 @@
 #keyword_input {
     width: 70%;
     margin-right: 5px;
+}
+
+#edit_keyword #keyword_input {
+    width: 100%;
 }
 
 #comment_input {
@@ -268,6 +272,10 @@
 #comment_submit {
     padding-top: 17px;
     padding-bottom: 16px;
+}
+
+#my_annotations_mainpage_container {
+    padding-left: 5px;
 }
 
 #myannot_table_main {
@@ -327,12 +335,20 @@
     background: #40c460;
 }
 
+#edit_msg_area {
+    margin-top: 20px;
+}
+
+#edit_msg_area .table td {
+    border:0px;
+}
+
 #comment_input_edit {
     width: 100%;
 }
 
 #id_q_edit {
-    width: 150% !important;
+    width: 140% !important;
 }
 
 #myannotations_summary #semantic.container {
