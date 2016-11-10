@@ -191,9 +191,9 @@
                 </ul>
                 <div id="homepage_tab_contents" class="tab-content">
                     <div id="semantic" class="tab-pane fade in active form-group">
-                        <div id="semantic_container" class="container">
+                        <div id="semantic_container" class="container" style="padding-left:10px;margin-left:0px;">
                             <form class="form-inline" action="/create_annotation" method="post">
-                                <div id="semantic_formgroup" class="form-group">
+                                <div id="semantic_formgroup" class="form-group col-xs-9" style="padding-right:5px;padding-left:0px;margin-left:0px;">
                                     {% csrf_token %}
                                     <input type="hidden" name="ontology_json" id="ontology_json">
                                     <input type="text" name="subject_tofeed" id="semantic_target_id" value="{{subject_tofeed}}" hidden>
@@ -202,38 +202,33 @@
                                     {% else %}
                                         <input type="text" class="form-control" name="q" id="id_q" value="{{ query }}" placeholder="Type-in to select a tag." autocomplete="off" spellcheck="false" dir="auto" autofocus/>
                                     {% endif %}
-                                    <input type="submit" class="btn btn-default" name="semantic_submit" id="semantic_submit" value="Create" title="Create an annotation using my selected tag."/>
                                 </div>
+                                    <input type="submit" class="btn btn-default col-xs-3" name="semantic_submit" id="semantic_submit" value="Create" title="Create an annotation using my selected tag."/>
                             </form>
                         </div>
                     </div>
                     <div id="keyword" class="tab-pane fade form-group">
-                        <div id="keyword_container" class="container">
-                            <form action="/create_annotation" method="post">
-                                <div id="keyword_formgroup" class="form-group">
+                        <div id="keyword_container" class="container" style="padding-left:10px;margin-left:0px;">
+                            <form class="form-inline" action="/create_annotation" method="post">
+                                <div id="keyword_formgroup" class="form-group col-xs-9" style="padding-right:5px;padding-left:0px;margin-left:0px;">
                                     {% csrf_token %}
-                                    <div class="input-group">
-                                        <input type="text" name="subject_tofeed" id="keyword_target_id" value="{{subject_tofeed}}" hidden>
-                                        <input type="text" name="keyword_text" class="form-control custom-control" id="keyword_input" placeholder="Type-in a keyword."/>
-                                        <!--<span class="input-group-addon btn btn-primary" title="Create an annotation using my free-text keyword." onClick="get_free_text()">Create</span>-->
-                                        <input type="submit" class="btn btn-default" name="keyword_submit" id="keyword_submit" value="Create" title="Create an annotation using my free-text keyword."/>
-                                    </div>
+                                    <input type="text" name="subject_tofeed" id="keyword_target_id" value="{{subject_tofeed}}" hidden>
+                                    <input type="text" name="keyword_text" class="form-control custom-control" id="keyword_input" placeholder="Type-in a keyword."/>
+                                    <!--<span class="input-group-addon btn btn-primary" title="Create an annotation using my free-text keyword." onClick="get_free_text()">Create</span>-->
                                 </div>
+                                <input type="submit" class="btn btn-default col-xs-3" name="keyword_submit" id="keyword_submit" value="Create" title="Create an annotation using my free-text keyword."/>
                             </form>
                         </div>
                     </div>
                     <div id="comment" class="tab-pane fade form-group">
-                        <div id="comment_container" class="container">
-                            <form action="/create_annotation" method="post">
-                                <div id="comment_formgroup" class="form-group">
+                        <div id="comment_container" class="container" style="padding-left:10px;margin-left:0px;">
+                            <form class="form-inline" action="/create_annotation" method="post">
+                                <div id="comment_formgroup" class="form-group col-xs-9" style="padding-right:5px;padding-left:0px;margin-left:0px;">
                                     {% csrf_token %}
-                                    <div class="input-group">
-                                        {% csrf_token %}
-                                        <input type="text" name="subject_tofeed" id="comment_target_id" value="{{subject_tofeed}}" hidden>
-                                        <textarea name="comment_text" rows="2" class="form-control custom-control" id="comment_input" placeholder="Type your comment."></textarea>
-                                        <input type="submit" class="btn btn-default" name="comment_submit" id="comment_submit" value="Create" title="Create an annotation using my comment."/>
-                                    </div>
+                                    <input type="text" name="subject_tofeed" id="comment_target_id" value="{{subject_tofeed}}" hidden>
+                                    <textarea name="comment_text" rows="3" class="form-control custom-control" id="comment_input" placeholder="Type your comment."></textarea>
                                 </div>
+                                <input type="submit" class="btn btn-default col-xs-3" name="comment_submit" id="comment_submit" value="Create" title="Create an annotation using my comment."/>
                             </form>
                         </div>
                     </div>
