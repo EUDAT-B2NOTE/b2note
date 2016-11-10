@@ -23,7 +23,7 @@
 
 			{% if annotations_of %}
 
-				<div class="container col-xs-6 col-md-6 pull-left" style="margin-left:0px;font-size:12px;">
+				<div class="container col-xs-7 col-md-7 pull-left" style="margin-left:0px;font-size:12px;">
 
 					{% if annotations_of == "mine" %}
 
@@ -43,15 +43,15 @@
 
 			{% endif %}
 
-			<div class="container col-xs-6 col-md-6" style="margin-bottom:10px;">
+			<div class="container col-xs-5 col-md-5" style="white-space:normal;margin-bottom:10px;margin-right:0px;padding-right:0px;">
 
 				{% if annotations_of == "search_results" %}
 
-					<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default" style="whitespace:normal !important;">Download JSON</a>
+					<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default" style="white-space:normal !important;">Download JSON</a>
 
 				{% else %}
 
-					<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default" style="whitespace:normal !important;">Download JSON-LD</a>
+					<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default" style="white-space:normal !important;">Download JSON-LD</a>
 
 				{% endif %}
 

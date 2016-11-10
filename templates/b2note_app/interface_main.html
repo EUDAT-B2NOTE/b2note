@@ -223,7 +223,7 @@
                     <div id="comment" class="tab-pane fade form-group">
                         <div id="comment_container" class="container" style="padding-left:10px;margin-left:0px;">
                             <form class="form-inline" action="/create_annotation" method="post">
-                                <div id="comment_formgroup" class="form-group col-xs-9" style="padding-right:5px;padding-left:0px;margin-left:0px;">
+                                <div id="comment_formgroup" class="form-group col-xs-9" style="padding-right:2px;padding-left:2px;margin-left:0px;">
                                     {% csrf_token %}
                                     <input type="text" name="subject_tofeed" id="comment_target_id" value="{{subject_tofeed}}" hidden>
                                     <textarea name="comment_text" rows="3" class="form-control custom-control" id="comment_input" placeholder="Type your comment."></textarea>
@@ -272,7 +272,9 @@
                         <tr>
                             <div class = "container">
                                 {% if my_k != None %}
-                                    <td><a href="/myannotations#keyword" title="Click for full list.">Free-text keyword</a></td>
+                                    <td>
+                                        <a href="/myannotations#keyword" title="Click for full list.">Free-text keyword</a>
+                                    </td>
                                     <td>
                                         <a href="/myannotations#keyword" title="Click for full list." style="padding:2px">
                                             <span class="badge">{{my_k}}</span>
@@ -284,7 +286,9 @@
                         <tr>
                             <div class = "container">
                                 {% if my_c != None %}
-                                    <td><a href="/myannotations#comment" title="Click for full list.">Comment</a></td>
+                                    <td>
+                                        <a href="/myannotations#comment" title="Click for full list.">Comment</a>
+                                    </td>
                                     <td>
                                         <a href="/myannotations#comment" title="Click for full list." style="padding:2px">
                                             <span class="badge">{{my_c}}</span>
