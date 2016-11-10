@@ -97,7 +97,7 @@
 								{% csrf_token %}
 								<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
 								<td style="width:100%;border-right: 0.1px solid #E1E1E1 !important;">
-									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"
+									<input type="submit" class="btn btn-link" name="about_allsimilar_any" value="{{ann.link_label}}"
 										   title="{% if ann.link_info_label %}{{ann.link_info_label}}{% endif %}
 {% if ann.link_info_ontologyacronym %}{{ann.link_info_ontologyacronym}}{% endif %}: {% if ann.link_info_shortform %}{{ann.link_info_shortform}}{% endif %}
 {% if ann.link_info_creatornickname %}By: {{ann.link_info_creatornickname}}{% endif %}
@@ -105,11 +105,15 @@
 Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 								</td>
 								<td style="border-right: 0.1px solid #E1E1E1 !important;padding-left:2px;padding-right:2px;">
-									<button class="btn btn-link" name="about_allsimilar" type="submit" title="In other annotations,&#13click for full list." style="padding:2px">
-										<span class="badge" id="all_sem_{{ forloop.counter0 }}">{{ann.all_similar}}</span>
-									</button>
-									<!--<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}"
-										   title="In any annotations,&#13click for full list." style="padding:2px;margin-right:4px;"/>-->
+									{% if ann.all_similar == 0 %}
+										<span title="No similar annotation was created by others." style="padding:2px;margin-right:4px;"> </span>
+									{% else %}
+										<button class="btn btn-link" name="about_allsimilar" type="submit" title="In other annotations,&#13click for full list." style="padding:2px">
+											<span class="badge" id="all_sem_{{ forloop.counter0 }}">{{ann.all_similar}}</span>
+										</button>
+										<!--<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}"
+											   title="In any annotations,&#13click for full list." style="padding:2px;margin-right:4px;"/>-->
+									{% endif %}
 								</td>
 								<td style="border-right: 0.1px solid #E1E1E1 !important;padding-left:2px;padding-right:2px;">
 									{% if ann.my_similar == 0 %}
@@ -167,18 +171,22 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 								</td>
 								<td style="border-right: 0.1px solid #E1E1E1 !important;padding-left:2px;padding-right:2px;">
-									<button class="btn btn-link" name="about_allsimilar" type="submit" title="In other annotations,&#13click for full list." style="padding:2px">
-										<span class="badge" id="all_key_{{ forloop.counter0 }}">{{ann.all_similar}}</span>
-									</button>
-									<!--<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}"
-										   title="In any annotations,&#13click for full list." style="padding:2px;margin-right:4px;"/>-->
+									{% if ann.all_similar == 0 %}
+										<span title="No similar annotation was created by others." style="padding:2px;margin-right:4px;"> </span>
+									{% else %}
+										<button class="btn btn-link" name="about_allsimilar" type="submit" title="In other annotations,&#13click for full list." style="padding:2px">
+											<span class="badge" id="all_key_{{ forloop.counter0 }}">{{ann.all_similar}}</span>
+										</button>
+										<!--<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.all_similar}}"
+											   title="In any annotations,&#13click for full list." style="padding:2px;margin-right:4px;"/>-->
+									{% endif %}
 								</td>
 								<td style="border-right: 0.1px solid #E1E1E1 !important;padding-left:2px;padding-right:2px;">
 									{% if ann.my_similar == 0 %}
 										<span title="No similar annotation was created by me." style="padding:2px;margin-right:4px;"> </span>
 									{% else %}
 										<button class="btn btn-link" name="about_mysimilar" type="submit" title="In my annotations,&#13click for full list." style="padding:2px">
-											<span class="badge" id="my_key_{{ forloop.counter0 }}">{{ann.all_similar}}</span>
+											<span class="badge" id="my_key_{{ forloop.counter0 }}">{{ann.my_similar}}</span>
 										</button>
 										<!--<input type="submit" class="btn btn-link" name="about_mysimilar" value="{{ann.my_similar}}"
 											   title="In my annotations,&#13click for full list." style="padding:2px;margin-right:4px;"/>-->

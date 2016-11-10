@@ -648,6 +648,38 @@ def annotation_summary(request):
 
                     r = solr_fetchorigintermonid([A.body[0].jsonld_id])
 
+                    if user_nickname and isinstance(user_nickname, (str, unicode)):
+
+                        allannotations_list = Annotation.objects.raw_query({'body.jsonld_id': A.body[0].jsonld_id, 'creator.nickname': { "$ne": user_nickname} })
+
+                    else:
+
+                        allannotations_list = Annotation.objects.raw_query({'body.jsonld_id': A.body[0].jsonld_id})
+
+                elif A.body[0].value and A.motivation and A.motivation[0]=="tagging":
+
+                    if user_nickname and isinstance(user_nickname, (str, unicode)):
+
+                        allannotations_list = Annotation.objects.raw_query(
+                            {'body.value': A.body[0].value, 'motivation': "tagging", 'creator.nickname': { "$ne": user_nickname} })
+
+                    else:
+
+                        allannotations_list = Annotation.objects.raw_query(
+                            {'body.value': A.body[0].value, 'motivation': "tagging"})
+
+                elif A.body[0].value and A.motivation and A.motivation[0] == "commenting":
+
+                    allannotations_list = A
+
+                if allannotations_list: all_or_mine = "others"
+
+            elif request.POST.get('about_allsimilar_any')!=None:
+
+                if A.body[0].jsonld_id!=None:
+
+                    r = solr_fetchorigintermonid([A.body[0].jsonld_id])
+
                     allannotations_list = Annotation.objects.raw_query({'body.jsonld_id': A.body[0].jsonld_id})
 
                 elif A.body[0].value and A.motivation and A.motivation[0]=="tagging":
@@ -741,11 +773,12 @@ def myannotations(request):
         user_nickname = userprofile.nickname
 
     try:
-        allannotations_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed, 'creator.nickname': user_nickname})
+        #allannotations_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed, 'creator.nickname': user_nickname})
+        allannotations_list = Annotation.objects.raw_query( {'creator.nickname': user_nickname} )
     except Annotation.DoesNotExist:
         allannotations_list = []
 
-    allannotations_list = sorted(allannotations_list, key=lambda Annotation: Annotation.created, reverse=True)
+    allannotations_list = sorted(allannotations_list, key=lambda Annotation: Annotation.modified, reverse=True)
 
     my_s  = 0
     my_k  = 0
@@ -754,6 +787,9 @@ def myannotations(request):
     semantic_table = []
     keyword_table  = []
     comment_table  = []
+
+    sem_avoid_dbles = set()
+    key_avoid_dbles = set()
 
     r = None
     r = solr_fetchorigintermonid([A.body[0].jsonld_id for A in allannotations_list if A.body and A.body[0] and A.body[0].jsonld_id])
@@ -777,48 +813,54 @@ def myannotations(request):
 
         if A.body and A.body[0] and A.body[0].jsonld_id:
 
-            link_info_ontologyacronym = ""
-            link_info_shortform = ""
-            if r:
-                if isinstance(r, dict):
-                    if A.body[0].jsonld_id in r.keys():
-                        if isinstance(r[A.body[0].jsonld_id], dict):
-                            if "ontology_acronym" in r[A.body[0].jsonld_id].keys():
-                                link_info_ontologyacronym = r[A.body[0].jsonld_id]["ontology_acronym"]
-                            if "ontology_acronym" in r[A.body[0].jsonld_id].keys():
-                                link_info_shortform = r[A.body[0].jsonld_id]["short_form"]
+            if A.body[0].jsonld_id not in sem_avoid_dbles:
 
-            semantic_list = Annotation.objects.raw_query({'body.jsonld_id': A.body[0].jsonld_id})
+                sem_avoid_dbles.add(A.body[0].jsonld_id)
 
-            semantic_dict = {'ann_id': A.id,
-                             'link_label': link_label,
-                             'link_info_label': link_info_label,
-                             'link_info_ontologyacronym': link_info_ontologyacronym,
-                             'link_info_shortform': link_info_shortform,
-                             'link_info_creatornickname': link_info_creatornickname,
-                             'link_info_modified': link_info_modified,
-                             'my_similar': len(semantic_list),
-                             }
+                link_info_ontologyacronym = ""
+                link_info_shortform = ""
+                if r:
+                    if isinstance(r, dict):
+                        if A.body[0].jsonld_id in r.keys():
+                            if isinstance(r[A.body[0].jsonld_id], dict):
+                                if "ontology_acronym" in r[A.body[0].jsonld_id].keys():
+                                    link_info_ontologyacronym = r[A.body[0].jsonld_id]["ontology_acronym"]
+                                if "ontology_acronym" in r[A.body[0].jsonld_id].keys():
+                                    link_info_shortform = r[A.body[0].jsonld_id]["short_form"]
 
-            semantic_table.append( semantic_dict )
+                semantic_list = Annotation.objects.raw_query({'body.jsonld_id': A.body[0].jsonld_id})
+
+                semantic_dict = {'ann_id': A.id,
+                                 'link_label': link_label,
+                                 'link_info_label': link_info_label,
+                                 'link_info_ontologyacronym': link_info_ontologyacronym,
+                                 'link_info_shortform': link_info_shortform,
+                                 'link_info_creatornickname': link_info_creatornickname,
+                                 'link_info_modified': link_info_modified,
+                                 'my_similar': len(semantic_list),
+                                 }
+
+                semantic_table.append( semantic_dict )
 
             my_s += 1
 
         elif A.body and A.body[0] and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="tagging":
 
-            print
+            if A.body[0].value not in key_avoid_dbles:
 
-            keyword_list = Annotation.objects.raw_query({'body.jsonld_id': None, 'body.value': A.body[0].value, 'motivation': "tagging"})
+                key_avoid_dbles.add(A.body[0].value)
 
-            keyword_dict = {'ann_id': A.id,
-                            'link_label': link_label,
-                            'link_info_label': link_info_label,
-                            'link_info_creatornickname': link_info_creatornickname,
-                            'link_info_modified': link_info_modified,
-                            'my_similar': len(keyword_list),
-                            }
+                keyword_list = Annotation.objects.raw_query({'body.jsonld_id': None, 'body.value': A.body[0].value, 'motivation': "tagging"})
 
-            keyword_table.append( keyword_dict )
+                keyword_dict = {'ann_id': A.id,
+                                'link_label': link_label,
+                                'link_info_label': link_info_label,
+                                'link_info_creatornickname': link_info_creatornickname,
+                                'link_info_modified': link_info_modified,
+                                'my_similar': len(keyword_list),
+                                }
+
+                keyword_table.append( keyword_dict )
 
             my_k += 1
 
@@ -910,6 +952,9 @@ def allannotations(request):
     keyword_table  = []
     comment_table  = []
 
+    sem_avoid_dbles = set()
+    key_avoid_dbles = set()
+
     r = None
     r = solr_fetchorigintermonid([A.body[0].jsonld_id for A in allannotations_list if A.body and A.body[0] and A.body[0].jsonld_id])
 
@@ -933,58 +978,72 @@ def allannotations(request):
 
         if A.body and A.body[0] and A.body[0].jsonld_id:
 
-            link_info_ontologyacronym = ""
-            link_info_shortform = ""
-            if r:
-                if isinstance(r, dict):
-                    if A.body[0].jsonld_id in r.keys():
-                        if isinstance(r[A.body[0].jsonld_id], dict):
-                            if "ontology_acronym" in r[A.body[0].jsonld_id].keys():
-                                link_info_ontologyacronym = r[A.body[0].jsonld_id]["ontology_acronym"]
-                            if "ontology_acronym" in r[A.body[0].jsonld_id].keys():
-                                link_info_shortform = r[A.body[0].jsonld_id]["short_form"]
+            if A.body[0].jsonld_id not in sem_avoid_dbles:
 
-            semantic_list = Annotation.objects.raw_query({'body.jsonld_id': A.body[0].jsonld_id})
+                sem_avoid_dbles.add(A.body[0].jsonld_id)
 
-            semantic_dict = {'ann_id': A.id,
-                             'link_label': link_label,
-                             'link_info_label': link_info_label,
-                             'link_info_ontologyacronym': link_info_ontologyacronym,
-                             'link_info_shortform': link_info_shortform,
-                             'link_info_creatornickname': link_info_creatornickname,
-                             'link_info_modified': link_info_modified,
-                             'all_similar': len(semantic_list),
-                             'my_similar': len([A for A in semantic_list if A.creator and A.creator[0].nickname==user_nickname]),
-                             }
+                link_info_ontologyacronym = ""
+                link_info_shortform = ""
+                if r:
+                    if isinstance(r, dict):
+                        if A.body[0].jsonld_id in r.keys():
+                            if isinstance(r[A.body[0].jsonld_id], dict):
+                                if "ontology_acronym" in r[A.body[0].jsonld_id].keys():
+                                    link_info_ontologyacronym = r[A.body[0].jsonld_id]["ontology_acronym"]
+                                if "ontology_acronym" in r[A.body[0].jsonld_id].keys():
+                                    link_info_shortform = r[A.body[0].jsonld_id]["short_form"]
 
-            semantic_table.append( semantic_dict )
+                semantic_list = Annotation.objects.raw_query({'body.jsonld_id': A.body[0].jsonld_id})
 
-            all_s += 1
+                my_similar = len([A for A in semantic_list if A.creator and A.creator[0].nickname==user_nickname])
+                all_similar = len(semantic_list) - my_similar
+                if all_similar<0: all_similar = 0
+
+                semantic_dict = {'ann_id': A.id,
+                                 'link_label': link_label,
+                                 'link_info_label': link_info_label,
+                                 'link_info_ontologyacronym': link_info_ontologyacronym,
+                                 'link_info_shortform': link_info_shortform,
+                                 'link_info_creatornickname': link_info_creatornickname,
+                                 'link_info_modified': link_info_modified,
+                                 'all_similar': all_similar,
+                                 'my_similar': my_similar,
+                                 }
+
+                semantic_table.append( semantic_dict )
 
             if A.creator and A.creator[0].nickname==user_nickname:
-
                 my_s += 1
+            else:
+                all_s += 1
 
         elif A.body and A.body[0] and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="tagging":
 
-            keyword_list = Annotation.objects.raw_query({'body.jsonld_id': None, 'body.value': A.body[0].value, 'motivation': "tagging"})
+            if A.body[0].value not in key_avoid_dbles:
 
-            keyword_dict = {'ann_id': A.id,
-                            'link_label': link_label,
-                            'link_info_label': link_info_label,
-                            'link_info_creatornickname': link_info_creatornickname,
-                            'link_info_modified': link_info_modified,
-                            'all_similar': len(keyword_list),
-                            'my_similar': len([A for A in keyword_list if A.creator and A.creator[0].nickname==user_nickname]),
-                            }
+                key_avoid_dbles.add(A.body[0].value)
 
-            keyword_table.append( keyword_dict )
+                keyword_list = Annotation.objects.raw_query({'body.jsonld_id': None, 'body.value': A.body[0].value, 'motivation': "tagging"})
 
-            all_k += 1
+                my_similar = len([A for A in keyword_list if A.creator and A.creator[0].nickname==user_nickname])
+                all_similar = len(keyword_list) - my_similar
+                if all_similar<0: all_similar = 0
+
+                keyword_dict = {'ann_id': A.id,
+                                'link_label': link_label,
+                                'link_info_label': link_info_label,
+                                'link_info_creatornickname': link_info_creatornickname,
+                                'link_info_modified': link_info_modified,
+                                'all_similar': all_similar,
+                                'my_similar': my_similar,
+                                }
+
+                keyword_table.append( keyword_dict )
 
             if A.creator and A.creator[0].nickname==user_nickname:
-
                 my_k += 1
+            else:
+                all_k += 1
 
         elif A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting":
 
@@ -997,11 +1056,10 @@ def allannotations(request):
 
             comment_table.append(comment_dict)
 
-            all_c += 1
-
             if A.creator and A.creator[0] and A.creator[0].nickname==user_nickname:
-
                 my_c += 1
+            else:
+                all_c += 1
 
     navbarlinks = list_navbarlinks(request, [])
     shortcutlinks = list_shortcutlinks(request, [])
@@ -1109,7 +1167,8 @@ def interface_main(request):
     try:
         # https://blog.scrapinghub.com/2013/05/13/mongo-bad-for-scraped-data/
         # https://github.com/aparo/django-mongodb-engine/blob/master/docs/embedded-objects.rst
-        annotation_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
+        if user_nickname:
+            annotation_list = Annotation.objects.raw_query({'creator.nickname': user_nickname})
         allannotations_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
     except Annotation.DoesNotExist:
         allannotations_list = []
@@ -1122,17 +1181,26 @@ def interface_main(request):
     my_s  = None
     my_k  = None
     my_c  = None
+    myf_s = None
+    myf_k = None
+    myf_c = None
 
     all_s = len([A for A in allannotations_list if A.body and A.body[0].jsonld_id ])
     all_k = len([A for A in allannotations_list if A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="tagging" ])
     all_c = len([A for A in allannotations_list if A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting" ])
     if user_nickname:
-        my_s  = len([A for A in allannotations_list if A.creator and A.creator[0].nickname==user_nickname
+        my_s  = len([A for A in annotation_list if A.creator and A.creator[0].nickname==user_nickname
                      and A.body and A.body[0].jsonld_id ])
-        my_k  = len([A for A in allannotations_list if A.creator and A.creator[0].nickname==user_nickname
+        my_k  = len([A for A in annotation_list if A.creator and A.creator[0].nickname==user_nickname
                      and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="tagging" ])
-        my_c  = len([A for A in allannotations_list if A.creator and A.creator[0].nickname==user_nickname
+        my_c  = len([A for A in annotation_list if A.creator and A.creator[0].nickname==user_nickname
                      and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting" ])
+        myf_s = len([A for A in allannotations_list if A.creator and A.creator[0].nickname == user_nickname
+                    and A.body and A.body[0].jsonld_id])
+        myf_k = len([A for A in allannotations_list if A.creator and A.creator[0].nickname == user_nickname
+                    and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0] == "tagging"])
+        myf_c = len([A for A in allannotations_list if A.creator and A.creator[0].nickname == user_nickname
+                    and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0] == "commenting"])
 
     navbarlinks = list_navbarlinks(request, [])
     shortcutlinks = []
@@ -1155,6 +1223,9 @@ def interface_main(request):
         'my_s': my_s,
         'my_k': my_k,
         'my_c': my_c,
+        'myf_s': myf_s,
+        'myf_k': myf_k,
+        'myf_c': myf_c,
         'subject_tofeed': subject_tofeed,
         'pid_tofeed': pid_tofeed,
         'user_nickname': user_nickname}

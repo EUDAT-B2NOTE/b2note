@@ -183,6 +183,11 @@
     margin-top: 5px;
 }
 
+#confirmpassowrdform.container img[class="captcha"] {
+    margin-left: 15px;
+    margin-top: 5px;
+}
+
 #disclaimer_paragraph {
     font-size: 11px;
     text-align: justify;
@@ -345,6 +350,18 @@
 }
 
 #allannot_table_main .badge[id^="my_com_"] {
+    background: #40c460;
+}
+
+#allannot_table_main .badge[id^="myf_sem_"] {
+    background: #40c460;
+}
+
+#allannot_table_main .badge[id^="myf_key_"] {
+    background: #40c460;
+}
+
+#allannot_table_main .badge[id^="myf_com_"] {
     background: #40c460;
 }
 
