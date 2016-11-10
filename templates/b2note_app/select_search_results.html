@@ -10,7 +10,7 @@
 
         <form action="/select_search_results" method="post">
             {% csrf_token %}
-            <table style="margin-top:15px;margin-bottom:5px;">
+            <table style="margin-top:15px;margin-bottom:15px;">
                 <tr>
                     <td><a href="/search_annotations" class="btn btn-default" style="margin-right:10px;">New search</a></td>
                     <td><input type="submit" name="submit_toexport" value="Generate JSON export" class="btn btn-default"/></td>
@@ -21,27 +21,19 @@
 
             {% if export_dic and export_dic.exact %}
 
-                <table id="exact_match_export_select_table">
-                    <div class="container" style="padding-left:2px;margin:0px;">
+                <table class="table table-condensed table-responsive" id="exact_match_export_select_table">
+                    <th class="col-xs-1"><input type="checkbox" name="exact_cbox" onchange="this.form.submit()" {% if all_exact_cbox %}checked{% endif %}/></th>
+                    <th class="col-xs-11"><strong>Files</strong><span style="font-size:12px;"> (select all)</span></th>
+                    {% for f in export_dic.exact %}
                         <tr>
-                            <td>
-                                <input type="checkbox" name="exact_cbox" onchange="this.form.submit()" {% if all_exact_cbox %}checked{% endif %}/>
-                                <span style="font-size:12px;"><label style="font-size:14px;">Files</label> (select all)</span>
+                            <td class="col-xs-1">
+                                <input type="checkbox" name="exact_cbox{{forloop.counter0}}" {% if f.checked %}checked{% endif %}/>
+                            </td>
+                            <td class="col-xs-11">
+                                <input type="hidden" name="exact_url{{forloop.counter0}}" value="{{f.url}}" />
+                                <a href="{{f.url}}" target="_parent" title="Click to view on B2Share"><span>{{ f.url }}</span></a>
                             </td>
                         </tr>
-                    </div>
-                </table>
-                <table>
-                    {% for f in export_dic.exact %}
-                        <div class="container" style="padding-left:2px;margin:0px;">
-                            <tr>
-                                <td>
-                                    <input type="checkbox" name="exact_cbox{{forloop.counter0}}" {% if f.checked %}checked{% endif %}/>
-                                    <input type="hidden" name="exact_url{{forloop.counter0}}" value="{{f.url}}" />
-                                    <a href="{{f.url}}" target="_parent" title="Click to view on B2Share"><span>{{ f.url }}</span></a>
-                                </td>
-                            </tr>
-                        </div>
                     {% endfor %}
                 </table>
 
@@ -55,24 +47,18 @@
 
             {% if export_dic and export_dic.related %}
 
-                <table>
+                <table class="table table-condensed table-responsive" id="related_match_export_select_table">
                     <div class="container" style="padding-left:2px;margin:0px;">
-                        <tr>
-                            <td>
-                                <input type="checkbox" name="related_cbox" onchange="this.form.submit()" {% if all_related_cbox %}checked{% endif %}/>
-                                <span style="font-size:12px;"><label style="font-size:14px;">Files</label> (select all)</span>
-                            </td>
-                        </tr>
-                    </div>
-                </table>
-                <table>
-                    <div class="container" style="padding-left:2px;margin:0px;">
+                        <th class="col-xs-1"><input type="checkbox" name="related_cbox" onchange="this.form.submit()" {% if all_related_cbox %}checked{% endif %}/></th>
+                        <th class="col-xs-11"><strong>Files</strong><span style="font-size:12px;"> (select all)</span></th>
                         {% for f in export_dic.related %}
                             <tr>
-                                <td>
+                                <td class="col-xs-1">
                                     <input type="checkbox" name="related_cbox{{forloop.counter0}}" {% if f.checked %}checked{% endif %}/>
+                                </td>
+                                <td class="col-xs-11">
                                     <input type="hidden" name="related_url{{forloop.counter0}}" value="{{f.url}}"/>
-                                    <a href="{{f.url}}" target="_parent" title="Click to view on B2Share"><span>{{ f.url}}</span></a>
+                                    <a href="{{f.url}}" target="_parent" title="Click to view on B2Share">{{f.url}}</a>
                                 </td>
                             </tr>
                         {% endfor %}

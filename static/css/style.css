@@ -141,14 +141,22 @@
 
 .navbar-brand {
     height: 45px;
-    padding-top: 17px;
-    padding-left: 10px;
+    padding-top: 0px; /*17px;*/
+    padding-left: 0px; /*10px;*/
 }
 
 #icon-nav-bar {
+    border-bottom: 1px solid;
+    color: #1C418F;
+    /*background-color: #1C418F;*/
     padding-top: 0px;
     padding-bottom: 0px;
 }
+
+#icon-nav-bar glyphicon {
+    height: 50px;
+}
+
 
 #main {
     margin-top:15px;
@@ -170,7 +178,7 @@
     margin-bottom: 10px;
 }
 
-#registration-form .img, img {
+#registration_form img[class="captcha"] {
     margin-left: 15px;
     margin-top: 5px;
 }
@@ -356,6 +364,10 @@
     width: 140% !important;
 }
 
+#semantic_formgroup #id_q {
+    width: 110%;
+}
+
 /*#select_semantic .form-control[id^="id_q_search"] {
     margin-top: 5px;
     margin-bottom: 5px;
@@ -502,8 +514,77 @@
     margin-top: 5px;
 }
 
-#exact_match_export_select_table .container {
+#annotation_summary_term_table {
+    font-size: 12px;
+    word-break: break-word;"
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    border: 0px !important;
+}
+
+#annotation_summary_term_table td {
+    border: 0px;
+}
+
+#exact_search_result_table {
+    font-size: 13px;
     padding: 0;
+    margin-right:0px;
+    border: 0px;
+}
+
+#related_search_result_table {
+    font-size: 13px;
+    padding: 0;
+    margin-right:0px;
+    border: 0px;
+}
+
+#exact_search_result_table th {
+    border: 0px;
+}
+
+#exact_search_result_table td {
+    border: 0px;
+}
+
+#related_search_result_table th {
+    border: 0px;
+}
+
+#related_search_result_table td {
+    border: 0px;
+}
+
+#exact_match_export_select_table {
+    font-size: 13px;
+    padding: 0;
+    margin-right:0px;
+    border: 0px;
+}
+
+#exact_match_export_select_table th {
+    border: 0px;
+}
+
+#exact_match_export_select_table td {
+    border: 0px;
+}
+
+#related_match_export_select_table {
+    font-size: 13px;
+    padding: 0;
+    margin-right:0px;
+    border: 0px;
+}
+
+#related_match_export_select_table th {
+    border: 0px;
+}
+
+#related_match_export_select_table td {
+    border: 0px;
 }
 
 #link_to_top {
