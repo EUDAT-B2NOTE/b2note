@@ -43,6 +43,18 @@ import json, os
         #self.assertEqual(a, None)
 
 def check_urls(urllist, depth=0):
+    """
+        Function: check_urls
+        --------------------
+        Checks that all urls provided as an argument are reachable.
+        
+        params:
+            urllist (list): list with all urls defined in django.
+            depth (int): depth on the hierarchy of urls.
+            
+        returns:
+            bool: True if all urls are reachable. False otherwise.
+    """
     c = Client()
     for entry in urllist:
         if hasattr(entry, 'url_patterns'):
@@ -62,7 +74,19 @@ def check_urls(urllist, depth=0):
                     return False
     return True
 
-def check_internal_urls(f):
+def check_internal_urls(f, app):
+    """
+        Function: check_internal_urls
+        -----------------------------
+        Checks that all links included the a template are reachable.
+        
+        params:
+            f (str): path of a template file.
+            app (str): name of the django app of the corresponding template.
+            
+        returns:
+            bool: True if all links are reachable. False otherwise.
+    """
     from bs4 import BeautifulSoup
     soup = BeautifulSoup(open(f), "html.parser")
     links = soup.find_all('a')
@@ -71,30 +95,63 @@ def check_internal_urls(f):
     for tag in links:
         link = tag.get('href', None)
         if link is not None:
-            if link[0] == "/":
-                response = c.get(link)
+            if link[0] != "{" and 'http' not in link:
+                url = link
+                if link[0] != "/":
+                    if link[0] == "#":
+                        if len(link) > 1: # avoid links with '#'
+                            url = "/" + app + "/" + os.path.splitext(os.path.basename(f))[0] + link
+                        else: 
+                            pass
+                    else:
+                        link = "/" + link
+                        url = "/" + app + link
+                response = c.get(url)
                 if response.status_code != 200 and response.status_code != 302:
-                    return False
+                    response = c.get(link) # second try with the original link
+                    if response.status_code != 200 and response.status_code != 302:
+                        return False
+        else:
+            return False
             
     links = soup.find_all('form')
     for tag in links:
         link = tag.get('action', None)
         if link is not None:
-            if link[0] == "/":
-                response = c.get(link)
+            if link[0] != "{" and 'http' not in link:
+                url = link
+                if link[0] != "/":
+                    if link[0] == "#":
+                        if len(link) > 1: # avoid links with '#'
+                            url = "/" + app + "/" + os.path.splitext(os.path.basename(f))[0] + link
+                        else:
+                            pass
+                    else:
+                        link = "/" + link
+                        url = "/" + app + link
+                response = c.get(url)
                 if response.status_code != 200 and response.status_code != 302:
-                    return False
+                    response = c.get(link) # second try with the original link
+                    if response.status_code != 200 and response.status_code != 302:
+                        return False
+        else:
+            return False
     
     return True
 
 class B2noteappTest(TestCase):
     """
-        TestCase class that clear the collection between the tests
+        TestCase class that clears the collection between the tests.
     """
     mongodb_name = 'test_%s' % settings.MONGO_DATABASE_NAME
     multi_db = True
     
     def _pre_setup(self):
+        """
+            Function: _pre_setup
+            --------------------
+            Automatically called before any test for connecting to MongoDB.
+        """
         from mongoengine.connection import connect, disconnect
         disconnect()
         import urllib, os
@@ -105,6 +162,11 @@ class B2noteappTest(TestCase):
         super(B2noteappTest, self)._pre_setup()
 
     def _post_teardown(self):
+        """
+            Function: _post_teardown
+            --------------------
+            Automatically called after any test for dropping the DB and disconnecting from MongoDB.
+        """
         from mongoengine.connection import get_connection, disconnect
         connection = get_connection()
         connection.drop_database(self.mongodb_name)
@@ -112,6 +174,11 @@ class B2noteappTest(TestCase):
         super(B2noteappTest, self)._post_teardown()
         
     def setUp(self):
+        """
+            Function: setUp
+            --------------------
+            Automatically called before any test for connection to SQLite and generating a new session.
+        """
         self.username='test'
         self.password='123456'
         self.email='test@test.com'
@@ -125,6 +192,11 @@ class B2noteappTest(TestCase):
         self.client.cookies[settings.SESSION_COOKIE_NAME] = store.session_key
         
     def login(self):
+        """
+            Function: login
+            --------------------
+            Allows login and authentication in the test environment.
+        """
         self.user = authenticate(email=self.email,password=self.password,db=self.db)
         self.assertNotEqual(self.user, None)
         self.assertTrue(self.user.is_active)
@@ -133,32 +205,31 @@ class B2noteappTest(TestCase):
         session.save()
         r = self.client.login(email=self.email,password=self.password, db=self.db)
         self.assertTrue(r)
-    
-    def test_settings_view(self):
-        r = self.client.login(email=self.email,password=self.password, db=self.db)
-        self.assertTrue(r)
-        url = reverse("b2note_app.views.settings")
-        resp = self.client.get(url) 
-        self.assertEqual(resp.status_code, 200)
-        self.client.logout()
-        resp = self.client.get(url) 
-        self.assertEqual(resp.status_code, 302)
-
-    
-    def test_hostpage_view(self):
-        url = reverse("b2note_app.views.hostpage")
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 200)
         
     def create_annotation_db(self, jsonld_id="test", type=["others"]):
+        """
+            Function: create_annotation_db
+            --------------------
+            Creates a new entry in the DB of Annotations
+        """
         return Annotation.objects.create(jsonld_id=jsonld_id, type=type)
     
     def test_create_annotation_db(self):
+        """
+            Function: test_create_annotation_db
+            --------------------
+            Tests the creation of an Annotation using directly the model.
+        """
         a = self.create_annotation_db()
         self.assertTrue(isinstance(a, Annotation))
         self.assertEqual(a.jsonld_id, "test")
         
     def test_create_annotation(self):
+        """
+            Function: test_create_annotation
+            --------------------
+            Tests the creation of an Annotation using the mongo support function.
+        """
         # DB just created with no annotations in there
         before = Annotation.objects.filter().count()
         self.assertEqual(before, 0)
@@ -172,14 +243,23 @@ class B2noteappTest(TestCase):
         self.assertEqual(a, db_id)
         
     def test_dont_create_annotation(self):
+        """
+            Function: test_dont_create_annotation
+            --------------------
+            Tests the no creation of invalid annotations using the mongo support function.
+        """
         a = CreateAnnotation(1234)
         self.assertFalse(a)
         a = CreateAnnotation("")
         self.assertFalse(a)
-        #a = CreateAnnotation(u"test_target")
-        #self.assertEqual(a, None)
+
         
     def test_create_semantic_tag(self):
+        """
+            Function: test_create_semantic_tag
+            --------------------
+            Tests the creation of a Semantic Tag using the mongo support function.
+        """
         # DB just created with no annotations in there
         before = Annotation.objects.filter().count()
         self.assertEqual(before, 0)
@@ -194,12 +274,22 @@ class B2noteappTest(TestCase):
         
         
     def test_dont_create_semantic_tag(self):
+        """
+            Function: test_dont_create_semantic_tag
+            --------------------
+            Tests the no creation of invalid semantic tags using the mongo support function.
+        """
         a = CreateSemanticTag(1234, '{"uris":"test_uri", "labels": "test_label"}')
         self.assertTrue(not a)
         a = CreateSemanticTag(u"https://b2share.eudat.eu/record/30", '{"labels": "test_label"}')
         self.assertTrue(not a)
         
     def test_create_free_text_keyword(self):
+        """
+            Function: test_create_free_text_keyword
+            --------------------
+            Tests the creation of a free text keyword using the mongo support function.
+        """
         # DB just created with no annotations in there
         before = Annotation.objects.filter().count()
         self.assertEqual(before, 0)
@@ -213,12 +303,48 @@ class B2noteappTest(TestCase):
         self.assertEqual(a, db_id)
         
     def test_dont_create_free_text_keyword(self):
+        """
+            Function: test_dont_create_free_text_keyword
+            --------------------
+            Tests the no creation of invalid free text keywords using the mongo support function.
+        """
         a = CreateFreeTextKeyword(u"https://b2share.eudat.eu/record/30", 1234)
         self.assertTrue(not a)
         a = CreateFreeTextKeyword(u"https://b2share.eudat.eu/record/30", "")
         self.assertTrue(not a)
         
+    def test_settings_view(self):
+        """
+            Function: test_settings_view
+            --------------------
+            Tests the view function settings
+        """
+        r = self.client.login(email=self.email,password=self.password, db=self.db)
+        self.assertTrue(r)
+        url = reverse("b2note_app.views.settings")
+        resp = self.client.get(url) 
+        self.assertEqual(resp.status_code, 200)
+        self.client.logout()
+        resp = self.client.get(url) 
+        self.assertEqual(resp.status_code, 302)
+
+    
+    def test_hostpage_view(self):
+        """
+            Function: test_hostpage_view
+            --------------------
+            Tests the view function hostpage
+        """
+        url = reverse("b2note_app.views.hostpage")
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+        
     def test_interface_main_view(self):
+        """
+            Function: test_interface_main_view
+            --------------------
+            Tests the view function interface_main
+        """
         url = reverse("b2note_app.views.interface_main")
         # Creates on annotation on the DB
         a = self.create_annotation_db()
@@ -230,6 +356,11 @@ class B2noteappTest(TestCase):
 
 
     def test_create_annotation_view(self):
+        """
+            Function: test_create_annotation_view
+            --------------------
+            Tests the view function create_annotation
+        """
         url = reverse("b2note_app.views.create_annotation")
         json_dict = {}
         json_dict['pid_tofeed'] = 'pid_test'
@@ -255,6 +386,11 @@ class B2noteappTest(TestCase):
         
         
     def test_delete_annotation_view(self):
+        """
+            Function: test_delete_annotation_view
+            --------------------
+            Tests the view function delete_annotation
+        """
         url = reverse("b2note_app.views.delete_annotation")
         db_id = self.test_create_annotation_view()
         json_dict = {}
@@ -270,6 +406,11 @@ class B2noteappTest(TestCase):
         
     
     def test_export_annotations_view(self):
+        """
+            Function: test_export_annotations_view
+            --------------------
+            Tests the view function export_annotations
+        """
         url = reverse("b2note_app.views.export_annotations") 
         db_id = self.test_create_annotation_view()
         json_dict = {}
@@ -281,6 +422,11 @@ class B2noteappTest(TestCase):
         self.assertIn("annotation_test", resp.content)
         
     def test_download_json_view(self):
+        """
+            Function: test_download_json_view
+            --------------------
+            Tests the view function download_json
+        """
         url = reverse("b2note_app.views.download_json")
         self.test_export_annotations_view()
         resp = self.client.get(url)
@@ -289,13 +435,23 @@ class B2noteappTest(TestCase):
     
     # http://stackoverflow.com/questions/1828187/determine-complete-django-url-configuration    
     def parse_urls(self):
+        """
+            Function: parse_urls
+            --------------------
+            Tests that all urls included in the file urls.py are valid
+        """
         self.assertTrue(check_urls(urlpatterns))
         
     def parse_internal_urls(self):
+        """
+            Function: parse_internal_urls
+            --------------------
+            Tests that all links included in the templates are valid
+        """
         self.login()
         for d in os.listdir(settings.TEMPLATE_PATH):
-            for f in os.listdir(settings.TEMPLATE_PATH + "/" + "b2note_app"):
+            for f in os.listdir(settings.TEMPLATE_PATH + "/" + d):
                 if os.path.splitext(f)[1] == '.html':
-                    path = settings.TEMPLATE_PATH + "/" + "b2note_app" + "/" + f
-                    self.assertTrue(check_internal_urls(path))
+                    path = settings.TEMPLATE_PATH + "/" + d + "/" + f
+                    self.assertTrue(check_internal_urls(path, d))
 
