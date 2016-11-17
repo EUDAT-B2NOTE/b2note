@@ -25,10 +25,13 @@ def solr_fetchtermonexactlabel(label=None):
                 return out
             else:
                 print "solr_fetchtermonexactlabel fuction, parameter neither string nor unicode."
+                stdlogger.error("solr_fetchtermonexactlabel fuction, parameter neither string nor unicode.")
         else:
             print "solr_fetchtermonexactlabel function, empty parameter."
+            stdlogger.error("solr_fetchtermonexactlabel function, empty parameter.")
     except:
         print "solr_fetchtermonexactlabel function, could not complete."
+        stdlogger.error("solr_fetchtermonexactlabel function, could not complete.")
         return False
     return False
 
@@ -65,24 +68,34 @@ def solr_fetchorigintermonid(ids=None):
                                             return out
                                         else:
                                             print "solr_fetchorigintermonid fuction, requests object json>response>docs not a list."
+                                            stdlogger.error("solr_fetchorigintermonid fuction, requests object json>response>docs not a list.")
                                     else:
                                         print "solr_fetchorigintermonid fuction, 'docs' not a key of requests object json>response dict."
+                                        stdlogger.error("solr_fetchorigintermonid fuction, 'docs' not a key of requests object json>response dict.")
                                 else:
                                     print "solr_fetchorigintermonid fuction, requests object json>response not a dict"
+                                    stdlogger.error("solr_fetchorigintermonid fuction, requests object json>response not a dict")
                             else:
                                 print "solr_fetchorigintermonid fuction, 'response' not a key of requests object json dict."
+                                stdlogger.error("solr_fetchorigintermonid fuction, 'response' not a key of requests object json dict.")
                         else:
                             print "solr_fetchorigintermonid fuction, requests object json not a dict."
+                            stdlogger.error("solr_fetchorigintermonid fuction, requests object json not a dict.")
                     else:
                         print "solr_fetchorigintermonid fuction, sorl fetch with no response or response not json."
+                        stdlogger.error("solr_fetchorigintermonid fuction, sorl fetch with no response or response not json.")
                 else:
                     print "solr_fetchorigintermonid fuction, list item neither string nor unicode."
+                    stdlogger.error("solr_fetchorigintermonid fuction, list item neither string nor unicode.")
             else:
                 print "solr_fetchorigintermonid fuction, paramter not a list."
+                stdlogger.error("solr_fetchorigintermonid fuction, paramter not a list.")
         else:
             print "solr_fetchorigintermonid function, empty parameter."
+            stdlogger.error("solr_fetchorigintermonid function, empty parameter.")
     except:
         print "solr_fetchorigintermonid function, could not complete."
+        stdlogger.error("solr_fetchorigintermonid function, could not complete.")
         return False
     return False
 
@@ -96,10 +109,13 @@ def solr_fetchtermonid(id=None):
                 return r
             else:
                 print "solr_fetchtermonid fuction, parameter neither string nor unicode."
+                stdlogger.error("solr_fetchtermonid fuction, parameter neither string nor unicode.")
         else:
             print "solr_fetchtermonid function, empty parameter."
+            stdlogger.error("solr_fetchtermonid function, empty parameter.")
     except:
         print "solr_fetchtermonid function, could not complete."
+        stdlogger.error("solr_fetchtermonid function, could not complete.")
         return False
     return False
 

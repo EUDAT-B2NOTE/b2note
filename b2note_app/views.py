@@ -347,6 +347,7 @@ def edit_annotation(request):
                                 if r and len(r) > 0:
                                     has_semantic_equivalent = k_text
                                     print "Create_annotation view, keyword has semantic tag equivalent."
+                                    stdlogger.info("Create_annotation view, keyword has semantic tag equivalent.")
                                     pass_on = True
 
                             if not pass_on and not request.POST.get('enforce_flag'):
@@ -456,6 +457,7 @@ def delete_annotation(request):
                             return redirect('/interface_main')
                         else:
                             print "delete_annotation view, annotation delete not successful."
+                            stdlogger.error("delete_annotation view, annotation delete not successful.")
                             pass
                     else:
                         print "delete_annotation view, cannot delete annotation, current user is not owner."
@@ -475,9 +477,8 @@ def delete_annotation(request):
             pass
     else:
         print "delete_annotation view, user is not logged-in."
-        return redirect('/accounts/logout')
         stdlogger.error("delete_annotation view, user is not logged-in.")
-        pass
+        return redirect('/accounts/logout')
 
     return redirect('/interface_main')
 
@@ -529,16 +530,22 @@ def create_annotation(request):
                                         "shortform": D[0].body[0].jsonld_id[::-1][:D[0].body[0].jsonld_id[::-1].find("/")][::-1],
                                     }
                                     print "Create_annotation view, semantic tag annotation would be a duplicate."
+                                    stdlogger.info("Create_annotation view, semantic tag annotation would be a duplicate.")
                             else:
                                 print "Create_annotation view, in semantic case, no value to uris key or neither string or unicode."
+                                stdlogger.error("Create_annotation view, semantic tag annotation would be a duplicate.")
                         else:
                             print "Create_annotation view, in semantic case, no uris key."
+                            stdlogger.error("Create_annotation view, in semantic case, no uris key.")
                     else:
                         print "Create_annotation view, in semantic case, could not load json."
+                        stdlogger.error("Create_annotation view, in semantic case, could not load json.")
                 else:
                     print "Create_annotation view, in semantic case, target file id neither string nor unicode."
+                    stdlogger.error("Create_annotation view, in semantic case, target file id neither string nor unicode.")
             else:
                 print "Create_annotation view, missing parameter to create semantic annotation."
+                stdlogger.error("Create_annotation view, missing parameter to create semantic annotation.")
 
         elif request.POST.get('keyword_submit')!=None:
             if request.POST.get('keyword_text') and request.POST.get('subject_tofeed'):
@@ -549,6 +556,7 @@ def create_annotation(request):
                     if r and len(r)>0:
                         request.session["has_semantic_equivalent"] = request.POST.get('keyword_text')
                         print "Create_annotation view, keyword has semantic tag equivalent."
+                        stdlogger.info("Create_annotation view, keyword has semantic tag equivalent.")
                         pass_on = True
 
                 if not pass_on and not request.POST.get('enforce_flag'):
@@ -577,6 +585,7 @@ def create_annotation(request):
                         else:
                             request.session["duplicate"] = { "label": D[0].body[0].value, }
                         print "Create_annotation view, free-text keyword annotation would be a duplicate."
+                        stdlogger.info("Create_annotation view, free-text keyword annotation would be a duplicate.")
 
         elif request.POST.get('comment_submit')!=None:
             if request.POST.get('comment_text') and request.POST.get('subject_tofeed'):

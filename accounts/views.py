@@ -20,8 +20,9 @@ from forms.reset_password import PasswordResetRequestForm, SetPasswordForm, Acco
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
+import logging
 
-# Create your views here.
+stdlogger = logging.getLogger('b2note')
 
 
 def request_account_retrieval(request):
@@ -34,7 +35,6 @@ def request_account_retrieval(request):
 
     if request.method == 'POST':
         form = AccountRetrieveForm(data=request.POST)
-        print form.is_valid()
         if form.is_valid():
             c = {'form': form,}
             email_template_name = 'accounts/account_retrieve_email.html'
@@ -191,6 +191,7 @@ def profilepage(request):
             return redirect('/logout')
     except Exception:
         print "Could not load or redirect from profilepage view."
+        stdlogger.error("Could not load or redirect from profilepage view.")
         return False
 
 
@@ -208,9 +209,7 @@ def login(request):
             user = authenticate(email=request.POST['username'], password=request.POST['password'])
             if user is not None:
                 if user.is_active:
-                    #print type(user), isinstance(user, unicode), user
                     django_login(request, user)
-                    #print ">>>", user.annotator_id.annotator_id
                     request.session["user"] = user.annotator_id.annotator_id
                     return redirect('/interface_main')
     else:
