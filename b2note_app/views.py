@@ -89,7 +89,7 @@ def export_annotations(request):
                 nowi = str(now.year) + str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(now.second)
 
                 #context_str = open(os.path.join(global_settings.STATIC_PATH, 'files/anno_context.jsonld'), 'r').read()
-                contextfile_name = "jsonld_context_b2note_20161027.json"
+                contextfile_name = "jsonld_context_b2note_20161027.jsonld"
                 context_str = "https://b2note-dev.bsc.es/" + contextfile_name
 
                 #response = {"@context": json.loads( context_str, object_pairs_hook=OrderedDict ) }
