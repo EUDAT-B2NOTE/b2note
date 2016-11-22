@@ -57,8 +57,10 @@ def before_returning_items(response):
             if not isinstance(response["@graph"], list):
                 response["@graph"] = [ response["@graph"] ]
             del(response["_items"])
-            context_str = open(os.path.join(global_settings.STATIC_PATH, 'files/anno_context.jsonld'), 'r').read()
-            response["@context"] = json.loads(context_str, object_pairs_hook=OrderedDict)
+            #context_str = open(os.path.join(global_settings.STATIC_PATH, 'files/anno_context.jsonld'), 'r').read()
+            contextfile_name = "jsonld_context_b2note_20161027.jsonld"
+            context_str = "https://b2note-dev.bsc.es/" + contextfile_name
+            response["@context"] = context_str
     return response
 
 
@@ -69,8 +71,10 @@ def before_returning_item(response):
             if k2d in resp.keys():
                 del( resp[k2d] )
         response["@graph"] = [ readyQuerySetValuesForDumpAsJSONLD( resp ) ]
-        context_str = open(os.path.join(global_settings.STATIC_PATH, 'files/anno_context.jsonld'), 'r').read()
-        response["@context"] = json.loads(context_str, object_pairs_hook=OrderedDict)
+        #context_str = open(os.path.join(global_settings.STATIC_PATH, 'files/anno_context.jsonld'), 'r').read()
+        contextfile_name = "jsonld_context_b2note_20161027.jsonld"
+        context_str = "https://b2note-dev.bsc.es/" + contextfile_name
+        response["@context"] = context_str
         for k2d in response.keys():
             if k2d not in ["@graph", "@context", "_etag"]:
                 del(response[k2d])
