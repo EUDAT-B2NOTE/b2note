@@ -6,6 +6,7 @@ from .models import *
 from accounts.models import AnnotatorProfile
 
 from django.forms.models import model_to_dict
+from django.conf import settings as global_settings
 import logging
 
 stdlogger = logging.getLogger('b2note')
@@ -865,7 +866,7 @@ def CreateAnnotation(target=None):
                     )
 
                 ann = Annotation(
-                    jsonld_context  = ["http://www.w3.org/ns/anno.jsonld"],
+                    jsonld_context  = [global_settings.JSONLD_CONTEXT_URL],
                     type            = ["Annotation"],
                     target          = [ExternalResource( jsonld_id = target )],
                     generator       = [ gen_agt ]

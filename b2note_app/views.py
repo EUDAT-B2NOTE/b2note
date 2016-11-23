@@ -88,12 +88,7 @@ def export_annotations(request):
                 now = datetime.datetime.now()
                 nowi = str(now.year) + str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(now.second)
 
-                #context_str = open(os.path.join(global_settings.STATIC_PATH, 'files/anno_context.jsonld'), 'r').read()
-                contextfile_name = "jsonld_context_b2note_20161027.jsonld"
-                context_str = "https://b2note-dev.bsc.es/" + contextfile_name
-
-                #response = {"@context": json.loads( context_str, object_pairs_hook=OrderedDict ) }
-                response = {"@context": context_str}
+                response = {"@context": global_settings.JSONLD_CONTEXT_URL}
 
                 response["@graph"] = readyQuerySetValuesForDumpAsJSONLD( [ann for ann in annotation_list] )
 
@@ -1679,8 +1674,6 @@ def select_search_results(request):
         if export_dic and isinstance(export_dic, dict):
             now = datetime.datetime.now()
             nowi = str(now.year)+str(now.month)+str(now.day)+str(now.hour)+str(now.minute)+str(now.second)
-            contextfile_name = "jsonld_context_b2note_20161027.json"
-            context_str = "https://b2note-dev.bsc.es/" + contextfile_name
 
             if search_str and isinstance(search_str, (str, unicode)): response["query string"] = search_str
             if "exact" in export_dic.keys() and export_dic["exact"] and isinstance(export_dic["exact"], list):
@@ -1690,7 +1683,7 @@ def select_search_results(request):
 
                 for url in export_dic["exact"]:
                     if isinstance(url, (str, unicode)):
-                        exac = {"@context": context_str}
+                        exac = {"@context": global_settings.JSONLD_CONTEXT_URL}
                         exac["@graph"] = readyQuerySetValuesForDumpAsJSONLD([ann for ann in A if
                                                                              ann["target"][0][1]["jsonld_id"] == url])
                         response["exact_match"].append(
@@ -1705,7 +1698,7 @@ def select_search_results(request):
 
                 for url in export_dic["related"]:
                     if isinstance(url, (str, unicode)):
-                        relat = {"@context": context_str}
+                        relat = {"@context": global_settings.JSONLD_CONTEXT_URL}
                         relat["@graph"] = readyQuerySetValuesForDumpAsJSONLD([ann for ann in A if
                                                                              ann["target"][0][1]["jsonld_id"] == url])
                         response["synonym_match"].append(
