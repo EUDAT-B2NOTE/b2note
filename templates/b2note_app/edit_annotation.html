@@ -224,7 +224,7 @@
             {% if ann.body.0.jsonld_id or textinput_primer %}
 
                 <div class="container" id="edit_semantic">
-                    <p><strong>Type-in</strong> to select an other tag.</p>x
+                    <p><strong>Type-in</strong> to select an other tag.</p>
                     <form action="edit_annotation" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="db_id" value="{{ann.id}}" hidden>
