@@ -222,7 +222,8 @@ class TextualBody(models.Model):
 	purpose		= models.CharField( max_length = 256, choices=MOTIVATION_CHOICES, null=True )
 	creator		= ListField( EmbeddedModelField("Agent"), null=True )   # dcterms:creator
 	created		= models.DateTimeField( auto_now_add=True, null=True )  # dcterms:created MUST xsd:dateTime SHOULD timezone.
-	modified 	= models.DateTimeField( auto_now=True, null=True )  	# MUST xsd:dateTime with the UTC timezone expressed as "Z".
+	modified 	= models.DateTimeField( null=True )  	# MUST xsd:dateTime with the UTC timezone expressed as "Z".
+	#modified 	= models.DateTimeField( auto_now=True, null=True )  	# MUST xsd:dateTime with the UTC timezone expressed as "Z".
 
 
 class ExternalResource(models.Model):
@@ -255,7 +256,8 @@ class ExternalResource(models.Model):
 	#accessibility	= ListField( models.CharField( max_length = 256 ), null=True )	# enumerated list of schema.org accessibilityFeature property
 	creator 		= ListField( EmbeddedModelField("Agent"), null=True )  			# dcterms:creator
 	created 		= models.DateTimeField( auto_now_add=True, null=True )  		# dcterms:created MUST xsd:dateTime SHOULD timezone.
-	modified		= models.DateTimeField( auto_now=True, null=True )				# MUST xsd:dateTime with the UTC timezone expressed as "Z".
+	modified		= models.DateTimeField( null=True )				# MUST xsd:dateTime with the UTC timezone expressed as "Z".
+	#modified		= models.DateTimeField( auto_now=True, null=True )				# MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	#rights			= ListField( models.CharField( max_length=4096 ), null=True )  	# MAY be then MUST be an IRI
 	#canonical 		= models.CharField( max_length=4096, null=True )  				# IRI
 	#via 			= ListField( models.CharField( max_length=4096, null=True ) )  	# IRIs
@@ -275,7 +277,8 @@ class Annotation(models.Model):
 	created 	= models.DateTimeField( auto_now_add=True, null=True )  # dcterms:created MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	generator 	= ListField( EmbeddedModelField("Agent"), null=True )   # prov:wasGeneratedBy
 	generated 	= models.DateTimeField( auto_now_add=True, null=True )  # prov:generatedAtTime MUST xsd:dateTime with the UTC timezone expressed as "Z".
-	modified	= models.DateTimeField( auto_now=True, null=True )		# MUST xsd:dateTime with the UTC timezone expressed as "Z".
+	modified	= models.DateTimeField( null=True )						# MUST xsd:dateTime with the UTC timezone expressed as "Z".
+	#modified	= models.DateTimeField( auto_now=True, null=True )		# MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	#audience	= ListField( EmbeddedModelField("Audience"), null=True )
 	#rights		= ListField( models.CharField( max_length = 4096 ), null=True )	# MAY be then MUST be an IRI
 	#canonical	= models.CharField( max_length = 4096, null=True )				# IRI

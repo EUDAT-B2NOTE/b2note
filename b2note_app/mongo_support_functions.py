@@ -267,6 +267,71 @@ def DeleteFromPOSTinfo( db_id ):
     return False
 
 
+def SetDateTimeModified( db_id=None ):
+    """
+      Function: SetDateTimeModified
+      ----------------------------
+        Sets date time of modified fields in annotation on change.
+
+        params:
+            db_id (str): database id of the document to modify.
+
+        returns:
+            id (str): database id of the modified document if successful, False otherwise.
+    """
+    try:
+
+        if db_id:
+
+            if isinstance(db_id, (str, unicode)):
+
+                A = None
+                A = Annotation.objects.get(id=db_id)
+
+                if A:
+
+                    nowdt = datetime.datetime.now()
+
+                    A.modified = nowdt
+
+                    if A.body:
+
+                        if isinstance(A.body, list):
+
+                            if len(A.body)>0:
+
+                                A.body[0].modified = nowdt
+
+                    A.save()
+
+                    print 'SetDateTimeModified function, "' + str(nowdt) + '" set as modified date time of annotation: ', str(db_id)
+                    stdlogger.info('SetDateTimeModified function, "' + str(nowdt) + '" set as modified date time of annotation: ' + str(db_id))
+                    return A.id
+
+                else:
+                    print "SetDateTimeModified function, no annotation wit id: ", str(db_id)
+                    stdlogger.error("SetDateTimeModified function, no annotation wit id: " + str(db_id))
+                    return False
+            else:
+                print "SetDateTimeModified function, 'db_id' parameter neither str nor unicode."
+                stdlogger.error("SetDateTimeModified function, 'db_id' parameter neither str nor unicode.")
+                return False
+        else:
+            print "SetDateTimeModified function, missing parameter called 'db_id'."
+            stdlogger.error("SetDateTimeModified function, missing parameter called 'db_id'.")
+            return False
+
+    except ValueError:
+        print "SetDateTimeModified function did not complete."
+        stdlogger.error("SetDateTimeModified function did not complete.")
+        return False
+
+    print "SetDateTimeModified function did not complete succesfully."
+    stdlogger.error("SetDateTimeModified function did not complete succesfully.")
+    return False
+
+
+
 def SetAnnotationMotivation( db_id=None, motiv=None ):
     """
       Function: SetAnnotationMotivation
@@ -858,11 +923,12 @@ def CreateAnnotation(target=None):
             if isinstance(target, (str, unicode)) and len(target)>0:
 
                 gen_agt = Agent(
-                     type       = ["Software"],
-                     name       = ["B2Note semantic annotator"],
-                     nickname   = "B2Note v1.0",
-                     email      = ["abremaud@esciencefactory.com"],
-                     homepage   = ["https://b2note.bsc.es"],
+                    type        = ["Software"],
+                    name        = ["B2Note v1.0"],
+                    #name       = ["B2Note semantic annotator"],
+                    #nickname   = "B2Note v1.0",
+                    #email      = ["abremaud@esciencefactory.com"],
+                    homepage   = ["https://b2note.bsc.es"],
                     )
 
                 ann = Annotation(
