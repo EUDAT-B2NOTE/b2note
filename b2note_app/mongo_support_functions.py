@@ -940,7 +940,7 @@ def CreateAnnotation(target=None):
                 ann.save()
 
                 ann = Annotation.objects.get(id=ann.id)
-                ann.jsonld_id = "https://b2note.bsc.es/annotations/" + ann.id
+                ann.jsonld_id = global_settings.ROOT_ANNOTATION_ID + ann.id
                 ann.save()
 
                 print "CreateAnnotation function, created annotation document with id: " + str(ann.id)
