@@ -191,7 +191,7 @@ def RetrieveUserFileAnnotations( subject_url=None, nickname=None ):
                 else:
                     print "RetrieveUserFileAnnotations function, no annotations retrieved."
                     stdlogger.info("RetrieveUserFileAnnotations function, no annotations retrieved.")
-                    return False
+                    return None
             else:
                 print "RetrieveUserFileAnnotations function, provided nickname not valid:", nickname
                 stdlogger.info("RetrieveUserFileAnnotations function, provided nickname not valid:" + str(nickname))

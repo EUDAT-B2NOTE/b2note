@@ -123,7 +123,7 @@ def export_annotations(request):
     except Exception:
         print "Could not export or redirect from export view."
         stdlogger.error("Could not export or redirect from export view.")
-        return False
+        return redirect('/export')
 
 
 @login_required
