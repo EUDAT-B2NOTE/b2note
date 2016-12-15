@@ -1699,9 +1699,14 @@ def select_search_results(request):
                         cleaned = ridOflistsOfOneItem( cleaned )
                         cleaned = orderedJSONLDfields( cleaned )
 
-                        exac["@graph"] = response["exact_match"].append(
+                        if isinstance(cleaned, list):
+                            exac["@graph"] = cleaned
+                        else:
+                            exac["@graph"] = [cleaned]
+
+                        response["exact_match"].append(
                             {"file_url": url,
-                            "annotations": cleaned,}
+                            "annotations": exac,}
                         )
 
             if "related" in export_dic.keys() and export_dic["related"] and isinstance(export_dic["related"], list):
@@ -1712,8 +1717,16 @@ def select_search_results(request):
                 for url in export_dic["related"]:
                     if isinstance(url, (str, unicode)):
                         relat = {"@context": global_settings.JSONLD_CONTEXT_URL}
-                        relat["@graph"] = readyQuerySetValuesForDumpAsJSONLD([ann for ann in A if
+                        cleaned = readyQuerySetValuesForDumpAsJSONLD([ann for ann in A if
                                                                              ann["target"][0][1]["jsonld_id"] == url])
+                        cleaned = ridOflistsOfOneItem(cleaned)
+                        cleaned = orderedJSONLDfields(cleaned)
+
+                        if isinstance(cleaned, list):
+                            relat["@graph"] = cleaned
+                        else:
+                            relat["@graph"] = [cleaned]
+
                         response["synonym_match"].append(
                             {"file_url": url,
                              "annotations": relat, }
