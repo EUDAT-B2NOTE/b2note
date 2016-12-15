@@ -94,7 +94,10 @@ def export_annotations(request):
                 cleaned = ridOflistsOfOneItem(cleaned)
                 cleaned = orderedJSONLDfields( cleaned )
 
-                response["@graph"] = cleaned
+                if isinstance(cleaned, dict):
+                    response["@graph"] = [cleaned]
+                else:
+                    response["@graph"] = cleaned
 
                 # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
                 json_data = HttpResponse(json.dumps(response, indent=2), mimetype= 'application/json')
