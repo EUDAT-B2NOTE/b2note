@@ -325,6 +325,7 @@ def edit_annotation(request):
                                             id1 = None
                                             id1 = MakeAnnotationSemanticTag(a_id, jo)
                                             if id1: edited_semantic = True
+                                            if id1: SetDateTimeModified( id1 )
                                         else:
                                             duplicate = {
                                                 "label": D[0].body[0].value,
@@ -362,6 +363,7 @@ def edit_annotation(request):
                                     id1 = MakeAnnotationFreeText(a_id, k_text)
                                     id1 = SetAnnotationMotivation(id1, "tagging")
                                     if id1: edited_keyword = True
+                                    if id1: SetDateTimeModified(id1)
                                 else:
                                     if D[0].body[0].jsonld_id:
                                         duplicate = {
@@ -380,6 +382,7 @@ def edit_annotation(request):
                             id1 = MakeAnnotationFreeText( a_id , c_text )
                             id1 = SetAnnotationMotivation( id1, "commenting" )
                             if id1: edited_comment = True
+                            if id1: SetDateTimeModified(id1)
 
                 A = Annotation.objects.get(id=a_id)
 
