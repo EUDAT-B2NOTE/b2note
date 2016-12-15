@@ -90,7 +90,11 @@ def export_annotations(request):
 
                 response = {"@context": global_settings.JSONLD_CONTEXT_URL}
 
-                response["@graph"] = readyQuerySetValuesForDumpAsJSONLD( [ann for ann in annotation_list] )
+                cleaned = readyQuerySetValuesForDumpAsJSONLD( [ann for ann in annotation_list] )
+                cleaned = ridOflistsOfOneItem(cleaned)
+                cleaned = orderedJSONLDfields( cleaned )
+
+                response["@graph"] = cleaned
 
                 # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
                 json_data = HttpResponse(json.dumps(response, indent=2), mimetype= 'application/json')
@@ -1687,11 +1691,14 @@ def select_search_results(request):
                 for url in export_dic["exact"]:
                     if isinstance(url, (str, unicode)):
                         exac = {"@context": global_settings.JSONLD_CONTEXT_URL}
-                        exac["@graph"] = readyQuerySetValuesForDumpAsJSONLD([ann for ann in A if
-                                                                             ann["target"][0][1]["jsonld_id"] == url])
-                        response["exact_match"].append(
+                        cleaned = readyQuerySetValuesForDumpAsJSONLD([ann for ann in A if
+                                                                      ann["target"][0][1]["jsonld_id"] == url])
+                        cleaned = ridOflistsOfOneItem( cleaned )
+                        cleaned = orderedJSONLDfields( cleaned )
+
+                        exac["@graph"] = response["exact_match"].append(
                             {"file_url": url,
-                            "annotations": exac,}
+                            "annotations": cleaned,}
                         )
 
             if "related" in export_dic.keys() and export_dic["related"] and isinstance(export_dic["related"], list):
