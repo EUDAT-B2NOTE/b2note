@@ -1,4 +1,4 @@
-import os, re, datetime, copy
+import os, re, datetime, copy, collections
 import json, bson
 import requests
 
@@ -965,6 +965,56 @@ def CreateAnnotation(target=None):
     print "CreateAnnotation function did not complete succesfully."
     stdlogger.error("CreateAnnotation function did not complete succesfully.")
     return False
+
+
+def orderedJSONLDfields(o_in):
+    out = None
+    try:
+        if o_in:
+            out = o_in
+            if isinstance(o_in, list):
+                out = []
+                for item in o_in:
+                    out.append(orderedJSONLDfields(item))
+            if isinstance(o_in, dict):
+                out = collections.OrderedDict()
+                for k in ["id", "type", "target", "body", "value", "motivation", "purpose", "creator", "generator"]:
+                    if k in o_in.keys():
+                        out[k] = orderedJSONLDfields(o_in[k])
+                for k in o_in.keys():
+                    if k not in out.keys():
+                        out[k] = orderedJSONLDfields(o_in[k])
+    except:
+        out = None
+        print "orderedJSONLDfields function, Exception."
+        pass
+
+    return out
+
+
+
+def ridOflistsOfOneItem(o_in):
+    out = None
+    try:
+        if o_in:
+            out = o_in
+            if isinstance(o_in, list) or isinstance(o_in, tuple):
+                if len(o_in) == 1:
+                    out = ridOflistsOfOneItem( o_in[0] )
+                else:
+                    out = []
+                    for item in o_in:
+                        out.append( ridOflistsOfOneItem( item ) )
+            if isinstance(o_in, dict):
+                out = {}
+                for k in o_in.keys():
+                    out[k] = ridOflistsOfOneItem( o_in[k] )
+    except:
+        out = None
+        print "ridOflistsOfOneItem function, Exception."
+        pass
+    return out
+
 
 
 def readyQuerySetValuesForDumpAsJSONLD( o_in ):
