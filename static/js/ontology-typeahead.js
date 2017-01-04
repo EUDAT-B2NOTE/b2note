@@ -13,20 +13,79 @@ $(document).ready( function() {
             return Bloodhound.tokenizers.whitespace(datum.title);
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace,
+        sorter: function(a, b) {  
+                //get input text 
+            var InputString=   $('[id^="id_q"]').val();  
+
+                //move exact matches to top 
+            if(InputString==a.labels){ return -1;} 
+            if(InputString==b.labels){return 1;}
+
+                //close match without case matching 
+            if(InputString.toLowerCase() == a.labels.toLowerCase()){ return -1;}
+            if(InputString.toLowerCase()==b.labels.toLowerCase()){return 1;}  
+
+                //Single token or multiple 
+            if ( a["norm(labels)"] == 1 ){
+                    //decreasing value of Lucene/Solr label norm metric 
+                if (a["norm(labels)"]>b["norm(labels)"]) { 
+                    return -1 
+                } else {
+                        //input string is label string prefix 
+                    if( a.labels.toLowerCase().indexOf(InputString.toLowerCase()) == 0 ){ 
+                        if( b.labels.toLowerCase().indexOf(InputString.toLowerCase()) !== 0 ){ return -1; } 
+                    } else {
+                        if( b.labels.toLowerCase().indexOf(InputString.toLowerCase()) == 0 ){ return 1; }
+                    }
+
+                        //increasing string length 
+                    if (a.labels.length < b.labels.length) { 
+                        return -1; 
+                    } else { 
+                        if (a.labels.length > b.labels.length) {
+                            return 1;
+                        } else {
+                            //alphabetical order
+                            return a.labels.localeCompare(b.labels); 
+                        }
+                    }
+                } 
+            } else {
+                    //input string is label string prefix 
+                if( a.labels.toLowerCase().indexOf(InputString.toLowerCase()) == 0 ){ return -1;}
+                if( b.labels.toLowerCase().indexOf(InputString.toLowerCase()) == 0 ){ return 1; }  
+
+                    //input string contained in label string 
+                if( a.labels.toLowerCase().indexOf(InputString.toLowerCase())!== -1 ){ return -1;} 
+                if( b.labels.toLowerCase().indexOf(InputString.toLowerCase())!== -1 ){ return 1; }  
+
+                if (a["norm(labels)"]>b["norm(labels)"]) {  return -1  }
+                if (a["norm(labels)"]<b["norm(labels)"]) {  return 1  }
+
+                //return a.labels.localeCompare(b.labels); 
+            }
+        },
         remote: {
             // What may be a relevant size of class subset for the user to select from VS. transaction size x user population?
             /*url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select?q=labels:%QUERY&wt=json&indent=true&rows=1000',*/
-            url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select',
+            url: window.location.protocol + 'https://b2note.bsc.es/solr/cleanup_test/select',
+            /*url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select',*/
             /* 20161109, abremaud@escienceafactory.com
                 Boosting exact match on term label from Solr.
                 http://stackoverflow.com/questions/37712129/how-to-use-typeahead-wildcard */
             /*wildcard: '%QUERY',*/
             prepare: function(query, settings) {
-                settings.url += '?q=labels:"' + query +'"^10%20OR%20labels:*' + query + '*&wt=json&indent=true&rows=1000' ;
+                settings.url += '?q=labels:"' + query +'"^100%20OR%20labels:' + query +'*^20%20OR%20text_auto:/' + query +'.*/^10%20OR%20labels:*' + query + '*'; 
+                if (query.split(/[^A-Za-z0-9]/).length<=1) { 
+                    //alert("single-word");
+                    settings.url += '&sort=norm(labels) desc'; 
+                } 
+                settings.url += '&fl=labels,uris,ontology_acronym,short_form,synonyms,norm(labels)&wt=json&indent=true&rows=1000';
                 return settings;
             },
             filter: function (data) {
-                return $.map(data.response.docs, function (suggestionSet) {
+                //return $.map(data.response.docs, function (suggestionSet) {
+                return $.map(engine.sorter(data.response.docs), function (suggestionSet) {
                     return{
                         label : suggestionSet.labels,
                         ontology_acronym : suggestionSet.ontology_acronym,
