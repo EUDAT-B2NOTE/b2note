@@ -75,7 +75,8 @@ $(document).ready( function() {
                 http://stackoverflow.com/questions/37712129/how-to-use-typeahead-wildcard */
             /*wildcard: '%QUERY',*/
             prepare: function(query, settings) {
-                settings.url += '?q=labels:"' + query +'"^100%20OR%20labels:' + query +'*^20%20OR%20text_auto:/' + query +'.*/^10%20OR%20labels:*' + query + '*'; 
+                settings.url += '?q=((labels:"' + query +'"^100%20OR%20labels:' + query +'*^20%20OR%20text_auto:/' + query +'.*/^10%20OR%20labels:*' + query + '*)'; 
+                settings.url += '%20AND%20NOT%20(labels:/Error[0-9].*/))'
                 if (query.split(/[^A-Za-z0-9]/).length<=1) { 
                     //alert("single-word");
                     settings.url += '&sort=norm(labels) desc'; 

@@ -4,9 +4,17 @@
 }
 
 #hostpage {
+	/*
     background: -moz-linear-gradient(90deg, #D5D5D5, #FFFFFF 60%) fixed;
     background: -webkit-gradient(linear, left center, left bottom, from(#FFFFFF), to(#D5D5D5)) fixed;
+    */
+    background: #FFFFFF;
 	font-size: 14px;
+}
+
+#content {
+	padding-bottom: 40px;
+	background: #FFFFFF url("../images/bg_b2note.jpg") no-repeat fixed center center;
 }
 
 #section_create .tt-menu * {
@@ -60,7 +68,7 @@
 	padding-top: 10px;
 	width: 625px;
 	font-weight: bold;
-	text-align: center;
+	text-align: left;
 }
 
 #hostpage p {
@@ -102,7 +110,7 @@
 
 #header {
 	background: #fff url("../images/decor-header.png") no-repeat scroll right top;
-	height: 100px;
+	/* height: 100px; */
 	text-align: center;
 	width: 100%;
 }
@@ -121,9 +129,9 @@
     visibility: hidden;
 	/* float: right; */
 	margin: 5px 5px 15px 5px;
-	border: 2px solid gray;
+	border: 1px solid #1C418F !important;
 	-moz-border-radius: 20px;
-	border-radius: 20px;
+	border-radius: 5px;
 	text-align: center;
 	position: fixed;
 	right: 5px;
@@ -138,19 +146,24 @@
 }
 
 #consolepagebody header {
-    height: 75px;
+    height: 80px;
+    background: #1C418F;
+    color: #FFF;
 }
+
+.navbar-default {background: #1C418F !important}
 
 .navbar-brand {
     height: 45px;
-    padding-top: 0px; /*17px;*/
+    padding-top: 2px; /*17px;*/
     padding-left: 0px; /*10px;*/
+    padding-bottom: 3px;
 }
 
 #icon-nav-bar {
-    border-bottom: 1px solid;
-    color: #1C418F;
-    /*background-color: #1C418F;*/
+    border-bottom: 1px solid #1C418F;
+    color: #FFFFFF;
+    background-color: #1C418F;
     padding-top: 0px;
     padding-bottom: 0px;
 }
@@ -158,7 +171,11 @@
 #icon-nav-bar glyphicon {
     height: 50px;
 }
-
+#icon-nav-bar a button {
+	color: #FFF !important;
+	font-size: 14px;
+	font-weight: 100;
+}
 
 #main {
     margin-top:15px;
@@ -209,18 +226,18 @@
     text-align: justify;
 }
 
+
 #user_area {
+    background: #EEEEEE;
     padding: 10px;
-    border: 2px solid black;
 }
+
+
 
 #user_area .table td {
     border:0px;
 }
 
-#for_padding_adjsutement {
-    padding-left: 4px;
-}
 
 #section_create {
     padding: 0px;
@@ -237,9 +254,13 @@
 }
 
 #homepage_tab_contents {
-    margin-top: 75px;
-    padding-top: 15px;
+	margin-top: 56px;
+    padding-top: 25px !important;
+    border: 1px solid #DDD;
+    background: #FFFFFF;
 }
+
+
 
 #create_tabs a[href="#semantic"] {
     width: 90px;
@@ -289,30 +310,25 @@
     padding-bottom: 26px;
 }
 
-#my_annotations_mainpage_container {
-    padding-left: 5px;
-}
 
 #myannot_table_main {
-    border: 0px !important;
-    width: 75%;
-    margin-top: 10px;
-    margin-left: 20px;
-    margin-bottom: 0px;
-    font-size: 15px;
-}
-
-#myannot_table_main td {
-    border: 0px !important;
+    width: 100%;
+    margin:0;
+    border:0;
+    font-size: 14px;
 }
 
 #allannot_table_main {
-    border: 0px !important;
-    width: 85%;
-    margin-top: 10px;
-    margin-left: 20px;
-    margin-bottom: 0px;
-    font-size: 15px;
+    width: 100%;
+    margin:0;
+    border:0;
+    font-size: 14px;
+}
+
+#myannot_table_main td, #allannot_table_main td {
+    border-top: 1px solid #DDD;
+    border-bottom: 1px solid #DDD;
+    padding: 5px;
 }
 
 #pulledarea.container {
@@ -320,51 +336,42 @@
 }
 
 
-#pulledarea #allannot_table_main {
-    width: 95%;
-}
-
-
-#allannot_table_main td {
-    border: 0px !important;
-}
-
 #myannot_table_main .badge {
     float: right;
     font-weight: 400;
     opacity: 0.8;
-    background: #40c460;
+    background: #F45D00;
 }
 
 #allannot_table_main .badge {
     float: right;
     font-weight: 400;
-    opacity: 0.8;
+    opacity: 1;
     background: #2040a4;
 }
 
 #allannot_table_main .badge[id^="my_sem_"] {
-    background: #40c460;
+    background: #F45D00;
 }
 
 #allannot_table_main .badge[id^="my_key_"] {
-    background: #40c460;
+    background: #F45D00;
 }
 
 #allannot_table_main .badge[id^="my_com_"] {
-    background: #40c460;
+    background: #F45D00;
 }
 
 #allannot_table_main .badge[id^="myf_sem_"] {
-    background: #40c460;
+    background: #F45D00;
 }
 
 #allannot_table_main .badge[id^="myf_key_"] {
-    background: #40c460;
+    background: #F45D00;
 }
 
 #allannot_table_main .badge[id^="myf_com_"] {
-    background: #40c460;
+    background: #F45D00;
 }
 
 #edit_msg_area {
@@ -401,11 +408,20 @@
 }*/
 
 
-#myannotations_summary #semantic.container {
-    padding-left: 0px !important;
-    padding-top: 20px !important;
+#myannotations_summary #semantic.container, #myannotations_summary #keyword.container, #myannotations_summary #comment.container,
+#allannotations_summary #semantic.container, #allannotations_summary #keyword.container, #allannotations_summary #comment.container
+ {
+	margin-top: 20px;
+	margin-bottom: 20px;
+    padding: 0px !important;
+
 }
 
+#myannotations_summary #comment.container, #allannotations_summary #comment.container {
+	margin-bottom: 150px;
+}
+
+/*
 #myannotations_summary #keyword.container {
     padding-top: 20px !important;
 }
@@ -427,6 +443,7 @@
     padding-top: 20px !important;
 }
 
+*/
 #allannotations_summary .table th {
     background-color: #EAEAEA;
     padding: 4px;
@@ -439,11 +456,11 @@
 
 #semantic .badge {
     font-weight: 400;
-    opacity: 0.8;
+    opacity: 1;
 }
 
 #semantic .badge[id^="my_sem_"] {
-    background: #40c460;
+    background: #F45D00;
 }
 
 #semantic .badge[id^="all_sem_"] {
@@ -531,7 +548,7 @@
 }
 
 #keyword .badge[id^="my_key_"] {
-    background: #40c460;
+    background: #F45D00;
 }
 
 #keyword .badge[id^="all_key_"] {
@@ -553,7 +570,7 @@
 
 #annotation_summary_term_table {
     font-size: 12px;
-    word-break: break-word;"
+    word-break: break-word;
     width: 100%;
     margin: 0px;
     padding: 0px;
@@ -630,3 +647,45 @@
     font-size:10px;
     opacity:0.3;
 }
+
+footer {
+    /* background: #dddddd url("../images/decor-footer.png") no-repeat scroll right bottom; */
+    background: #f7f3e9 url("../images/color-line.png") repeat-x scroll left top;
+    height: auto;
+    padding: 10px 40px;
+}
+#footer-content {
+    display: table;
+    margin: 0 auto;
+    padding-top: 10px;
+}
+#footer-content img {
+    float: left;
+    margin-right: 10px;
+}
+#footer-content p {
+    font-size: 11px;
+    width: 100%;
+}
+#footer-content a {
+    color: #e5601e;
+}
+
+
+.clearfix, clearfix::before {clear:both;}
+
+.navbar-nav > li > a {
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+footer .navbar-nav > li > a {font-size: 11px;}
+
+.bg-orange {font-size: 12px; background: #F45D00 !important; color: #FFF; opacity: 1 !important; padding: 3px 7px; border-radius: 20%; line-height: normal !important;}
+.badge  {padding: 3px 7px; border-radius: 20%; opacity: 1; line-height: normal !important;}
+.btn-link {color: #1C418F; }
+.caret.caret-lg {padding-top: 6px !important;}
+.caret.caret-lg:hover {cursor: pointer !important; padding-top: 6px !important;}
+.padding-top-5px {padding-top: 5px !important;}
+.padding-top-10px {padding-top: 10px !important;}
+.padding-bottom-10px {padding-bottom: 10px !important;}

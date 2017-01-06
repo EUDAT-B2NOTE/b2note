@@ -13,13 +13,13 @@
 							{% if my_s == 0 %}
 								<td>
 									<a href="#semantic" title="No semantic annotation was created by me.">
-										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_s}}</span>
+										<span class="bg-orange">{{my_s}}</span>
 									</a>
 								</td>
 							{% else %}
 								<td>
 									<a href="#semantic" title="My semantic annotations,&#13click for full list.">
-										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_s}}</span>
+										<span class="bg-orange">{{my_s}}</span>
 									</a>
 								</td>
 							{% endif %}
@@ -33,13 +33,13 @@
 							{% if my_k == 0 %}
 								<td>
 									<a href="#semantic" title="No free-text keyword annotation was created by me.">
-										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_k}}</span>
+										<span class="bg-orange">{{my_k}}</span>
 									</a>
 								</td>
 							{% else %}
 								<td>
 									<a href="#keyword" title="My keyword annotations,&#13click for full list.">
-										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_k}}</span>
+										<span class="bg-orange">{{my_k}}</span>
 									</a>
 								</td>
 							{% endif %}
@@ -53,13 +53,13 @@
 							{% if my_c == 0 %}
 								<td>
 									<a href="#semantic" title="No comment annotation was created by me.">
-										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_c}}</span>
+										<span class="bg-orange">{{my_c}}</span>
 									</a>
 								</td>
 							{% else %}
 								<td>
 									<a href="#comment" title="My comment annotations,&#13click for full list.">
-										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_c}}</span>
+										<span class="bg-orange">{{my_c}}</span>
 									</a>
 								</td>
 							{% endif %}
@@ -69,7 +69,7 @@
 			</table>
         </div>
 
-		<div class="container" id="semantic" style="padding-left: 5px;">
+		<div class="container" id="semantic">
 			<h4>Semantic tag <span><a href="#myannotations_summary" id="link_to_top">^top</a></h4>
 			{% if semantic_table %}
 				<table class="table table-condensed table-responsive table-striped" >
@@ -123,7 +123,7 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 			{% endif %}
 		</div>
 
-		<div class="container" id="keyword" style="padding-left: 5px;">
+		<div class="container" id="keyword">
 			<h4>Free-text keyword <span><a href="#myannotations_summary" id="link_to_top">^top</a></h4>
 			{% if keyword_table %}
 				<table class="table table-condensed table-responsive table-striped" >
@@ -179,7 +179,7 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 			{% endif %}
 		</div>
 
-		<div class="container" id="comment" style="padding-left: 5px;margin-bottom:310px;">
+		<div class="container" id="comment">
 			<h4>Comment <span><a href="#myannotations_summary" id="link_to_top">^top</a></h4>
 			{% if comment_table %}
 				<table class="table table-condensed table-responsive table-striped" >

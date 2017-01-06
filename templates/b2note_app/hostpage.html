@@ -16,6 +16,48 @@
 
 	<title>B2Note service demo</title>
 
+<style>
+	#header {height: auto !important; }
+
+	#hostpage {background: #FFFFFF; }
+	#content {background: #FFFFFF url("static/images/bg_b2note.jpg") no-repeat fixed center center !important; padding-bottom: 40px;}
+
+	#hostpage h1 {text-align: left;}
+	footer {
+	    /* background: #dddddd url("static/images/decor-footer.png") no-repeat scroll right bottom; */
+	    background: #f7f3e9 url("static/images/color-line.png") repeat-x scroll left top;
+	    height: auto;
+	    padding: 20px 40px;
+	}
+	#footer-content {
+	    display: table;
+	    margin: 0 auto;
+	    padding-top: 10px;
+	}
+	#footer-content img {
+	    float: left;
+	    margin-right: 10px;
+	}
+	#footer-content p {
+	    font-size: 11px;
+	    width: 100%;
+	}
+	#footer-content a {
+	    color: #e5601e;
+	}
+
+	.clearfix, clearfix::before {clear:both;}
+
+	.navbar-nav > li > a {
+	    padding-bottom: 5px;
+	    padding-top: 5px;
+	}
+
+	footer .navbar-nav > li > a {
+	    font-size: 11px;
+	}
+</style>
+
 </head>
 
 <body id="hostpage">
@@ -30,18 +72,14 @@
 
 		<div class = "container" id="header">
 
-            <section class="row">
+            <section class="row clearfix">
 
-                <div class="col-xs-8 col-sm-4 col-md-2">
-
-                    <img alt="EUDAT" title="EUDAT" src="{% static 'images/EUDAT-logo_3.png' %}" />
-
+              <div class="col-xs-12 col-sm-12 col-md-2">
+                    <img alt="EUDAT" title="EUDAT" src="static/images/logo.png" style="width: 100%;"/>
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-2">
-
-    			    <img alt="B2NOTE" title="B2NOTE" src="{% static 'images/B2NOTE-logo.png' %}" />
-
+                <div class="col-xs-12 col-sm-12 col-md-10">
+    			    <!--img alt="B2NOTE" title="B2NOTE" src="{% static 'images/B2NOTE-logo.png' %}" /-->
                 </div>
 
                 <div class="clear"> </div>
@@ -75,7 +113,7 @@
 
             <h3>
 
-                <a class="btn btn-info" data-toggle="collapse" href="#collapse1"><strong>Some explaining</strong></a>
+                <a class="btn btn-info" data-toggle="collapse" href="#collapse1"><strong>How to use it</strong></a>
 
                 <a href="https://86.50.168.182/record/9" class="btn btn-warning" title="Click to be directed to B2Share integration demo." target="_blank"/>Click for B2Share integration demo instead</a>
 
@@ -85,7 +123,7 @@
 
             <div id="collapse1" class="panel-collapse collapse">
 
-                <p>This page emulates the <strong>outcome of a search</strong> performed by a user of EUDAT services such as B2Share.</p>
+                <p>This page emulates the <strong>outcome of a search</strong> performed by a user of EUDAT services such as B2SHARE.</p>
 
                 <p>Thus, it displays a list of hyperlinks pointing to <strong>files stored by EUDAT</strong>.</p>
 
@@ -93,13 +131,13 @@
 
                 <p>Next to each hyperlink stands a "Create Annotation" button.</p>
 
-                <p>Clicking one of these buttons <strong>triggers the B2Note interface</strong>.</p>
+                <p>Clicking one of these buttons <strong>triggers the B2NOTE interface</strong>.</p>
 
                 <br>
 
                 <p>The B2note interface allows the user to <strong>select semantic concepts </strong> for describing the corresponding file.</p>
 
-                <p>The semantic relations created in the process are <strong>stored</strong> by the B2Note service, allowing later retrieval and processing.</p>
+                <p>The semantic relations created in the process are <strong>stored</strong> by the B2NOTE service, allowing later retrieval and processing.</p>
 
             </div>
 
@@ -169,7 +207,7 @@
 
         <div class = "container">
 
-            <a class="btn btn-info" data-toggle="collapse" href="#collapse2"><strong>Some extra explaining</strong></a>
+            <a class="btn btn-info" data-toggle="collapse" href="#collapse2"><strong>Further information</strong></a>
 
             <div id="collapse2" class="panel-collapse collapse in">
 
@@ -203,11 +241,26 @@
 
 	<footer>
 		<div id="footer-content">
-			<img alt="CE logo" title="CE logo" src="{% static 'images/logo_ce.jpg' %}" />
-			<p>
-				EUDAT receives funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No. 654065.
-				<a href="http://www.eudat.eu/legal-notice" target="_blank">Legal Notice</a>
-			</p>
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12 col-sm-1 col-md-1">
+						<img alt="CE logo" title="CE logo" src="{% static 'images/logo_ce.jpg' %}" />
+					</div>
+					<div class="col-xs-12 col-sm-5 col-md-5">
+						<p>
+							EUDAT receives funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No. 654065.
+							<a href="http://www.eudat.eu/legal-notice" target="_blank">Legal Notice</a>
+						</p>
+					</div>
+					<div class="col-xs-12 col-sm-6 col-md-6 text-right">
+						<nav class="navbar navbar-footer">
+							<ul id="menu" class="nav navbar-nav navbar-right pull-right">
+								<li><a target="_blank" href="https://eudat.eu/what-eudat">About EUDAT</a></li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
 		</div>
 	</footer>
 
