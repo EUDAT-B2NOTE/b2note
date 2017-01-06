@@ -19,8 +19,10 @@
 			<link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}" />
 			<link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
 			<link rel='stylesheet' type='text/css' href="{% static 'css/dashboard.css' %}" />
-			<link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" />
+			<!--<link rel='stylesheet' type='text/css' href="{% static 'css/style.css' %}" /-->
 		{% endblock %}
+
+
 
 		{% block javascript %}
 			<script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
@@ -46,7 +48,7 @@
 
         <div id="main" role="main">
 
-			<div class="container col-xs-3" id="wayback" align="left" style="margin-top:20px;">
+			<div class="container" id="wayback" align="left">
 
 				{% for link in shortcutlinks %}
 

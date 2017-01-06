@@ -12,7 +12,7 @@
                         <td>
                             {% if all_s != None %}
 								<a href="#semantic" title="All semantic annotations,&#13click for full list.">
-                                	<span class="badge" style="font-weight: 400;opacity: 0.8;background: #2040a4;font-size:14px;">{{all_s}}</span>
+                                	<span class="badge" >{{all_s}}</span>
 								</a>
                             {% endif %}
                         </td>
@@ -20,11 +20,11 @@
 							<td>
 								{% if my_s == 0 %}
 									<a href="#semantic" title="No semantic annotation was created by me.">
-										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_s}}</span>
+										<span class="badge bg-orange" >{{my_s}}</span>
 									</a>
 								{% else %}
 									<a href="#semantic" title="My semantic annotations,&#13click for full list.">
-										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_s}}</span>
+										<span class="badge bg-orange" >{{my_s}}</span>
 									</a>
 								{% endif %}
 							</td>
@@ -37,7 +37,7 @@
                         <td>
                             {% if all_k != None %}
 								<a href="#keyword" title="All keyword annotations,&#13click for full list.">
-                                	<span class="badge" style="font-weight: 400;opacity: 0.8;background: #2040a4;font-size:14px;">{{all_k}}</span>
+                                	<span class="badge" >{{all_k}}</span>
 								</a>
                             {% endif %}
                         </td>
@@ -45,11 +45,11 @@
 							<td>
 								{% if my_k == 0 %}
 									<a href="#keyword" title="No free-text keyword annotation was created by me.">
-										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_k}}</span>
+										<span class="badge bg-orange" >{{my_k}}</span>
 									</a>
 								{% else %}
 									<a href="#keyword" title="My keyword annotations,&#13click for full list.">
-										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_k}}</span>
+										<span class="badge bg-orange" >{{my_k}}</span>
 									</a>
 								{% endif %}
 							</td>
@@ -62,7 +62,7 @@
                         <td>
                             {% if all_c != None %}
 								<a href="#comment" title="All comment annotations,&#13click for full list.">
-                                	<span class="badge" style="font-weight: 400;opacity: 0.8;background: #2040a4;font-size:14px;">{{all_c}}</span>
+                                	<span class="badge" >{{all_c}}</span>
 								</a>
                             {% endif %}
                         </td>
@@ -70,11 +70,11 @@
 							<td>
 								{% if my_c == 0 %}
 									<a href="#comment" title="No comment annotation was created by me.">
-										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_c}}</span>
+										<span class="badge bg-orange" >{{my_c}}</span>
 									</a>
 								{% else %}
 									<a href="#comment" title="My comment annotations,&#13click for full list.">
-										<span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">{{my_c}}</span>
+										<span class="badge bg-orange" >{{my_c}}</span>
 									</a>
 								{% endif %}
 							</td>
@@ -84,7 +84,7 @@
 			</table>
 		</div>
 
-		<div class="container" id="semantic" style="padding-left: 5px;">
+		<div class="container" id="semantic">
 			<h4>Semantic tag <span><a href="#allannotations_summary" id="link_to_top">^top</a></h4>
 			{% if semantic_table %}
 				<table class="table table-condensed table-responsive table-striped" >
@@ -153,7 +153,7 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 			{% endif %}
 		</div>
 
-		<div class="container" id="keyword" style="padding-left: 5px;">
+		<div class="container" id="keyword">
 			<h4>Free-text keyword <span><a href="#allannotations_summary" id="link_to_top">^top</a></h4>
 			{% if keyword_table %}
 				<table class="table table-condensed table-responsive table-striped" >
@@ -220,7 +220,7 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 			{% endif %}
 		</div>
 
-		<div class="container" id="comment" style="padding-left: 5px;margin-bottom:310px;">
+		<div class="container" id="comment">
 			<h4>Comment <span><a href="#allannotations_summary" id="link_to_top">^top</a></span></h4>
 			{% if comment_table %}
 				<table class="table table-condensed table-responsive table-striped" >

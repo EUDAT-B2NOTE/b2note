@@ -236,23 +236,36 @@
 
             {% endif %}
 
-            <hr>
+
 
             <div class="container" id="my_annotations_mainpage_container">
                 <!--<a class="btn btn-link" data-toggle="collapse" href="#myannotation_collapse">
                     <i class="glyphicon glyphicon-triangle-right"></i>
                 </a>-->
-                <span class="caret caret-lg" data-toggle="collapse" href="#myannotation_collapse" style="border-width:8px;"></span>
-                <a href="/myannotations"><span class="badge" style="font-weight: 400;opacity: 0.8;background: #40c460;font-size:14px;">All my annotations</span></a>
+
+                <div class="row">
+	                <div class="col-xs-4 padding-top-5px">
+		                <!--span class="caret caret-lg" data-toggle="collapse" href="#myannotation_collapse" style="border-width:8px;"></span-->
+		                <a data-toggle="collapse" href="#myannotation_collapse"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a>
+	                </div>
+	                <div class="col-xs-8 text-right">
+		                <a href="/myannotations" class="btn">All my annotations</a>
+	                </div>
+                </div>
+
+
+
+
+
                 <div id="myannotation_collapse" class="panel-collapse collapse">
                     <table class="table table-condensed table-responsive" id="myannot_table_main">
                         <tr>
                             <!--<div class = "container">-->
                                 {% if my_s != None %}
                                     <td><a href="/myannotations#semantic" title="Click for full list.">Semantic tag</a></td>
-                                    <td>
+                                    <td class="text-right">
                                         <a href="/myannotations#semantic" title="Click for full list." style="padding:2px">
-                                            <span class="badge">{{my_s}}</span>
+                                            <span class="bg-orange">{{my_s}}</span>
                                         </a>
                                         <!--<a href="/myannotations#semantic" title="Click for full list.">
                                             <svg height="20" width="20">
@@ -270,49 +283,60 @@
                             <!--</div>-->
                         </tr>
                         <tr>
-                            <div class = "container">
+
                                 {% if my_k != None %}
                                     <td>
                                         <a href="/myannotations#keyword" title="Click for full list.">Free-text keyword</a>
                                     </td>
-                                    <td>
+                                    <td class="text-right">
                                         <a href="/myannotations#keyword" title="Click for full list." style="padding:2px">
-                                            <span class="badge">{{my_k}}</span>
+                                            <span class="bg-orange">{{my_k}}</span>
                                         </a>
                                     </td>
                                 {% endif %}
-                            </div>
+
                         </tr>
                         <tr>
-                            <div class = "container">
+
                                 {% if my_c != None %}
                                     <td>
                                         <a href="/myannotations#comment" title="Click for full list.">Comment</a>
                                     </td>
-                                    <td>
+                                    <td class="text-right">
                                         <a href="/myannotations#comment" title="Click for full list." style="padding:2px">
-                                            <span class="badge">{{my_c}}</span>
+                                            <span class="bg-orange">{{my_c}}</span>
                                         </a>
                                     </td>
                                 {% endif %}
-                            </div>
+
                         </tr>
                     </table>
                 </div>
             </div>
-            <br>
+
         </div>
     </div>
 
-    <br>
+  <br>
 
-    <div class="container" id="pulledarea">
+    <div id="pulledarea">
         <div class="container" id="for_padding_adjsutement">
             <!--<a class="btn btn-link" data-toggle="collapse" href="#allannotations_collapse">
                 <i class="glyphicon glyphicon-triangle-right"></i>
             </a>-->
-            <span class="caret caret-lg" data-toggle="collapse" href="#allannotations_collapse" style="border-width:8px;"></span>
-            <a href="/allannotations"><span class="badge" style="font-weight: 400;opacity: 0.8;background: #2040a4;font-size:14px;">All annotations about this file</span></a>
+
+                <div class="row">
+	                <div class="col-xs-2 padding-top-5px">
+		                <!--span class="caret caret-lg" data-toggle="collapse" href="#myannotation_collapse" style="border-width:8px;"></span-->
+		                <a data-toggle="collapse" href="#allannotations_collapse"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a>
+	                </div>
+	                <div class="col-xs-10 text-right">
+		                <a href="/allannotations">All annotations about this file</a>
+	                </div>
+                </div>
+
+				<br/>
+
             <div id="allannotations_collapse" class="panel-collapse collapse">
                 <table  class="table table-condensed table-responsive" id="allannot_table_main">
                     <tr>
@@ -331,7 +355,7 @@
                                     {% endif %}
                                 {% endif %}
                             </td>
-                            <td>
+                            <td class="text-right">
                                 {% if myf_s != None %}
                                     {% if myf_s == 0 %}
                                         <a href="#" title="No semantic annotation was created by me." style="padding:2px" >
