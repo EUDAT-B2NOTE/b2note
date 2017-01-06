@@ -104,7 +104,8 @@ def export_annotations(request):
                 json_data['Content-Disposition'] = 'attachment; filename=' + "b2note_export_" + nowi
                 download_json.file_data = json_data
 
-            navbarlinks = list_navbarlinks(request, ["Download"])
+            navbarlinks = list_navbarlinks(request, ["Download", "Help page"])
+            navbarlinks.append({"url": "/help#helpsection_exportpage", "title": "Help page", "icon": "question-sign"})
             shortcutlinks = list_shortcutlinks(request, ["Download"])
 
             data_dict = {
@@ -396,7 +397,8 @@ def edit_annotation(request):
                 if A and A.body and A.body[0] and A.body[0].jsonld_id:
                     shortform = A.body[0].jsonld_id[::-1][:A.body[0].jsonld_id[::-1].find("/")][::-1]
 
-    navbarlinks = list_navbarlinks(request, [])
+    navbarlinks = list_navbarlinks(request, ["Help page"])
+    navbarlinks.append({"url": "/help#helpsection_editpage", "title": "Help page", "icon": "question-sign"})
     shortcutlinks = list_shortcutlinks(request, [])
 
     data_dict = {
@@ -679,8 +681,7 @@ def annotation_summary(request):
 
                     else:
 
-                        allannotations_list = Annotation.objects.raw_query(
-                            {'body.value': A.body[0].value, 'motivation': "tagging"})
+                        allannotations_list = Annotation.objects.raw_query({'body.value': A.body[0].value, 'motivation': "tagging"})
 
                 elif A.body[0].value and A.motivation and A.motivation[0] == "commenting":
 
@@ -727,12 +728,15 @@ def annotation_summary(request):
 
                 if allannotations_list: all_or_mine = "mine"
 
+            if not allannotations_list: allannotations_list = [A]
+
             if r:
                 for rr in r.keys():
                     rrr = r[rr]
                     break
 
-    navbarlinks = list_navbarlinks(request, [])
+    navbarlinks = list_navbarlinks(request, ["Help page"])
+    navbarlinks.append({"url": "/help#helpsection_annotationsummarypage", "title": "Help page", "icon": "question-sign"})
     shortcutlinks = list_shortcutlinks(request, [])
 
     data_dict = {
@@ -891,7 +895,8 @@ def myannotations(request):
 
             my_c += 1
 
-    navbarlinks = list_navbarlinks(request, [])
+    navbarlinks = list_navbarlinks(request, ["Help page"])
+    navbarlinks.append({"url": "/help#helpsection_myannotationspage", "title": "Help page", "icon": "question-sign"})
     shortcutlinks = list_shortcutlinks(request, [])
 
     data_dict = {
@@ -1075,7 +1080,8 @@ def allannotations(request):
             else:
                 all_c += 1
 
-    navbarlinks = list_navbarlinks(request, [])
+    navbarlinks = list_navbarlinks(request, ["Help page"])
+    navbarlinks.append({"url": "/help#helpsection_allannotationspage", "title": "Help page", "icon": "question-sign"})
     shortcutlinks = list_shortcutlinks(request, [])
 
     data_dict = {
@@ -1216,7 +1222,8 @@ def interface_main(request):
         myf_c = len([A for A in allannotations_list if A.creator and A.creator[0].nickname == user_nickname
                     and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0] == "commenting"])
 
-    navbarlinks = list_navbarlinks(request, [])
+    navbarlinks = list_navbarlinks(request, ["Help page"])
+    navbarlinks.append( {"url": "/help#helpsection_mainpage", "title": "Help page", "icon": "question-sign"} )
     shortcutlinks = []
 
     if all_s and myf_s: all_s = all_s - myf_s
@@ -1585,7 +1592,8 @@ def search_annotations(request):
                             "search_param":None
                             }]
 
-    navbarlinks = list_navbarlinks(request, ["Search"])
+    navbarlinks = list_navbarlinks(request, ["Search", "Help page"])
+    navbarlinks.append({"url": "/help#helpsection_searchpage", "title": "Help page", "icon": "question-sign"})
     shortcutlinks = list_shortcutlinks(request, ["Search"])
 
     if search_str or exact or related:
@@ -1636,7 +1644,8 @@ def select_search_results(request):
         userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
         user_nickname = userprofile.nickname
 
-    navbarlinks = list_navbarlinks(request, ["Search"])
+    navbarlinks = list_navbarlinks(request, ["Search", "Help page"])
+    navbarlinks.append({"url": "/help#helpsection_exportsearchpage", "title": "Help page", "icon": "question-sign"})
     shortcutlinks = list_shortcutlinks(request, ["Search"])
 
     search_str = None
@@ -1958,7 +1967,8 @@ def search_annotations_bck(request):
         userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
         user_nickname = userprofile.nickname
 
-    navbarlinks = list_navbarlinks(request, ["Search"])
+    navbarlinks = list_navbarlinks(request, ["Search", "Help page"])
+    navbarlinks.append({"url": "/help#helpsection_searchpage", "title": "Help page", "icon": "question-sign"})
     shortcutlinks = list_shortcutlinks(request, ["Search"])
 
     return render(request, "b2note_app/searchpage.html", {
