@@ -792,7 +792,7 @@ def myannotations(request):
     except Annotation.DoesNotExist:
         allannotations_list = []
 
-    #allannotations_list = sorted(allannotations_list, key=lambda Annotation: Annotation.created, reverse=True)
+    allannotations_list = sorted(allannotations_list, key=lambda Annotation: Annotation.created, reverse=True)
 
     my_s  = 0
     my_k  = 0
