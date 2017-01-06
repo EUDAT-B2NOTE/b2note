@@ -175,7 +175,8 @@ def profilepage(request):
     User profile view.
     """
 
-    navbarlinks = list_navbarlinks(request, [])
+    navbarlinks = list_navbarlinks(request, ["Help page"])
+    navbarlinks.append({"url": "/help#helpsection_useraccountpage", "title": "Help page", "icon": "question-sign"})
     shortcutlinks = list_shortcutlinks(request, [])
 
     try:
@@ -200,7 +201,8 @@ def login(request):
     Log in view
     """
 
-    navbarlinks = list_navbarlinks(request, ["Login"])
+    navbarlinks = list_navbarlinks(request, ["Login", "Help page"])
+    navbarlinks.append({"url": "/help#helpsection_loginpage", "title": "Help page", "icon": "question-sign"})
     shortcutlinks = []
 
     if request.method == 'POST':
@@ -232,7 +234,8 @@ def register(request):
     User registration view.
     """
 
-    navbarlinks = list_navbarlinks(request, ["Registration"])
+    navbarlinks = list_navbarlinks(request, ["Registration", "Help page"])
+    navbarlinks.append({"url": "/help#helpsection_registrationpage", "title": "Help page", "icon": "question-sign"})
     shortcutlinks = list_shortcutlinks(request, ["Registration"])
 
     if request.method == 'POST':
