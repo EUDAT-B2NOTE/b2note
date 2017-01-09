@@ -1,0 +1,18 @@
+{% extends "b2note_app/__base.html" %}
+
+{% block content %}
+
+    <div class="container" id="feedbackpage_content">
+
+        <div class="container col-xs-12 pull-center" style="margin-left:0;padding-left:5;margin-bottom:20px;">
+            <h3>Feedback</h3>
+        </div>
+
+        <br>
+
+        {{ feedback_f.as_p }}
+
+
+    </div>
+
+{% endblock %}

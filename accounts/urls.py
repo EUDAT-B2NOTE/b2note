@@ -6,6 +6,7 @@ urlpatterns = patterns('',
     url(r'^login$', 'accounts.views.login', name='login'),
     url(r'^logout$', 'accounts.views.logout', name='logout'),
     url(r'^profilepage$', 'accounts.views.profilepage', name='profile'),
+    url(r'^feedbackpage$', 'accounts.views.feedbackpage', name='feedback'),
 
     url(r'^reset_password_confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$', PasswordResetConfirmView.as_view(),name='reset_password_confirm'),
     # PS: url above is going to used for next section of implementation.
