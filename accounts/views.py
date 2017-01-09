@@ -17,12 +17,47 @@ from django.core.mail import send_mail
 from b2note_devel.settings import DEFAULT_FROM_EMAIL
 from django.views.generic import *
 from forms.reset_password import PasswordResetRequestForm, SetPasswordForm, AccountRetrieveForm
+from forms.user_feebacks import FeedbackForm
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
 import logging
 
 stdlogger = logging.getLogger('b2note')
+
+
+
+def feedbackpage(request):
+    """
+    Page for users to provide feedbacks on their epxerience of the service.
+    One form for each of the 3 tabs (user-feedback, feature request and bug report).
+
+    :param request:
+    :return:
+    """
+
+    navbarlinks = list_navbarlinks(request, ["Help page"])
+    navbarlinks.append({"url": "/help#helpsection_fedbackpage", "title": "Help page", "icon": "question-sign"})
+    shortcutlinks = list_shortcutlinks(request, [])
+
+    try:
+        if request.session.get("user"):
+
+            feedback_f = FeedbackForm()
+
+            data_dict = {"navbarlinks":  navbarlinks,
+                         "shortcutlinks": shortcutlinks,
+                         "feedback_f": feedback_f,
+                         "feature_f": "feature",
+                         "bug_f": "bug report"}
+            return render_to_response('accounts/feedback_page.html', data_dict, context_instance=RequestContext(request))
+        else:
+            return redirect('/logout')
+    except Exception:
+        print "Could not load or redirect from fedebackpage view."
+        stdlogger.error("Could not load or redirect from fedebackpage view.")
+        return False
+
 
 
 def request_account_retrieval(request):
@@ -137,9 +172,12 @@ class ResetPasswordRequestView(FormView):
             associated_users = UserCred.objects.using('users').filter(Q(username=data))
             if associated_users.exists():
                 for user in associated_users:
+                    domain_root = request.META['HTTP_HOST']
+                    if domain_root and isinstance(domain_root, (unicode, str)) and domain_root[:len("http://b2note")]=="http://b2note":
+                        domain_root = "https://b2note"+domain_root[len("http://b2note"):]
                     c = {
                         'email': user.username,
-                        'domain': request.META['HTTP_HOST'],
+                        'domain': domain_root, #request.META['HTTP_HOST'],
                         'site_name': 'EUDAT B2Note',
                         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                         'user': user,

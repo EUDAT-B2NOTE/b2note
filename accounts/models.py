@@ -45,3 +45,51 @@ class AnnotatorProfile(models.Model):
                                                               ('i','intermediate'),
                                                               ('e','expert')] )
 
+class UserFedback(models.Model):
+    feedback_id     = models.AutoField( primary_key=True )
+    email           = models.ForeignKey( AnnotatorProfile, to_field="email" )
+    date_created    = models.DateTimeField( auto_now_add=True, null=True )
+    eval_overall    = models.PositiveSmallIntegerField()
+    eval_usefull    = models.PositiveSmallIntegerField()
+    eval_experience = models.PositiveSmallIntegerField()
+    eval_interface  = models.PositiveSmallIntegerField()
+    eval_efficiency = models.PositiveSmallIntegerField()
+    general_comment = models.CharField( max_length=5000)
+
+
+class FeatureRequest(models.Model):
+    feature_id  = models.AutoField( primary_key=True )
+    email       = models.ForeignKey(AnnotatorProfile, to_field="email")
+    title       = models.CharField( max_length=100 )
+    short_description   = models.CharField( max_length=5000 )
+    extra_description   = models.TextField()
+    date_created        = models.DateTimeField(auto_now_add=True, null=True)
+    alt_contact         = models.CharField( max_length=500 )
+
+
+class BugReport(models.Model):
+    bugreport_id    = models.AutoField( primary_key=True )
+    email           = models.ForeignKey(AnnotatorProfile, to_field="email")
+    CR = 'Create'
+    ED = 'Edit'
+    EX = 'Export'
+    SE = 'Search'
+    OT = 'Other'
+    FUNCTIONALITY_CHOICES = (
+        (CR, 'Create annotation'),
+        (ED, 'Edit annotation'),
+        (EX, 'Export annotation'),
+        (SE, 'Ssearch annotation'),
+        (OT, 'Other functionality')
+    )
+    not_working     = models.CharField(max_length=2,
+                                      choices=FUNCTIONALITY_CHOICES,
+                                      default=OT)
+    expected            = models.CharField( max_length=5000 )
+    actual              = models.CharField( max_length=5000 )
+    extra_description   = models.TextField()
+    browser             = models.CharField( max_length=200 )
+    severity            = models.PositiveSmallIntegerField()
+    date_created        = models.DateTimeField(auto_now_add=True, null=True)
+    alt_contact         = models.CharField( max_length=500 )
+
