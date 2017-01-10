@@ -67,7 +67,7 @@ def feedbackpage(request):
                         fdbck.save()
 
                         c = {'form': feedback_f, 'username': userprofile.nickname}
-                        email_template_name = 'accounts/account_retrieve_email.html'
+                        email_template_name = 'accounts/userfeedback_email.html'
                         # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
                         # Email subject *must not* contain newlines
                         email = loader.render_to_string(email_template_name, c)
@@ -96,10 +96,10 @@ def feedbackpage(request):
                                               alt_contact       = feature_f.cleaned_data["alt_contact"],
                                               )
 
-                        #featr.save()
+                        featr.save()
 
                         c = {'form': feature_f, 'username': userprofile.nickname}
-                        email_template_name = 'accounts/account_retrieve_email.html'
+                        email_template_name = 'accounts/userfeedback_email.html'
                         # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
                         # Email subject *must not* contain newlines
                         email = loader.render_to_string(email_template_name, c)
@@ -130,10 +130,10 @@ def feedbackpage(request):
                                             alt_contact         = bugreport_f.cleaned_data["alt_contact"],
                                             )
 
-                        #bugrep.save()
+                        bugrep.save()
 
                         c = {'form': bugreport_f, 'username': userprofile.nickname}
-                        email_template_name = 'accounts/account_retrieve_email.html'
+                        email_template_name = 'accounts/userfeedback_email.html'
                         # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
                         # Email subject *must not* contain newlines
                         email = loader.render_to_string(email_template_name, c)
