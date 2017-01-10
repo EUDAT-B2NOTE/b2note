@@ -17,7 +17,7 @@ from django.core.mail import send_mail
 from b2note_devel.settings import DEFAULT_FROM_EMAIL
 from django.views.generic import *
 from forms.reset_password import PasswordResetRequestForm, SetPasswordForm, AccountRetrieveForm
-from forms.user_feebacks import FeedbackForm
+from forms.user_feebacks import FeedbackForm, FeatureForm, BugReportForm
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
@@ -47,40 +47,89 @@ def feedbackpage(request):
 
             if request.method == 'POST':
 
-                feedback_f = FeedbackForm(data=request.POST)
+                if request.POST.get("feedback_submit") != None:
 
-                if feedback_f.is_valid():
+                    feedback_f = FeedbackForm(data=request.POST)
 
-                    fdbck = UserFeedback( email=userprofile,
-                                          general_comment=feedback_f.cleaned_data["general_comment"],
-                                          eval_overall=int(feedback_f.cleaned_data["eval_overall"]),
-                                          eval_usefull=int(feedback_f.cleaned_data["eval_usefull"]),
-                                          eval_experience=int(feedback_f.cleaned_data["eval_experience"]),
-                                          eval_interface=int(feedback_f.cleaned_data["eval_interface"]),
-                                          eval_efficiency=int(feedback_f.cleaned_data["eval_efficiency"]),
-                                          )
+                    if feedback_f.is_valid():
 
-                    #fdbck.save()
+                        fdbck = UserFeedback( email=userprofile,
+                                              general_comment=feedback_f.cleaned_data["general_comment"],
+                                              eval_overall=int(feedback_f.cleaned_data["eval_overall"]),
+                                              eval_usefull=int(feedback_f.cleaned_data["eval_usefull"]),
+                                              eval_experience=int(feedback_f.cleaned_data["eval_experience"]),
+                                              eval_interface=int(feedback_f.cleaned_data["eval_interface"]),
+                                              eval_efficiency=int(feedback_f.cleaned_data["eval_efficiency"]),
+                                              )
 
-                    msg = "Thank you for providing us your feedback."
+                        #fdbck.save()
 
-                    data_dict = {"navbarlinks":  navbarlinks,
-                                 "shortcutlinks": shortcutlinks,
-                                 "msg": msg}
+                        msg = "Thank you for providing us your feedback."
 
-                    return render_to_response('accounts/feedback_page.html', data_dict, context_instance=RequestContext(request))
+                        data_dict = {"navbarlinks":  navbarlinks,
+                                     "shortcutlinks": shortcutlinks,
+                                     "msg": msg}
 
-                else:
+                        return render_to_response('accounts/feedback_page.html', data_dict, context_instance=RequestContext(request))
 
-                    print "IS NOT VALID. " * 5
+                if request.POST.get("feature_submit") != None:
 
-            feedback_f = FeedbackForm()
+                    feature_f = FeatureForm(data=request.POST)
+
+                    if feature_f.is_valid():
+
+                        featr = FeatureRequest( email=userprofile,
+                                              title             = feature_f.cleaned_data["title"],
+                                              short_description = feature_f.cleaned_data["short_description"],
+                                              extra_description = feature_f.cleaned_data["extra_description"],
+                                              alt_contact       = feature_f.cleaned_data["alt_contact"],
+                                              )
+
+                        #featr.save()
+
+                        msg = "Thank you for submitting a feature request."
+
+                        data_dict = {"navbarlinks":  navbarlinks,
+                                     "shortcutlinks": shortcutlinks,
+                                     "msg": msg}
+
+                        return render_to_response('accounts/feedback_page.html', data_dict, context_instance=RequestContext(request))
+
+                if request.POST.get("bug_submit") != None:
+
+                    bugreport_f = BugReportForm(data=request.POST)
+
+                    if bugreport_f.is_valid():
+
+                        bugrep = BugReport( email=userprofile,
+                                            affected_function   = bugreport_f.cleaned_data["affected_function"],
+                                            short_description   = bugreport_f.cleaned_data["short_description"],
+                                            extra_description   = bugreport_f.cleaned_data["extra_description"],
+                                            severity            = int(bugreport_f.cleaned_data["severity"]),
+                                            browser             = bugreport_f.cleaned_data["browser"],
+                                            alt_contact         = bugreport_f.cleaned_data["alt_contact"],
+                                            )
+
+                        #bugrep.save()
+
+                        msg = "Thank you for submitting a bug report."
+
+                        data_dict = {"navbarlinks":  navbarlinks,
+                                     "shortcutlinks": shortcutlinks,
+                                     "msg": msg}
+
+                        return render_to_response('accounts/feedback_page.html', data_dict, context_instance=RequestContext(request))
+
+
+            feedback_f  = FeedbackForm()
+            feature_f   = FeatureForm()
+            bugreport_f = BugReportForm()
 
             data_dict = {"navbarlinks": navbarlinks,
                          "shortcutlinks": shortcutlinks,
                          "feedback_f": feedback_f,
-                         "feature_f": "feature",
-                         "bug_f": "bug report"}
+                         "feature_f": feature_f,
+                         "bugreport_f": bugreport_f }
 
             return render_to_response('accounts/feedback_page.html', data_dict, context_instance=RequestContext(request))
 

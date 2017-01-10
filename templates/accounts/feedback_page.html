@@ -19,19 +19,46 @@
 
         {% else %}
 
-            <form action="/accounts/feedbackpage" method="post" class="form-horizontal">
-
-                {% csrf_token %}
-
-                {{feedback_f.as_p}}
-
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-6">
-                        <button type="submit" class="btn btn-default" id="feedback_submit">Submit</button>
-                    </div>
+            <ul class="nav nav-tabs" id="create_tabs">
+                <li class="active"><a data-toggle="tab" href="#feedback">Evaluate</a></li>
+                <li><a data-toggle="tab" href="#feature">Feature request</a></li>
+                <li><a data-toggle="tab" href="#bug_report">Bug report</a></li>
+            </ul>
+            <div id="feedbackpage_tab_contents" class="tab-content">
+                <div id="feedback" class="tab-pane fade in active form-group">
+                    <form action="/accounts/feedbackpage" method="post" class="form-horizontal">
+                        {% csrf_token %}
+                        {{feedback_f.as_p}}
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-6">
+                                <button type="submit" class="btn btn-default" id="feedback_submit" name="feedback_submit">Submit</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-
-            </form>
+                <div id="feature" class="tab-pane fade in form-group">
+                    <form action="/accounts/feedbackpage" method="post" class="form-horizontal">
+                        {% csrf_token %}
+                        {{feature_f.as_p}}
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-6">
+                                <button type="submit" class="btn btn-default" id="feature_submit">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="bug_report" class="tab-pane fade in form-group">
+                    <form action="/accounts/feedbackpage" method="post" class="form-horizontal">
+                        {% csrf_token %}
+                        {{bugreport_f.as_p}}
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-6">
+                                <button type="submit" class="btn btn-default" id="bug_submit">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
         {% endif %}
 
