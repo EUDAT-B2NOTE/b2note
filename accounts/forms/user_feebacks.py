@@ -40,13 +40,13 @@ class BugReportForm(forms.Form):
     """
 
     affected_function   = forms.ChoiceField( widget=forms.Select(), required=False, choices=[
-        ('Generic', 'generic bug'),
+        ('Generic', 'Generic bug'),
         ('Create', 'Create annotation'),
         ('Edit', 'Edit annotation'),
         ('Export', 'Export annotation'),
         ('Search', 'Search annotation'),
         ('Other', 'Other functionality')],
-                                             label="Affected functionality", initial='5' )
+                                             label="Affected functionality", initial='Generic' )
     short_description   = forms.CharField(widget=forms.widgets.Textarea(attrs={'maxlength':'5000'}), required=False, label="Problem description (<5000 char.)")
     extra_description   = forms.CharField(widget=forms.widgets.Textarea(), required=False, label="Extra information")
     browser             = forms.CharField(widget=forms.widgets.TextInput(attrs={'maxlength':'100'}), required=False, label="Title (<200 char.)")
