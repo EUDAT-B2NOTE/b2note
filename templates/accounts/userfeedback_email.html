@@ -1,8 +1,8 @@
 
 {% load i18n %}{% autoescape off %}
 
-{% if username %}Originating user pseudonym:
-{{ username }}{% endif %}
+{% if user_contact %}Originating user registered email:
+{{ user_contact }}{% endif %}
 {% for f in form %}{% if "captcha" not in f.name %}
 {{ f.label }}:
 {{ f.value }}
