@@ -3,7 +3,7 @@ from django.template import RequestContext
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 from django.forms.models import model_to_dict
 from accounts.forms import AuthenticationForm, RegistrationForm, ProfileForm
-from accounts.models import AnnotatorProfile, UserCred
+from accounts.models import AnnotatorProfile, UserCred, UserFeedback, FeatureRequest, BugReport
 
 from b2note_app.nav_support_functions import list_navbarlinks, list_shortcutlinks
 
@@ -41,18 +41,49 @@ def feedbackpage(request):
     shortcutlinks = list_shortcutlinks(request, [])
 
     try:
+
         if request.session.get("user"):
+            userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
+
+            if request.method == 'POST':
+
+                feedback_f = FeedbackForm(data=request.POST)
+
+                if feedback_f.is_valid():
+
+                    fdbck = UserFeedback( email=userprofile,
+                                          general_comment=feedback_f.cleaned_data["general_comment"],
+                                          eval_overall=int(feedback_f.cleaned_data["eval_overall"]),
+                                          eval_usefull=int(feedback_f.cleaned_data["eval_usefull"]),
+                                          eval_experience=int(feedback_f.cleaned_data["eval_experience"]),
+                                          eval_interface=int(feedback_f.cleaned_data["eval_interface"]),
+                                          eval_efficiency=int(feedback_f.cleaned_data["eval_efficiency"]),
+                                          )
+
+                    #fdbck.save()
+
+                    msg = "Thank you for providing us your feedback."
+
+                    data_dict = {"navbarlinks":  navbarlinks,
+                                 "shortcutlinks": shortcutlinks,
+                                 "msg": msg}
+
+                    return render_to_response('accounts/feedback_page.html', data_dict, context_instance=RequestContext(request))
+
+                else:
+
+                    print "IS NOT VALID. " * 5
 
             feedback_f = FeedbackForm()
 
-            #print feedback_f
-
-            data_dict = {"navbarlinks":  navbarlinks,
+            data_dict = {"navbarlinks": navbarlinks,
                          "shortcutlinks": shortcutlinks,
                          "feedback_f": feedback_f,
                          "feature_f": "feature",
                          "bug_f": "bug report"}
+
             return render_to_response('accounts/feedback_page.html', data_dict, context_instance=RequestContext(request))
+
         else:
             return redirect('/logout')
     except Exception:
