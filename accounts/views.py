@@ -47,6 +47,8 @@ def feedbackpage(request):
 
             if request.method == 'POST':
 
+                dest = 'abremaud@esciencefactory.com'
+
                 if request.POST.get("feedback_submit") != None:
 
                     feedback_f = FeedbackForm(data=request.POST)
@@ -63,6 +65,15 @@ def feedbackpage(request):
                                               )
 
                         #fdbck.save()
+
+                        c = {'form': feedback_f, 'username': userprofile.nickname}
+                        email_template_name = 'accounts/account_retrieve_email.html'
+                        # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
+                        # Email subject *must not* contain newlines
+                        email = loader.render_to_string(email_template_name, c)
+                        send_mail('B2Note user evaluation feedback',
+                                  email, DEFAULT_FROM_EMAIL,
+                                  [dest], fail_silently=False)
 
                         msg = "Thank you for providing us your feedback."
 
@@ -86,6 +97,15 @@ def feedbackpage(request):
                                               )
 
                         #featr.save()
+
+                        c = {'form': feature_f, 'username': userprofile.nickname}
+                        email_template_name = 'accounts/account_retrieve_email.html'
+                        # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
+                        # Email subject *must not* contain newlines
+                        email = loader.render_to_string(email_template_name, c)
+                        send_mail('B2Note user feature request',
+                                  email, DEFAULT_FROM_EMAIL,
+                                  [dest], fail_silently=False)
 
                         msg = "Thank you for submitting a feature request."
 
@@ -111,6 +131,15 @@ def feedbackpage(request):
                                             )
 
                         #bugrep.save()
+
+                        c = {'form': bugreport_f, 'username': userprofile.nickname}
+                        email_template_name = 'accounts/account_retrieve_email.html'
+                        # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
+                        # Email subject *must not* contain newlines
+                        email = loader.render_to_string(email_template_name, c)
+                        send_mail('B2Note user bug report',
+                                  email, DEFAULT_FROM_EMAIL,
+                                  [dest], fail_silently=False)
 
                         msg = "Thank you for submitting a bug report."
 
