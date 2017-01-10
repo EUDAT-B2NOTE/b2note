@@ -70,27 +70,10 @@ class FeatureRequest(models.Model):
 class BugReport(models.Model):
     bugreport_id    = models.AutoField( primary_key=True )
     email           = models.ForeignKey(AnnotatorProfile, to_field="email")
-    GE = "Generic"
-    CR = 'Create'
-    ED = 'Edit'
-    EX = 'Export'
-    SE = 'Search'
-    OT = 'Other'
-    FUNCTIONALITY_CHOICES = (
-        (GE, 'Generic bug report'),
-        (CR, 'Create annotation'),
-        (ED, 'Edit annotation'),
-        (EX, 'Export annotation'),
-        (SE, 'Search annotation'),
-        (OT, 'Other functionality')
-    )
-    affected_function   = models.CharField(max_length=2,
-                                      choices=FUNCTIONALITY_CHOICES,
-                                      default=OT)
+    affected_function   = models.CharField( max_length=100 )
     short_description   = models.CharField( max_length=5000 )
     extra_description   = models.TextField()
-    browser             = models.CharField( max_length=200 )
     severity            = models.PositiveSmallIntegerField()
+    browser             = models.CharField( max_length=200 )
     date_created        = models.DateTimeField(auto_now_add=True, null=True)
     alt_contact         = models.CharField( max_length=500 )
-

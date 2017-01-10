@@ -14,7 +14,9 @@
 
             <p>{{ msg }}</p>
 
-            <a href="/interface_main" class="btn btn-default">Main</a>
+            <p>What would you like to do next?</p>
+
+            <a href="/interface_main" class="btn btn-default">Main page</a>
             <a href="/accounts/feedbackpage" class="btn btn-default">More feedback</a>
 
         {% else %}
@@ -42,7 +44,7 @@
                         {{feature_f.as_p}}
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-6">
-                                <button type="submit" class="btn btn-default" id="feature_submit">Submit</button>
+                                <button type="submit" class="btn btn-default" id="feature_submit" name="feature_submit">Submit</button>
                             </div>
                         </div>
                     </form>
@@ -53,7 +55,7 @@
                         {{bugreport_f.as_p}}
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-6">
-                                <button type="submit" class="btn btn-default" id="bug_submit">Submit</button>
+                                <button type="submit" class="btn btn-default" id="bug_submit" name="bug_submit">Submit</button>
                             </div>
                         </div>
                     </form>
