@@ -48,10 +48,10 @@ class BugReportForm(forms.Form):
         ('Other', 'Other functionality')],
                                              label="Affected functionality", initial='Generic' )
     short_description   = forms.CharField(widget=forms.widgets.Textarea(attrs={'maxlength':'5000'}), required=False, label="Problem description (<5000 char.)")
-    extra_description   = forms.CharField(widget=forms.widgets.Textarea(), required=False, label="Extra information")
-    browser             = forms.CharField(widget=forms.widgets.TextInput(attrs={'maxlength':'100'}), required=False, label="Title (<200 char.)")
     severity            = forms.ChoiceField( widget=forms.Select(), required=False, choices=[('0', 0), ('1', 1), ('2', 2), ('3', 3), ('4', 4), ('5', 5)],
-                                         label="Severity", initial='5' )
+                                         label="Severity", initial='0' )
+    browser             = forms.CharField(widget=forms.widgets.TextInput(attrs={'maxlength':'200'}), required=False, label="Browser information (<200 char.)")
+    extra_description   = forms.CharField(widget=forms.widgets.Textarea(), required=False, label="Extra information")
     alt_contact         = forms.CharField(widget=forms.widgets.TextInput(attrs={'maxlength':'500'}), required=False, label="Alternative contact")
 
     captcha = CaptchaField()
