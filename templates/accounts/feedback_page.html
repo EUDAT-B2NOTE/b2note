@@ -10,7 +10,30 @@
 
         <br>
 
-        {{feedback_f.as_p}}
+        {% if msg %}
+
+            <p>{{ msg }}</p>
+
+            <a href="/interface_main" class="btn btn-default">Main</a>
+            <a href="/accounts/feedbackpage" class="btn btn-default">More feedback</a>
+
+        {% else %}
+
+            <form action="/accounts/feedbackpage" method="post" class="form-horizontal">
+
+                {% csrf_token %}
+
+                {{feedback_f.as_p}}
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-6">
+                        <button type="submit" class="btn btn-default" id="feedback_submit">Submit</button>
+                    </div>
+                </div>
+
+            </form>
+
+        {% endif %}
 
     </div>
 

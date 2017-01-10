@@ -45,7 +45,7 @@ class AnnotatorProfile(models.Model):
                                                               ('i','intermediate'),
                                                               ('e','expert')] )
 
-class UserFedback(models.Model):
+class UserFeedback(models.Model):
     feedback_id     = models.AutoField( primary_key=True )
     email           = models.ForeignKey( AnnotatorProfile, to_field="email" )
     date_created    = models.DateTimeField( auto_now_add=True, null=True )
@@ -54,7 +54,7 @@ class UserFedback(models.Model):
     eval_experience = models.PositiveSmallIntegerField()
     eval_interface  = models.PositiveSmallIntegerField()
     eval_efficiency = models.PositiveSmallIntegerField()
-    general_comment = models.CharField( max_length=5000)
+    general_comment = models.CharField( max_length=5000, null=True )
 
 
 class FeatureRequest(models.Model):
