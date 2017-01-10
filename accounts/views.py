@@ -64,7 +64,7 @@ def feedbackpage(request):
                                               eval_efficiency=int(feedback_f.cleaned_data["eval_efficiency"]),
                                               )
 
-                        #fdbck.save()
+                        fdbck.save()
 
                         c = {'form': feedback_f, 'username': userprofile.nickname}
                         email_template_name = 'accounts/account_retrieve_email.html'
