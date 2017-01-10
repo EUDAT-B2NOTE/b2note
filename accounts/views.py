@@ -45,6 +45,8 @@ def feedbackpage(request):
 
             feedback_f = FeedbackForm()
 
+            #print feedback_f
+
             data_dict = {"navbarlinks":  navbarlinks,
                          "shortcutlinks": shortcutlinks,
                          "feedback_f": feedback_f,
