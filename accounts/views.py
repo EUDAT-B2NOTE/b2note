@@ -66,7 +66,7 @@ def feedbackpage(request):
 
                         fdbck.save()
 
-                        c = {'form': feedback_f, 'username': userprofile.nickname}
+                        c = {'form': feedback_f, 'user_contact': userprofile.email}
                         email_template_name = 'accounts/userfeedback_email.html'
                         # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
                         # Email subject *must not* contain newlines
@@ -98,7 +98,7 @@ def feedbackpage(request):
 
                         featr.save()
 
-                        c = {'form': feature_f, 'username': userprofile.nickname}
+                        c = {'form': feature_f, 'user_contact': userprofile.email}
                         email_template_name = 'accounts/userfeedback_email.html'
                         # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
                         # Email subject *must not* contain newlines
@@ -132,7 +132,7 @@ def feedbackpage(request):
 
                         bugrep.save()
 
-                        c = {'form': bugreport_f, 'username': userprofile.nickname}
+                        c = {'form': bugreport_f, 'user_contact': userprofile.email}
                         email_template_name = 'accounts/userfeedback_email.html'
                         # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
                         # Email subject *must not* contain newlines
