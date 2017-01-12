@@ -21,48 +21,125 @@
 
         {% else %}
 
-            <ul class="nav nav-tabs" id="create_tabs">
-                <li class="active"><a data-toggle="tab" href="#feedback">Evaluate</a></li>
-                <li><a data-toggle="tab" href="#feature">Feature request</a></li>
-                <li><a data-toggle="tab" href="#bug_report">Bug report</a></li>
-            </ul>
-            <div id="feedbackpage_tab_contents" class="tab-content">
-                <div id="feedback" class="tab-pane fade in active form-group">
-                    <form action="/accounts/feedbackpage" method="post" class="form-horizontal">
-                        {% csrf_token %}
-                        {{feedback_f.as_p}}
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-6">
-                                <button type="submit" class="btn btn-default" id="feedback_submit" name="feedback_submit">Submit</button>
+            <div class="container" id="user_area" style="padding-top:0px;margin-top:35px;">
+
+                <ul class="nav nav-tabs" id="feedback_tabs">
+                    <li class="active"><a data-toggle="tab" href="#feedback">Evaluate</a></li>
+                    <li><a data-toggle="tab" href="#feature">Feature request</a></li>
+                    <li><a data-toggle="tab" href="#bug_report">Bug report</a></li>
+                </ul>
+                <div id="feedbackpage_tab_contents" class="tab-content">
+                    <div id="feedback" class="tab-pane fade in active form-group" style="margin-top:80px;">
+                        <form action="/accounts/feedbackpage" method="post" class="form-horizontal">
+                            {% csrf_token %}
+                            <table class="table table-condensed table-responsive" id="myannot_table_main">
+                                {% for f in feedback_f %}
+                                    {% if "General comment" not in f.label and "Captcha" not in f.label %}
+                                        <tr>
+                                            <td style="width:120px;"><strong>{{f.label}}:</strong></td>
+                                            <td><input type="number" name={{f.id_for_label}} id={{f.id_for_label}} class="rating" /></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                {% for f in feedback_f %}
+                                    {% if "General comment" in f.label %}
+                                        <tr><td colspan="2"><strong>{{f.label}}:</strong></td></tr>
+                                        <tr><td colspan="2">{{f}}</td></tr>
+                                    {% endif %}
+                                {% endfor %}
+                                {% for f in feedback_f %}
+                                    {% if "Captcha" in f.label %}
+                                        <tr><td colspan="2"><strong>{{f.label}}:</strong></td></tr>
+                                        <tr><td colspan="2"><div id="captcha_grip">{{f}}</div></td></tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </table>
+                            <!--{{feedback_f.as_p}}-->
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-6">
+                                    <button type="submit" class="btn btn-default" id="feedback_submit" name="feedback_submit">Submit</button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
-                </div>
-                <div id="feature" class="tab-pane fade in form-group">
-                    <form action="/accounts/feedbackpage" method="post" class="form-horizontal">
-                        {% csrf_token %}
-                        {{feature_f.as_p}}
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-6">
-                                <button type="submit" class="btn btn-default" id="feature_submit" name="feature_submit">Submit</button>
+                        </form>
+                    </div>
+                    <div id="feature" class="tab-pane fade in form-group" style="margin-top:80px;">
+                        <form action="/accounts/feedbackpage" method="post" class="form-horizontal">
+                            {% csrf_token %}
+                            <table class="table table-condensed table-responsive" id="myannot_table_main">
+                                {% for f in feature_f %}
+                                    {% if "Captcha" not in f.label %}
+                                        <tr><td><strong>{{f.label}}:</strong></td></tr>
+                                        <tr><td>{{f}}</td></tr>
+                                    {% else %}
+                                        <tr><td><strong>{{f.label}}:</strong></td></tr>
+                                        <tr><td><div id="captcha_grip">{{f}}</div></td></tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </table>
+                            <!--{{feature_f.as_p}}-->
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-6">
+                                    <button type="submit" class="btn btn-default" id="feature_submit" name="feature_submit">Submit</button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
-                </div>
-                <div id="bug_report" class="tab-pane fade in form-group">
-                    <form action="/accounts/feedbackpage" method="post" class="form-horizontal">
-                        {% csrf_token %}
-                        {{bugreport_f.as_p}}
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-6">
-                                <button type="submit" class="btn btn-default" id="bug_submit" name="bug_submit">Submit</button>
+                        </form>
+                    </div>
+                    <div id="bug_report" class="tab-pane fade in form-group" style="margin-top:80px;">
+                        <form action="/accounts/feedbackpage" method="post" class="form-horizontal">
+                            {% csrf_token %}
+                            <table class="table table-condensed table-responsive" id="myannot_table_main">
+                                {% for f in bugreport_f %}
+                                    {% if "Affected functionality" in f.label %}
+                                        <tr><td colspan="2"><strong>{{f.label}}:</strong></td></tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <select name={{f.id_for_label}} class="form-control" id="id_myselect" style="width:100%;">
+                                                    {% for id, name in f.field.choices %}
+                                                        <option value="{{ id }}">{{ name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                {% for f in bugreport_f %}
+                                    {% if "Severity" in f.label %}
+                                        <tr>
+                                            <td style="width:120px;"><strong>{{f.label}}:</strong></td>
+                                            <td><input type="number" name={{f.id_for_label}} id={{f.id_for_label}} class="rating" data-active-icon="glyphicon-alert" data-inactive-icon="glyphicon-warning-sign" /></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% for f in bugreport_f %}
+                                    {% if "Severity" not in f.label and "Affected functionality" not in f.label and "Captcha" not in f.label %}
+                                        <tr><td colspan="2"><strong>{{f.label}}:</strong></td></tr>
+                                        <tr><td colspan="2">{{f}}</td></tr>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% for f in bugreport_f %}
+                                    {% if "Captcha" in f.label %}
+                                        <tr><td colspan="2"><strong>{{f.label}}:</strong></td></tr>
+                                        <tr><td colspan="2"><div id="captcha_grip">{{f}}</div></td></tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </table>
+                            <!--{{bugreport_f.as_p}}-->
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-6">
+                                    <button type="submit" class="btn btn-default" id="bug_submit" name="bug_submit">Submit</button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
 
         {% endif %}
+
+        <br>
+        <br>
 
     </div>
 
