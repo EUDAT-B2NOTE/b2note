@@ -54,19 +54,27 @@ def feedbackpage(request):
                     feedback_f = FeedbackForm(data=request.POST)
 
                     if feedback_f.is_valid():
+                        names_t = {}
+                        for fname in ["id_eval_overall", "id_eval_usefull", "id_eval_experience", "id_eval_interface", "id_eval_efficiency"]:
+                            names_t[fname] = 0
+                            if fname in request.POST:
+                                if request.POST[fname] and isinstance(int(str(request.POST[fname])), int):
+                                    names_t[fname] = int(str(request.POST[fname]))
+
 
                         fdbck = UserFeedback( email=userprofile,
                                               general_comment=feedback_f.cleaned_data["general_comment"],
-                                              eval_overall=int(feedback_f.cleaned_data["eval_overall"]),
-                                              eval_usefull=int(feedback_f.cleaned_data["eval_usefull"]),
-                                              eval_experience=int(feedback_f.cleaned_data["eval_experience"]),
-                                              eval_interface=int(feedback_f.cleaned_data["eval_interface"]),
-                                              eval_efficiency=int(feedback_f.cleaned_data["eval_efficiency"]),
+                                              eval_overall=names_t["id_eval_overall"],
+                                              eval_usefull=names_t["id_eval_usefull"],
+                                              eval_experience=names_t["id_eval_experience"],
+                                              eval_interface=names_t["id_eval_interface"],
+                                              eval_efficiency=names_t["id_eval_efficiency"],
                                               )
 
                         fdbck.save()
 
-                        c = {'form': feedback_f, 'user_contact': userprofile.email}
+                        c = {'form': feedback_f, 'names_t': names_t, 'nl': names_t.keys(),
+                             'user_contact': userprofile.email, 'user_experience': userprofile.annotator_exp}
                         email_template_name = 'accounts/userfeedback_email.html'
                         # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
                         # Email subject *must not* contain newlines
@@ -98,7 +106,7 @@ def feedbackpage(request):
 
                         featr.save()
 
-                        c = {'form': feature_f, 'user_contact': userprofile.email}
+                        c = {'form': feature_f, 'user_contact': userprofile.email, 'user_experience': userprofile.annotator_exp}
                         email_template_name = 'accounts/userfeedback_email.html'
                         # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
                         # Email subject *must not* contain newlines
@@ -121,18 +129,29 @@ def feedbackpage(request):
 
                     if bugreport_f.is_valid():
 
-                        bugrep = BugReport( email=userprofile,
-                                            affected_function   = bugreport_f.cleaned_data["affected_function"],
+                        names_t = {}
+                        for fname in ["id_severity", "id_affected_function"]:
+                            names_t[fname] = 0
+                            if fname in request.POST:
+                                if request.POST[fname]:
+                                    if str(request.POST[fname]) in [str(x) for x in range(5)]:
+                                        names_t[fname] = int(str(request.POST[fname]))
+                                    elif isinstance(str(request.POST[fname]), (str, unicode)):
+                                        names_t[fname] = str(request.POST[fname])
+
+                        bugrep = BugReport( email               = userprofile,
+                                            affected_function   = str(names_t["id_affected_function"]),
                                             short_description   = bugreport_f.cleaned_data["short_description"],
                                             extra_description   = bugreport_f.cleaned_data["extra_description"],
-                                            severity            = int(bugreport_f.cleaned_data["severity"]),
+                                            severity            = int(names_t["id_severity"]),
                                             browser             = bugreport_f.cleaned_data["browser"],
                                             alt_contact         = bugreport_f.cleaned_data["alt_contact"],
                                             )
 
                         bugrep.save()
 
-                        c = {'form': bugreport_f, 'user_contact': userprofile.email}
+                        c = {'form': bugreport_f, 'names_t': names_t, 'nl': names_t.keys(),
+                             'user_contact': userprofile.email, 'user_experience': userprofile.annotator_exp}
                         email_template_name = 'accounts/userfeedback_email.html'
                         # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
                         # Email subject *must not* contain newlines
