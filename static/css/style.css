@@ -643,6 +643,77 @@
     border: 0px;
 }
 
+
+#feedback_tabs {
+    text-align: center;
+    /*font-size: 16px;*/
+    float: left;
+}
+
+#feedback_tab_contents {
+	/*margin-top: 56px;*/
+    /*padding-top: 25px !important;*/
+    border: 1px solid #DDD;
+    background: #FFFFFF;
+}
+
+
+#feedback_tabs a[href="#feedback"] {
+    width: 85px;
+    white-space:normal !important;
+    /*word-wrap:break-word;*/
+    /*word-break: normal;*/
+    padding-top: 15px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 20px;
+}
+
+#feedback_tabs a[href="#feature"] {
+    width: 90px;
+    white-space:normal !important;
+    /*word-wrap:break-word;*/
+    /*word-break: normal;*/
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 10px;
+}
+
+#feedback_tabs a[href="#bug_report"] {
+    width: 85px;
+    text-align: center;
+    white-space:normal !important;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 10px;
+}
+
+#captcha_grip div[class="col-sm-2"]{
+    padding-left: 0px;
+}
+
+#captcha_grip img[class="captcha"]{
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.rating-input {
+    font-size: 20px;
+    color: #1C418F;
+  /*line-height:32px;*/
+  /*font-size:1.25em;*/
+  /*cursor: pointer;*/
+}
+
+.glyphicon-warning-sign {
+    padding-left: 5px;
+}
+
+.glyphicon-alert {
+    padding-left: 5px;
+}
+
+
 #link_to_top {
     font-size:10px;
     opacity:0.3;
