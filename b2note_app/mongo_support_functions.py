@@ -164,7 +164,7 @@ def SearchAnnotation( kw ):
     return False
 
 
-def RetrieveUserFileAnnotations( subject_url=None, nickname=None ):
+def RetrieveUserAnnotations( nickname=None ):
     """
       Function: RetrieveAnnotations_perUsername
       ----------------------------
@@ -179,26 +179,21 @@ def RetrieveUserFileAnnotations( subject_url=None, nickname=None ):
     """
     try:
 
-        if subject_url and isinstance(subject_url, (str, unicode)):
-            if nickname and isinstance(nickname, (str, unicode)):
-                annotations = None
-                annotations = Annotation.objects.raw_query({'target.jsonld_id': subject_url, 'creator.nickname': nickname})
-                #annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
-                if annotations:
-                    print "RetrieveUserFileAnnotations function, returning annotations."
-                    stdlogger.info("RetrieveUserFileAnnotations function, returning annotations.")
-                    return annotations
-                else:
-                    print "RetrieveUserFileAnnotations function, no annotations retrieved."
-                    stdlogger.info("RetrieveUserFileAnnotations function, no annotations retrieved.")
-                    return None
+        if nickname and isinstance(nickname, (str, unicode)):
+            annotations = None
+            annotations = Annotation.objects.raw_query({'creator.nickname': nickname})
+            #annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
+            if annotations:
+                print "RetrieveUserFileAnnotations function, returning annotations."
+                stdlogger.info("RetrieveUserFileAnnotations function, returning annotations.")
+                return annotations
             else:
-                print "RetrieveUserFileAnnotations function, provided nickname not valid:", nickname
-                stdlogger.info("RetrieveUserFileAnnotations function, provided nickname not valid:" + str(nickname))
-                return False
+                print "RetrieveUserFileAnnotations function, no annotations retrieved."
+                stdlogger.info("RetrieveUserFileAnnotations function, no annotations retrieved.")
+                return None
         else:
-            print "RetrieveUserFileAnnotations function, provided target id not valid:", subject_url
-            stdlogger.error("RetrieveUserFileAnnotations function, provided target id not valid:" + str(subject_url))
+            print "RetrieveUserFileAnnotations function, provided nickname not valid:", nickname
+            stdlogger.info("RetrieveUserFileAnnotations function, provided nickname not valid:" + str(nickname))
             return False
 
     except Annotation.DoesNotExist:
