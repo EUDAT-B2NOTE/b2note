@@ -68,7 +68,7 @@ def export_annotations(request):
         if subject_tofeed and isinstance(subject_tofeed, (str, unicode)):
 
             if request.POST.get('user_annotations')!=None and user_nickname:
-                annotation_list = RetrieveUserFileAnnotations(subject_tofeed, user_nickname)
+                annotation_list = RetrieveUserAnnotations( user_nickname )
                 annotation_list = annotation_list.values()
                 annotations_of = "mine"
 
