@@ -315,6 +315,10 @@ def edit_annotation(request):
             a_id = request.POST.get('db_id')
             A = Annotation.objects.get(id=a_id)
             if A:
+                if not textinput_primer:
+                    if A.body and A.body[0] and A.body[0].type and A.body[0].type=="Composite" and\
+                        A.body[0].items and len(A.body[0].items)>1 and A.body[0].items[1] and A.body[0].items[1].value:
+                        textinput_primer = A.body[0].items[1].value
                 if request.POST.get('semantic_submit') is not None:
                     edited_semantic = False
                     if request.POST.get('ontology_json'):
@@ -328,7 +332,7 @@ def edit_annotation(request):
                                         newbody = None
                                         newbody = {"body": {"jsonld_id": o["uris"]}}
                                         D = None
-                                        D = CheckDuplicateAnnotation( A.target[0].jsonld_id , newbody)
+                                        D = CheckDuplicateAnnotation( A.target[0].jsonld_id, newbody)
                                         if not D:
                                             id1 = None
                                             id1 = MakeAnnotationSemanticTag(a_id, jo)
@@ -336,8 +340,8 @@ def edit_annotation(request):
                                             if id1: SetDateTimeModified( id1 )
                                         else:
                                             duplicate = {
-                                                "label": D[0].body[0].value,
-                                                "shortform": D[0].body[0].jsonld_id[::-1][:D[0].body[0].jsonld_id[::-1].find("/")][::-1],
+                                                "label": D[0].body[0].items[1].value,
+                                                "shortform": D[0].body[0].items[0].source[::-1][:D[0].body[0].items[0].source[::-1].find("/")][::-1],
                                             }
 
                 elif request.POST.get('keyword_submit') is not None:
@@ -365,7 +369,7 @@ def edit_annotation(request):
                                 newbody = None
                                 newbody = {"body": {"value": k_text}}
                                 D = None
-                                D = CheckDuplicateAnnotation( A.target[0].jsonld_id , newbody)
+                                D = CheckDuplicateAnnotation( A.target[0].jsonld_id, newbody)
                                 if not D:
                                     id1 = None
                                     id1 = MakeAnnotationFreeText(a_id, k_text)
@@ -373,10 +377,10 @@ def edit_annotation(request):
                                     if id1: edited_keyword = True
                                     if id1: SetDateTimeModified(id1)
                                 else:
-                                    if D[0].body[0].jsonld_id:
+                                    if D[0].body[0].type=="Composite":
                                         duplicate = {
-                                            "label": D[0].body[0].value,
-                                            "shortform": D[0].body[0].jsonld_id[::-1][:D[0].body[0].jsonld_id[::-1].find("/")][::-1],
+                                            "label": D[0].body[0].items[1].value,
+                                            "shortform": D[0].body[0].items[0].source[::-1][:D[0].body[0].items[0].source[::-1].find("/")][::-1],
                                         }
                                     else:
                                         duplicate = {"label": D[0].body[0].value, }
@@ -394,8 +398,8 @@ def edit_annotation(request):
 
                 A = Annotation.objects.get(id=a_id)
 
-                if A and A.body and A.body[0] and A.body[0].jsonld_id:
-                    shortform = A.body[0].jsonld_id[::-1][:A.body[0].jsonld_id[::-1].find("/")][::-1]
+                if A and A.body and A.body[0] and A.body[0].type=="Composite" and A.body[0].items and A.body[0].items[0].source:
+                    shortform = A.body[0].items[0].source[::-1][:A.body[0].items[0].source[::-1].find("/")][::-1]
 
     navbarlinks = list_navbarlinks(request, ["Help page"])
     navbarlinks.append({"url": "/help#helpsection_editpage", "title": "Help page", "icon": "question-sign"})
@@ -528,13 +532,13 @@ def create_annotation(request):
                                     ann_id2 = SetUserAsAnnotationCreator( request.session.get('user'), ann_id1 )
                                     A = Annotation.objects.get( id = ann_id2 )
                                     request.session["new_semantic"] = {
-                                        "label": A.body[0].value,
-                                        "shortform": A.body[0].jsonld_id[::-1][:A.body[0].jsonld_id[::-1].find("/")][::-1],
+                                        "label": A.body[0].items[1].value,
+                                        "shortform": A.body[0].items[0].source[::-1][:A.body[0].items[0].source[::-1].find("/")][::-1],
                                     }
                                 else:
                                     request.session["duplicate"] = {
-                                        "label": D[0].body[0].value,
-                                        "shortform": D[0].body[0].jsonld_id[::-1][:D[0].body[0].jsonld_id[::-1].find("/")][::-1],
+                                        "label": D[0].body[0].items[1].value,
+                                        "shortform": D[0].body[0].items[0].source[::-1][:D[0].body[0].items[0].source[::-1].find("/")][::-1],
                                     }
                                     print "Create_annotation view, semantic tag annotation would be a duplicate."
                                     stdlogger.info("Create_annotation view, semantic tag annotation would be a duplicate.")
@@ -584,10 +588,10 @@ def create_annotation(request):
                         A = Annotation.objects.get( id = ann_id2 )
                         request.session["new_keyword"] = { "label": A.body[0].value, }
                     else:
-                        if D[0].body[0].jsonld_id:
+                        if D[0].body[0].type=="Composite":
                             request.session["duplicate"] = {
-                                "label": D[0].body[0].value,
-                                "shortform": D[0].body[0].jsonld_id[::-1][:D[0].body[0].jsonld_id[::-1].find("/")][::-1],
+                                "label": D[0].body[0].items[1].value,
+                                "shortform": D[0].body[0].items[1].source[::-1][:D[0].body[0].items[1].source[::-1].find("/")][::-1],
                             }
                         else:
                             request.session["duplicate"] = { "label": D[0].body[0].value, }
@@ -660,19 +664,19 @@ def annotation_summary(request):
 
             if request.POST.get('about_allsimilar')!=None:
 
-                if A.body[0].jsonld_id!=None:
+                if A.body[0].type and A.body[0].type=="Composite" and A.body[0].items and A.body[0].items[0].source:
 
-                    r = solr_fetchorigintermonid([A.body[0].jsonld_id])
+                    r = solr_fetchorigintermonid([A.body[0].items[0].source])
 
                     if user_nickname and isinstance(user_nickname, (str, unicode)):
 
-                        allannotations_list = Annotation.objects.raw_query({'body.jsonld_id': A.body[0].jsonld_id, 'creator.nickname': { "$ne": user_nickname} })
+                        allannotations_list = Annotation.objects.raw_query({'body.items.source': A.body[0].items[0].source, 'creator.nickname': { "$ne": user_nickname} })
 
                     else:
 
-                        allannotations_list = Annotation.objects.raw_query({'body.jsonld_id': A.body[0].jsonld_id})
+                        allannotations_list = Annotation.objects.raw_query({'body.items.source': A.body[0].items[0].source})
 
-                elif A.body[0].value and A.motivation and A.motivation[0]=="tagging":
+                elif A.body[0].type and not A.body[0].type=="Composite" and A.body[0].value and A.motivation and A.motivation[0]=="tagging":
 
                     if user_nickname and isinstance(user_nickname, (str, unicode)):
 
@@ -683,7 +687,7 @@ def annotation_summary(request):
 
                         allannotations_list = Annotation.objects.raw_query({'body.value': A.body[0].value, 'motivation': "tagging"})
 
-                elif A.body[0].value and A.motivation and A.motivation[0] == "commenting":
+                elif A.body[0].type and not A.body[0].type=="Composite" and A.body[0].value and A.motivation and A.motivation[0] == "commenting":
 
                     allannotations_list = A
 
@@ -691,18 +695,18 @@ def annotation_summary(request):
 
             elif request.POST.get('about_allsimilar_any')!=None:
 
-                if A.body[0].jsonld_id!=None:
+                if A.body[0].type and A.body[0].type=="Composite" and A.body[0].items and A.body[0].items[0].source:
 
-                    r = solr_fetchorigintermonid([A.body[0].jsonld_id])
+                    r = solr_fetchorigintermonid([A.body[0].items[0].source])
 
-                    allannotations_list = Annotation.objects.raw_query({'body.jsonld_id': A.body[0].jsonld_id})
+                    allannotations_list = Annotation.objects.raw_query({'body.items.source': A.body[0].items[0].source})
 
-                elif A.body[0].value and A.motivation and A.motivation[0]=="tagging":
+                elif A.body[0].type and not A.body[0].type=="Composite" and A.body[0].value and A.motivation and A.motivation[0]=="tagging":
 
                     allannotations_list = Annotation.objects.raw_query(
                         {'body.value': A.body[0].value, 'motivation': "tagging"})
 
-                elif A.body[0].value and A.motivation and A.motivation[0] == "commenting":
+                elif A.body[0].type and not A.body[0].type=="Composite" and A.body[0].value and A.motivation and A.motivation[0] == "commenting":
 
                     allannotations_list = A
 
@@ -710,19 +714,19 @@ def annotation_summary(request):
 
             elif request.POST.get('about_mysimilar') != None:
 
-                if A.body[0].jsonld_id!=None:
+                if A.body[0].type and A.body[0].type=="Composite" and A.body[0].items and A.body[0].items[0].source:
 
-                    r = solr_fetchorigintermonid( [A.body[0].jsonld_id] )
+                    r = solr_fetchorigintermonid( [A.body[0].items[0].source] )
 
                     allannotations_list = Annotation.objects.raw_query(
-                        {'body.jsonld_id': A.body[0].jsonld_id, 'creator.nickname': user_nickname})
+                        {'body.items.source': A.body[0].items[0].source, 'creator.nickname': user_nickname})
 
-                elif A.body[0].value and A.motivation and A.motivation[0] == "tagging":
+                elif A.body[0].type and not A.body[0].type=="Composite" and A.body[0].value and A.motivation and A.motivation[0] == "tagging":
 
                     allannotations_list = Annotation.objects.raw_query(
                         {'body.value': A.body[0].value, 'motivation': "tagging", 'creator.nickname': user_nickname})
 
-                elif A.body[0].value and A.motivation and A.motivation[0] == "commenting":
+                elif A.body[0].type and not A.body[0].type=="Composite" and A.body[0].value and A.motivation and A.motivation[0] == "commenting":
 
                     allannotations_list = A
 
@@ -810,7 +814,7 @@ def myannotations(request):
     key_avoid_dbles = set()
 
     r = None
-    r = solr_fetchorigintermonid([A.body[0].jsonld_id for A in allannotations_list if A.body and A.body[0] and A.body[0].jsonld_id])
+    r = solr_fetchorigintermonid([A.body[0].items[0].source for A in allannotations_list if A.body and A.body[0] and A.body[0].type and A.body[0].type=="Composite"])
 
     for A in allannotations_list:
 
@@ -819,7 +823,12 @@ def myannotations(request):
         link_info_creatornickname = ""
         link_info_modified = ""
 
-        if A.body and A.body[0] and A.body[0].value:
+        if A.body and A.body[0] and A.body[0].type=="Composite" and A.body[0].items and A.body[0].items[1].value:
+            if len(A.body[0].items[1].value) > 20: link_label = '...'
+            link_label = A.body[0].items[1].value[:20] + link_label
+            if len(A.body[0].items[1].value) > 40: link_info_label = '...'
+            link_info_label = A.body[0].items[1].value[:40] + link_info_label
+        elif A.body and A.body[0] and not A.body[0].type=="Composite" and A.body[0].value:
             if len(A.body[0].value) > 20: link_label = '...'
             link_label = A.body[0].value[:20] + link_label
             if len(A.body[0].value) > 40: link_info_label = '...'
@@ -829,24 +838,24 @@ def myannotations(request):
             link_info_creatornickname = A.creator[0].nickname
         if A.modified: link_info_modified = A.modified
 
-        if A.body and A.body[0] and A.body[0].jsonld_id:
+        if A.body and A.body[0] and A.body[0].type and A.body[0].type=="Composite" and A.body[0].items and A.body[0].items[0].source:
 
-            if A.body[0].jsonld_id not in sem_avoid_dbles:
+            if A.body[0].items[0].source not in sem_avoid_dbles:
 
-                sem_avoid_dbles.add(A.body[0].jsonld_id)
+                sem_avoid_dbles.add(A.body[0].items[0].source)
 
                 link_info_ontologyacronym = ""
                 link_info_shortform = ""
                 if r:
                     if isinstance(r, dict):
-                        if A.body[0].jsonld_id in r.keys():
-                            if isinstance(r[A.body[0].jsonld_id], dict):
-                                if "ontology_acronym" in r[A.body[0].jsonld_id].keys():
-                                    link_info_ontologyacronym = r[A.body[0].jsonld_id]["ontology_acronym"]
-                                if "ontology_acronym" in r[A.body[0].jsonld_id].keys():
-                                    link_info_shortform = r[A.body[0].jsonld_id]["short_form"]
+                        if A.body[0].items[0].source in r.keys():
+                            if isinstance(r[A.body[0].items[0].source], dict):
+                                if "ontology_acronym" in r[A.body[0].items[0].source].keys():
+                                    link_info_ontologyacronym = r[A.body[0].items[0].source]["ontology_acronym"]
+                                if "ontology_acronym" in r[A.body[0].items[0].source].keys():
+                                    link_info_shortform = r[A.body[0].items[0].source]["short_form"]
 
-                semantic_list = Annotation.objects.raw_query({'body.jsonld_id': A.body[0].jsonld_id})
+                semantic_list = Annotation.objects.raw_query({'body.items.source': A.body[0].items[0].source})
 
                 semantic_dict = {'ann_id': A.id,
                                  'link_label': link_label,
@@ -862,13 +871,13 @@ def myannotations(request):
 
             my_s += 1
 
-        elif A.body and A.body[0] and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="tagging":
+        elif A.body and A.body[0] and A.body[0].type and not A.body[0].type=="Composite" and A.motivation and A.motivation[0]=="tagging":
 
             if A.body[0].value not in key_avoid_dbles:
 
                 key_avoid_dbles.add(A.body[0].value)
 
-                keyword_list = Annotation.objects.raw_query({'body.jsonld_id': None, 'body.value': A.body[0].value, 'motivation': "tagging"})
+                keyword_list = Annotation.objects.raw_query({'body.value': A.body[0].value, 'motivation': "tagging"})
 
                 keyword_dict = {'ann_id': A.id,
                                 'link_label': link_label,
@@ -882,7 +891,7 @@ def myannotations(request):
 
             my_k += 1
 
-        elif A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting":
+        elif A.body and A.body[0].type and not A.body[0].type=="Composite" and A.motivation and A.motivation[0]=="commenting":
 
             comment_dict = {'ann_id': A.id,
                             'link_label': link_label,
@@ -975,7 +984,7 @@ def allannotations(request):
     key_avoid_dbles = set()
 
     r = None
-    r = solr_fetchorigintermonid([A.body[0].jsonld_id for A in allannotations_list if A.body and A.body[0] and A.body[0].jsonld_id])
+    r = solr_fetchorigintermonid([A.body[0].items[0].source for A in allannotations_list if A.body and A.body[0] and A.body[0].type and A.body[0].type=="Composite"])
 
     for A in allannotations_list:
 
@@ -984,7 +993,12 @@ def allannotations(request):
         link_info_creatornickname = ""
         link_info_modified = ""
 
-        if A.body and A.body[0] and A.body[0].value:
+        if A.body and A.body[0] and A.body[0].type=="Composite" and A.body[0].items and A.body[0].items[1].value:
+            if len(A.body[0].items[1].value) > 20: link_label = '...'
+            link_label = A.body[0].items[1].value[:20] + link_label
+            if len(A.body[0].items[1].value) > 40: link_info_label = '...'
+            link_info_label = A.body[0].items[1].value[:40] + link_info_label
+        elif A.body and A.body[0] and not A.body[0].type=="Composite" and A.body[0].value:
             if len(A.body[0].value) > 20: link_label = '...'
             link_label = A.body[0].value[:20] + link_label
             if len(A.body[0].value) > 40: link_info_label = '...'
@@ -995,24 +1009,24 @@ def allannotations(request):
         if A.modified:
             link_info_modified = A.modified
 
-        if A.body and A.body[0] and A.body[0].jsonld_id:
+        if A.body and A.body[0] and A.body[0].type and A.body[0].type=="Composite" and A.body[0].items and A.body[0].items[0].source:
 
-            if A.body[0].jsonld_id not in sem_avoid_dbles:
+            if A.body[0].items[0].source not in sem_avoid_dbles:
 
-                sem_avoid_dbles.add(A.body[0].jsonld_id)
+                sem_avoid_dbles.add(A.body[0].items[0].source)
 
                 link_info_ontologyacronym = ""
                 link_info_shortform = ""
                 if r:
                     if isinstance(r, dict):
-                        if A.body[0].jsonld_id in r.keys():
-                            if isinstance(r[A.body[0].jsonld_id], dict):
-                                if "ontology_acronym" in r[A.body[0].jsonld_id].keys():
-                                    link_info_ontologyacronym = r[A.body[0].jsonld_id]["ontology_acronym"]
-                                if "ontology_acronym" in r[A.body[0].jsonld_id].keys():
-                                    link_info_shortform = r[A.body[0].jsonld_id]["short_form"]
+                        if A.body[0].items[0].source in r.keys():
+                            if isinstance(r[A.body[0].items[0].source], dict):
+                                if "ontology_acronym" in r[A.body[0].items[0].source].keys():
+                                    link_info_ontologyacronym = r[A.body[0].items[0].source]["ontology_acronym"]
+                                if "ontology_acronym" in r[A.body[0].items[0].source].keys():
+                                    link_info_shortform = r[A.body[0].items[0].source]["short_form"]
 
-                semantic_list = Annotation.objects.raw_query({'body.jsonld_id': A.body[0].jsonld_id})
+                semantic_list = Annotation.objects.raw_query({'body.items.source': A.body[0].items[0].source})
 
                 my_similar = len([A for A in semantic_list if A.creator and A.creator[0].nickname==user_nickname])
                 all_similar = len(semantic_list) - my_similar
@@ -1036,13 +1050,13 @@ def allannotations(request):
             else:
                 all_s += 1
 
-        elif A.body and A.body[0] and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="tagging":
+        elif A.body and A.body[0] and A.body[0].type and not A.body[0].type=="Composite" and A.motivation and A.motivation[0]=="tagging":
 
             if A.body[0].value not in key_avoid_dbles:
 
                 key_avoid_dbles.add(A.body[0].value)
 
-                keyword_list = Annotation.objects.raw_query({'body.jsonld_id': None, 'body.value': A.body[0].value, 'motivation': "tagging"})
+                keyword_list = Annotation.objects.raw_query({'body.value': A.body[0].value, 'motivation': "tagging"})
 
                 my_similar = len([A for A in keyword_list if A.creator and A.creator[0].nickname==user_nickname])
                 all_similar = len(keyword_list) - my_similar
@@ -1064,7 +1078,7 @@ def allannotations(request):
             else:
                 all_k += 1
 
-        elif A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting":
+        elif A.body and A.body[0].type and not A.body[0].type=="Composite" and A.motivation and A.motivation[0]=="commenting":
 
             comment_dict = {'ann_id': A.id,
                             'link_label': link_label,
@@ -1205,22 +1219,22 @@ def interface_main(request):
     myf_k = None
     myf_c = None
 
-    all_s = len([A for A in allannotations_list if A.body and A.body[0].jsonld_id ])
-    all_k = len([A for A in allannotations_list if A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="tagging" ])
-    all_c = len([A for A in allannotations_list if A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting" ])
+    all_s = len([A for A in allannotations_list if A.body and A.body[0].type=="Composite" ])
+    all_k = len([A for A in allannotations_list if A.body and not A.body[0].type=="Composite" and A.motivation and A.motivation[0]=="tagging" ])
+    all_c = len([A for A in allannotations_list if A.body and not A.body[0].type=="Composite" and A.motivation and A.motivation[0]=="commenting" ])
     if user_nickname:
         my_s  = len([A for A in annotation_list if A.creator and A.creator[0].nickname==user_nickname
-                     and A.body and A.body[0].jsonld_id ])
+                     and A.body and A.body[0].type=="Composite" ])
         my_k  = len([A for A in annotation_list if A.creator and A.creator[0].nickname==user_nickname
-                     and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="tagging" ])
+                     and A.body and not A.body[0].type=="Composite" and A.motivation and A.motivation[0]=="tagging" ])
         my_c  = len([A for A in annotation_list if A.creator and A.creator[0].nickname==user_nickname
-                     and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0]=="commenting" ])
+                     and A.body and not A.body[0].type=="Composite" and A.motivation and A.motivation[0]=="commenting" ])
         myf_s = len([A for A in allannotations_list if A.creator and A.creator[0].nickname == user_nickname
-                    and A.body and A.body[0].jsonld_id])
+                    and A.body and A.body[0].type=="Composite" ])
         myf_k = len([A for A in allannotations_list if A.creator and A.creator[0].nickname == user_nickname
-                    and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0] == "tagging"])
+                    and A.body and not A.body[0].type=="Composite" and A.motivation and A.motivation[0] == "tagging"])
         myf_c = len([A for A in allannotations_list if A.creator and A.creator[0].nickname == user_nickname
-                    and A.body and not A.body[0].jsonld_id and A.motivation and A.motivation[0] == "commenting"])
+                    and A.body and not A.body[0].type=="Composite" and A.motivation and A.motivation[0] == "commenting"])
 
     navbarlinks = list_navbarlinks(request, ["Help page"])
     navbarlinks.append( {"url": "/help#helpsection_mainpage", "title": "Help page", "icon": "question-sign"} )
@@ -1394,39 +1408,57 @@ def process_search_query( form ):
         if v and isinstance(v,list) and len(v)>0:
 
             if k == "body_val_and":
-                VA = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+                #VA = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+                VA = Annotation.objects.raw_query({"$or": [{"body.value": {"$in": query_dict[k]}},
+                                                           {"body.items.value": {"$in": query_dict[k]}}]})
             if k == "body_val_or":
-                VO = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+                #VO = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+                VO = Annotation.objects.raw_query({"$or": [{"body.value": {"$in": query_dict[k]}},
+                                                           {"body.items.value": {"$in": query_dict[k]}}]})
             if k == "body_val_not":
-                VN = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+                #VN = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+                VN = Annotation.objects.raw_query({"$or": [{"body.value": {"$in": query_dict[k]}},
+                                                           {"body.items.value": {"$in": query_dict[k]}}]})
             if k == "body_val_xor":
-                VX = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+                #VX = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+                VX = Annotation.objects.raw_query({"$or": [{"body.value": {"$in": query_dict[k]}},
+                                                           {"body.items.value": {"$in": query_dict[k]}}]})
             if k == "body_val_syn":
-                VS = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+                #VS = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
+                VS = Annotation.objects.raw_query({"$or": [{"body.value": {"$in": query_dict[k]}},
+                                                           {"body.items.value": {"$in": query_dict[k]}}]})
 
             if k == "body_id_and":
-                IA = Annotation.objects.raw_query({"body.jsonld_id": {"$in": query_dict[ k ]}})
+                IA = Annotation.objects.raw_query({"body.items.source": {"$in": query_dict[ k ]}})
             if k == "body_id_or":
-                IO = Annotation.objects.raw_query({"body.jsonld_id": {"$in": query_dict[ k ]}})
+                IO = Annotation.objects.raw_query({"body.items.source": {"$in": query_dict[ k ]}})
             if k == "body_id_not":
-                IN = Annotation.objects.raw_query({"body.jsonld_id": {"$in": query_dict[ k ]}})
+                IN = Annotation.objects.raw_query({"body.items.source": {"$in": query_dict[ k ]}})
             if k == "body_id_xor":
-                IX = Annotation.objects.raw_query({"body.jsonld_id": {"$in": query_dict[ k ]}})
+                IX = Annotation.objects.raw_query({"body.items.source": {"$in": query_dict[ k ]}})
 
     exact = []
     related = []
 
     if VA:
         for ann in VA:
-            v = { ann.body[0].value }
+            if ann.body and ann.body[0] and ann.body[0].type and ann.body[0].type=="Composite":
+                v = { ann.body[0].items[1].value }
+            elif ann.body and ann.body[0] and ann.body[0].value:
+                v = { ann.body[0].value }
             for anno in VA:
                 if ann.target[0].jsonld_id == anno.target[0].jsonld_id:
-                    if ann.body[0].value: v.add( ann.body[0].value )
-            z = { ann.body[0].value }
+                    if ann.body and ann.body[0] and ann.body[0].type and ann.body[0].type == "Composite":
+                        v.add( ann.body[0].items[1].value )
+                    elif ann.body and ann.body[0] and ann.body[0].value:
+                        v.add( ann.body[0].value )
+            if ann.body and ann.body[0] and ann.body[0].type and ann.body[0].type == "Composite":
+                z = {ann.body[0].items[0].source}
             if IA:
                 for anno in IA:
                     if ann.target[0].jsonld_id == anno.target[0].jsonld_id:
-                        if ann.body[0].jsonld_id: z.add( ann.body[0].jsonld_id )
+                        if ann.body and ann.body[0] and ann.body[0].type and ann.body[0].type == "Composite":
+                            z.add(ann.body[0].items[0].source)
             if v == set(query_dict["body_val_and"]) and z == set(query_dict["body_id_and"]):
                 exact.append( ann.target[0].jsonld_id )
 
@@ -1445,7 +1477,7 @@ def process_search_query( form ):
     if VX:
         for ann in VX:
             if exact:
-                if ann.target[0].jsonld_id: exact.add( ann.target[0].jsonld_id )
+                if ann.target[0].jsonld_id: exact.append( ann.target[0].jsonld_id )
                 coll = set()
                 for url in exact:
                     if url == ann.target[0].jsonld_id:
@@ -1456,7 +1488,7 @@ def process_search_query( form ):
     if IX:
         for ann in IX:
             if exact:
-                if ann.target[0].jsonld_id: exact.add( ann.target[0].jsonld_id )
+                if ann.target[0].jsonld_id: exact.append( ann.target[0].jsonld_id )
                 coll = set()
                 for url in exact:
                     if url == ann.target[0].jsonld_id:
