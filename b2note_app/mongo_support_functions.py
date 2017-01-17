@@ -983,7 +983,7 @@ def orderedJSONLDfields(o_in):
                     out.append(orderedJSONLDfields(item))
             if isinstance(o_in, dict):
                 out = collections.OrderedDict()
-                for k in ["id", "type", "target", "body", "value", "motivation", "purpose", "creator", "generator"]:
+                for k in ["@context", "id", "type", "target", "body", "value", "motivation", "purpose", "creator", "generator"]:
                     if k in o_in.keys():
                         out[k] = orderedJSONLDfields(o_in[k])
                 for k in o_in.keys():
@@ -995,7 +995,6 @@ def orderedJSONLDfields(o_in):
         pass
 
     return out
-
 
 
 def ridOflistsOfOneItem(o_in):
@@ -1069,8 +1068,8 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
                     if m:
                         newkey = "@{0}".format(m.group(1))
                     if newkey=="@id": newkey="id"
-                    if newkey!="@context":
-                        o_out[newkey] = readyQuerySetValuesForDumpAsJSONLD( o_in[k] )
+                    #if newkey!="@context":
+                    o_out[newkey] = readyQuerySetValuesForDumpAsJSONLD( o_in[k] )
         elif isinstance(o_in, datetime.datetime) or isinstance(o_in, datetime.datetime):
             o_out = o_in.isoformat()
         elif o_in and o_in != "None" and not re.match(r'^<class (.*)>', o_in):
