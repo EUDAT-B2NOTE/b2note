@@ -442,7 +442,7 @@ def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
                     if annotation:
 
                         annotation.creator = [Agent(
-                            type = ['Human agent'],
+                            type = ['Person'],
                             nickname = str(ap.nickname)
                         )]
                         annotation.save()
@@ -783,11 +783,21 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
                                         if o["labels"] and isinstance(o["labels"], (str, unicode)):
                                             object_label = o["labels"]
 
+                                    stsr = SemanticTagSpecificResource(
+                                                    type = "SpecificResource",
+                                                    source = object_uri
+                                                )
+                                    sttb = SemanticTagTextualBody(
+                                                    type = "TextualBody",
+                                                    value = object_label
+                                                )
+                                    itemz = [stsr, sttb]
+
                                     A.body = [
-                                        TextualBody(
-                                            jsonld_id = object_uri,
-                                            type      = ["TextualBody"],
-                                            value     = object_label
+                                        SemanticTagBodySet(
+                                            type    = "Composite",
+                                            items   = itemz,
+                                            purpose = "tagging"
                                         )
                                     ]
 
@@ -1093,7 +1103,7 @@ def CheckDuplicateAnnotation( target=None, annotation_body=None ):
                 if 'body' in annotation_body:
                     A = None
                     if 'jsonld_id' in annotation_body['body'] and isinstance(annotation_body['body']['jsonld_id'], (str, unicode)) and len(annotation_body['body']['jsonld_id']) > 0:
-                        A = Annotation.objects.raw_query({'target.jsonld_id':target,'body.jsonld_id':annotation_body['body']['jsonld_id']})
+                        A = Annotation.objects.raw_query({'target.jsonld_id':target,'body.items.source':annotation_body['body']['jsonld_id']})
                     else:
                         if 'value' in annotation_body['body']:
                             A = Annotation.objects.raw_query({'target.jsonld_id':target,'body.value':annotation_body['body']['value']})

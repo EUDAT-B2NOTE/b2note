@@ -221,7 +221,7 @@
 
         {% elif ann %}
 
-            {% if ann.body.0.jsonld_id or textinput_primer %}
+            {% if ann.body.0.type and "Composite" in ann.body.0.type or textinput_primer %}
 
                 <div class="container" id="edit_semantic">
                     <p><strong>Type-in</strong> to select an other tag.</p>
