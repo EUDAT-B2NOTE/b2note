@@ -289,13 +289,13 @@ def SetDateTimeModified( db_id=None ):
 
                     A.modified = nowdt
 
-                    if A.body:
+                    #if A.body:
 
-                        if isinstance(A.body, list):
+                    #    if isinstance(A.body, list):
 
-                            if len(A.body)>0:
+                    #        if len(A.body)>0:
 
-                                A.body[0].modified = nowdt
+                    #            A.body[0].modified = nowdt
 
                     A.save()
 

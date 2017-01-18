@@ -1,4 +1,4 @@
-import re, datetime
+import re, datetime, collections
 import logging
 
 stdlogger = logging.getLogger('b2note')
@@ -60,3 +60,52 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
         stdlogger.error("readyQuerySetValuesForDumpAsJSONLD function did not complete.")
         pass
     return o_out
+
+
+
+def orderedJSONLDfields(o_in):
+    out = None
+    try:
+        if o_in:
+            out = o_in
+            if isinstance(o_in, list):
+                out = []
+                for item in o_in:
+                    out.append(orderedJSONLDfields(item))
+            if isinstance(o_in, dict):
+                out = collections.OrderedDict()
+                for k in ["@context", "id", "type", "target", "body", "value", "motivation", "purpose", "creator", "generator"]:
+                    if k in o_in.keys():
+                        out[k] = orderedJSONLDfields(o_in[k])
+                for k in o_in.keys():
+                    if k not in out.keys():
+                        out[k] = orderedJSONLDfields(o_in[k])
+    except:
+        out = None
+        print "orderedJSONLDfields function, Exception."
+        pass
+
+    return out
+
+
+def ridOflistsOfOneItem(o_in):
+    out = None
+    try:
+        if o_in:
+            out = o_in
+            if isinstance(o_in, list) or isinstance(o_in, tuple):
+                if len(o_in) == 1:
+                    out = ridOflistsOfOneItem( o_in[0] )
+                else:
+                    out = []
+                    for item in o_in:
+                        out.append( ridOflistsOfOneItem( item ) )
+            if isinstance(o_in, dict):
+                out = {}
+                for k in o_in.keys():
+                    out[k] = ridOflistsOfOneItem( o_in[k] )
+    except:
+        out = None
+        print "ridOflistsOfOneItem function, Exception."
+        pass
+    return out
