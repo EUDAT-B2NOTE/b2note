@@ -241,9 +241,9 @@ annotations = {
 mongo_settings = {
         'MONGO_HOST': 'localhost',
         'MONGO_PORT': 27017,
-        'MONGO_DBNAME': "b2note_mongodb", #os.environ['MONGODB_NAME'],
-        #'MONGO_USERNAME': os.environ['MONGODB_USR'],
-        #'MONGO_PASSWORD': os.environ['MONGODB_PWD'],
+        'MONGO_DBNAME': os.environ['MONGODB_NAME'],
+        'MONGO_USERNAME': os.environ['MONGODB_USR'],
+        'MONGO_PASSWORD': os.environ['MONGODB_PWD'],
         'DOMAIN': {
             'annotations': annotations,
             },
