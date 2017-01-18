@@ -2,7 +2,7 @@ from eve import Eve
 from eve_swagger import swagger
 from settings import mongo_settings
 from collections import OrderedDict
-from jsonld_support_functions import readyQuerySetValuesForDumpAsJSONLD, ridOflistsOfOneItem, orderedJSONLDfields
+from jsonld_support_functions import readyQuerySetValuesForDumpAsJSONLD
 from django.conf import settings as global_settings
 import json, os, copy
 
@@ -49,51 +49,28 @@ def before_returning_items(response):
             if isinstance(response["_items"], list):
                 for doc in response["_items"]:
                     if isinstance(doc, dict):
-                        for k2d in ["_created", "_etag", "_id", "_links", "_updated"]:
+                        for k2d in ["_etag", "_created", "_id", "_updated", "_links"]:
                             if k2d in doc.keys():
                                 del( doc[k2d] )
             response["_items"] = readyQuerySetValuesForDumpAsJSONLD(response["_items"])
-            response["_items"] = ridOflistsOfOneItem(response["_items"])
-            #response = OrderedDict(response)
-            response["_items"] = orderedJSONLDfields(response["_items"])
-            #response["@graph"] = response["_items"]
-            #if not isinstance(response["@graph"], list):
-            #    response["@graph"] = [ response["@graph"] ]
-            #del(response["_items"])
-            #response["@context"] = "jsonld_context_url"#global_settings.JSONLD_CONTEXT_URL
-            response["@context"] = "http://schema.org"
-            response["@type"] = "ItemList"
-            response["itemListElement"] = response["_items"]
-            if not isinstance(response["itemListElement"], list):
-                response["itemListElement"] = [ response["itemListElement"] ]
-            #del(response["_items"])
-            for k2d in response.keys():
-                if k2d not in ["@type", "itemListElement", "@context", "_etag", "_meta"]:
-                    del (response[k2d])
+            response["@graph"] = response["_items"]
+            if not isinstance(response["@graph"], list):
+                response["@graph"] = [ response["@graph"] ]
+            del(response["_items"])
+            response["@context"] = global_settings.JSONLD_CONTEXT_URL
     return response
 
 
 def before_returning_item(response):
     if isinstance(response, dict):
         resp = copy.deepcopy( response )
-        for k2d in ["_created", "_etag", "_id", "_links", "_updated"]:
+        for k2d in ["_created", "_id", "_updated", "_links", "_etag"]:
             if k2d in resp.keys():
                 del( resp[k2d] )
-        #response["@graph"] = [ readyQuerySetValuesForDumpAsJSONLD( resp ) ]
-        #response["@context"] = "jsonld_context_url"#global_settings.JSONLD_CONTEXT_URL
-        #response = [ readyQuerySetValuesForDumpAsJSONLD( resp ) ]
-        response["_items"] = readyQuerySetValuesForDumpAsJSONLD( resp )
-        response["_items"] = ridOflistsOfOneItem( response["_items"] )
-        #response = OrderedDict( response )
-        response["_items"] = orderedJSONLDfields( response["_items"] )
-        response["@context"] = "http://schema.org"
-        response["@type"] = "ItemList"
-        response["itemListElement"] = response["_items"]
-
-        if not isinstance(response["itemListElement"], list):
-            response["itemListElement"] = [response["itemListElement"]]
+        response["@graph"] = [ readyQuerySetValuesForDumpAsJSONLD( resp ) ]
+        response["@context"] = global_settings.JSONLD_CONTEXT_URL
         for k2d in response.keys():
-            if k2d not in ["@type", "itemListElement", "@context", "_etag", "_meta"]:
+            if k2d not in ["@graph", "@context", "_etag"]:
                 del(response[k2d])
     return response
 
