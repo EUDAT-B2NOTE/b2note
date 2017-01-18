@@ -29,6 +29,27 @@ def index(request):
     return HttpResponse("replace me with index text")
 
 
+def b2share_correct_url( url ):
+    out = None
+    root = "http://trng-b2share.eudat.eu"
+    try:
+        if url and isinstance(url, (str, unicode)) and len(url)>len(root):
+            if url[:len(root)] == root or url[:len("https://b2share.eudat.eu")]=="https://b2share.eudat.eu":
+                out = url
+            else:
+                if url[0]=="/":
+                    out = root+url
+                else:
+                    out = root+"/"+url
+        else:
+            print "B2share_correct_url function, URL not valid or too short."
+            stdlogger.error("B2share_correct_url function, URL not valid or too short.")
+    except:
+        print "B2share_correct_url function did not complete succesfully."
+        stdlogger.error("B2share_correct_url function did not complete succesfully.")
+    return out
+
+
 @login_required
 def export_annotations(request):
     """
@@ -47,9 +68,11 @@ def export_annotations(request):
         subject_tofeed = ""
         if request.POST.get('subject_tofeed') != None:
             subject_tofeed = request.POST.get('subject_tofeed')
+            if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
             request.session["subject_tofeed"] = subject_tofeed
         elif request.session.get('subject_tofeed'):
             subject_tofeed = request.session.get('subject_tofeed')
+            if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
 
         pid_tofeed = ""
         if request.POST.get('pid_tofeed')!=None:
@@ -164,6 +187,7 @@ def publish_annotations(request):
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
         subject_tofeed = request.POST.get('subject_tofeed')
+        if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
 
     pid_tofeed = ""
     if request.POST.get('pid_tofeed')!=None:
@@ -191,6 +215,7 @@ def settings(request):
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
         subject_tofeed = request.POST.get('subject_tofeed')
+        if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
 
     pid_tofeed = ""
     if request.POST.get('pid_tofeed')!=None:
@@ -200,7 +225,7 @@ def settings(request):
     This functionality will allow the user to select the ontologies from which to retrieve the concepts used for creating annotations.
     """
     
-    return render(request, 'b2note_app/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
+    return render(request, 'b2note_app/default.html', {'text': text, "subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 
 
 def hostpage(request):
@@ -291,9 +316,11 @@ def edit_annotation(request):
     subject_tofeed = ""
     if request.POST.get('subject_tofeed') != None:
         subject_tofeed = request.POST.get('subject_tofeed')
+        if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
         request.session["subject_tofeed"] = subject_tofeed
     elif request.session.get('subject_tofeed'):
         subject_tofeed = request.session.get('subject_tofeed')
+        if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
 
     user_nickname = None
     if request.session.get("user"):
@@ -634,9 +661,11 @@ def annotation_summary(request):
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
         subject_tofeed = request.POST.get('subject_tofeed')
+        if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
         request.session["subject_tofeed"] = subject_tofeed
     elif request.session.get('subject_tofeed'):
         subject_tofeed = request.session.get('subject_tofeed')
+        if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
 
     user_nickname = None
     if not request.session.get('user'):
@@ -784,9 +813,11 @@ def myannotations(request):
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
         subject_tofeed = request.POST.get('subject_tofeed')
+        if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
         request.session["subject_tofeed"] = subject_tofeed
     elif request.session.get('subject_tofeed'):
         subject_tofeed = request.session.get('subject_tofeed')
+        if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
 
     user_nickname = None
     if not request.session.get('user'):
@@ -952,13 +983,15 @@ def allannotations(request):
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
         subject_tofeed = request.POST.get('subject_tofeed')
+        if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
         request.session["subject_tofeed"] = subject_tofeed
     elif request.session.get('subject_tofeed'):
         subject_tofeed = request.session.get('subject_tofeed')
+        if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
 
     user_nickname = None
     if not request.session.get('user'):
-        context = RequestContext(request, {"subject_tofeed":subject_tofeed, "pid_tofeed":pid_tofeed})
+        context = RequestContext(request, {"subject_tofeed": subject_tofeed, "pid_tofeed":pid_tofeed})
         return redirect('accounts/login', context=context)
     elif request.session.get('user')!=None:
         userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
@@ -1187,13 +1220,15 @@ def interface_main(request):
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
         subject_tofeed = request.POST.get('subject_tofeed')
+        if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
         request.session["subject_tofeed"] = subject_tofeed
     elif request.session.get('subject_tofeed'):
         subject_tofeed = request.session.get('subject_tofeed')
+        if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
 
     user_nickname = None
     if not request.session.get('user'):
-        context = RequestContext(request, {"subject_tofeed":subject_tofeed, "pid_tofeed":pid_tofeed})
+        context = RequestContext(request, {"subject_tofeed": subject_tofeed, "pid_tofeed":pid_tofeed})
         return redirect('accounts/login', context=context)
     elif request.session.get('user')!=None:
         userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
@@ -1669,9 +1704,11 @@ def select_search_results(request):
     subject_tofeed = ""
     if request.POST.get('subject_tofeed')!=None:
         subject_tofeed = request.POST.get('subject_tofeed')
+        if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
         request.session["subject_tofeed"] = subject_tofeed
     elif request.session.get('subject_tofeed'):
         subject_tofeed = request.session.get('subject_tofeed')
+        if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
 
     user_nickname = None
     if request.session.get('user')!=None:
