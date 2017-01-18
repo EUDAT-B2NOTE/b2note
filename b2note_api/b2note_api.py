@@ -44,7 +44,6 @@ app.config['SWAGGER_INFO'] = {
 
 #@mimerender(default = 'txt', json = render_json, jsonld = render_jsonld, txt = render_txt)
 def before_returning_items(response):
-    print "DOING THAT"
     if isinstance(response, dict):
         if "_items" in response.keys():
             if isinstance(response["_items"], list):
