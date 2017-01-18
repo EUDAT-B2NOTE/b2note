@@ -140,7 +140,7 @@ from django_mongodb_engine.contrib import MongoDBManager
 
 class Agent(models.Model):
 	#jsonld_id  		= models.CharField( max_length = 4096, null=True )
-	PERSON          = 'Human agent'
+	PERSON          = 'Person'
 	ORGANISATION    = 'Organization agent'
 	SOFTWARE        = 'Software agent'
 	AGENT_CHOICES = (
@@ -155,6 +155,57 @@ class Agent(models.Model):
 	email		= ListField( models.CharField(max_length = 2048), null=True )			# foaf:mbox
 	#email_sha1	= ListField( models.CharField(max_length = 2048), null=True )			# sha1 of "mailto:"+foaf:mbox
 	homepage	= ListField( models.CharField(max_length = 4096), null=True )			# foaf:homepage
+
+
+class SemanticTagSpecificResource(models.Model):
+	type		= models.CharField( max_length = 256,  null=True )	# (rdf:type) oa:SpecificResource
+	source		= models.CharField( max_length = 4096, null=True )
+
+
+class SemanticTagTextualBody(models.Model):
+	type		= models.CharField( max_length = 64 )				# rdf:type; oa:TextualBody
+	value       = models.TextField() 								# oa:text
+
+
+class SemanticTagBodySet(models.Model):
+	type		= models.CharField( max_length = 32,
+									   choices = (
+										   ("Holistic set of resources", "Composite"),
+										   ("Ordered list of resources", "List"),
+										   ("Set of independent resources", "Independents"),
+									   ))
+	items		= ListField( EmbeddedModelField() ) # oa:item
+	ASSESSING = "assessing"
+	BOOKMARKING = "bookmarking"
+	CLASSIFYING = "classifying"
+	COMMENTING = "commenting"
+	DESCRIBING = "describing"
+	EDITING = "editing"
+	HIGHLIGHTING = "highlighting"
+	IDENTIFYING = "identifying"
+	LINKING = "linking"
+	MODERATING = "moderating"
+	QUESTIONING = "questioning"
+	REPLYING = "replying"
+	TAGGING = "tagging"
+	MOTIVATION_CHOICES = (
+		(ASSESSING, "assessing"),  # oa:assessing
+		(BOOKMARKING, "bookmarking"),  # oa:bookmarking
+		(CLASSIFYING, "classifying"),  # oa:classifying
+		(COMMENTING, "commenting"),  # oa:commenting
+		(DESCRIBING, "describing"),  # oa:describing
+		(EDITING, "editing"),  # oa:editing
+		(HIGHLIGHTING, "highlighting"),  # oa:highlighting
+		(IDENTIFYING, "identifying"),  # oa:identifying
+		(LINKING, "linking"),  # oa:linking
+		(MODERATING, "moderating"),  # oa:moderating
+		(QUESTIONING, "questioning"),  # oa:questioning
+		(REPLYING, "replying"),  # oa:replying
+		(TAGGING, "tagging"),  # oa:tagging
+	)
+	purpose		= models.CharField(max_length=256, choices=MOTIVATION_CHOICES, null=True)
+	#created		= models.DateTimeField( auto_now_add=True, null=True )  # dcterms:created MUST xsd:dateTime SHOULD timezone.
+	#modified 	= models.DateTimeField( null=True )  	# MUST xsd:dateTime with the UTC timezone expressed as "Z".
 
 
 # class ResourceSet(models.Model):
@@ -220,9 +271,9 @@ class TextualBody(models.Model):
 		(TAGGING,		"tagging"),			# oa:tagging
 	)
 	purpose		= models.CharField( max_length = 256, choices=MOTIVATION_CHOICES, null=True )
-	creator		= ListField( EmbeddedModelField("Agent"), null=True )   # dcterms:creator
-	created		= models.DateTimeField( auto_now_add=True, null=True )  # dcterms:created MUST xsd:dateTime SHOULD timezone.
-	modified 	= models.DateTimeField( null=True )  	# MUST xsd:dateTime with the UTC timezone expressed as "Z".
+	#creator		= ListField( EmbeddedModelField("Agent"), null=True )   # dcterms:creator
+	#created		= models.DateTimeField( auto_now_add=True, null=True )  # dcterms:created MUST xsd:dateTime SHOULD timezone.
+	#modified 	= models.DateTimeField( null=True )  	# MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	#modified 	= models.DateTimeField( auto_now=True, null=True )  	# MUST xsd:dateTime with the UTC timezone expressed as "Z".
 
 
@@ -254,9 +305,9 @@ class ExternalResource(models.Model):
 	#)
 	#textDirection	= models.CharField( max_length = 32, choices=TEXT_DIRECTION_CHOICES, null=True )
 	#accessibility	= ListField( models.CharField( max_length = 256 ), null=True )	# enumerated list of schema.org accessibilityFeature property
-	creator 		= ListField( EmbeddedModelField("Agent"), null=True )  			# dcterms:creator
-	created 		= models.DateTimeField( auto_now_add=True, null=True )  		# dcterms:created MUST xsd:dateTime SHOULD timezone.
-	modified		= models.DateTimeField( null=True )				# MUST xsd:dateTime with the UTC timezone expressed as "Z".
+	#creator 		= ListField( EmbeddedModelField("Agent"), null=True )  			# dcterms:creator
+	#created 		= models.DateTimeField( auto_now_add=True, null=True )  		# dcterms:created MUST xsd:dateTime SHOULD timezone.
+	#modified		= models.DateTimeField( null=True )				# MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	#modified		= models.DateTimeField( auto_now=True, null=True )				# MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	#rights			= ListField( models.CharField( max_length=4096 ), null=True )  	# MAY be then MUST be an IRI
 	#canonical 		= models.CharField( max_length=4096, null=True )  				# IRI
@@ -276,7 +327,7 @@ class Annotation(models.Model):
 	creator 	= ListField( EmbeddedModelField("Agent"), null=True )   # dcterms:creator
 	created 	= models.DateTimeField( auto_now_add=True, null=True )  # dcterms:created MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	generator 	= ListField( EmbeddedModelField("Agent"), null=True )   # prov:wasGeneratedBy
-	generated 	= models.DateTimeField( auto_now_add=True, null=True )  # prov:generatedAtTime MUST xsd:dateTime with the UTC timezone expressed as "Z".
+	generated 	= models.DateTimeField( auto_now=True, null=True )  	# prov:generatedAtTime MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	modified	= models.DateTimeField( null=True )						# MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	#modified	= models.DateTimeField( auto_now=True, null=True )		# MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	#audience	= ListField( EmbeddedModelField("Audience"), null=True )
