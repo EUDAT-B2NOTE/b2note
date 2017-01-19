@@ -2,7 +2,7 @@
 
 {% block content %}
 
-	<div class="container" id="annotation_summary">
+	<div class="container" id="annotation_summary" style="margin-bottom:50px;">
 
 		{% if r %}
 
@@ -26,11 +26,12 @@
 								<tr><td class="col-xs-4 col-md-4"><Label>Definition:</Label></td><td class="col-xs-8 col-md-8"> {{ r.description.0 }}</td></tr>
 							{% endif %}
 						{% endif %}
-						{% if r.synonyms %}<tr><td class="col-xs-4 col-md-4"><Label>Synonyms:</Label></td><td class="col-xs-8 col-md-8"> {{ r.synonyms }}</td></tr>{% endif %}
 						{% if r.short_form %}<tr><td class="col-xs-4 col-md-4"><Label>Short-form:</Label></td><td class="col-xs-8 col-md-8"> {{ r.short_form }}</td></tr>{% endif %}
-						{% if r.ontology_acronym %}<tr><td class="col-xs-4 col-md-4"><Label>Ontology acronym:</Label></td><td class="col-xs-8 col-md-8"> {{ r.ontology_acronym }}</td></tr>{% endif %}
+						{% if r.synonyms %}<tr><td class="col-xs-4 col-md-4"><Label>Synonyms:</Label></td><td class="col-xs-8 col-md-8"> {{ r.synonyms }}</td></tr>{% endif %}
 						{% if r.ontology_name %}<tr><td class="col-xs-4 col-md-4"><Label>Ontology name:</Label></td><td class="col-xs-8 col-md-8"> {{ r.ontology_name }}</td></tr>{% endif %}
+						{% if r.ontology_acronym %}<tr><td class="col-xs-4 col-md-4"><Label>Ontology acronym:</Label></td><td class="col-xs-8 col-md-8"> {{ r.ontology_acronym }}</td></tr>{% endif %}
 						{% if r.uris %}<tr><td class="col-xs-4 col-md-4"><Label>URI:</Label></td><td class="col-xs-8 col-md-8"><a href="{{r.uris}}" target="_blank">{{ r.uris }}</a></td></tr>{% endif %}
+						{% if r.acrs_of_ontologies_reusing_uri %}<tr><td class="col-xs-4 col-md-4"><Label>Also in:</Label></td><td class="col-xs-8 col-md-8"> {{ r.acrs_of_ontologies_reusing_uri }}</td></tr>{% endif %}
 					</table>
 				</div>
 			</div>

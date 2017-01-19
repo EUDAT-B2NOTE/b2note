@@ -768,6 +768,11 @@ def annotation_summary(request):
             if r:
                 for rr in r.keys():
                     rrr = r[rr]
+                    if isinstance(rrr, dict) and "synonyms" in rrr.keys():
+                        rrr["synonyms"] = str(", ".join(rrr["synonyms"]))
+                    if isinstance(rrr, dict) and "acrs_of_ontologies_reusing_uri" in rrr.keys():
+                        rrr["acrs_of_ontologies_reusing_uri"] = sorted(rrr["acrs_of_ontologies_reusing_uri"])
+                        rrr["acrs_of_ontologies_reusing_uri"] = str(", ".join(rrr["acrs_of_ontologies_reusing_uri"]))
                     break
 
     navbarlinks = list_navbarlinks(request, ["Help page"])
@@ -1897,7 +1902,8 @@ def search_annotations_bck(request):
 
                                 label_match = list(chain(SearchAnnotation(keywd_json["labels"]),))
 
-                            r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=synonyms:"'+ keywd_json["labels"] +'"&fl=labels&wt=json&indent=true&rows=1000')
+                            #r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=synonyms:"'+ keywd_json["labels"] +'"&fl=labels&wt=json&indent=true&rows=1000')
+                            r = requests.get('https://b2note.bsc.es/solr/cleanup_test/select?q=synonyms:"'+ keywd_json["labels"] +'"&fl=labels&wt=json&indent=true&rows=1000')
 
                             r = r.json()
 
@@ -1955,7 +1961,8 @@ def search_annotations_bck(request):
 
                                     synonym_match.append( SearchAnnotation( syn ) )
 
-                                    r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=synonyms:"' + syn + '"&fl=labels&wt=json&indent=true&rows=1000')
+                                    #r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=synonyms:"' + syn + '"&fl=labels&wt=json&indent=true&rows=1000')
+                                    r = requests.get('https://b2note.bsc.es/solr/cleanup_test/select?q=synonyms:"' + syn + '"&fl=labels&wt=json&indent=true&rows=1000')
 
                                     r = r.json()
 
