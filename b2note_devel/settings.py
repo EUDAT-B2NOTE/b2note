@@ -229,11 +229,10 @@ LOGGING = {
     }
 }
 
-EMAIL_USE_TLS = True
+EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = os.environ['SUPPORT_EMAIL_ADDR']
-SERVER_EMAIL = 'test@gmail.com'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+EMAIL_HOST = 'mail.bsc.es'
+EMAIL_PORT = 25
 EMAIL_HOST_USER = os.environ['SUPPORT_EMAIL_ADDR']
 EMAIL_HOST_PASSWORD = os.environ['SUPPORT_EMAIL_PWD']
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
