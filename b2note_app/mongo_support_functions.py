@@ -18,7 +18,8 @@ def solr_fetchtermonexactlabel(label=None):
     try:
         if label:
             if isinstance(label, (str, unicode)):
-                r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=labels:"' + label + '"&wt=json&indent=true&start=0&rows=100')
+                #r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=labels:"' + label + '"&wt=json&indent=true&start=0&rows=100')
+                r = requests.get('https://b2note.bsc.es/solr/cleanup_test/select?q=labels:"' + label + '"&wt=json&indent=true&start=0&rows=100')
                 out = []
                 for rr in r.json()["response"]["docs"]:
                     if rr["labels"].lower() == label.lower():
@@ -50,8 +51,10 @@ def solr_fetchorigintermonid(ids=None):
                     q_str = q_str.replace("#","%23")
                     q_str = "(" + q_str[3:] + ")"
                     r = None
+                    #r = requests.get(
+                    #    'https://b2note.bsc.es/solr/b2note_index/select?q=uris:' + q_str +'&fl=ontology_acronym,ontology_name,description,uris,labels,short_form&wt=json&indent=true&start=0&rows=' + str(10*len(ids)))
                     r = requests.get(
-                        'https://b2note.bsc.es/solr/b2note_index/select?q=uris:' + q_str +'&fl=ontology_acronym,ontology_name,description,uris,labels,short_form&wt=json&indent=true&start=0&rows=' + str(10*len(ids)))
+                        'https://b2note.bsc.es/solr/cleanup_test/select?q=uris:' + q_str +'&fl=ontology_acronym,ontology_name,description,uris,labels,short_form,synonyms,acrs_of_ontologies_reusing_uri&wt=json&indent=true&start=0&rows=' + str(10*len(ids)))
                     if r and r.json():
                         if isinstance(r.json(), dict):
                             if "response" in r.json().keys():
@@ -106,7 +109,8 @@ def solr_fetchtermonid(id=None):
     try:
         if id:
             if isinstance(id, (str, unicode)):
-                r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=uris:"' + id + '"&wt=json&indent=true&start=0&rows=100')
+                #r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=uris:"' + id + '"&wt=json&indent=true&start=0&rows=100')
+                r = requests.get('https://b2note.bsc.es/solr/cleanup_test/select?q=uris:"' + id + '"&wt=json&indent=true&start=0&rows=100')
                 return r
             else:
                 print "solr_fetchtermonid fuction, parameter neither string nor unicode."
