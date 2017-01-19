@@ -1,0 +1,8 @@
+
+{% load i18n %}{% autoescape off %}
+
+{% if username %}Originating user pseudonym: {{ username }}{% endif %}
+
+{{ form.as_p }}
+
+{% endautoescape %}

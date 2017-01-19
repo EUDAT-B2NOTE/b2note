@@ -1,3 +1,7 @@
+
+
+
+
 # Django settings for b2note_devel project.
 
 import os
@@ -28,6 +32,14 @@ DATABASES = {
         'PASSWORD': os.environ['MONGODB_PWD'],
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
+    },
+    'users' : {
+        'ENGINE' : 'django.db.backends.sqlite3',
+        'NAME': os.environ['SQLDB_NAME'],
+        'USER': os.environ['SQLDB_USR'],
+        'PASSWORD': os.environ['SQLDB_PWD'],
+        'HOST' : '',
+        'PORT' : '',
     }
 }
 
@@ -125,6 +137,20 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.contrib.messages.context_processors.messages',
+    # abremaud@esciencefactory.com, 20160927
+    # http://stackoverflow.com/questions/12096440/using-django-session-inside-templates
+    'django.core.context_processors.request',
+)
+
+
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -140,6 +166,9 @@ INSTALLED_APPS = (
     'django_mongodb_engine',
     'djangotoolbox',
     'b2note_app',
+    'accounts',
+    'django_countries',
+    'captcha',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
@@ -149,6 +178,8 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 # the site admins on every HTTP 500 error when DEBUG=False.
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
+
+# https://www.webforefront.com/django/setupdjangologging.html
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -157,12 +188,28 @@ LOGGING = {
             '()': 'django.utils.log.RequireDebugFalse'
         }
     },
+    'formatters': {
+        'simple': {
+            'format': '[%(asctime)s] [%(levelname)s] %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+        'verbose': {
+            'format': '[%(asctime)s] [%(levelname)s] [%(name)s.%(funcName)s:%(lineno)d] %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+    },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
-        }
+        },
+        'development_logfile' : {
+            'level' : 'INFO',
+            'class' : 'logging.FileHandler',
+            'filename' : '/tmp/b2note.log',
+            'formatter' : 'simple'
+        },
     },
     'loggers': {
         'django.request': {
@@ -170,6 +217,21 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+        'b2note' : {
+            'handlers' : ['development_logfile'],
+            'level' : 'INFO',
+        },
     }
 }
+
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = os.environ['SUPPORT_EMAIL_ADDR']
+EMAIL_HOST = 'mail.bsc.es'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = os.environ['SUPPORT_EMAIL_ADDR']
+EMAIL_HOST_PASSWORD = os.environ['SUPPORT_EMAIL_PWD']
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+ROOT_ANNOTATION_ID = "https://b2note-dev.bsc.es/annotations/"
+JSONLD_CONTEXT_URL = "https://b2note-dev.bsc.es/jsonld_context_b2note_20161027.jsonld"
 

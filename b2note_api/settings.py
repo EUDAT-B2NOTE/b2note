@@ -1,5 +1,6 @@
 import os
 
+
 agent = {
         'jsonld_id' : { 'type' : 'string' },
         'type' : {
@@ -39,34 +40,41 @@ body = {
         'type' : 'list',
         'schema' : {
             'jsonld_id' : { 'type' : 'string' },
+            'value': {'type': 'string'},
+            'purpose': {'type': 'string'},
             'type' : {
                 'type' : 'list',
                 'schema' : {
                     'type' : 'string',
                     },
                 },
-            'value' : { 'type' : 'string' },
-            'language' : {
-                'type' : 'list',
-                'schema' : {
-                    'type' : 'string',
-                    },
-                },
-            'format' : {
-                'type' : 'list',
-                'schema' : {
-                    'type' : 'string',
-                    },
-                },
-            'processingLanguage' : { 'type' : 'string' },
-            'textDirection' : { 'type' : 'string' },
-            'purpose' : { 'type' : 'string' },
-            'creator' : {
-                'type' : 'list',
-                'schema' : agent,
-                },
-            'created' : { 'type' : 'datetime' },
-            'modified' : { 'type' : 'datetime' },
+            'items': { 'type' : 'list',
+                       'schema' : {
+                           'type' : 'string',
+                           'source' : 'string',
+                           'value' : 'string'
+                       }
+                   },
+            #'language' : {
+            #    'type' : 'list',
+            #    'schema' : {
+            #        'type' : 'string',
+            #        },
+            #    },
+            #'format' : {
+            #    'type' : 'list',
+            #    'schema' : {
+            #        'type' : 'string',
+            #        },
+            #    },
+            #'processingLanguage' : { 'type' : 'string' },
+            #'textDirection' : { 'type' : 'string' },
+            #'creator' : {
+            #    'type' : 'list',
+            #    'schema' : agent,
+            #    },
+            #'created' : { 'type' : 'datetime' },
+            #'modified' : { 'type' : 'datetime' },
             },
         }
 
@@ -80,79 +88,91 @@ target = {
                         'type' : 'string',
                         },
                     },
-                'format' : {
-                    'type' : 'list',
-                    'schema' : {
-                        'type' : 'string',
-                        },
-                    },
-                'language' : {
-                    'type' : 'list',
-                    'schema' : {
-                        'type' : 'string',
-                        },
-                    },
-                'processingLanguage' : { 'type' : 'string' },
-                'textDirection' : { 'type' : 'string' },
-                'accessibility' : {
-                    'type' : 'list',
-                    'schema' : {
-                        'type' : 'string',
-                        },
-                    },
-                'creator' : {
-                    'type' : 'list',
-                    'schema' : agent,
-                    },
-                'created' : { 'type' : 'datetime' },
-                'modified' : { 'type' : 'datetime' },
-                'rights' : {
-                    'type' : 'list',
-                    'schema' : {
-                        'type' : 'string',
-                        },
-                    },
-                'canonical' : { 'type' : 'string' },
-                'via' : {
-                    'type' : 'list',
-                    'schema' : {
-                        'type' : 'string',
-                        },
-                    },
+                #'format' : {
+                #    'type' : 'list',
+                #    'schema' : {
+                #        'type' : 'string',
+                #        },
+                #    },
+                #'language' : {
+                #    'type' : 'list',
+                #    'schema' : {
+                #        'type' : 'string',
+                #        },
+                #    },
+                #'processingLanguage' : { 'type' : 'string' },
+                #'textDirection' : { 'type' : 'string' },
+                #'accessibility' : {
+                #    'type' : 'list',
+                #    'schema' : {
+                #        'type' : 'string',
+                #        },
+                #    },
+                #'creator' : {
+                #    'type' : 'list',
+                #    'schema' : agent,
+                #    },
+                #'created' : { 'type' : 'datetime' },
+                #'modified' : { 'type' : 'datetime' },
+                #'rights' : {
+                #    'type' : 'list',
+                #    'schema' : {
+                #        'type' : 'string',
+                #        },
+                #    },
+                #'canonical' : { 'type' : 'string' },
+                #'via' : {
+                #    'type' : 'list',
+                #    'schema' : {
+                #        'type' : 'string',
+                #        },
+                #    },
                 },
             }
 
 annotations = {
                 'allowed_filters': [
                     'jsonld_id',
+                    'created',
+                    'modified',
+                    'generated',
                     'target.jsonld_id',
-                    'body.jsonld_id',
+                    'body.type',
                     'body.value',
+                    'body.purpose',
+                    'body.items.type',
+                    'body.items.value',
+                    'body.items.source',
                     'creator.nickname',
+                    'generator.name',
                     ],
                 'datasource' : {
                     'source': 'b2note_app_annotation',
                     'projection': {
-                        'jsonld_id':1,
-                        'type':1,
-                        'target.jsonld_id': 1,
-                        'target.type':1,
-                        'body.jsonld_id':1,
-                        'body.type':1,
-                        'body.value':1,
+                        'jsonld_context' : 1,
+                        'jsonld_id': 1,
+                        'type': 1,
                         'created': 1,
                         'modified': 1,
-                        'creator.nickname':1,
+                        'generated': 1,
+                        'motivation': 1,
+                        'target.jsonld_id': 1,
+                        'body.type': 1,
+                        'body.value': 1,
+                        'body.purpose': 1,
+                        'body.items' : 1,
+                        'body.items.type' : 1,
+                        'body.items.source' : 1,
+                        'body.items.value' : 1,
                         'creator.type': 1,
+                        'creator.nickname': 1,
+                        'generator.type': 1,
+                        'generator.name': 1,
+                        'generator.homepage': 1
                         },
                     },
                 'schema' : {
-                    '@context' : {
-                        'type' : 'list',
-                        'schema' : {
-                            'type' : 'string',
-                            },
-                        },
+                    'jsonld_context' : { 'type' : 'string' },
                     'jsonld_id' : { 'type' : 'string' },
                     'type' : {
                         'type' : 'list',
@@ -162,59 +182,59 @@ annotations = {
                         },
                     'body' : body,
                     'target' : target,
-                    'language' : { 'type' : 'string' },
-                    'format' : { 'type' : 'string' },
+                    'motivation': {
+                        'type': 'list',
+                        'schema': {
+                            'type': 'string',
+                        },
                     'creator' : {
                         'type' : 'list',
                         'schema' : agent,
                         },
-                    'created' : { 'type' : 'datetime' },
                     'generator' : {
                         'type' : 'list',
                         'schema' : agent,
                         },
-                    'generated' : { 'type' : 'datetime' },
+                    'created': {'type': 'datetime'},
                     'modified' : { 'type' : 'datetime' },
-                    'audience' : {
-                        'type' : 'list',
-                        'schema' : {
-                            'jsonld_id' : { 'type' : 'string' },
-                            'type' : {
-                                'type' : 'list',
-                                'schema' : {
-                                    'type' : 'string',
-                                    },
-                                },
-                            'props' : { 'type' : 'dict' },
-                            },
-                        },
-                    'rights' : {
-                        'type' : 'list',
-                        'schema' : {
-                            'type' : 'string',
-                            },
-                        },
-                    'canonical' : { 'type' : 'string' },
-                    'via' : {
-                        'type' : 'list',
-                        'schema' : {
-                            'type' : 'string',
-                            },
-                        },
-                    'motivation' : {
-                        'type' : 'list',
-                        'schema' : {
-                            'type' : 'string',
-                            },
-                        },
-                    'stylesheet' : {
-                        'type' : 'dict',
-                        'schema' : {
-                            'type' : { 'type' : 'string' },
-                            'value' : { 'type' : 'string' },
-                            },
-                        },
-                    }, 
+                    'generated': {'type': 'datetime'},
+                    'language': {'type': 'string'},
+                    'format': {'type': 'string'},
+                    },
+                    #'audience' : {
+                    #    'type' : 'list',
+                    #    'schema' : {
+                    #        'jsonld_id' : { 'type' : 'string' },
+                    #        'type' : {
+                    #            'type' : 'list',
+                    #            'schema' : {
+                    #                'type' : 'string',
+                    #                },
+                    #            },
+                    #        'props' : { 'type' : 'dict' },
+                    #        },
+                    #    },
+                    #'rights' : {
+                    #    'type' : 'list',
+                    #    'schema' : {
+                    #        'type' : 'string',
+                    #        },
+                    #    },
+                    #'canonical' : { 'type' : 'string' },
+                    #'via' : {
+                    #    'type' : 'list',
+                    #    'schema' : {
+                    #        'type' : 'string',
+                    #        },
+                    #    },
+                    #'stylesheet' : {
+                    #    'type' : 'dict',
+                    #    'schema' : {
+                    #        'type' : { 'type' : 'string' },
+                    #        'value' : { 'type' : 'string' },
+                    #        },
+                    #    },
+                    },
                 #'url' : 'annotations/<regex("[a-f0-9]{24}"):annotation_id>/files',
                 }
 
@@ -232,6 +252,10 @@ mongo_settings = {
         #'ALLOW_UNKNOWN' : True, # http://stackoverflow.com/questions/34666941/python-eve-get-response-does-not-contain-contents-of-resource-unless-i-specify
         'DEBUG' : True,
         'INFO'  : True,
-        
+
+        #'API_VERSION' : '1',
+
         'ALLOWED_FILTERS' : [],
+
+        'XML' : False,
 }
