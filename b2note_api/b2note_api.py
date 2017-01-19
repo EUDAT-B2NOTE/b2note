@@ -61,14 +61,14 @@ def before_returning_items(response):
             #    response["@graph"] = [ response["@graph"] ]
             #del(response["_items"])
             #response["@context"] = "jsonld_context_url"#global_settings.JSONLD_CONTEXT_URL
-            response["@context"] = "http://schema.org"
+            response["@context"] = {"schema": "http://schema.org"}
             response["@type"] = "ItemList"
-            response["itemListElement"] = response["_items"]
-            if not isinstance(response["itemListElement"], list):
-                response["itemListElement"] = [ response["itemListElement"] ]
+            response["schema:itemListElement"] = response["_items"]
+            if not isinstance(response["schema:itemListElement"], list):
+                response["schema:itemListElement"] = [ response["schema:itemListElement"] ]
             #del(response["_items"])
             for k2d in response.keys():
-                if k2d not in ["@type", "itemListElement", "@context", "_etag", "_meta"]:
+                if k2d not in ["@type", "schema:itemListElement", "@context", "_etag", "_meta"]:
                     del (response[k2d])
     return response
 
@@ -86,14 +86,14 @@ def before_returning_item(response):
         response["_items"] = ridOflistsOfOneItem( response["_items"] )
         #response = OrderedDict( response )
         response["_items"] = orderedJSONLDfields( response["_items"] )
-        response["@context"] = "http://schema.org"
+        response["@context"] = {"schema": "http://schema.org"}
         response["@type"] = "ItemList"
-        response["itemListElement"] = response["_items"]
+        response["schema:itemListElement"] = response["_items"]
 
-        if not isinstance(response["itemListElement"], list):
-            response["itemListElement"] = [response["itemListElement"]]
+        if not isinstance(response["schema:itemListElement"], list):
+            response["schema:itemListElement"] = [response["schema:itemListElement"]]
         for k2d in response.keys():
-            if k2d not in ["@type", "itemListElement", "@context", "_etag", "_meta"]:
+            if k2d not in ["@type", "schema:itemListElement", "@context", "_etag", "_meta"]:
                 del(response[k2d])
     return response
 
