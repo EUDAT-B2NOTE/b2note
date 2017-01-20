@@ -237,6 +237,6 @@ EMAIL_HOST_USER = os.environ['SUPPORT_EMAIL_ADDR']
 EMAIL_HOST_PASSWORD = os.environ['SUPPORT_EMAIL_PWD']
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-ROOT_ANNOTATION_ID = "https://b2note-dev.bsc.es/annotations/"
-JSONLD_CONTEXT_URL = "https://b2note-dev.bsc.es/jsonld_context_b2note_20161027.jsonld"
+ROOT_ANNOTATION_ID = "https://b2note.bsc.es/annotations/"
+JSONLD_CONTEXT_URL = "https://b2note.bsc.es/jsonld_context_b2note_20161027.jsonld"
 
