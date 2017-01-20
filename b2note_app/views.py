@@ -1785,8 +1785,8 @@ def select_search_results(request):
                         #exac = {"@context": global_settings.JSONLD_CONTEXT_URL}
                         cleaned = readyQuerySetValuesForDumpAsJSONLD([ann for ann in A if
                                                                       ann["target"][0][1]["jsonld_id"] == url])
-                        cleaned = ridOflistsOfOneItem( cleaned )
-                        cleaned = orderedJSONLDfields( cleaned )
+                        #cleaned = ridOflistsOfOneItem( cleaned )
+                        #cleaned = orderedJSONLDfields( cleaned )
 
                         #if isinstance(cleaned, list):
                         #    exac["@graph"] = cleaned
@@ -1798,6 +1798,7 @@ def select_search_results(request):
                         #    "annotations": exac,}
                         #)
 
+                        if not isinstance(cleaned, list): cleaned = [cleaned]
                         response = cleaned
 
             if "related" in export_dic.keys() and export_dic["related"] and isinstance(export_dic["related"], list):
@@ -1810,8 +1811,8 @@ def select_search_results(request):
                         #relat = {"@context": global_settings.JSONLD_CONTEXT_URL}
                         cleaned = readyQuerySetValuesForDumpAsJSONLD([ann for ann in A if
                                                                              ann["target"][0][1]["jsonld_id"] == url])
-                        cleaned = ridOflistsOfOneItem(cleaned)
-                        cleaned = orderedJSONLDfields(cleaned)
+                        #cleaned = ridOflistsOfOneItem(cleaned)
+                        #cleaned = orderedJSONLDfields(cleaned)
 
                         #if isinstance(cleaned, list):
                         #    relat["@graph"] = cleaned
@@ -1823,7 +1824,12 @@ def select_search_results(request):
                         #     "annotations": relat, }
                         #)
 
+                        if not isinstance(cleaned, list): cleaned = [cleaned]
                         response = response + cleaned
+
+            if response and isinstance(response, list):
+                response = ridOflistsOfOneItem( response )
+                response = orderedJSONLDfields( response )
 
             # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
             json_data = HttpResponse(json.dumps(response, indent=2), mimetype='application/json')
