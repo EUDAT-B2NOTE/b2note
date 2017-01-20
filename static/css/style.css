@@ -245,6 +245,9 @@
 
 .nav-tabs > li > a {
     padding: 5px;
+    padding-left:2px;
+    padding-right:2px;
+    text-align:center;
 }
 
 #create_tabs {
@@ -259,7 +262,6 @@
     border: 1px solid #DDD;
     background: #FFFFFF;
 }
-
 
 
 #create_tabs a[href="#semantic"] {
@@ -287,6 +289,9 @@
 }
 
 #semantic_submit {
+    padding-left:2px;
+    padding-right:2px;
+    text-align:center;
     /*vertical-align: top;*/
 }
 
@@ -645,6 +650,8 @@
 
 
 #feedback_tabs {
+    padding-right:2px;
+    padding-left:2px;
     text-align: center;
     /*font-size: 16px;*/
     float: left;
@@ -663,10 +670,10 @@
     white-space:normal !important;
     /*word-wrap:break-word;*/
     /*word-break: normal;*/
-    padding-top: 15px;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-bottom: 20px;
+    padding-top: 5px;
+    padding-left: 2px;
+    padding-right: 2px;
+    padding-bottom: 10px;
 }
 
 #feedback_tabs a[href="#feature"] {
@@ -674,8 +681,8 @@
     white-space:normal !important;
     /*word-wrap:break-word;*/
     /*word-break: normal;*/
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 2px;
+    padding-right: 2px;
     padding-bottom: 10px;
 }
 
@@ -683,9 +690,10 @@
     width: 85px;
     text-align: center;
     white-space:normal !important;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-bottom: 10px;
+    padding-top: 15px;
+    padding-left: 2px;
+    padding-right: 2px;
+    padding-bottom: 20px;
 }
 
 #captcha_grip div[class="col-sm-2"]{

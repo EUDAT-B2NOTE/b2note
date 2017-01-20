@@ -68,5 +68,15 @@ db.*
 # local scripts
 *.sh
 
+# local copies
+*.bk
+
 # VI temp files
 .*.swp
+
+# Kate temp files
+*.kate-swp
+
+# Accounts DB
+*.sqlite3
+

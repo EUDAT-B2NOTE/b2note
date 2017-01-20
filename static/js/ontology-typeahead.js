@@ -14,34 +14,21 @@ $(document).ready( function() {
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         sorter: function(a, b) {
-
-
                 //get input text
-
             var InputString=   $('[id^="id_q"]').val();
 
-
-
                 //move exact matches to top
-
             if(InputString==a.labels){ return -1;}
-
             if(InputString==b.labels){return 1;}
 
                 //close match without case matching
-
             if(InputString.toLowerCase() == a.labels.toLowerCase()){ return -1;}
             if(InputString.toLowerCase()==b.labels.toLowerCase()){return 1;}
 
-
-
                 //Single token or multiple
-
             if ( a["norm(labels)"] == 1 ){
                     //decreasing value of Lucene/Solr label norm metric
-
                 if (a["norm(labels)"]>b["norm(labels)"]) {
-
                     return -1
 
                 } else {
