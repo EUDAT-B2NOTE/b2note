@@ -303,11 +303,15 @@
 }
 
 #keyword_input {
-    /*width: 70%;*/
+    /*width: 100%;*/
     margin-right: 5px;
 }
 
-#edit_keyword #keyword_submit {
+#edit_keyword #keyword_input {
+    /*width: 100%;*/
+}
+
+#keyword_submit {
     padding-left:2px;
     padding-right:2px;
     text-align:center;
