@@ -409,11 +409,11 @@
 }
 
 #semantic_formgroup #id_q {
-    margin-right: 0px;
-    padding-right: 30px;
+    margin-right: 30px;
+    padding-right: 5px;
     margin-left: 0px;
     padding-left: 10px;
-    width: 105%;
+    width: 100%;
 }
 
 #semantic_formgroup .tt-hint {
