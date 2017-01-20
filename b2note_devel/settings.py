@@ -43,11 +43,6 @@ DATABASES = {
     }
 }
 
-# This will substitute the default User model
-# https://docs.djangoproject.com/en/dev/topics/auth/customizing/#substituting-a-custom-user-model
-AUTH_USER_MODEL = 'accounts.UserCred'
-AUTHENTICATION_BACKENDS = ['accounts.backends.EmailAuthBackend', ]
-
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []

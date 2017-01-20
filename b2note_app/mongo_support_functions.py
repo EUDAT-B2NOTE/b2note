@@ -232,7 +232,6 @@ def RetrieveFileAnnotations( subject_url ):
 
     return annotations
 
-
 def DeleteFromPOSTinfo( db_id ):
     """
       Function: DeleteFromPOSTinfo
@@ -247,7 +246,7 @@ def DeleteFromPOSTinfo( db_id ):
     """
     del_flag = False
     try:
-        if db_id and isinstance(db_id, (str, unicode)) and len(db_id)>0:
+        if db_id and type(db_id) is unicode and len(db_id)>0:
             Annotation.objects.get(id=db_id).delete()
             del_flag = True
         else:
