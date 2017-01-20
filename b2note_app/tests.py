@@ -235,6 +235,12 @@ class B2noteappTest(TestCase):
         self.assertEqual(before, 0)
         a = CreateAnnotation(u"test_target")
         self.assertTrue(type(a) is unicode and len(a)>0)
+        # DB with 1 annotations created
+        after = Annotation.objects.filter().count()
+        self.assertEqual(after, 1)
+        # get the ID of the created annotation
+        db_id = Annotation.objects.filter()[0].id
+        self.assertEqual(a, db_id)
         
     def test_dont_create_annotation(self):
         """
@@ -243,7 +249,7 @@ class B2noteappTest(TestCase):
             Tests the no creation of invalid annotations using the mongo support function.
         """
         a = CreateAnnotation(1234)
-        self.assertEqual(a,None)
+        self.assertFalse(a)
         a = CreateAnnotation("")
         self.assertFalse(a)
 
@@ -259,6 +265,12 @@ class B2noteappTest(TestCase):
         self.assertEqual(before, 0)
         a = CreateSemanticTag(u"https://b2share.eudat.eu/record/30", '{"uris":"test_uri", "labels": "test_label"}')
         self.assertTrue(a)
+        # DB with 1 annotations created
+        after = Annotation.objects.filter().count()
+        self.assertEqual(after, 1)
+        # get the ID of the created annotation
+        db_id = Annotation.objects.filter()[0].id
+        self.assertEqual(a, db_id)
         
     def test_dont_create_semantic_tag(self):
         """
@@ -282,6 +294,12 @@ class B2noteappTest(TestCase):
         self.assertEqual(before, 0)
         a = CreateFreeTextKeyword(u"https://b2share.eudat.eu/record/30", u"testing free text")
         self.assertTrue(a)
+        # DB with 1 annotations created
+        after = Annotation.objects.filter().count()
+        self.assertEqual(after, 1)
+        # get the ID of the created annotation
+        db_id = Annotation.objects.filter()[0].id
+        self.assertEqual(a, db_id)
         
     def test_dont_create_free_text_keyword(self):
         """
@@ -400,7 +418,7 @@ class B2noteappTest(TestCase):
         json_dict['all_annotations'] = 1
         resp = self.client.post(url, json_dict)
         self.assertEqual(resp.status_code, 200)
-        self.assertIn("annotation", resp.content)
+        self.assertIn("annotation_test", resp.content)
         
     def test_download_json_view(self):
         """
