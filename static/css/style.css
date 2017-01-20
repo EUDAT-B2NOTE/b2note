@@ -184,7 +184,11 @@
 }
 
 #main_container {
-    padding: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    /*padding: 10px;*/
 }
 
 #wayback .btn {
@@ -229,7 +233,10 @@
 
 #user_area {
     background: #EEEEEE;
-    padding: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 
@@ -245,8 +252,8 @@
 
 .nav-tabs > li > a {
     padding: 5px;
-    padding-left:2px;
-    padding-right:2px;
+    padding-left: 10px;
+    padding-right: 10px;
     text-align:center;
 }
 
@@ -400,7 +407,7 @@
     padding-right: 30px;
     margin-left: 0px;
     padding-left: 10px;
-    width: 100%;
+    width: 105%;
 }
 
 #semantic_formgroup .tt-hint {
