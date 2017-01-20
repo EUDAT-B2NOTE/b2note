@@ -24,19 +24,19 @@
             <div class="container" id="user_area" style="padding-top:0px;margin-top:35px;">
 
                 <ul class="nav nav-tabs" id="feedback_tabs">
-                    <li class="active"><a data-toggle="tab" href="#feedback">Evaluate</a></li>
-                    <li><a data-toggle="tab" href="#feature">Feature request</a></li>
-                    <li><a data-toggle="tab" href="#bug_report">Bug report</a></li>
+                    <li class="active"><a data-toggle="tab" href="#feedback"><p style="margin-top:0px;margin-bottom:0px;">Assess</p><p style="margin-top:0px;margin-bottom:0px;">the</p><p style="margin-top:0px;margin-bottom:0px;">service</p></a></li>
+                    <li><a data-toggle="tab" href="#feature"><p style="margin-top:0px;margin-bottom:0px;">Request</p><p style="margin-top:0px;margin-bottom:0px;">a new</p><p style="margin-top:0px;margin-bottom:0px;">feature</p></a></li>
+                    <li><a data-toggle="tab" href="#bug_report"><p style="margin-top:0px;margin-bottom:0px;">Report</p><p style="margin-top:0px;margin-bottom:0px;">a bug</p></a></li>
                 </ul>
                 <div id="feedbackpage_tab_contents" class="tab-content">
-                    <div id="feedback" class="tab-pane fade in active form-group" style="margin-top:80px;">
+                    <div id="feedback" class="tab-pane fade in active form-group" style="margin-top:95px;">
                         <form action="/accounts/feedbackpage" method="post" class="form-horizontal">
                             {% csrf_token %}
                             <table class="table table-condensed table-responsive" id="myannot_table_main">
                                 {% for f in feedback_f %}
                                     {% if "General comment" not in f.label and "Captcha" not in f.label %}
                                         <tr>
-                                            <td style="width:120px;"><strong>{{f.label}}:</strong></td>
+                                            <td style="width:135px;"><strong>{{f.label}}:</strong></td>
                                             <td><input type="number" name={{f.id_for_label}} id={{f.id_for_label}} class="rating" /></td>
                                         </tr>
                                     {% endif %}
@@ -62,7 +62,7 @@
                             </div>
                         </form>
                     </div>
-                    <div id="feature" class="tab-pane fade in form-group" style="margin-top:80px;">
+                    <div id="feature" class="tab-pane fade in form-group" style="margin-top:95px;">
                         <form action="/accounts/feedbackpage" method="post" class="form-horizontal">
                             {% csrf_token %}
                             <table class="table table-condensed table-responsive" id="myannot_table_main">
@@ -84,7 +84,7 @@
                             </div>
                         </form>
                     </div>
-                    <div id="bug_report" class="tab-pane fade in form-group" style="margin-top:80px;">
+                    <div id="bug_report" class="tab-pane fade in form-group" style="margin-top:95px;">
                         <form action="/accounts/feedbackpage" method="post" class="form-horizontal">
                             {% csrf_token %}
                             <table class="table table-condensed table-responsive" id="myannot_table_main">
