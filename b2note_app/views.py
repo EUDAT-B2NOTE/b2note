@@ -1453,6 +1453,7 @@ def process_search_query( form ):
                 #VA = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
                 VA = Annotation.objects.raw_query({"$or": [{"body.value": {"$in": query_dict[k]}},
                                                            {"body.items.value": {"$in": query_dict[k]}}]})
+
             if k == "body_val_or":
                 #VO = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
                 VO = Annotation.objects.raw_query({"$or": [{"body.value": {"$in": query_dict[k]}},
@@ -1484,6 +1485,7 @@ def process_search_query( form ):
 
     if VA:
         for ann in VA:
+            v = {}
             if ann.body and ann.body[0] and ann.body[0].type and ann.body[0].type=="Composite":
                 v = { ann.body[0].items[1].value }
             elif ann.body and ann.body[0] and ann.body[0].value:
@@ -1494,6 +1496,7 @@ def process_search_query( form ):
                         v.add( ann.body[0].items[1].value )
                     elif ann.body and ann.body[0] and ann.body[0].value:
                         v.add( ann.body[0].value )
+            z = {}
             if ann.body and ann.body[0] and ann.body[0].type and ann.body[0].type == "Composite":
                 z = {ann.body[0].items[0].source}
             if IA:
@@ -1573,6 +1576,7 @@ def process_search_query( form ):
                 if ann.target[0].jsonld_id not in related:
                     if ann.motivation and ann.motivation[0] == "commenting":
                         related.add(ann.target[0].jsonld_id)
+
 
     exact = list(set( exact ))
     related = list(set( related ))
