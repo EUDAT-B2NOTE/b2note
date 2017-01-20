@@ -302,19 +302,27 @@
     /*vertical-align: top;*/
 }
 
+#edit_semantic #semantic_submit {
+    padding-left: 10px;
+    padding-right: 10px;
+    /*width: 100%;*/
+}
+
 #keyword_input {
     /*width: 100%;*/
     margin-right: 5px;
-}
-
-#edit_keyword #keyword_input {
-    /*width: 100%;*/
 }
 
 #keyword_submit {
     padding-left: 5px;
     padding-right: 5px;
     text-align:center;
+    /*width: 100%;*/
+}
+
+#edit_keyword #keyword_submit {
+    padding-left: 10px;
+    padding-right: 10px;
     /*width: 100%;*/
 }
 
@@ -332,6 +340,11 @@
     padding-bottom: 26px;
 }
 
+#edit_comment #comment_submit {
+    padding-left: 10px;
+    padding-right: 10px;
+    /*width: 100%;*/
+}
 
 #myannot_table_main {
     width: 100%;
