@@ -290,8 +290,8 @@
 #create_tabs a[href="#comment"] {
     text-align: center;
     padding-top: 15px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
     padding-bottom: 20px;
 }
 
@@ -308,6 +308,9 @@
 }
 
 #edit_keyword #keyword_input {
+    padding-left:2px;
+    padding-right:2px;
+    text-align:center;
     /*width: 100%;*/
 }
 
@@ -318,6 +321,9 @@
 }
 
 #comment_submit {
+    padding-left:2px;
+    padding-right:2px;
+    text-align:center;
     padding-top: 26px;
     padding-bottom: 26px;
 }
