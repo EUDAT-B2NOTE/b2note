@@ -9,4 +9,3 @@ class AuthenticationForm(forms.Form):
 
     class Meta:
         fields = ['username', 'password']
-

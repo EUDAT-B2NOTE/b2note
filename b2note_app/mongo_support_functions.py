@@ -232,7 +232,6 @@ def RetrieveFileAnnotations( subject_url ):
 
     return annotations
 
-
 def DeleteFromPOSTinfo( db_id ):
     """
       Function: DeleteFromPOSTinfo

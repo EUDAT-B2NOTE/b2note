@@ -272,7 +272,6 @@ class B2noteappTest(TestCase):
         db_id = Annotation.objects.filter()[0].id
         self.assertEqual(a, db_id)
         
-        
     def test_dont_create_semantic_tag(self):
         """
             Function: test_dont_create_semantic_tag
@@ -454,4 +453,5 @@ class B2noteappTest(TestCase):
                 if os.path.splitext(f)[1] == '.html':
                     path = settings.TEMPLATE_PATH + "/" + d + "/" + f
                     self.assertTrue(check_internal_urls(path, d))
+
 
