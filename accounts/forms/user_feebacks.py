@@ -8,7 +8,7 @@ class FeedbackForm(forms.Form):
     Form for submitting a user feedback.
     """
     eval_overall    = forms.ChoiceField( widget=forms.Select(), required=False, choices=[('0', 0), ('1', 1), ('2', 2), ('3', 3), ('4', 4), ('5', 5)],
-                                        label="Overall notation", initial='5' )
+                                        label="Overall rating", initial='5' )
     eval_usefull    = forms.ChoiceField( widget=forms.Select(), required=False, choices=[('0', 0), ('1', 1), ('2', 2), ('3', 3), ('4', 4), ('5', 5)],
                                          label="Usefulness", initial='5' )
     eval_experience = forms.ChoiceField( widget=forms.Select(), required=False, choices=[('0', 0), ('1', 1), ('2', 2), ('3', 3), ('4', 4), ('5', 5)],
