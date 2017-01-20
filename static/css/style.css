@@ -296,8 +296,8 @@
 }
 
 #semantic_submit {
-    padding-left:2px;
-    padding-right:2px;
+    padding-left: 5px;
+    padding-right: 5px;
     text-align:center;
     /*vertical-align: top;*/
 }
@@ -312,8 +312,8 @@
 }
 
 #keyword_submit {
-    padding-left:2px;
-    padding-right:2px;
+    padding-left: 5px;
+    padding-right: 5px;
     text-align:center;
     /*width: 100%;*/
 }
@@ -325,8 +325,8 @@
 }
 
 #comment_submit {
-    padding-left:2px;
-    padding-right:2px;
+    padding-left: 5px;
+    padding-right: 5px;
     text-align:center;
     padding-top: 26px;
     padding-bottom: 26px;
