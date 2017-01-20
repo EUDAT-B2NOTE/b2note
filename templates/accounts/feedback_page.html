@@ -37,7 +37,7 @@
                                     {% if "General comment" not in f.label and "Captcha" not in f.label %}
                                         <tr>
                                             <td style="width:135px;"><strong>{{f.label}}:</strong></td>
-                                            <td><input type="number" name={{f.id_for_label}} id={{f.id_for_label}} class="rating" /></td>
+                                            <td style="vertical-align:middle;"><input type="number" name={{f.id_for_label}} id={{f.id_for_label}} class="rating" /></td>
                                         </tr>
                                     {% endif %}
                                 {% endfor %}
