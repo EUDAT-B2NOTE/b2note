@@ -665,6 +665,10 @@
     border: 0px;
 }
 
+#feedbackpage_content {
+    padding-left: 10px;
+    padding-right: 10px;
+}
 
 #feedback_tabs {
     padding-right:2px;
