@@ -110,40 +110,40 @@
         </div>
 
         <div class = "container">
-
-            <h3>
-
-                <a class="btn btn-info" data-toggle="collapse" href="#collapse1"><strong>How to use it</strong></a>
-
-                <a href="https://86.50.168.182/record/9" class="btn btn-warning" title="Click to be directed to B2Share integration demo." target="_blank"/>Click for B2Share integration demo instead</a>
-
-                <!--<a href="/login" class="btn btn-default btn" title="Registered user, log in to your home page.">Registered user</a>-->
-
-            </h3>
-
-            <div id="collapse1" class="panel-collapse collapse">
-
-                <p>This page emulates the <strong>outcome of a search</strong> performed by a user of EUDAT services such as B2SHARE.</p>
-
-                <p>Thus, it displays a list of hyperlinks pointing to <strong>files stored by EUDAT</strong>.</p>
-
-                <br>
-
-                <p>Next to each hyperlink stands a "Create Annotation" button.</p>
-
-                <p>Clicking one of these buttons <strong>triggers the B2NOTE interface</strong>.</p>
-
-                <br>
-
-                <p>The B2NOTE interface allows the user to <strong>select semantic concepts </strong> for describing the corresponding file.</p>
-
-                <p>The semantic relations created in the process are <strong>stored</strong> by the B2NOTE service, allowing later retrieval and processing.</p>
-
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true"  style="margin-bottom:0px;padding-bottom:0px;">
+                <h3>
+                    <a class="btn btn-info" data-toggle="collapse" data-parent="#accordion" href="#collapse1" role="tab" aria-controls="collapse1"><strong>How to use it</strong></a>
+                    <a class="btn btn-warning" data-toggle="collapse" data-parent="#accordion" href="#collapse2" role="tab" aria-controls="collapse2">B2Share integration demo</a>
+                    <!--<a href="/login" class="btn btn-default btn" title="Registered user, log in to your home page.">Registered user</a>-->
+                </h3>
+                <div class="panel" style="background:none;margin-bottom:0px;padding-bottom:0px;">
+                    <div id="collapse2" class="panel-collapse collapse" role="tabpanel">
+                        <p>Here is how to access the B2NOTE console from a B2SHARE file record page.</p>
+                        <p><b>Step 1:</b> Pick a file in <a href="https://trng-b2share.eudat.eu">B2SHARE</a>.</p>
+                        <p><b>Step 2:</b> Click on the arrow next to the file you want to annotate to reveal the annotation button.</p>
+                        <p style="text-align:center;"><img src={% static "images/Description_UseinB2SHARE.png" %} style="width:550px;"/></p>
+                        <p><b>Step 3:</b> Click on the button to show the widget. If the widget does not appear, please change the size of your browser window (use Ctrl – or Cmd -). The widget should appear at the bottom right of the browser window. We will fix these issues in the upcoming weeks.</p>
+                        <p style="text-align:center;"><a href="https://trng-b2share.eudat.eu" class="btn btn-primary" title="Click to be directed to B2SHARE training instance." target="_blank"/>Access B2SHARE training instance</a></p>
+                        <!--<p style="text-align:center;"><img src={% static "images/B2SHARE_integration_record_folded.png" %} style="width:320px;"/></p>-->
+                        <!--<p style="text-align:center;"><img src={% static "images/B2SHARE_integration_record_unfolded.png" %} style="width:320px;"/></p>-->
+                    </div>
+                </div>
+                <div class="panel" style="background:none;margin-bottom:0px;padding-bottom:0px;">
+                    <div id="collapse1" class="panel-collapse collapse" role="tabpanel">
+                        <p>This page emulates the <strong>outcome of a search</strong> performed by a user of EUDAT services such as B2SHARE.</p>
+                        <p>Thus, it displays a list of hyperlinks pointing to <strong>files stored by EUDAT</strong>.</p>
+                        <br>
+                        <p>Next to each hyperlink stands a "Create Annotation" button.</p>
+                        <p>Clicking one of these buttons <strong>triggers the B2NOTE interface</strong>.</p>
+                        <br>
+                        <p>The B2NOTE interface allows the user to <strong>select semantic concepts </strong> for describing the corresponding file.</p>
+                        <p>The semantic relations created in the process are <strong>stored</strong> by the B2NOTE service, allowing later retrieval and processing.</p>
+                    </div>
+                </div>
             </div>
-
         </div>
 
-        <hr>
+        <hr style="margin-top:10px;margin-bottom:10px;">
 
         <div class = "container">
 
@@ -207,9 +207,9 @@
 
         <div class = "container">
 
-            <a class="btn btn-info" data-toggle="collapse" href="#collapse2"><strong>Further information</strong></a>
+            <a class="btn btn-info" data-toggle="collapse" href="#collapse3"><strong>Further information</strong></a>
 
-            <div id="collapse2" class="panel-collapse collapse in">
+            <div id="collapse3" class="panel-collapse collapse in">
 
                 <div class="panel-body">
 
@@ -225,8 +225,7 @@
 
                     <ul>
 
-                        <li>The pid of the file (required).</li>
-                        <li>The hyperlink address (optional).</li>
+                        <li>The hyperlink address of the file (required).</li>
                         <li>A human-readable label for the hyperlink (optional).</li>
 
                     </ul>

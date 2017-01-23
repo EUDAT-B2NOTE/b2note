@@ -31,16 +31,17 @@ def index(request):
 
 def b2share_correct_url( url ):
     out = None
-    root = "http://trng-b2share.eudat.eu"
     try:
-        if url and isinstance(url, (str, unicode)) and len(url)>len(root):
-            if url[:len(root)] == root or url[:len("https://b2share.eudat.eu")]=="https://b2share.eudat.eu":
+        if url and isinstance(url, (str, unicode)) and len(url)>0:
+            if url[:len("http://trng-b2share.eudat.eu")] == "http://trng-b2share.eudat.eu" \
+                    or url[:len("https://trng-b2share.eudat.eu")]=="https://trng-b2share.eudat.eu" \
+                    or url[:len("https://b2share.eudat.eu")]=="https://b2share.eudat.eu":
                 out = url
             else:
                 if url[0]=="/":
-                    out = root+url
+                    out = "https://trng-b2share.eudat.eu"+url
                 else:
-                    out = root+"/"+url
+                    out = "https://trng-b2share.eudat.eu"+"/"+url
         else:
             print "B2share_correct_url function, URL not valid or too short."
             stdlogger.error("B2share_correct_url function, URL not valid or too short.")
