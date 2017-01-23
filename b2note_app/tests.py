@@ -363,7 +363,7 @@ class B2noteappTest(TestCase):
         url = reverse("b2note_app.views.create_annotation")
         json_dict = {}
         json_dict['pid_tofeed'] = 'pid_test'
-        json_dict['subject_tofeed'] = 'subject_test'
+        json_dict['subject_tofeed'] = 'https://b2share.eudat.eu/record/30'
         json_dict['ontology_json'] = json.dumps({'labels' : 'annotation_test',
                                                 'uris': 'uri_test'})
         json_dict['semantic_submit'] = 'test'
@@ -394,7 +394,7 @@ class B2noteappTest(TestCase):
         db_id = self.test_create_annotation_view()
         json_dict = {}
         json_dict['pid_tofeed'] = 'pid_test'
-        json_dict['subject_tofeed'] = 'subject_test'
+        json_dict['subject_tofeed'] = 'https://b2share.eudat.eu/record/30'
         json_dict['db_id'] = db_id
         json_dict['delete_confirmed'] = 1
         resp = self.client.post(url, json_dict, follow=True)
@@ -414,7 +414,7 @@ class B2noteappTest(TestCase):
         db_id = self.test_create_annotation_view()
         json_dict = {}
         json_dict['pid_tofeed'] = 'pid_test'
-        json_dict['subject_tofeed'] = 'subject_test'
+        json_dict['subject_tofeed'] = 'https://b2share.eudat.eu/record/30'
         json_dict['all_annotations'] = 1
         resp = self.client.post(url, json_dict)
         self.assertEqual(resp.status_code, 200)
