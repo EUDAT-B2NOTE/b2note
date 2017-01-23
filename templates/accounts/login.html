@@ -22,17 +22,27 @@
 
         <div class="container">
 
+            {% if login_failed_msg %}
+                <p style="font-size:12px;color:red;">Login credentials did not validate.</p>
+            {% endif %}
+
             <form action="login" method="post" class="form-horizontal">
 
                 {% csrf_token %}
 
                 {% for f in form %}
 
-                <div class="form-group">
-                    <div class="col-sm-4">
-                        <input type="{{ f.label|lower }}" name="{{ f.id_for_label|slice:'3:' }}" class="form-control" id="formfield" placeholder="Enter {{ f.label|lower }}" />
+                    <!--{% if f.errors %} <p style="font-size:12px;color:red;">We could not validate this field:</p> {% endif %}-->
+
+                    <div class="form-group">
+                        <div class="col-sm-4">
+                            {% if "username" in f.name and f.value %}
+                                <input type="{{ f.label|lower }}" value={{f.value}} name="{{ f.id_for_label|slice:'3:' }}" class="form-control" id="formfield" placeholder="Enter {{ f.label|lower }}" />
+                            {% else %}
+                                <input type="{{ f.label|lower }}" name="{{ f.id_for_label|slice:'3:' }}" class="form-control" id="formfield" placeholder="Enter {{ f.label|lower }}" />
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
 
                 {% endfor %}
 
