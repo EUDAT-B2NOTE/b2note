@@ -373,7 +373,10 @@ def login(request):
     navbarlinks.append({"url": "/help#helpsection_loginpage", "title": "Help page", "icon": "question-sign"})
     shortcutlinks = []
 
+    login_failed_msg = False
+
     if request.method == 'POST':
+        login_failed_msg = True
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             user = authenticate(email=request.POST['username'], password=request.POST['password'])
@@ -381,6 +384,7 @@ def login(request):
                 if user.is_active:
                     django_login(request, user)
                     request.session["user"] = user.annotator_id.annotator_id
+                    login_failed_msg = False
                     return redirect('/interface_main')
     else:
         if request.session.get("user"):
@@ -390,6 +394,7 @@ def login(request):
 
     return render_to_response('accounts/login.html',{'form': form},
                               context_instance=RequestContext(request, {
+                                  'login_failed_msg': login_failed_msg,
                                   'navbarlinks': navbarlinks,
                                   'shortcutlinks': shortcutlinks,
                                   "pid_tofeed": request.session.get("pid_tofeed"),
@@ -410,7 +415,7 @@ def register(request):
         form = RegistrationForm(data=request.POST)
         if form.is_valid():
             user = form.save()
-            return redirect('/accounts/logout')
+            return redirect('/login')
         else:
             print form.errors
     else:
