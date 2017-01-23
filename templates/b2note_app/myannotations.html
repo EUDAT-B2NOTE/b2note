@@ -80,7 +80,7 @@
 								{% csrf_token %}
 								<input type="hidden" name="db_id" value="{{ann.ann_id}}" hidden>
 								<td style="width:100%;border-right: 0.1px solid #E1E1E1 !important;">
-									<input type="submit" class="btn btn-link" name="about_allsimilar" value="{{ann.link_label}}"
+									<input type="submit" class="btn btn-link" name="about_allsimilar_any" value="{{ann.link_label}}"
 									   title="{% if ann.link_info_label %}{{ann.link_info_label}}{% endif %}
 {% if ann.link_info_ontologyacronym %}{{ann.link_info_ontologyacronym}}{% endif %}: {% if ann.link_info_shortform %}{{ann.link_info_shortform}}{% endif %}
 {% if ann.link_info_creatornickname %}By: {{ann.link_info_creatornickname}}{% endif %}
