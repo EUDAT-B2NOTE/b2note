@@ -415,7 +415,7 @@ def register(request):
         form = RegistrationForm(data=request.POST)
         if form.is_valid():
             user = form.save()
-            return redirect('/accounts/logout')
+            return redirect('/login')
         else:
             print form.errors
     else:
