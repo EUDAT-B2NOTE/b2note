@@ -7,39 +7,135 @@
 
 	<h3>Help</h3>
 
+	<div class=container id="helpsection_loginpage">
+		<h4>Login page <a href="#wayback" id="link_to_top">^top</a></h4>
+		<p style='text-align:justify'>Rationale: B2NOTE is currently designed as a crowdsourcing service. This implies that the information contained in annotations is accessible to all registered users. To keep track of the origin of annotation records, each bears the pseudonym of the user having created it. This is the only piece of information made available amongst the personal data provided when registering. Other personal data, such as “user experience” in annotating, are collected for the sole purpose of supporting service maintenance and development.</p>
+		<p style='text-align:justify'>The first page you get access to upon triggering the B2NOTE console is the <a href="/login">Login page</a>.</p>
+		<p style='text-align:justify'>Access to the service is provided after filling-in and submitting the login page form:</p>
+		<img src={% static "images/helppage_screenshots/Login_menu_empty.png" %}/>
+		<ol>
+			<li>Fill-in the email address with which you initially registered to the B2NOTE service</li>
+			<li>Fill-in the password you defined when you registered to the B2NOTE service.</li>
+			<li>Click the “Login” button. If the information provided matches our database records, you will be granted access to the B2NOTE service with the corresponding account credentials. You should then be directed to the <a href="helpsection_mainpage">B2NOTE console main page</a>.</li>
+		</ol>
+		<p>Click <u>“New user? Register.” link</u> if you have not previously registered to the B2NOTE service (see <a href="">Login section</a> for rationale). This loads a page with a form to fill-in with the personal information required to <a href="helpsection_registrationpage">create a B2NOTE user account</a>, allowing subsequent logging-in to the service.</p>
+		<p>Click <u>“Forgot password” link</u> if you have previously registered to the service but can not recollect the credentials necessary for logging-in. This loads a page with a form to fill-in for being enabled to <b>define a new password</b> for logging-in to the service with your registered account.</p>
+	</div>
 
 	<div class=container id="helpsection_registrationpage">
 		<h4>Registration page <a href="#wayback" id="link_to_top">^top</a></h4>
-		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
-	</div>
-
-	<div class=container id="helpsection_loginpage">
-		<h4>Login page <a href="#wayback" id="link_to_top">^top</a></h4>
-		<p>Before creating or visualising annotations with B2NOTE, the service requires that you identify as a registered user.</p>
-		<p>This is done through the following menu of the <a href="/login">login page</a>: </p>
-		<img src={% static "images/helppage_screenshots/Login_menu_empty.png" %}/>
-		<p>Upon filling-in the requested information in each of the form fields, click the "Login" button.</p>
-		<p>If your credentials are correct, the console interface should then display the <a href="#helpsection_mainpage">"main" page</a>.</p>
-	</div>
-
-	<div class=container id="helpsection_useraccountpage">
-		<h4>User account page <a href="#wayback" id="link_to_top">^top</a></h4>
-		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
+		<p>Create a B2NOTE user account.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/registration_page_top.png" %} style="width:160px;"/></p>
+		<p>This page displays a form to fill-in with the personal information required to create a B2NOTE user account allowing subsequent logging-in to the service.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/registration_page_bottom.png" %} style="width:160px;"/></p>
+		<p>All the fields need to be filled-in and the captcha correctly identified for the registration process to complete upon clicking the “Submit” button.</p>
 	</div>
 
 	<div class=container id="helpsection_mainpage">
 		<h4>Main page <a href="#wayback" id="link_to_top">^top</a></h4>
-		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
+		<p>Create and sum-up annotations.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_fresh_full.png" %} style="width:160px;"/></p>
+		<p>Why annotating? B2NOTE allows defining user-specific information about online resources such as data files hosted on a EUDAT partner service. Custom new user-specific datasets can thus be constituted through the process of adding some particular information about multiple files.</p>
+		<p>The functionalities available from the main page of B2NOTE console are detailed below.</p>
+
+		<h5>Navigation bar</h5>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_navigation_bar.png" %} style="width:160px;"/></p>
+		<ul>
+			<li><u>User account (head outline icon with pseudonym link)</u>: page displaying the data filled-in during registration (user-specific information).</li>
+			<li><u>Search (magnifying glass icon)</u>: find files based the content of annotations and export the resulting information dataset.</li>
+			<li><u>Export (arrow down to inbox icon)</u>: export annotations in JSON-LD (linked-data) format.</li>
+			<li><u>Logout (arrow pointing right out of box icon)</u>: logging-out from the B2NOTE service, terminates the current user session.</li>
+			<li><u>Help (interrogation mark icon)</u>: directs to the help section specific for the calling page.</li>
+		</ul>
+		<p>At the top of other pages additional shortcut links allow quick navigation to previous pages or straight back to the B2NOTE console main page.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/shortcut_link_icons.png" %} style="width:160px;"/></p>
+		<ul>
+			<li><u>Arrow pointing left</u>: clicking redirects to the previously accessed page.</li>
+			<li><u>House outline</u>: clicking always redirects directly to the B2NOTE console main page.</li>
+		</ul>
+
+
+		<h5>Main panel</h5>
+		<p>Create annotations.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_fresh_grey_area.png" %} style="width:160px;"/></p>
+		<p>The main panel is divided-up into 3 tabs. Each tab contains a simple form for creating an annotation of one of the 3 types defined in B2NOTE.</p>
+		<p><u>“Semantic tag” tab (selected by default)</u>: for creating an annotation that uses a term defined in a controlled vocabulary as a tag. This type of annotation thus benefits from curated and uniquely identified linked-data material. Clicking the text-area then typing-in the first letters of the tag you want triggers the autocomplete functionality, which provides a list of matching suggestions.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_suggestions.png" %} style="width:160px;"/></p>
+		<p>From this list of suggestions, you can select your term of interest amongst the B2NOTE extensive index. Currently the B2NOTE index is built from over 400 Bioportal ontologies covering a range of knowledge domains.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_suggestion_selected.png" %} style="width:160px;"/></p>
+		<p>After selecting one of the suggestions, clicking the create button will trigger an annotation record to be created.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_keyword_create_form.png" %} style="width:160px;"/></p>
+		<p><u>“Free-text keyword” tab</u>: for using your own free-text keyword as a tag. This option is designed for cases when the exact term you want is missing from the “Semantic tag” autocomplete list of suggestions, or plain-text is purposefully intended to be used in the annotation. However, annotations that are not created through the “Semantic tag” option will contain plain text information and will not provide the full range of benefits allowed by curated and uniquely identified linked-data material.</p>
+		<p>After typing-in a free-text keyword, clicking the create button will trigger an annotation record to be created.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_comment_create_form.png" %} style="width:160px;"/></p>
+		<p><u>“Comment” tab</u>: for using longer pieces of text as annotations. That is, possibly more verbose text not intended for the purpose of tagging a document, such as commenting or leaving some evaluating or general quality feedback. Annotations of this type also, like the “free-text keyword” type, contain plain text information as opposed to linked-data. Thus not providing the full range of benefits allowed by curated and uniquely identified linked-data material.</p>
+		<!--<p>After typing-in the text of the comment, clicking the create button will trigger an annotation record to be created.</p>-->
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_suggestion_selected_02.png" %} style="width:160px;"/></p>
+		<p>After selecting a semantic tag or typing-in a free-text keyword or comment text, clicking the create button will trigger an annotation record to be created.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_created_alert_02.png" %} style="width:160px;"/></p>
+		<p>Some conditions preclude annotations from being created. </p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_identical_alert.png" %} style="width:160px;"/></p>
+		<p>It is not possible to create an annotation that would be a duplicate of an existing annotation. So a semantic tag or free-text keyword annotation cannot use the same tag about the same file as another annotation. When attempting to do so, an alert will be displayed providing information as to the reason why the annotation could not be created.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_free-text_semantic_match_alert.png" %} style="width:160px;"/></p>
+		<p>Attempting to create a free-text keyword annotation using a label identical to an ontology term referenced by B2NOTE, triggers an alert. This alert allows you to decide to use the semantic tag instead (click the “Semantic” button) or confirm your intent of creating a free-text keyword annotation (click the “Keyword” button). The alert menu also offers a button for cancelling the process of creating this particular annotation (click the “Cancel” button).</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_free-text_long_label_alert.png" %} style="width:160px;"/></p>
+		<p>Attempting to create a free-text keyword annotation with a tag label longer than 60 characters will trigger an alert asking to confirm your intent of creating an annotation of the free-text keyword type (click the “Keyword” button) and offering to create an annotation of the type “comment” instead, while keeping your text identical (click the “Comment” button). The alert menu also offers a button for cancelling the process of creating this particular annotation (click the “Cancel” button).</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_myannotations_folded_03.png" %} style="width:160px;"/></p>
+		<p><u>“All my annotations” section</u>: clicking the leftmost chevron icon (circled in red above) unfolds a summary table referencing the number of annotations of each type that were created by you.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_myannotations_unfolded_02.png" %} style="width:160px;"/></p>
+		<p>Clicking a numbered badge or annotation type link redirects to a summary table containing more detailed information about the corresponding annotations and annotation management options. Clicking the section title link (“All my annotations”) loads the page containing all the summary tables about annotations created by you.</p>
+
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_allannotations_folded_02.png" %} style="width:160px;"/></p>
+		<p><u>“All annotations about this file” section</u>: clicking the leftmost chevron icon (circled in red above) unfolds a summary table referencing the number of annotations about a file of each type that were created by other users (blue badges) and those that were created by you (orange badges).</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_allannotations_unfolded_02.png" %} style="width:160px;"/></p>
+		<p>Clicking each numbered badge or annotation type link redirects to a summary table containing more detailed information on corresponding annotations and annotation management options. Clicking the section title link (“All annotations about this file”) loads the page containing all summary tables for annotations created about a file.</p>
+
+		<h5>Feedbacks button</h5>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_feedback_button.png" %} style="width:160px;"/></p>
+		<p><u>“Let us know what you think” button</u>: click to access forms designed for providing us your assessment about B2NOTE, requesting a new feature or reporting a bug.</p>
+
 	</div>
 
 	<div class=container id="helpsection_myannotationspage">
 		<h4>My annotations page <a href="#wayback" id="link_to_top">^top</a></h4>
-		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
+		<p>Review and edit your existing annotations.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/myannotations_page_fresh.png" %} style="width:160px;"/></p>
+		<p>Access to this page from the B2NOTE console main page by clicking the “All my annotations” link.</p>
+		<p>The functionalities available from this page of the B2NOTE console are detailed below.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/myannotations_page_summary_table.png" %} style="width:160px;"/></p>
+		<p><u>Summary table</u>: referencing the number of annotations of each type that were created by you. Clicking each link or numbered badge redirects to a table containing more detailed information about annotations of the corresponding type (see below).</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/myannotations_page_semantic_table.png" %} style="width:160px;"/></p>
+		<p><u>Detailed information tables</u>: reporting for each annotation type (Semantic tag, Free-text keyword or Comment), the labels of the annotations, and the number of times an identical tag was used in any of your annotations, in successive rows. Each row also features annotation management options for editing (pen icon) or deleting (bin icon) the corresponding annotation. The tag label link can be clicked to access more detailed information about a particular tag, such as the full text of the tag label, and information about the original ontology term in the case of semantic tag annotations. Clicking one of the numbered badges directs to a page listing the files annotated using a particular tag.</p>
 	</div>
 
 	<div class=container id="helpsection_allannotationspage">
 		<h4>All annotations page <a href="#wayback" id="link_to_top">^top</a></h4>
-		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
+		<p>Review existing annotations about a file.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/allannotations_page_fresh.png" %} style="width:160px;"/></p>
+		<p>Access to this page from the B2NOTE console main page by clicking the “All annotations about this file” link.</p>
+		<p>The functionalities available from this page of the B2NOTE console are detailed below.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/allannotations_page_summary_table.png" %} style="width:160px;"/></p>
+		<p><u>Summary table</u>: referencing the number of annotations of each type that were created about a file, either by other users (blue badges) or yourself (orange badges). Clicking each link or numbered badge redirects to a table containing more detailed information about annotations of the corresponding type (see below).</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/allannotations_page_semantic_table.png" %} style="width:160px;"/></p>
+		<p><u>Detailed information tables</u>: reporting for each annotation type (Semantic tag, Free-text keyword or Comment), the labels of the annotations about a file, and - except for comment annotations - the number of times an identical tag was used in other annotations in successive rows. Tag reuse by other users is reported in blue badges, while tag reuse in your annotations is reported in orange badges. Each row also features annotation management options for editing (pen icon) or deleting (bin icon) the corresponding annotation. These options are only available (clickable blue icons) when the annotation was created by you otherwise they are inactive (pale grey icons). The tag label link can be clicked to access more detailed information about a particular tag, such as the full text of the tag label, and information about the original ontology term in the case of semantic tag annotations. Clicking one of the numbered badges directs to a page listing the different files annotated using a particular tag.</p>
+	</div>
+
+	<div class=container id="helpsection_editpage">
+		<h4>Edit annotation page <a href="#wayback" id="link_to_top">^top</a></h4>
+		<p>Change an annotation.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/myannotations_page_semantic_table_pen_icon_row_02.png" %} style="width:160px;"/></p>
+		<p>Access to this page by clicking one of the pen icons (circled in red above) associated to annotations created by you in tables of the “My annotations” or “All annotations” summary pages.</p>
+		<p>The functionalities available from this page of the B2NOTE console are detailed below.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/edit_page_semantic_tag_02.png" %} style="width:160px;"/></p>
+		<p><u>Edit menu</u>: allows the tag of an individual annotation to be modified.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/edit_page_semantic_suggestion_list_02.png" %} style="width:160px;"/></p>
+		<p>Typing inside the text-area allows a different semantic tag to be selected amongst the suggestions for replacing the existing tag (in case of editing a semantic tag annotation) or modifying the text of free-text annotations (i.e. keyword or comment types).</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/edit_page_semantic_suggestion_selected.png" %} style="width:160px;"/></p>
+		<ul>
+			<li>Click the “Save” button for enforcing the modified tag as the new tag.</li>
+			<li>Click the “Cancel” button to avoid changing the original tag.</li>
+		</ul>
+		<p>The process of modifying the annotation tag is very similar to that of creating the tag for a new annotation as performed from the main page interface. The same restrictions and alerts apply. In particular it is not allowed to generate an annotation that would be a duplicate (same tag about the same file) of another existing annotation by editing it. </p>
 	</div>
 
 	<div class=container id="helpsection_annotationsummarypage">
@@ -64,6 +160,11 @@
 
 	<div class=container id="helpsection_exportsearchpage">
 		<h4>Export search results page <a href="#wayback" id="link_to_top">^top</a></h4>
+		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
+	</div>
+
+	<div class=container id="helpsection_useraccountpage">
+		<h4>User account page <a href="#wayback" id="link_to_top">^top</a></h4>
 		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
 	</div>
 
