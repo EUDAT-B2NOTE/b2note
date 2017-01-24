@@ -35,9 +35,9 @@
 		<ol>
 			<li><b><a href="#help_subsection_navigation_bar">Navigation bar</a></b>: access different functionalities of the B2NOTE service.</li>
 			<li><b><a href="#help_subsection_main_panel">Main panel</a></b>: create an annotation.</li>
-			<li><b>“All my annotations”</b>: visualise a summary of your annotations and access more detailed information.</li>
-			<li><b>“All annotations about this file”</b>: visualise a summary of the annotations about the current file and access more detailed information.</li>
-			<li><b>Feedbacks button</b>: assess the service, request a new feature or report a bug.</li>
+			<li><b><a href="#help_subsection_main_allmy">“All my annotations”</a></b>: visualise a summary of your annotations and access more detailed information.</li>
+			<li><b><a href="#help_subsection_main_allann">“All annotations about this file”</a></b>: visualise a summary of the annotations about the current file and access more detailed information.</li>
+			<li><b><a href="#help_subsection_main_feedback_button">Feedbacks button</a></b>: assess the service, request a new feature or report a bug.</li>
 		</ol>
 
 
@@ -56,67 +56,124 @@
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/shortcut_link_icons_03.png" %} style="width:250px;"/></p>
 		<ul>
 			<li><b>Previous</b>: previously accessed page.</li>
-			<li><b>Home</b>: the <a href="#helpsection_mainpage">B2NOTE console main page</a>.</li>
+			<li><b><a href="#helpsection_mainpage">Home</a></b>: the B2NOTE console main page.</li>
 		</ul>
 
 		<h5 id="help_subsection_main_panel">Main panel</h5>
 		<p>Create annotations.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_fresh_grey_area.png" %} style="width:160px;"/></p>
 		<p>The main panel is divided-up into 3 tabs. Each tab contains a simple form for creating an annotation of one of the 3 types defined in B2NOTE.</p>
-		<p><u>“Semantic tag” tab (selected by default)</u>: for creating an annotation that uses a term defined in a controlled vocabulary as a tag. This type of annotation thus benefits from curated and uniquely identified linked-data material. Clicking the text-area then typing-in the first letters of the tag you want triggers the autocomplete functionality, which provides a list of matching suggestions.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_suggestions.png" %} style="width:160px;"/></p>
-		<p>From this list of suggestions, you can select your term of interest amongst the B2NOTE extensive index. Currently the B2NOTE index is built from over 400 Bioportal ontologies covering a range of knowledge domains.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_suggestion_selected.png" %} style="width:160px;"/></p>
-		<p>After selecting one of the suggestions, clicking the create button will trigger an annotation record to be created.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_keyword_create_form.png" %} style="width:160px;"/></p>
-		<p><u>“Free-text keyword” tab</u>: for using your own free-text keyword as a tag. This option is designed for cases when the exact term you want is missing from the “Semantic tag” autocomplete list of suggestions, or plain-text is purposefully intended to be used in the annotation. However, annotations that are not created through the “Semantic tag” option will contain plain text information and will not provide the full range of benefits allowed by curated and uniquely identified linked-data material.</p>
-		<p>After typing-in a free-text keyword, clicking the create button will trigger an annotation record to be created.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_comment_create_form.png" %} style="width:160px;"/></p>
-		<p><u>“Comment” tab</u>: for using longer pieces of text as annotations. That is, possibly more verbose text not intended for the purpose of tagging a document, such as commenting or leaving some evaluating or general quality feedback. Annotations of this type also, like the “free-text keyword” type, contain plain text information as opposed to linked-data. Thus not providing the full range of benefits allowed by curated and uniquely identified linked-data material.</p>
-		<!--<p>After typing-in the text of the comment, clicking the create button will trigger an annotation record to be created.</p>-->
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_suggestion_selected_02.png" %} style="width:160px;"/></p>
-		<p>After selecting a semantic tag or typing-in a free-text keyword or comment text, clicking the create button will trigger an annotation record to be created.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_created_alert_02.png" %} style="width:160px;"/></p>
-		<p>Some conditions preclude annotations from being created. </p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_identical_alert.png" %} style="width:160px;"/></p>
-		<p>It is not possible to create an annotation that would be a duplicate of an existing annotation. So a semantic tag or free-text keyword annotation cannot use the same tag about the same file as another annotation. When attempting to do so, an alert will be displayed providing information as to the reason why the annotation could not be created.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_free-text_semantic_match_alert.png" %} style="width:160px;"/></p>
-		<p>Attempting to create a free-text keyword annotation using a label identical to an ontology term referenced by B2NOTE, triggers an alert. This alert allows you to decide to use the semantic tag instead (click the “Semantic” button) or confirm your intent of creating a free-text keyword annotation (click the “Keyword” button). The alert menu also offers a button for cancelling the process of creating this particular annotation (click the “Cancel” button).</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_free-text_long_label_alert.png" %} style="width:160px;"/></p>
-		<p>Attempting to create a free-text keyword annotation with a tag label longer than 60 characters will trigger an alert asking to confirm your intent of creating an annotation of the free-text keyword type (click the “Keyword” button) and offering to create an annotation of the type “comment” instead, while keeping your text identical (click the “Comment” button). The alert menu also offers a button for cancelling the process of creating this particular annotation (click the “Cancel” button).</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_myannotations_folded_03.png" %} style="width:160px;"/></p>
-		<p><u>“All my annotations” section</u>: clicking the leftmost chevron icon (circled in red above) unfolds a summary table referencing the number of annotations of each type that were created by you.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_myannotations_unfolded_02.png" %} style="width:160px;"/></p>
-		<p>Clicking a numbered badge or annotation type link redirects to a summary table containing more detailed information about the corresponding annotations and annotation management options. Clicking the section title link (“All my annotations”) loads the page containing all the summary tables about annotations created by you.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_fresh_main_panel_02.png" %} style="width:200px;"/></p>
+		<ol>
+			<li><b><a href="#help_subsection_creating_semantic">Semantic tag</a></b>: for creating an annotation that uses a term defined in a controlled vocabulary as a tag.</li>
+			<li><b><a href="#help_subsection_creating_keyword">Free-text keyword</a></b>: for creating an annotation that uses your own keyword as a plain-text tag.</li>
+			<li><b><a href="#help_subsection_creating_comment">Comment</a></b>: for creating an annotation with longer pieces of plain-text.</li>
+		</ol>
 
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_allannotations_folded_02.png" %} style="width:160px;"/></p>
-		<p><u>“All annotations about this file” section</u>: clicking the leftmost chevron icon (circled in red above) unfolds a summary table referencing the number of annotations about a file of each type that were created by other users (blue badges) and those that were created by you (orange badges).</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_allannotations_unfolded_02.png" %} style="width:160px;"/></p>
-		<p>Clicking each numbered badge or annotation type link redirects to a summary table containing more detailed information on corresponding annotations and annotation management options. Clicking the section title link (“All annotations about this file”) loads the page containing all summary tables for annotations created about a file.</p>
+		<h6 id="help_subsection_creating_semantic">Creating a semantic tag annotation</h6>
+		<p>The semantic tag annotations use a term defined in a controlled vocabulary as a tag. This type of annotations thus benefits from curated and uniquely identified linked-data material.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_suggestions.png" %} style="width:200px;"/></p>
+		<p>Clicking the text-area then typing-in the first letters of the term you want triggers the autocomplete functionality, which provides a list of suggestions.</p>
+		<p>From the list of suggestions, you can then select your term of interest amongst the extensive B2NOTE index.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_suggestion_selected.png" %} style="width:200px;"/></p>
+		<p>After selecting one of the suggestions, click the <b>“Create” button</b> to create the annotation.</p>
 
-		<h5>Feedbacks button</h5>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_feedback_button.png" %} style="width:160px;"/></p>
-		<p><u>“Let us know what you think” button</u>: click to access forms designed for providing us your assessment about B2NOTE, requesting a new feature or reporting a bug.</p>
+		<h6 id="help_subsection_creating_keyword">Creating a free-text keyword annotation</h6>
+		<p>Free-text keyword annotations are designed for cases when the exact term you want is missing from the <a href="#help_subsection_creating_semantic">“Semantic tag” autocomplete list of suggestions</a> and you want a plain-text tag to be used in the annotation. Annotations of this type contain plain text information as opposed to linked-data, thus not allowing the full range of benefits provided by the <a href="#help_subsection_creating_semantic">“Semantic tag” type</a>.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_keyword_create_form.png" %} style="width:200px;"/></p>
+		<p>After typing the text for your custom keyword in the text-area, click the <b>“Create” button</b> to create the annotation.</p>
 
+		<h6 id="help_subsection_creating_comment">Creating a comment annotation</h6>
+		<p>Comment annotations are designed for annotating using longer pieces of text. That is, possibly more verbose text not intended for the purpose of tagging a document, such as commenting or leaving some evaluating or general quality feedback. Annotations of this type also, like the “free-text keyword” type, contain plain text information as opposed to linked-data, thus not allowing the full range of benefits provided by the <a href="#help_subsection_creating_semantic">Semantic tag” type</a>.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_comment_create_form.png" %} style="width:200px;"/></p>
+		<p>After typing-in the text of the comment, click the <b>"Create" button</b> to create the annotation.</p>
+
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_suggestion_selected_02.png" %} style="width:200px;"/></p>
+		<p>After selecting a semantic tag or typing-in a free-text keyword or comment text, click the <b>“Create” button</b> to create the annotation.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_created_alert_02.png" %} style="width:200px;"/></p>
+		<br>
+		<p>Some conditions prevent annotations from being created.</p>
+		<ol>
+			<li>
+				<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_identical_alert.png" %} style="width:160px;"/></p>
+				<p><b>Duplicate</b>: it is not possible to create an annotation that would be a duplicate of an existing annotation. So a semantic tag or free-text tag annotation can not use the <u>same tag about the same file</u> as another annotation. When attempting to do so, an alert will be displayed informing you that this is the case.</p>
+			</li>
+			<li>
+				<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_free-text_semantic_match_alert.png" %} style="width:160px;"/></p>
+				<p><b>Semantic equivalent</b>: attempting to create a <u>free-text keyword</u> annotation using a label identical to an ontology term referenced by B2NOTE, triggers an alert asking you to confirm the type of annotation you want to create:</p>
+				<ul>
+					<li>Click the <b>“Semantic” button</b> to select a semantic tag instead of your free-text keyword.</li>
+					<li>Click the <b>“Keyword” button</b> to confirm creating an annotation using your free-text keyword.</li>
+					<li>Click the <b>“Cancel” button</b> to cancel the annotation creation.</li>
+				</ul>
+		    </li>
+			<li>
+				<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_free-text_long_label_alert.png" %} style="width:160px;"/></p>
+				<p><b>Long keyword</b>: attempting to create a free-text keyword annotation with a tag label longer than 60 characters will trigger an alert asking to confirm the type of annotation you want to create:</p>
+				<ul>
+					<li>Click the <b>“Keyword” button</b> for an annotation of the Free-text Keyword type. </li>
+					<li>Click the <b>“Comment” button</b> for an annotation of the Comment type.</li>
+					<li>Click the <b>“Cancel” button</b> to cancel the annotation creation.</li>
+				</ul>
+			</li>
+		</ol>
+
+		<h5 id="help_subsection_main_allmy">“All my annotations” section</h5>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_myannotations_folded_03.png" %} style="width:200px;"/></p>
+		<p>Click the leftmost chevron icon (circled in red above) to unfold a summary table with the number of annotations of each type that were <b>created by you</b>. </p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_myannotations_unfolded_02.png" %} style="width:200px;"/></p>
+		<ul>
+			<li>Click the <b>annotation type links</b> or <b>numbered badge</b> of each row to a summary table with more detailed information about corresponding annotations.</li>
+			<li>Click the <b><a href="#helpsection_myannotationspage">All my annotations”</a></b> section title to the page containing all the summary tables about annotations created by you.</li>
+		</ul>
+
+		<h5 id="help_subsection_main_allann">“All annotations about this file” section</h5>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_allannotations_folded_02.png" %} style="width:200px;"/></p>
+		<p>Click the leftmost chevron icon (circled in red above) to unfold a summary table with the number of annotations about the current file of each type that were created by other users (<b>blue</b> badges) and those that were created by you (<b>orange</b> badges).</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_allannotations_unfolded_02.png" %} style="width:200px;"/></p>
+		<ul>
+			<li>Click each <b>annotation type link</b> or <b>numbered badge</b> to a summary table with more detailed information about corresponding annotations.</li>
+			<li>Click the <b>“All annotations about this file”</b> section title to the page containing all summary tables for annotations created about the file.</li>
+		</ul>
+
+		<h5 id="help_subsection_main_feedback_button">Feedbacks button</h5>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_feedback_button.png" %} style="width:200px;"/></p>
+		<p><b>“Let us know what you think” button</b>: access forms designed for providing us an assessment about B2NOTE, requesting a new feature or reporting a bug.</p>
 	</div>
 
 	<div class=container id="helpsection_myannotationspage">
 		<h4>My annotations page <a href="#wayback" id="link_to_top">^top</a></h4>
 		<p>Review and edit your existing annotations.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/myannotations_page_fresh.png" %} style="width:160px;"/></p>
-		<p>Access to this page from the B2NOTE console main page by clicking the “All my annotations” link.</p>
-		<p>The functionalities available from this page of the B2NOTE console are detailed below.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/myannotations_page_summary_table.png" %} style="width:160px;"/></p>
-		<p><u>Summary table</u>: referencing the number of annotations of each type that were created by you. Clicking each link or numbered badge redirects to a table containing more detailed information about annotations of the corresponding type (see below).</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/myannotations_page_semantic_table.png" %} style="width:160px;"/></p>
-		<p><u>Detailed information tables</u>: reporting for each annotation type (Semantic tag, Free-text keyword or Comment), the labels of the annotations, and the number of times an identical tag was used in any of your annotations, in successive rows. Each row also features annotation management options for editing (pen icon) or deleting (bin icon) the corresponding annotation. The tag label link can be clicked to access more detailed information about a particular tag, such as the full text of the tag label, and information about the original ontology term in the case of semantic tag annotations. Clicking one of the numbered badges directs to a page listing the files annotated using a particular tag.</p>
+		<p>Access this page from the B2NOTE console main page by clicking the <a href="#helpsection_mainpage">“All my annotations” link</a>.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/myannotations_page_fresh_02.png" %} style="width:200px;"/></p>
+		<ol>
+			<li><p><b>Summary table</b>: showing how many annotations of each type were created by you and linking to the corresponding detailed information tables.</p></li>
+			<li><p><b>Detailed information table</b>: on this page there are 3 such tables, one for each type of annotation. They show the labels of corresponding annotations that were created by you, link to individual annotation data and links for editing or deleting each annotation.</p></li>
+		</ol>
+		<h5 id="help_subsection_myann_summ_table">Summary table</h5>
+		<p>Referencing the number of annotations of each type that were created by you.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/myannotations_page_summary_table.png" %} style="width:200px;"/></p>
+		<p>Click each <b>link</b> or <b>numbered badge</b> to a table containing more detailed information about annotations of the corresponding type (see below).</p>
+
+		<h5 id="help_subsection_myann_detail_table">Detailed information table</h5>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/myannotations_page_semantic_table_02.png" %} style="width:200px;"/></p>
+		<p>There is one such table per annotation type (Semantic tag, Free-text keyword and Comment). Each row of the table features:</p>
+		<ol>
+			<li><p><b>Label of the annotation</b>: click to access detailed information about the tag.</p></li>
+			<li><p><b>Numbered badge</b>: reporting how many of your annotations use the same tag. Click to access the corresponding list of files and detailed information about the tag. There are no numbered badges in the Comment annotation table since these annotations are by definition unique.</p></li>
+			<li><p><b>Management options</b>:</p>
+				<ul>
+					<li>Click a <b>pen icon</b> to edit the corresponding annotation.</li>
+					<li>Click a <b>bin icon</b> to delete the corresponding annotation.</li>
+				</ul>
+			</li>
+		</ol>
 	</div>
 
 	<div class=container id="helpsection_allannotationspage">
 		<h4>All annotations page <a href="#wayback" id="link_to_top">^top</a></h4>
 		<p>Review existing annotations about a file.</p>
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/allannotations_page_fresh.png" %} style="width:160px;"/></p>
-		<p>Access to this page from the B2NOTE console main page by clicking the “All annotations about this file” link.</p>
+		<p>Access this page from the B2NOTE console main page by clicking the “All my annotations” section title.</p>
 		<p>The functionalities available from this page of the B2NOTE console are detailed below.</p>
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/allannotations_page_summary_table.png" %} style="width:160px;"/></p>
 		<p><u>Summary table</u>: referencing the number of annotations of each type that were created about a file, either by other users (blue badges) or yourself (orange badges). Clicking each link or numbered badge redirects to a table containing more detailed information about annotations of the corresponding type (see below).</p>
