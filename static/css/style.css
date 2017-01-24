@@ -755,6 +755,10 @@
     padding-left: 5px;
 }
 
+#help-content p {
+    text-align: justify;
+}
+
 
 #link_to_top {
     font-size:10px;
