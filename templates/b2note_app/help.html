@@ -9,53 +9,57 @@
 
 	<div class=container id="helpsection_loginpage">
 		<h4>Login page <a href="#wayback" id="link_to_top">^top</a></h4>
-		<p style='text-align:justify'>Rationale: B2NOTE is currently designed as a crowdsourcing service. This implies that the information contained in annotations is accessible to all registered users. To keep track of the origin of annotation records, each bears the pseudonym of the user having created it. This is the only piece of information made available amongst the personal data provided when registering. Other personal data, such as “user experience” in annotating, are collected for the sole purpose of supporting service maintenance and development.</p>
-		<p style='text-align:justify'>The first page you get access to upon triggering the B2NOTE console is the <a href="/login">Login page</a>.</p>
-		<p style='text-align:justify'>Access to the service is provided after filling-in and submitting the login page form:</p>
-		<img src={% static "images/helppage_screenshots/Login_menu_empty.png" %}/>
-		<ol>
-			<li>Fill-in the email address with which you initially registered to the B2NOTE service</li>
-			<li>Fill-in the password you defined when you registered to the B2NOTE service.</li>
-			<li>Click the “Login” button. If the information provided matches our database records, you will be granted access to the B2NOTE service with the corresponding account credentials. You should then be directed to the <a href="helpsection_mainpage">B2NOTE console main page</a>.</li>
-		</ol>
-		<p>Click <u>“New user? Register.” link</u> if you have not previously registered to the B2NOTE service (see <a href="">Login section</a> for rationale). This loads a page with a form to fill-in with the personal information required to <a href="helpsection_registrationpage">create a B2NOTE user account</a>, allowing subsequent logging-in to the service.</p>
-		<p>Click <u>“Forgot password” link</u> if you have previously registered to the service but can not recollect the credentials necessary for logging-in. This loads a page with a form to fill-in for being enabled to <b>define a new password</b> for logging-in to the service with your registered account.</p>
+		<p>Welcome to the B2NOTE annotation service.</p>
+		<p>B2NOTE is currently designed as a crowdsourcing service which implies that all the annotations are accessible publicly. To guarantee on one side your privacy and on the other side to keep track of the origin of annotation records, you must first <a href="#helpsection_registrationpage">register to create an annotator profile</a> with a pseudonym which will be used to publish your annotation.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/Login_menu_empty_numbers.png" %} style="width:160px;"/></p>
+		<p>This page is the entry point to access the service and allows you either <a href="#helpsection_registrationpage">register</a> as first time user (2) or log in directly if you already created an account (1). In case you forgot your password, you can re-initialize it by clicking on the link “Forgot password” (3)</p>
 	</div>
 
 	<div class=container id="helpsection_registrationpage">
-		<h4>Registration page <a href="#wayback" id="link_to_top">^top</a></h4>
-		<p>Create a B2NOTE user account.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/registration_page_top.png" %} style="width:160px;"/></p>
-		<p>This page displays a form to fill-in with the personal information required to create a B2NOTE user account allowing subsequent logging-in to the service.</p>
+		<h4>Registration<a href="#wayback" id="link_to_top">^top</a></h4>
+		<p>Fill in the required information to create an annotator profile and do not forget to enter the captcha before submitting.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/registration_page_top_04.png" %} style="width:160px;"/></p>
+		<p><br></p>
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/registration_page_bottom.png" %} style="width:160px;"/></p>
-		<p>All the fields need to be filled-in and the captcha correctly identified for the registration process to complete upon clicking the “Submit” button.</p>
+		<p>If you forgot to fill-in some information or provided an invalid email address, a red error message will appear above the field to correct.</p>
+		<p>Upon successful registration you should be redirected to the <a href="#helpsection_loginpage">Login page</a>.</p>
+
 	</div>
 
 	<div class=container id="helpsection_mainpage">
 		<h4>Main page <a href="#wayback" id="link_to_top">^top</a></h4>
 		<p>Create and sum-up annotations.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_fresh_full.png" %} style="width:160px;"/></p>
-		<p>Why annotating? B2NOTE allows defining user-specific information about online resources such as data files hosted on a EUDAT partner service. Custom new user-specific datasets can thus be constituted through the process of adding some particular information about multiple files.</p>
-		<p>The functionalities available from the main page of B2NOTE console are detailed below.</p>
+		<p>Why annotating? Using B2NOTE you can add and manage extra information (“annotations”) about data files hosted by a EUDAT service (a <a href="https://trng-b2share.eudat.eu" target="_blank">B2SHARE training instance</a> during the pilot phase). Then use the annotations for finding files of interest and identifying new user-specific datasets.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_fresh_full_02.png" %} style="width:160px;"/></p>
+		<p>This is the B2NOTE service main page. It contains the following elements:</p>
+		<ol>
+			<li><b><a href="#help_subsection_navigation_bar">Navigation bar</a></b>: access different functionalities of the B2NOTE service.</li>
+			<li><b><a href="#help_subsection_main_panel">Main panel</a></b>: create an annotation.</li>
+			<li><b>“All my annotations”</b>: visualise a summary of your annotations and access more detailed information.</li>
+			<li><b>“All annotations about this file”</b>: visualise a summary of the annotations about the current file and access more detailed information.</li>
+			<li><b>Feedbacks button</b>: assess the service, request a new feature or report a bug.</li>
+		</ol>
+
+
+		<h5 id="help_subsection_navigation_bar">Navigation bar</h5>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_navigation_bar_02.png" %} style="width:200px;"/></p>
+		<ul>
+			<li><b>User account</b>: access your annotator profile information.</li>
+			<li><b>Search</b>: find files using annotations and export the resulting datasets.</li>
+			<li><b>Export</b>: export annotations in JSON-LD (linked-data) format.</li>
+			<li><b>Logout</b>: log out of the B2NOTE service, terminates the current user session.</li>
+			<li><b>Help</b>: access the help section for page you are visiting.</li>
+		</ul>
 
 		<h5>Navigation bar</h5>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_navigation_bar.png" %} style="width:160px;"/></p>
+		<p>At the top of other pages additional shortcut links allow quick navigation to previous pages or straight back to the <a href="#helpsection_mainpage">B2NOTE console main page</a>.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/shortcut_link_icons_03.png" %} style="width:250px;"/></p>
 		<ul>
-			<li><u>User account (head outline icon with pseudonym link)</u>: page displaying the data filled-in during registration (user-specific information).</li>
-			<li><u>Search (magnifying glass icon)</u>: find files based the content of annotations and export the resulting information dataset.</li>
-			<li><u>Export (arrow down to inbox icon)</u>: export annotations in JSON-LD (linked-data) format.</li>
-			<li><u>Logout (arrow pointing right out of box icon)</u>: logging-out from the B2NOTE service, terminates the current user session.</li>
-			<li><u>Help (interrogation mark icon)</u>: directs to the help section specific for the calling page.</li>
-		</ul>
-		<p>At the top of other pages additional shortcut links allow quick navigation to previous pages or straight back to the B2NOTE console main page.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/shortcut_link_icons.png" %} style="width:160px;"/></p>
-		<ul>
-			<li><u>Arrow pointing left</u>: clicking redirects to the previously accessed page.</li>
-			<li><u>House outline</u>: clicking always redirects directly to the B2NOTE console main page.</li>
+			<li><b>Previous</b>: previously accessed page.</li>
+			<li><b>Home</b>: the <a href="#helpsection_mainpage">B2NOTE console main page</a>.</li>
 		</ul>
 
-
-		<h5>Main panel</h5>
+		<h5 id="help_subsection_main_panel">Main panel</h5>
 		<p>Create annotations.</p>
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_fresh_grey_area.png" %} style="width:160px;"/></p>
 		<p>The main panel is divided-up into 3 tabs. Each tab contains a simple form for creating an annotation of one of the 3 types defined in B2NOTE.</p>

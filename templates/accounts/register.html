@@ -72,7 +72,7 @@
                             <!--<label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label}}:</label>-->
                             <div class="col-sm-6">
                                 {% if f.errors %} <p style="font-size:12px;color:red;">Required field is empty:</p> {% endif %}
-                                <input type="password" name='{{ f.id_for_label|slice:"3:" }}' class="form-control" id="some-id" placeholder="{% if f.field.required %}*{% endif %}Enter {{ f.label|lower }}" />
+                                <input type="password" name='{{ f.id_for_label|slice:"3:" }}' class="form-control" id="some-id" placeholder="Enter {{ f.label|lower }}" />
                             </div>
                         </div>
 
