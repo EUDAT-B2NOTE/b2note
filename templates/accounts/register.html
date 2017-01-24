@@ -33,7 +33,7 @@
                         {% else %}
 
                             <div class="form-group">
-                                <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{% if f.field.required %}*{% endif %}{{ f.label }}:</label>
+                                <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>
                                 {{ f }}
                             </div>
 
@@ -42,7 +42,7 @@
                     {% elif f.id_for_label|slice:"3:" == "country" %}
 
                         <div class="form-group">
-                            <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{% if f.field.required %}*{% endif %}{{ f.label }}:</label>
+                            <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>
                             <div class="col-sm-6">
                                 <select name='{{ f.id_for_label|slice:"3:" }}' class="form-control selectpicker">
                                     {% for c in f.field.choices %}
@@ -55,7 +55,7 @@
                     {% elif f.id_for_label|slice:"3:" == "annotator_exp" %}
 
                         <div class="form-group">
-                            <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{% if f.field.required %}*{% endif %}{{ f.label }}:</label>
+                            <label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>
                             <div class="col-sm-6">
                                 <!--<select name='{{ f.id_for_label|slice:"3:" }}' class="selectpicker">-->
                                 <select name='{{ f.id_for_label|slice:"3:" }}' class="form-control selectpicker">
@@ -92,9 +92,9 @@
                                     {% endif %}
                                 {% endif %}
                                 {% if f.value %}
-                                    <input type="text" name='{{ f.id_for_label|slice:"3:" }}' value={{f.value}} class="form-control" id="id" placeholder="{% if f.field.required %}*{% endif %}Enter {{ f.label|lower }}" />
+                                    <input type="text" name='{{ f.id_for_label|slice:"3:" }}' value={{f.value}} class="form-control" id="id" placeholder="Enter {{ f.label|lower }}" />
                                 {% else %}
-                                    <input type="text" name='{{ f.id_for_label|slice:"3:" }}' class="form-control" id="id" placeholder="{% if f.field.required %}*{% endif %}Enter {{ f.label|lower }}" />
+                                    <input type="text" name='{{ f.id_for_label|slice:"3:" }}' class="form-control" id="id" placeholder="Enter {{ f.label|lower }}" />
                                 {% endif %}
                             </div>
                         </div>
