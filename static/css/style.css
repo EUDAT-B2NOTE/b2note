@@ -755,6 +755,11 @@
     padding-left: 5px;
 }
 
+#help-content {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
 #help-content p {
     text-align: justify;
 }
