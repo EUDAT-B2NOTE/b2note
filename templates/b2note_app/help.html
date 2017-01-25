@@ -246,13 +246,50 @@
 		</ul>
 	</div>
 
-	<div class=container id="helpsection_exportpage">
-		<h4>Export page<a href="#wayback" id="link_to_top">^top</a></h4>
-		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
-	</div>
-
 	<div class=container id="helpsection_searchpage">
 		<h4>Search page <a href="#wayback" id="link_to_top">^top</a></h4>
+		<p>Use annotations to search for files.</p>
+		<p>Access this page by clicking the magnifying glass icon in the <a href="#help_subsection_navigation_bar">navigation bar</a> from other pages of the B2NOTE console.</p>
+		<p>The Search functionality is designed for identifying sets of files annotated with some particular tag information.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/search_page_fresh_03.png" %} style="width:200px;"/></p>
+		<p>Define your search query by filling-up the form of the Search menu.</p>
+		<ol>
+			<li><p><b><a href="#help_subsection_search_selector">Search selector</a></b>: define a term to search for.</p></li>
+			<li><p><b><a href="#help_subsection_plus_sign_button">Plus sign button</a></b>: add new terms to the search query.</p></li>
+			<li><p><b><a href="#help_subsection_magnifying_glass_button">Magnifying glass button</a></b>: launch the search.</p></li>
+		</ol>
+		<h5 id="help_subsection_search_selector">Search selector</h5>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/search_page_menu_unfolded.png" %} style="width:200px;"/></p>
+		<p>First select a particular annotation type.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/search_page_semantic_tag_filled.png" %} style="width:200px;"/></p>
+		<p>Then type in the textarea to select (in case of a semantic tag), or define a particular tag label to be searched on.</p>
+		<p>In the case of semantic tag annotations, a <b>tick box</b> underneath the textarea allows you to require that the <u>synonyms referenced for the term in the original ontology</u> be included, so that files annotated with tags matching the synonyms also get <b>reported in the search results</b>.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/search_page_menu_comment_type_selected.png" %} style="width:200px;"/></p>
+		<p>Select the <b>Comment annotation type</b> for including in the search results those files for which at least one of their annotation is of the “Comment” type.</p>
+		<h5 id="help_subsection_plus_sign_button">Plus sign button</h5>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/search_page_semantic_tag_filled_02.png" %} style="width:200px;"/></p>
+		<p>Click the “plus sign” button (circled in red above) to add new conditions to your search query by adding new field to the search form.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/search_page_semantic_tag_expanded_form.png" %} style="width:200px;"/></p>
+		<p>The additional search fields are identical to the initial form with the <u>addition of a selector for the logical relation</u> to apply between search conditions.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/search_page_logical_selector_dropdown.png" %} style="width:200px;"/></p>
+		<ul>
+			<li><p><b>AND</b>: both conditions true. </p></li>
+			<li><p><b>OR</b>: at least one condition true. </p></li>
+			<li><p><b>NOT</b>: corresponding condition not true. </p></li>
+			<li><p><b>XOR</b>: strictly one or the other condition true. </p></li>
+		</ul>
+		<h5 id="help_subsection_magnifying_glass_button">Magnifying glass button</h5>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/search_page_semantic_synonym_query_02.png" %} style="width:200px;"/></p>
+		<p>Click the <b>“magnifying glass” button</b> (circled in red above) to <u>launch the search</u> according to the parameters thus defined.</p>
+		<p>You obtain the list of files with annotations matching your query displayed in the <a href="#helpsection_searchresultspage">search results page</a> (see below).</p>
+	</div>
+
+	<div class=container id="helpsection_searchresultspage">
+		<h4>Search results page<a href="#wayback" id="link_to_top">^top</a></h4>
+	</div>
+
+	<div class=container id="helpsection_exportpage">
+		<h4>Export page<a href="#wayback" id="link_to_top">^top</a></h4>
 		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
 	</div>
 
