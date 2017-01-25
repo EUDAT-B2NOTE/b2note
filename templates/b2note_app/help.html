@@ -158,8 +158,8 @@
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/myannotations_page_semantic_table_02.png" %} style="width:200px;"/></p>
 		<p>There is one such table per annotation type (Semantic tag, Free-text keyword and Comment). Each row of the table features:</p>
 		<ol>
-			<li><p><b>Label of the annotation</b>: click to access detailed information about the tag.</p></li>
-			<li><p><b>Numbered badge</b>: reporting how many of your annotations use the same tag. Click to access the corresponding list of files and detailed information about the tag. There are no numbered badges in the Comment annotation table since these annotations are by definition unique.</p></li>
+			<li><p><b><a href="#helpsection_annotationsummarypage">Label of the annotation</a></b>: click to access detailed information about the tag.</p></li>
+			<li><p><b><a href="#helpsection_annotationsummarypage">Numbered badge</a></b>: reporting how many of your annotations use the same tag. Click to access the corresponding list of files and detailed information about the tag. There are no numbered badges in the Comment annotation table since these annotations are by definition unique.</p></li>
 			<li><p><b>Management options</b>:</p>
 				<ul>
 					<li><b><a href="#helpsection_editpage">Pen icon</a></b>: edit the corresponding annotation.</li>
@@ -187,8 +187,8 @@
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/allannotations_page_semantic_table_02.png" %} style="width:200px;"/></p>
 		<p>There is one such table per annotation type (Semantic tag, Free-text keyword and Comment). Each row of the table features:</p>
 		<ol>
-			<li><p><b>Label of the annotation</b>: click to access detailed information about the tag.</p></li>
-			<li><p><b>Numbered badge</b>: reporting how many annotations use the same tag. Click to access the corresponding list of files and detailed information about the tag. There are no badges in the Comment annotation table.</p></li>
+			<li><p><b><a href="#helpsection_annotationsummarypage">Label of the annotation</a></b>: click to access detailed information about the tag.</p></li>
+			<li><p><b><a href="#helpsection_annotationsummarypage">Numbered badge</a></b>: reporting how many annotations use the same tag. Click to access the corresponding list of files and detailed information about the tag. There are no badges in the Comment annotation table.</p></li>
 			<ul>
 				<li><p><b>Blue badge</b>: annotations created by other users.</p></li>
 				<li><p><b>Orange badge</b>: annotations created by you.</p></li>
@@ -202,12 +202,24 @@
 		</ol>
 	</div>
 
+	<div class=container id="helpsection_annotationsummarypage">
+		<h4>Annotation summary page <a href="#wayback" id="link_to_top">^top</a></h4>
+		<p>Visualise the content of an individual annotation.</p>
+		<p>Access this page from detailed summary tables of the <a href="#helpsection_myannotationspage">“My Annotations”</a> or <a href="#helpsection_allannotationspage">"All annotations” pages</a>.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/annotation_summary_page_fresh_02.png" %} style="width:200px;"/></p>
+		<ol>
+			<li><p><b>Annotation content</b>: information about the annotation label. For Semantic tags this is information about the original ontology term, including its <a href="https://www.w3.org/wiki/URI">URI</a> as an hyperlink for direct access. Click the topmost chevron icon to fold or unfold the table.</p></li>
+			<li><p><b>List of files</b>: direct links to the files that were annotated using the same annotation tag.</p></li>
+		</ol>
+	</div>
+
+
 	<div class=container id="helpsection_editpage">
 		<h4>Edit annotation page <a href="#wayback" id="link_to_top">^top</a></h4>
 		<p>Change an annotation.</p>
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/myannotations_page_semantic_table_pen_icon_row_02.png" %} style="width:160px;"/></p>
-		<p>Access to this page by clicking one of the pen icons (circled in red above) associated to annotations created by you in tables of the “My annotations” or “All annotations” summary pages.</p>
-		<p>The functionalities available from this page of the B2NOTE console are detailed below.</p>
+		<p>Access this page by clicking one of the pen icons (circled in red above) associated to annotations created by you in tables of the “My annotations” or “All annotations” summary pages.</p>
+
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/edit_page_semantic_tag_02.png" %} style="width:160px;"/></p>
 		<p><u>Edit menu</u>: allows the tag of an individual annotation to be modified.</p>
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/edit_page_semantic_suggestion_list_02.png" %} style="width:160px;"/></p>
@@ -220,10 +232,7 @@
 		<p>The process of modifying the annotation tag is very similar to that of creating the tag for a new annotation as performed from the main page interface. The same restrictions and alerts apply. In particular it is not allowed to generate an annotation that would be a duplicate (same tag about the same file) of another existing annotation by editing it. </p>
 	</div>
 
-	<div class=container id="helpsection_annotationsummarypage">
-		<h4>Annotation summary page <a href="#wayback" id="link_to_top">^top</a></h4>
-		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
-	</div>
+
 
 	<div class=container id="helpsection_editpage">
 		<h4>Edit annotation page <a href="#wayback" id="link_to_top">^top</a></h4>
