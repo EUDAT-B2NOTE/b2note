@@ -226,8 +226,8 @@
 		<p>Type inside the textarea to select a different semantic tag from the list of suggestions (in case of editing a semantic tag) or modify the text of free-text annotations (i.e. keyword or comment types).</p>
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/edit_page_semantic_suggestion_selected.png" %} style="width:200px;"/></p>
 		<ul>
-			<li><p><b>"Save" button</b>: enforce the modified tag as the new tag</p>.</li>
-			<li><p><b>"Cancel" button</b> avoid changing the original tag</p>.</li>
+			<li><p><b>"Save" button</b>: enforce the modified tag as the new tag.</p></li>
+			<li><p><b>"Cancel" button</b> avoid changing the original tag.</p></li>
 		</ul>
 		<p>The process of editing the annotation tag is very similar to that of <a href="#help_subsection_creating_semantic">creating the tag for a new annotation</a> from the main page interface. The same <a href="#help_subsection_create_restrictions">restrictions and alerts</a> apply. In particular it is not allowed to generate a <b><a href="#help_subsection_create_restrictions">duplicate</a></b> (same tag about the same file) annotation.</p>
 	</div>
@@ -285,7 +285,26 @@
 	</div>
 
 	<div class=container id="helpsection_searchresultspage">
-		<h4>Search results page<a href="#wayback" id="link_to_top">^top</a></h4>
+		<h4>Search results <a href="#wayback" id="link_to_top">^top</a></h4>
+		<p>Identify files with annotations matching a search query.</p>
+		<p>Access this page by clicking the <a href="#helpsection_searchpage">magnifying glass button</a> after filling up the form of the Search page for submitting a search query.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/search_results_page_fresh_bottom_03.png" %} style="width:200px;"/></p>
+		<ol>
+			<li><p><b>Search query</b>: formulated in plain text.</p></li>
+			<li><p><b><a href="#helpsection_searchpage">New search</a></b>: define and execute a new search.</p></li>
+			<li><p><b><a href="#helpsection_exportsearchpage">Export results</a></b>: for selecting within the search results those particular files about which annotation information should be exported.</p></li>
+			<li><p><b>Exact match</b>: list the files that were retrieved on the exact match of their annotation content with the search query conditions.</p></li>
+			<li><p><b>Related match (synonyms)</b>: list the files that were retrieved because their annotation label matched with a <b>synonym</b> of a particular semantic tag (see <a href="#helpsection_searchpage">Search page</a>) included in the search query. If synonyms were listed for the original ontology class, then these should appear in the above query formulated as plain text.</p></li>
+		</ol>
+	</div>
+
+	<div class=container id="helpsection_exportsearchpage">
+		<h4>Export search results page <a href="#wayback" id="link_to_top">^top</a></h4>
+		<p>Define datasets of files from search results and export their annotation information.</p>
+
+		<p>Access this page by clicking the <a href="#helpsection_searchresultspage">“Export results” button</a> of the Search results page.</p>
+
+
 	</div>
 
 	<div class=container id="helpsection_exportpage">
@@ -293,10 +312,6 @@
 		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
 	</div>
 
-	<div class=container id="helpsection_exportsearchpage">
-		<h4>Export search results page <a href="#wayback" id="link_to_top">^top</a></h4>
-		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
-	</div>
 
 	<div class=container id="helpsection_useraccountpage">
 		<h4>User account page <a href="#wayback" id="link_to_top">^top</a></h4>
