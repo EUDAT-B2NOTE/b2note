@@ -90,8 +90,8 @@
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_suggestion_selected_02.png" %} style="width:200px;"/></p>
 		<p>After selecting a semantic tag or typing-in a free-text keyword or comment text, click the <b>“Create” button</b> to create the annotation.</p>
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_created_alert_02.png" %} style="width:200px;"/></p>
-		<br>
-		<p>Some conditions prevent annotations from being created.</p>
+
+		<h6 id="help_subsection_create_restrictions">Some conditions prevent annotations from being created.</h6>
 		<ol>
 			<li>
 				<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_semantic_identical_alert.png" %} style="width:160px;"/></p>
@@ -101,18 +101,18 @@
 				<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_free-text_semantic_match_alert.png" %} style="width:160px;"/></p>
 				<p><b>Semantic equivalent</b>: attempting to create a <u>free-text keyword</u> annotation using a label identical to an ontology term referenced by B2NOTE, triggers an alert asking you to confirm the type of annotation you want to create:</p>
 				<ul>
-					<li>Click the <b>“Semantic” button</b> to select a semantic tag instead of your free-text keyword.</li>
-					<li>Click the <b>“Keyword” button</b> to confirm creating an annotation using your free-text keyword.</li>
-					<li>Click the <b>“Cancel” button</b> to cancel the annotation creation.</li>
+					<li><p><b>“Semantic” button</b>: select a semantic tag instead of your free-text keyword.</p></li>
+					<li><p><b>“Keyword” button</b>: confirm creating an annotation using your free-text keyword.</p></li>
+					<li><p><b>“Cancel” button</b>: cancel the annotation creation.</p></li>
 				</ul>
 		    </li>
 			<li>
 				<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_free-text_long_label_alert.png" %} style="width:160px;"/></p>
 				<p><b>Long keyword</b>: attempting to create a free-text keyword annotation with a tag label longer than 60 characters will trigger an alert asking to confirm the type of annotation you want to create:</p>
 				<ul>
-					<li>Click the <b>“Keyword” button</b> for an annotation of the Free-text Keyword type. </li>
-					<li>Click the <b>“Comment” button</b> for an annotation of the Comment type.</li>
-					<li>Click the <b>“Cancel” button</b> to cancel the annotation creation.</li>
+					<li><p><b>“Keyword” button</b>: for an annotation of the Free-text Keyword type.</p> </li>
+					<li><p><b>“Comment” button</b>: for an annotation of the Comment type.</p></li>
+					<li><p><b>“Cancel” button</b>: to cancel the annotation creation.</p></li>
 				</ul>
 			</li>
 		</ol>
@@ -142,7 +142,7 @@
 
 	<div class=container id="helpsection_myannotationspage">
 		<h4>My annotations page <a href="#wayback" id="link_to_top">^top</a></h4>
-		<p>Review and edit your existing annotations.</p>
+		<p>Review and manage your existing annotations.</p>
 		<p>Access this page from the B2NOTE console main page by clicking the <a href="#helpsection_mainpage">“All my annotations” link</a>.</p>
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/myannotations_page_fresh_02.png" %} style="width:200px;"/></p>
 		<ol>
@@ -218,30 +218,23 @@
 		<h4>Edit annotation page <a href="#wayback" id="link_to_top">^top</a></h4>
 		<p>Change an annotation.</p>
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/myannotations_page_semantic_table_pen_icon_row_02.png" %} style="width:160px;"/></p>
-		<p>Access this page by clicking one of the pen icons (circled in red above) associated to annotations created by you in tables of the “My annotations” or “All annotations” summary pages.</p>
-
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/edit_page_semantic_tag_02.png" %} style="width:160px;"/></p>
-		<p><u>Edit menu</u>: allows the tag of an individual annotation to be modified.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/edit_page_semantic_suggestion_list_02.png" %} style="width:160px;"/></p>
-		<p>Typing inside the text-area allows a different semantic tag to be selected amongst the suggestions for replacing the existing tag (in case of editing a semantic tag annotation) or modifying the text of free-text annotations (i.e. keyword or comment types).</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/edit_page_semantic_suggestion_selected.png" %} style="width:160px;"/></p>
+		<p>Access this page by clicking one of the pen icons (circled in red above) in tables of the “My annotations” or “All annotations” summary pages.</p>
+		<h5 id="help_subsection_edit_menu">Edit menu</h5>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/edit_page_semantic_tag_02.png" %} style="width:200px;"/></p>
+		<p>Allows the tag of an individual annotation to be modified.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/edit_page_semantic_suggestion_list_02.png" %} style="width:200px;"/></p>
+		<p>Type inside the textarea to select a different semantic tag from the list of suggestions (in case of editing a semantic tag) or modify the text of free-text annotations (i.e. keyword or comment types).</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/edit_page_semantic_suggestion_selected.png" %} style="width:200px;"/></p>
 		<ul>
-			<li>Click the “Save” button for enforcing the modified tag as the new tag.</li>
-			<li>Click the “Cancel” button to avoid changing the original tag.</li>
+			<li><p><b>“Save” button</b>: enforce the modified tag as the new tag</p>.</li>
+			<li><p><b>“Cancel” button</b> avoid changing the original tag</p>.</li>
 		</ul>
-		<p>The process of modifying the annotation tag is very similar to that of creating the tag for a new annotation as performed from the main page interface. The same restrictions and alerts apply. In particular it is not allowed to generate an annotation that would be a duplicate (same tag about the same file) of another existing annotation by editing it. </p>
-	</div>
-
-
-
-	<div class=container id="helpsection_editpage">
-		<h4>Edit annotation page <a href="#wayback" id="link_to_top">^top</a></h4>
-		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
+		<p>The process of editing the annotation tag is very similar to that of <a href="#help_subsection_creating_semantic">creating the tag for a new annotation</a> as performed from the main page interface. The same <a href="#help_subsection_create_restrictions">restrictions and alerts</a> apply. In particular it is not allowed to generate a <b><a href="#help_subsection_create_restrictions">duplicate</a></b> (same tag about the same file) annotation.</p>
 	</div>
 
 	<div class=container id="helpsection_deletepage">
 		<h4>Delete annotation page <a href="#wayback" id="link_to_top">^top</a></h4>
-		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
+		<p></p>
 	</div>
 
 	<div class=container id="helpsection_exportpage">
