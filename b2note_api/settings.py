@@ -136,6 +136,7 @@ annotations = {
                     'created',
                     'modified',
                     'generated',
+                    'motivation',
                     'target.jsonld_id',
                     'body.type',
                     'body.value',
