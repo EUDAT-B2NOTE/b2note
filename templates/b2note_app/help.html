@@ -122,8 +122,8 @@
 		<p>Click the leftmost chevron icon (circled in red above) to unfold a summary table with the number of annotations of each type that were <b>created by you</b>. </p>
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_myannotations_unfolded_02.png" %} style="width:200px;"/></p>
 		<ul>
-			<li>Click the <b>annotation type links</b> or <b>numbered badge</b> of each row to a summary table with more detailed information about corresponding annotations.</li>
-			<li>Click the <b><a href="#helpsection_myannotationspage">All my annotations”</a></b> section title to the page containing all the summary tables about annotations created by you.</li>
+			<li>Click the <b>annotation type links</b> or <b>numbered badge</b> of each row to a <a href="#help_subsection_myann_detail_table">summary table</a> with more detailed information about corresponding annotations.</li>
+			<a>Click the <b><a href="#helpsection_myannotationspage">All my annotations”</a></b> section title to the <a href="#helpsection_myannotationspage">page containing all the summary tables</a> about annotations created by you.</li>
 		</ul>
 
 		<h5 id="help_subsection_main_allann">“All annotations about this file” section</h5>
@@ -132,12 +132,12 @@
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_allannotations_unfolded_02.png" %} style="width:200px;"/></p>
 		<ul>
 			<li>Click each <b>annotation type link</b> or <b>numbered badge</b> to a summary table with more detailed information about corresponding annotations.</li>
-			<li>Click the <b>“All annotations about this file”</b> section title to the page containing all summary tables for annotations created about the file.</li>
+			<li>Click the <b><a href="#helpsection_allannotationspage">“All annotations about this file”</a></b> section title to the page containing all summary tables for annotations created about the file.</li>
 		</ul>
 
 		<h5 id="help_subsection_main_feedback_button">Feedbacks button</h5>
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_feedback_button.png" %} style="width:200px;"/></p>
-		<p><b>“Let us know what you think” button</b>: access forms designed for providing us an assessment about B2NOTE, requesting a new feature or reporting a bug.</p>
+		<p><b>“Let us know what you think” button</b>: access the feedback page with forms for providing us an assessment about B2NOTE, requesting a new feature or reporting a bug.</p>
 	</div>
 
 	<div class=container id="helpsection_myannotationspage">
@@ -146,8 +146,8 @@
 		<p>Access this page from the B2NOTE console main page by clicking the <a href="#helpsection_mainpage">“All my annotations” link</a>.</p>
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/myannotations_page_fresh_02.png" %} style="width:200px;"/></p>
 		<ol>
-			<li><p><b>Summary table</b>: showing how many annotations of each type were created by you and linking to the corresponding detailed information tables.</p></li>
-			<li><p><b>Detailed information table</b>: on this page there are 3 such tables, one for each type of annotation. They show the labels of corresponding annotations that were created by you, link to individual annotation data and links for editing or deleting each annotation.</p></li>
+			<li><p><b><a href="#help_subsection_myann_summ_table">Summary table</a></b>: showing how many annotations of each type were created by you and linking to the corresponding detailed information tables.</p></li>
+			<li><p><b><a href="#help_subsection_myann_detail_table">Detailed information table</a></b>: on this page there are 3 such tables, one for each type of annotation. They show the labels of corresponding annotations that were created by you, link to individual annotation data and links for editing or deleting each annotation.</p></li>
 		</ol>
 		<h5 id="help_subsection_myann_summ_table">Summary table</h5>
 		<p>Referencing the number of annotations of each type that were created by you.</p>
@@ -162,8 +162,8 @@
 			<li><p><b>Numbered badge</b>: reporting how many of your annotations use the same tag. Click to access the corresponding list of files and detailed information about the tag. There are no numbered badges in the Comment annotation table since these annotations are by definition unique.</p></li>
 			<li><p><b>Management options</b>:</p>
 				<ul>
-					<li>Click a <b>pen icon</b> to edit the corresponding annotation.</li>
-					<li>Click a <b>bin icon</b> to delete the corresponding annotation.</li>
+					<li><b><a href="#helpsection_editpage">Pen icon</a></b>: edit the corresponding annotation.</li>
+					<li><b><a href="#helpsection_deletepage">Bin icon</a></b>: delete the corresponding annotation.</li>
 				</ul>
 			</li>
 		</ol>
@@ -172,13 +172,34 @@
 	<div class=container id="helpsection_allannotationspage">
 		<h4>All annotations page <a href="#wayback" id="link_to_top">^top</a></h4>
 		<p>Review existing annotations about a file.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/allannotations_page_fresh.png" %} style="width:160px;"/></p>
-		<p>Access this page from the B2NOTE console main page by clicking the “All my annotations” section title.</p>
-		<p>The functionalities available from this page of the B2NOTE console are detailed below.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/allannotations_page_summary_table.png" %} style="width:160px;"/></p>
-		<p><u>Summary table</u>: referencing the number of annotations of each type that were created about a file, either by other users (blue badges) or yourself (orange badges). Clicking each link or numbered badge redirects to a table containing more detailed information about annotations of the corresponding type (see below).</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/allannotations_page_semantic_table.png" %} style="width:160px;"/></p>
-		<p><u>Detailed information tables</u>: reporting for each annotation type (Semantic tag, Free-text keyword or Comment), the labels of the annotations about a file, and - except for comment annotations - the number of times an identical tag was used in other annotations in successive rows. Tag reuse by other users is reported in blue badges, while tag reuse in your annotations is reported in orange badges. Each row also features annotation management options for editing (pen icon) or deleting (bin icon) the corresponding annotation. These options are only available (clickable blue icons) when the annotation was created by you otherwise they are inactive (pale grey icons). The tag label link can be clicked to access more detailed information about a particular tag, such as the full text of the tag label, and information about the original ontology term in the case of semantic tag annotations. Clicking one of the numbered badges directs to a page listing the different files annotated using a particular tag.</p>
+		<p>Access this page from the B2NOTE console main page by clicking the <a href="#helpsection_mainpage">“All annotations about this file” link</a>.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/allannotations_page_fresh_02.png" %} style="width:200px;"/></p>
+		<ol>
+			<li><p><b><a href="#help_subsection_allann_summ_table">Summary table</a></b>: showing how many annotations of each type were created about the current file and linking to the corresponding detailed information tables.</p></li>
+			<li><p><b><a href="#help_subsection_allann_detail_table">Detailed information table</a></b>: on this page there are 3 such tables, one for each type of annotation. They show the labels of corresponding annotations, link to individual annotation data and links for editing or deleting each annotation.</p></li>
+		</ol>
+		<h5 id="help_subsection_allann_summ_table">Summary table</h5>
+		<p>Referencing the number of annotations of each type that were created, either by other users (<b>blue badges</b>) or yourself (<b>orange badges</b>).</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/myannotations_page_summary_table.png" %} style="width:200px;"/></p>
+		<p>Click each <b>link</b> or <b>numbered badge</b> to a table containing more detailed information about annotations of the corresponding type (see below).</p>
+
+		<h5 id="help_subsection_allann_detail_table">Detailed information table</h5>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/allannotations_page_semantic_table_02.png" %} style="width:200px;"/></p>
+		<p>There is one such table per annotation type (Semantic tag, Free-text keyword and Comment). Each row of the table features:</p>
+		<ol>
+			<li><p><b>Label of the annotation</b>: click to access detailed information about the tag.</p></li>
+			<li><p><b>Numbered badge</b>: reporting how many annotations use the same tag. Click to access the corresponding list of files and detailed information about the tag. There are no badges in the Comment annotation table.</p></li>
+			<ul>
+				<li><p><b>Blue badge</b>: annotations created by other users.</p></li>
+				<li><p><b>Orange badge</b>: annotations created by you.</p></li>
+			</ul>
+			<li><p><b>Management options</b>: these actions are disabled (pale grey icons) for annotations created by other users.</p>
+				<ul>
+					<li><b><a href="#helpsection_editpage">Pen icon</a></b>: edit the corresponding annotation.</li>
+					<li><b><a href="#helpsection_deletepage">Bin icon</a></b>: delete the corresponding annotation.</li>
+				</ul>
+			</li>
+		</ol>
 	</div>
 
 	<div class=container id="helpsection_editpage">
@@ -206,6 +227,11 @@
 
 	<div class=container id="helpsection_editpage">
 		<h4>Edit annotation page <a href="#wayback" id="link_to_top">^top</a></h4>
+		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
+	</div>
+
+	<div class=container id="helpsection_deletepage">
+		<h4>Delete annotation page <a href="#wayback" id="link_to_top">^top</a></h4>
 		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
 	</div>
 
