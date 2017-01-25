@@ -301,15 +301,28 @@
 	<div class=container id="helpsection_exportsearchpage">
 		<h4>Export search results page <a href="#wayback" id="link_to_top">^top</a></h4>
 		<p>Define datasets of files from search results and export their annotation information.</p>
-
 		<p>Access this page by clicking the <a href="#helpsection_searchresultspage">“Export results” button</a> of the Search results page.</p>
-
-
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/export_search_page_unselected_file_02.png" %} style="width:200px;"/></p>
+		<p>The layout of this page is similar to that of the <a href="#helpsection_searchresultspage">“search results page”</a>, with additional <b>tick boxes (1)</b> for selecting/un-selecting the listed files about which annotation information should be included for exporting.</p>
+		<p>Once file selection is completed, clicking the <b>“Generate JSON export” button (2)</b> loads a <a href="#helpsection_exportpage">page displaying the corresponding list of annotations in JSON-LD format</a> and making it available for download.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/export_search_results_final_02.png" %} style="width:200px;"/></p>
 	</div>
 
 	<div class=container id="helpsection_exportpage">
 		<h4>Export page<a href="#wayback" id="link_to_top">^top</a></h4>
-		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
+		<p>Download annotations in JSON-LD format.</p>
+		<p>Access this page by clicking the <a href="#help_subsection_navigation_bar">“Export” icon in the navigation bar</a> from other pages of the B2NOTE console.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/export_landing_page.png" %} style="width:200px;"/></p>
+		<ul>
+			<li><p><b>All my annotations</b>: display the information of all your annotations in JSON-LD (linked-data) format and ready to download.</p></li>
+			<li><p><b>All annotations about the file</b>: display the information of annotations about the current file from all users in JSON-LD (linked-data) format, and ready to download.</p></li>
+		</ul>
+		<p>Click one of the two buttons to a page with the following layout:</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/export_page_user_annotations_02.png" %} style="width:200px;"/></p>
+		<ul>
+			<li><p><b>Annotations information</b>: JSON-LD (linked-data) format.</p></li>
+			<li><p><b>Download JSON-LD</b>: download the text file of the displayed JSON-LD.</p></li>
+		</ul>
 	</div>
 
 
