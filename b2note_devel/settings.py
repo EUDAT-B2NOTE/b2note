@@ -12,7 +12,7 @@ TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 STATIC_PATH = os.path.join(BASE_DIR,'static')
 
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -50,7 +50,7 @@ AUTHENTICATION_BACKENDS = ['accounts.backends.EmailAuthBackend', ]
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ 'b2note.bsc.es' ]
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -231,6 +231,7 @@ LOGGING = {
 
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = os.environ['SUPPORT_EMAIL_ADDR']
+SUPPORT_DEST_EMAIL = os.environ['SUPPORT_DEST_EMAIL']
 EMAIL_HOST = 'mail.bsc.es'
 EMAIL_PORT = 25
 EMAIL_HOST_USER = os.environ['SUPPORT_EMAIL_ADDR']
