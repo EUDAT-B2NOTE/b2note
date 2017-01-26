@@ -14,7 +14,7 @@ from django.template import loader
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
-from b2note_devel.settings import DEFAULT_FROM_EMAIL
+from b2note_devel.settings import DEFAULT_FROM_EMAIL, SUPPORT_DEST_EMAIL
 from django.views.generic import *
 from forms.reset_password import PasswordResetRequestForm, SetPasswordForm, AccountRetrieveForm
 from forms.user_feebacks import FeedbackForm, FeatureForm, BugReportForm
@@ -47,7 +47,7 @@ def feedbackpage(request):
 
             if request.method == 'POST':
 
-                dest = 'abremaud@esciencefactory.com'
+                dest = SUPPORT_DEST_EMAIL
 
                 if request.POST.get("feedback_submit") != None:
 
