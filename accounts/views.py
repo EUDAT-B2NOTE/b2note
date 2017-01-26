@@ -47,7 +47,7 @@ def feedbackpage(request):
 
             if request.method == 'POST':
 
-                dest = SUPPORT_DEST_EMAIL #'abremaud@esciencefactory.com'
+                dest = SUPPORT_DEST_EMAIL
 
                 if request.POST.get("feedback_submit") != None:
 
