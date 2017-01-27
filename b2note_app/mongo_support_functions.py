@@ -9,7 +9,98 @@ from django.forms.models import model_to_dict
 from django.conf import settings as global_settings
 import logging
 
+from rdflib import Graph, plugin, term
+from rdflib.serializer import Serializer
+from requests.auth import HTTPBasicAuth
+
 stdlogger = logging.getLogger('b2note')
+
+
+def httpPutRdfXmlFileContentToOpenVirtuoso( url=None, usr=None, pwd=None, files=None ):
+
+    ''' HTTP PUT RDF/XML FILE CONTENT TO OPEN VIRTUOSO RDF-SINK'''
+    out = None
+    try:
+        if url and usr and pwd and files:
+            if isinstance(url, (str, unicode)) and isinstance(usr, (str, unicode)) and\
+                isinstance(pwd, (str, unicode)) and isinstance(files, (str, unicode)):
+                if len(url) > len('http'):
+                    if url[:len('http')] == 'http':
+                        headers = {'Content-Type': 'application/rdf+xml'}
+                        r = requests.put(url, auth=HTTPBasicAuth(usr, pwd), headers=headers, data=files)
+                        out = r
+    except:
+        print "httpPutRdfXmlFileContentToOpenVirtuoso function, Could not http PUT rdf/xml file content to Open Virtuoso rdf-sink."
+        stdlogger.error("httpPutRdfXmlFileContentToOpenVirtuoso function, Could not http PUT rdf/xml file content to Open Virtuoso rdf-sink.")
+        return False
+    return out
+
+
+def export_to_triplestore():
+    out = None
+    paginate_over = 50
+
+    try:
+        VIRTUOSO_B2NOTE_USR = ""
+        if "VIRTUOSO_B2NOTE_USR" in os.environ.keys():
+            VIRTUOSO_B2NOTE_USR = os.environ['VIRTUOSO_B2NOTE_USR']
+        else:
+            VIRTUOSO_B2NOTE_USR = global_settings.VIRTUOSO_B2NOTE_USR
+
+        VIRTUOSO_B2NOTE_PWD = ""
+        if "VIRTUOSO_B2NOTE_PWD" in os.environ.keys():
+            VIRTUOSO_B2NOTE_PWD = os.environ['VIRTUOSO_B2NOTE_PWD']
+        else:
+            VIRTUOSO_B2NOTE_PWD = global_settings.VIRTUOSO_B2NOTE_PWD
+
+        ir = requests.get("https://b2note.bsc.es/annotations?max_results=1")
+
+        #"_meta": {"max_results": 2, "total": 41, "page": 2}
+        annL = []
+        if ir and ir.json() and "_meta" in ir.json().keys():
+            tt=ir.json()["_meta"]["total"]
+            pp=min(tt, paginate_over)
+            for pg in range(1,1+((tt+(pp-1))/pp)):
+                #print tt, pp, 1+((tt+(pp-1))/pp), pg
+                r = requests.get("https://b2note.bsc.es/annotations?max_results="+str(pp)+"+&page="+str(pg))
+                if r and r.json():
+                    if "schema:itemListElement" in r.json().keys() \
+                    and isinstance(r.json()["schema:itemListElement"], list):
+                        annL = annL + r.json()["schema:itemListElement"]
+        if annL:
+            #Replace field name "type" by "@type" for rdflib-jsonld correct processing
+            annL = addarobase_totypefieldname(annL)
+
+        g = None
+        if annL:
+            g = Graph().parse(data=json.dumps(annL), format='json-ld')
+
+        if g:
+            # The library adds a trailing slash character to the Software homepage url
+            for s, p, o in g.triples((None, None, term.URIRef(u"https://b2note.bsc.es/"))):
+                g.add((s, p, term.URIRef(u"https://b2note.bsc.es")))
+            for s, p, o in g.triples((None, None, term.URIRef(u"https://b2note.bsc.es/"))):
+                g.remove((s, p, term.URIRef(u"https://b2note.bsc.es/")))
+
+        files = None
+        if g:
+            files = g.serialize(format='xml')
+
+        R = None
+        R = httpPutRdfXmlFileContentToOpenVirtuoso('http://opseudat03.bsc.es:8890/DAV/home/antoine/rdf_sink/test.rdf',
+                                                   VIRTUOSO_B2NOTE_USR, VIRTUOSO_B2NOTE_PWD, files)
+
+        if R is not None:
+            print "\nCompleted publishing of B2Note annotations to Open Virtuoso triplestore.\n"
+            return R
+        else:
+            print "Could not send rdf/xml file content to Open Virtuoso rdf-sink."
+            stdlogger.error("export_to_triplestore function, Could not send rdf/xml file content to Open Virtuoso rdf-sink.")
+    except:
+        print "export_to_triplestore function, could not complete."
+        stdlogger.error("export_to_triplestore function, could not complete.")
+        return False
+    return out
 
 
 def addarobase_totypefieldname(o_in):
