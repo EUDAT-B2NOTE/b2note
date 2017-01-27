@@ -2,7 +2,7 @@
 
 {% block content %}
 
-	<h3>Export</h3>
+	<h3 style="padding-left:5px;margin-bottom:5px;">Export</h3>
 
 	{% if not annotations_json or annotations_json == "null" %}
 
@@ -27,11 +27,11 @@
 
 	{% else %}
 
-		<div class="container col-xs-12 col-md-12" id="export-download" style="margin-top:20px;">
+		<div class="container col-xs-12 col-md-12" id="export-download" style="margin-top:0px;margin-bottom:5px;">
 
 			{% if annotations_of %}
 
-				<div class="container col-xs-7 col-md-7 pull-left" style="margin-left:0px;font-size:13px;">
+				<div class="container col-xs-5 col-md-5 pull-left" style="font-size:12px;margin:5px;padding:5px;font-size:13px;">
 
 					{% if annotations_of == "mine" %}
 
@@ -51,27 +51,37 @@
 
 			{% endif %}
 
-			<div class="container col-xs-5 col-md-5" style="white-space:normal;margin-bottom:10px;margin-right:0px;padding-right:0px;">
+			<!--<div class="container col-xs-8 col-md-8" style="white-space:normal;margin-bottom:10px;margin-right:0px;padding-right:0px;">-->
 
 				{% if annotations_of == "search_results" %}
 
-					<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default" style="white-space:normal !important;">Download JSON-LD</a>
+					<div class="container col-xs-3 col-md-3">
+						<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default" style="margin:5px;padding:5px;font-size:12px;white-space:normal !important;">Download this JSON-LD</a>
+					</div>
+					<div class="container col-xs-3 col-md-3">
+						<a href="{% url 'b2note_app.views.download_rdfxml' %}" class="btn btn-default" style="margin:5px;padding:5px;font-size:12px;white-space:normal !important;">Download as RDF/XML</a>
+					</div>
 
 				{% else %}
 
-					<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default" style="white-space:normal !important;">Download JSON-LD</a>
+					<div class="container col-xs-3 col-md-3">
+						<a href="{% url 'b2note_app.views.download_json' %}" class="btn btn-default" style="margin:5px;padding:5px;font-size:12px;white-space:normal !important;">Download this JSON-LD</a>
+					</div>
+					<div class="container col-xs-3 col-md-3">
+						<a href="{% url 'b2note_app.views.download_rdfxml' %}" class="btn btn-default" style="margin:5px;padding:5px;font-size:12px;white-space:normal !important;">Download as RDF/XML</a>
+					</div>
 
 				{% endif %}
 
-			</div>
+			<!--</div>-->
 
 		</div>
 
-		<div class="container" id="export-content">
+		<div class="container" id="export-content" style="margin-top:0px;padding-top:0px;">
 
 			{% if annotations_json %}
 
-				<pre id="ann_json" style="font-size:9px;padding: 1px;height: 270px;">{{annotations_json|safe}}</pre>
+				<pre id="ann_json" style="font-size:9px;padding: 1px;height: 300px;">{{annotations_json|safe}}</pre>
 
 			{% endif %}
 
