@@ -1879,9 +1879,9 @@ def select_search_results(request):
                 response = orderedJSONLDfields( response )
 
             # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
-            json_data = HttpResponse(json.dumps(response, indent=2), mimetype='application/json')
-            json_data['Content-Disposition'] = 'attachment; filename=' + "b2note_search_" + nowi
-            download_json.file_data = json_data
+            #json_data = HttpResponse(json.dumps(response, indent=2), mimetype='application/json')
+            #json_data['Content-Disposition'] = 'attachment; filename=' + "b2note_search_" + nowi
+            download_json.file_data = response #json_data
 
         data_dict = {
             'annotations_of': "search_results",
