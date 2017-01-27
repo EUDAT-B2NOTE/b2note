@@ -21,6 +21,8 @@ from itertools import chain
 from accounts.models import AnnotatorProfile
 import logging
 
+from rdflib import Graph, plugin, term
+from rdflib.serializer import Serializer
 
 
 stdlogger = logging.getLogger('b2note')
@@ -35,7 +37,8 @@ def b2share_correct_url( url ):
         if url and isinstance(url, (str, unicode)) and len(url)>0:
             if url[:len("http://trng-b2share.eudat.eu")] == "http://trng-b2share.eudat.eu" \
                     or url[:len("https://trng-b2share.eudat.eu")]=="https://trng-b2share.eudat.eu" \
-                    or url[:len("https://b2share.eudat.eu")]=="https://b2share.eudat.eu":
+                    or url[:len("https://b2share.eudat.eu")]=="https://b2share.eudat.eu" \
+                    or url[:len("http://b2share.eudat.eu")]=="http://b2share.eudat.eu":
                 out = url
             else:
                 if url[0]=="/":
@@ -57,10 +60,8 @@ def export_annotations(request):
       Function: export_annotations
       ----------------------------
         Export all annotations in JSON format.
-
         input:
             request (object): context of the petition.
-
         output:
             object: HttpResponse with the result of the request.
     """
@@ -76,7 +77,7 @@ def export_annotations(request):
             if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
 
         pid_tofeed = ""
-        if request.POST.get('pid_tofeed')!=None:
+        if request.POST.get('pid_tofeed') != None:
             pid_tofeed = request.POST.get('pid_tofeed')
 
         user_nickname = None
@@ -91,13 +92,13 @@ def export_annotations(request):
 
         if subject_tofeed and isinstance(subject_tofeed, (str, unicode)):
 
-            if request.POST.get('user_annotations')!=None and user_nickname:
-                annotation_list = RetrieveUserAnnotations( user_nickname )
+            if request.POST.get('user_annotations') != None and user_nickname:
+                annotation_list = RetrieveUserAnnotations(user_nickname)
                 annotation_list = annotation_list.values()
                 annotations_of = "mine"
 
-            elif request.POST.get('all_annotations')!=None:
-                annotation_list = RetrieveFileAnnotations( subject_tofeed )
+            elif request.POST.get('all_annotations') != None:
+                annotation_list = RetrieveFileAnnotations(subject_tofeed)
                 annotation_list = annotation_list.values()
                 annotations_of = "all"
 
@@ -112,23 +113,23 @@ def export_annotations(request):
                 now = datetime.datetime.now()
                 nowi = str(now.year) + str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(now.second)
 
-                #response = {"@context": global_settings.JSONLD_CONTEXT_URL}
+                # response = {"@context": global_settings.JSONLD_CONTEXT_URL}
 
-                cleaned = readyQuerySetValuesForDumpAsJSONLD( [ann for ann in annotation_list] )
+                cleaned = readyQuerySetValuesForDumpAsJSONLD([ann for ann in annotation_list])
                 cleaned = ridOflistsOfOneItem(cleaned)
-                cleaned = orderedJSONLDfields( cleaned )
+                cleaned = orderedJSONLDfields(cleaned)
 
                 response = cleaned
 
-                #if isinstance(cleaned, list):
+                # if isinstance(cleaned, list):
                 #    response["@graph"] = cleaned
-                #else:
+                # else:
                 #    response["@graph"] = [cleaned]
 
                 # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
-                json_data = HttpResponse(json.dumps(response, indent=2), mimetype= 'application/json')
-                json_data['Content-Disposition'] = 'attachment; filename=' + "b2note_export_" + nowi
-                download_json.file_data = json_data
+                #json_data = HttpResponse(json.dumps(response, indent=2), mimetype='application/json')
+                #json_data['Content-Disposition'] = 'attachment; filename=' + "b2note_export_" + nowi
+                download_json.file_data = response #json_data
 
             navbarlinks = list_navbarlinks(request, ["Download", "Help page"])
             navbarlinks.append({"url": "/help#helpsection_exportpage", "title": "Help page", "icon": "question-sign"})
@@ -161,15 +162,60 @@ def download_json(request):
     """
       Function: download_json
       ----------------------------
-        Download a json file with the annotations 
-        
+        Download a json file with the annotations
+
         input:
             request (object): context of the petition.
-        
+
         output:
             object: HttpResponse with the file to download.
     """
-    return download_json.file_data
+    # http://stackoverflow.com/questions/7732990/django-provide-dynamically-generated-data-as-attachment-on-button-press
+    # json_data = HttpResponse(json.dumps(response, indent=2), mimetype= 'application/json')
+    now = datetime.datetime.now()
+    nowi = str(now.year) + str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(now.second)
+    #json_data = json.dumps( download_json.file_data , indent=2)
+    json_data = HttpResponse(json.dumps(download_json.file_data, indent=2), mimetype= 'application/ld+json')
+    json_data['Content-Disposition'] = 'attachment; filename=' + "b2note_export_" + nowi + ".jsonld"
+
+    return json_data
+
+    #return download_json.file_data
+
+
+@login_required
+def download_rdfxml(request):
+    """
+      Function: download_rdfxml
+      ----------------------------
+        Download a RDF file with the annotations
+
+        input:
+            request (object): context of the petition.
+
+        output:
+            object: HttpResponse with the file to download.
+    """
+    now = datetime.datetime.now()
+    nowi = str(now.year) + str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(now.second)
+    #context = requests.get("https://b2note.bsc.es/jsonld_context_b2note_20161027.jsonld")
+    #json_data = json.dumps(download_json.file_data, indent=2)
+
+    #Replace all field names "type" by "@type" for correct rdflib-jsonld processing
+    json_data = addarobase_totypefieldname( download_json.file_data )
+    g = Graph().parse(data=json.dumps(json_data), format='json-ld')
+
+    # The library adds a trailing slash character to the Software homepage url
+    for s, p, o in g.triples((None, None, term.URIRef(u"https://b2note.bsc.es/"))): g.add(
+        (s, p, term.URIRef(u"https://b2note.bsc.es")))
+    for s, p, o in g.triples((None, None, term.URIRef(u"https://b2note.bsc.es/"))): g.remove(
+        (s, p, term.URIRef(u"https://b2note.bsc.es/")))
+
+    rdfxml_data = g.serialize(format='xml')
+    rdfxml_data = HttpResponse(rdfxml_data, mimetype='application/rdf+xml')
+    rdfxml_data['Content-Disposition'] = 'attachment; filename=' + "b2note_export_" + nowi + ".rdf"
+
+    return rdfxml_data
 
 
 @login_required
