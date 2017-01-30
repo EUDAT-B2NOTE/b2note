@@ -239,6 +239,7 @@ annotations = {
                 #'url' : 'annotations/<regex("[a-f0-9]{24}"):annotation_id>/files',
                 }
 
+
 mongo_settings = {
         'MONGO_HOST': 'localhost',
         'MONGO_PORT': 27017,
@@ -260,3 +261,18 @@ mongo_settings = {
 
         'XML' : False,
 }
+
+
+virtuoso_settings = {
+    'VIRTUOSO_B2NOTE_USR': "",
+    'VIRTUOSO_B2NOTE_PWD': ""
+}
+if "VIRTUOSO_B2NOTE_USR" in os.environ.keys():
+    virtuoso_settings['VIRTUOSO_B2NOTE_USR'] = os.environ['VIRTUOSO_B2NOTE_USR']
+if "VIRTUOSO_B2NOTE_PWD" in os.environ.keys():
+    virtuoso_settings['VIRTUOSO_B2NOTE_PWD'] = os.environ['VIRTUOSO_B2NOTE_PWD']
+
+
+
+
+
