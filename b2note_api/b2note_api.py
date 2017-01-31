@@ -8,7 +8,11 @@ from django.conf import settings as global_settings
 import json, os, copy
 import logging
 
+import rdflib
 from rdflib import Graph, plugin, term
+from rdflib.plugin import Serializer, Parser
+rdflib.plugin.register('json-ld', Serializer, 'rdflib_jsonld.serializer', 'JsonLDSerializer')
+rdflib.plugin.register('json-ld', Parser, 'rdflib_jsonld.parser', 'JsonLDParser')
 
 
 stdlogger = logging.getLogger('b2note')
@@ -60,6 +64,16 @@ def export_to_triplestore():
         if annL:
             # Replace field name "type" by "@type" for rdflib-jsonld correct processing
             annL = addarobase_totypefieldname(annL)
+            # B2SHARE sends fiel urls containing whitespace characters,
+            # that rdflib refuses to serialize, replace by %20
+            for ann in annL:
+                if isinstance(ann, dict):
+                    if "target" in ann.keys():
+                        if isinstance(ann["target"], dict):
+                            if "id" in ann["target"].keys():
+                                if isinstance(ann["target"]["id"],(str, unicode)):
+                                    if ann["target"]["id"].find(" ")>0:
+                                        ann["target"]["id"] = ann["target"]["id"].replace(" ", "%20")
         else:
             print("export_to_triplestore function, no annotation list retrieved.")
             stdlogger.error("export_to_triplestore function, no annotation list retrieved.")
@@ -67,7 +81,7 @@ def export_to_triplestore():
 
         g = None
         if annL:
-            # Replace field name "type" by "@type" for rdflib-jsonld correct processing
+            # Build-up graph from jsonld list of annotations
             g = Graph().parse(data=json.dumps(annL), format='json-ld')
         else:
             print("export_to_triplestore function, no annotation list from addarobase function.")
