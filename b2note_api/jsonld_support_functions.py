@@ -1,7 +1,85 @@
-import re, datetime, collections
+import os, re, datetime, collections
+import requests
 import logging
 
+from rdflib.serializer import Serializer
+from requests.auth import HTTPBasicAuth
+
+
 stdlogger = logging.getLogger('b2note')
+
+
+def httpPutRdfXmlFileContentToOpenVirtuoso( url=None, usr=None, pwd=None, files=None ):
+
+    ''' HTTP PUT RDF/XML FILE CONTENT TO OPEN VIRTUOSO RDF-SINK'''
+    out = None
+    try:
+        if url and usr and pwd and files:
+            if isinstance(url, (str, unicode)) and isinstance(usr, (str, unicode)) and\
+                isinstance(pwd, (str, unicode)) and isinstance(files, (str, unicode)):
+                if len(url) > len('http'):
+                    if url[:len('http')] == 'http':
+                        headers = {'Content-Type': 'application/rdf+xml'}
+                        r = requests.put(url, auth=HTTPBasicAuth(usr, pwd), headers=headers, data=files)
+                        out = r
+    except:
+        print "httpPutRdfXmlFileContentToOpenVirtuoso function, Could not http PUT rdf/xml file content to Open Virtuoso rdf-sink."
+        stdlogger.error("httpPutRdfXmlFileContentToOpenVirtuoso function, Could not http PUT rdf/xml file content to Open Virtuoso rdf-sink.")
+        return False
+    return out
+
+
+def retrieve_annotation_jsonld_from_api():
+    out = None
+    paginate_over = 50
+
+    try:
+        ir = requests.get("https://b2note.bsc.es/annotations?max_results=1")
+        #"_meta": {"max_results": 2, "total": 41, "page": 2}
+        annL = []
+        if ir and ir.json() and "_meta" in ir.json().keys():
+            tt=ir.json()["_meta"]["total"]
+            pp=min(tt, paginate_over)
+            for pg in range(1,1+((tt+(pp-1))/pp)):
+                #print tt, pp, 1+((tt+(pp-1))/pp), pg
+                r = requests.get("https://b2note.bsc.es/annotations?max_results="+str(pp)+"+&page="+str(pg))
+                if r and r.json():
+                    if "schema:itemListElement" in r.json().keys() \
+                    and isinstance(r.json()["schema:itemListElement"], list):
+                        annL = annL + r.json()["schema:itemListElement"]
+                    else:
+                        print "retrieve_annotation_jsonld_from_api function, missing or unsuitable schema:itemListElement should be list."
+                        stdlogger.error("retrieve_annotation_jsonld_from_api, missing or unsuitable schema:itemListElement should be list.")
+                else:
+                    print "retrieve_annotation_jsonld_from_api function, no jsonld data retrieved, page:" + str(pg) +"."
+                    stdlogger.error("retrieve_annotation_jsonld_from_api, no jsonld data retrieved, page:" + str(pg) +".")
+            out = annL
+        else:
+            print "retrieve_annotation_jsonld_from_api function, no jsonld data retrieved."
+            stdlogger.error("retrieve_annotation_jsonld_from_api, no jsonld data retrieved.")
+    except:
+        print "retrieve_annotation_jsonld_from_api function, could not complete."
+        stdlogger.error("retrieve_annotation_jsonld_from_api, could not complete.")
+        return False
+    return out
+
+
+def addarobase_totypefieldname(o_in):
+    o_out=None
+    if isinstance(o_in, list):
+        o_out = []
+        for item in o_in:
+            o_out.append(addarobase_totypefieldname(item))
+    elif isinstance(o_in, dict):
+        o_out={}
+        for k in o_in.keys():
+            if k=="type":
+                o_out["@type"] = addarobase_totypefieldname( o_in[k] )
+            else:
+                o_out[k] = addarobase_totypefieldname( o_in[k] )
+    else:
+        o_out = o_in
+    return o_out
 
 
 def readyQuerySetValuesForDumpAsJSONLD( o_in ):

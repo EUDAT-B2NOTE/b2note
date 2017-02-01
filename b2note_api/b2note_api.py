@@ -1,10 +1,21 @@
 from eve import Eve
 from eve_swagger import swagger
-from settings import mongo_settings
+from settings import mongo_settings, virtuoso_settings
 from collections import OrderedDict
 from jsonld_support_functions import readyQuerySetValuesForDumpAsJSONLD, ridOflistsOfOneItem, orderedJSONLDfields
+from jsonld_support_functions import retrieve_annotation_jsonld_from_api, addarobase_totypefieldname, httpPutRdfXmlFileContentToOpenVirtuoso
 from django.conf import settings as global_settings
 import json, os, copy
+import logging
+
+import rdflib
+from rdflib import Graph, plugin, term
+from rdflib.plugin import Serializer, Parser
+rdflib.plugin.register('json-ld', Serializer, 'rdflib_jsonld.serializer', 'JsonLDSerializer')
+rdflib.plugin.register('json-ld', Parser, 'rdflib_jsonld.parser', 'JsonLDParser')
+
+
+stdlogger = logging.getLogger('b2note')
 
 
 app = Eve(settings=mongo_settings)
@@ -26,6 +37,7 @@ app.config['SWAGGER_INFO'] = {
     }
 }
 
+
 # optional. Will use flask.request.host if missing.
 #app.config['SWAGGER_HOST'] = 'myhost.com'
 
@@ -40,6 +52,106 @@ app.config['SWAGGER_INFO'] = {
 #     }]
 # }}}})
 
+
+
+@app.route('/export_to_triplestore')
+def export_to_triplestore():
+    out = None
+    try:
+        annL = None
+        annL = retrieve_annotation_jsonld_from_api()
+
+        if annL:
+            # Replace field name "type" by "@type" for rdflib-jsonld correct processing
+            annL = addarobase_totypefieldname(annL)
+            # B2SHARE sends fiel urls containing whitespace characters,
+            # that rdflib refuses to serialize, replace by %20
+            for ann in annL:
+                if isinstance(ann, dict):
+                    if "target" in ann.keys():
+                        if isinstance(ann["target"], dict):
+                            if "id" in ann["target"].keys():
+                                if isinstance(ann["target"]["id"],(str, unicode)):
+                                    if ann["target"]["id"].find(" ")>0:
+                                        ann["target"]["id"] = ann["target"]["id"].replace(" ", "%20")
+        else:
+            print("export_to_triplestore function, no annotation list retrieved.")
+            stdlogger.error("export_to_triplestore function, no annotation list retrieved.")
+            return None
+
+        g = None
+        if annL:
+            # Build-up graph from jsonld list of annotations
+            g = Graph().parse(data=json.dumps(annL), format='json-ld')
+        else:
+            print("export_to_triplestore function, no annotation list from addarobase function.")
+            stdlogger.error("export_to_triplestore function, no annotation list from addarobase function.")
+            return None
+
+        if g:
+            # The library adds a trailing slash character to the Software homepage url
+            for s, p, o in g.triples((None, None, term.URIRef(u"https://b2note.bsc.es/"))):
+                g.add((s, p, term.URIRef(u"https://b2note.bsc.es")))
+            for s, p, o in g.triples((None, None, term.URIRef(u"https://b2note.bsc.es/"))):
+                g.remove((s, p, term.URIRef(u"https://b2note.bsc.es/")))
+        else:
+            print("export_to_triplestore function, no graph parsed from json-ld.")
+            stdlogger.error("export_to_triplestore function, no graph parsed from json-ld.")
+            return None
+
+        files = None
+        if g:
+            files = g.serialize(format='xml')
+        else:
+            print("export_to_triplestore function, no graph from removing trailing slash from software homepage url.")
+            stdlogger.error("export_to_triplestore function, no graph from removing trailing slash from software homepage url.")
+            return None
+
+        R = None
+        R = httpPutRdfXmlFileContentToOpenVirtuoso('http://opseudat03.bsc.es:8890/DAV/home/b2note/rdf_sink/test.rdf',
+                                                   virtuoso_settings['VIRTUOSO_B2NOTE_USR'],
+                                                   virtuoso_settings['VIRTUOSO_B2NOTE_PWD'],
+                                                   files)
+        if R is not None:
+            print "export_to_triplestore function, completed publishing of B2Note annotations to Open Virtuoso triplestore."
+            return '''
+                <h1>B2NOTE triplestore data update</h1>
+                <p>Completed publishing annotations to B2NOTE Open Virtuoso triplestore.</p>
+                <p>SPARQL endpoint: <a href="http://opseudat03.bsc.es:8890/sparql" target="_blank">http://opseudat03.bsc.es:8890/sparql</a></p>
+                <p>Example query:<p>
+                <pre>SELECT DISTINCT ?file ?free_text ?semantic_label
+                FROM &#60;urn:dav:home:b2note:rdf_sink>
+                WHERE {
+                 ?s ?p &#60;http://www.w3.org/ns/oa#Annotation>.
+                 ?s &#60;http://www.w3.org/ns/oa#hasTarget> ?file.
+                 ?s &#60;http://www.w3.org/ns/oa#hasBody> ?b.
+                 OPTIONAL{
+                  ?b &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ?free_text.
+                 }
+                 OPTIONAL{
+                  ?b &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#type> &#60;http://www.w3.org/ns/oa#Composite>.
+                  ?b &#60;http://www.w3.org/ns/activitystreams#items> ?d.
+                  ?d &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> ?e.
+                  ?e &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f.
+                  ?f &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ?semantic_label.
+                 }
+                }
+                LIMIT 50
+                </pre>
+            '''
+
+        else:
+            print "export_to_triplestore function, could not send rdf/xml file content to Open Virtuoso rdf-sink."
+            stdlogger.error(
+                "export_to_triplestore function, could not send rdf/xml file content to Open Virtuoso rdf-sink.")
+            return None
+
+    except:
+        print("export_to_triplestore function, did not complete.")
+        stdlogger.error("export_to_triplestore function, did not complete.")
+        return False
+
+    return out
 
 
 #@mimerender(default = 'txt', json = render_json, jsonld = render_jsonld, txt = render_txt)

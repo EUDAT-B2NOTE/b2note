@@ -9,7 +9,28 @@ from django.forms.models import model_to_dict
 from django.conf import settings as global_settings
 import logging
 
+
+
 stdlogger = logging.getLogger('b2note')
+
+
+
+def addarobase_totypefieldname(o_in):
+    o_out=None
+    if isinstance(o_in, list):
+        o_out = []
+        for item in o_in:
+            o_out.append(addarobase_totypefieldname(item))
+    elif isinstance(o_in, dict):
+        o_out={}
+        for k in o_in.keys():
+            if k=="type":
+                o_out["@type"] = addarobase_totypefieldname( o_in[k] )
+            else:
+                o_out[k] = addarobase_totypefieldname( o_in[k] )
+    else:
+        o_out = o_in
+    return o_out
 
 
 
