@@ -5,7 +5,7 @@ from collections import OrderedDict
 from jsonld_support_functions import readyQuerySetValuesForDumpAsJSONLD, ridOflistsOfOneItem, orderedJSONLDfields
 from jsonld_support_functions import retrieve_annotation_jsonld_from_api, addarobase_totypefieldname, httpPutRdfXmlFileContentToOpenVirtuoso
 from django.conf import settings as global_settings
-import json, os, copy
+import json, os, copy, urllib
 import logging
 
 import rdflib
@@ -14,6 +14,8 @@ from rdflib.plugin import Serializer, Parser
 rdflib.plugin.register('json-ld', Serializer, 'rdflib_jsonld.serializer', 'JsonLDSerializer')
 rdflib.plugin.register('json-ld', Parser, 'rdflib_jsonld.parser', 'JsonLDParser')
 
+import requests
+from requests.auth import HTTPBasicAuth
 
 stdlogger = logging.getLogger('b2note')
 
@@ -58,6 +60,7 @@ app.config['SWAGGER_INFO'] = {
 def export_to_triplestore():
     out = None
     try:
+
         annL = None
         annL = retrieve_annotation_jsonld_from_api()
 
@@ -107,11 +110,26 @@ def export_to_triplestore():
             stdlogger.error("export_to_triplestore function, no graph from removing trailing slash from software homepage url.")
             return None
 
+        # CLEAR previous graph
+        graph_urn = "urn:dav:home:b2note:rdf_sink"
+        q   = urllib.quote_plus('CLEAR GRAPH <' + graph_urn + '>')
+        url = 'http://opseudat03.bsc.es:8890/sparql?query=' + q
+        rc = None
+        rc   = requests.get(url, auth=HTTPBasicAuth(
+            virtuoso_settings['VIRTUOSO_B2NOTE_USR'],
+            virtuoso_settings['VIRTUOSO_B2NOTE_PWD']))
+
         R = None
-        R = httpPutRdfXmlFileContentToOpenVirtuoso('http://opseudat03.bsc.es:8890/DAV/home/b2note/rdf_sink/test.rdf',
-                                                   virtuoso_settings['VIRTUOSO_B2NOTE_USR'],
-                                                   virtuoso_settings['VIRTUOSO_B2NOTE_PWD'],
-                                                   files)
+        if rc and rc.text and isinstance(rc.text, (str, unicode)) and rc.text.find("Clear graph &lt;"+graph_urn+"&gt; -- done")>0:
+            R = httpPutRdfXmlFileContentToOpenVirtuoso('http://opseudat03.bsc.es:8890/DAV/home/b2note/rdf_sink/annotations.rdf',
+                                                       virtuoso_settings['VIRTUOSO_B2NOTE_USR'],
+                                                       virtuoso_settings['VIRTUOSO_B2NOTE_PWD'],
+                                                       files)
+        else:
+            print("export_to_triplestore function, call to CLEAR previous GRAPH on triplestore failed.")
+            stdlogger.error("export_to_triplestore function, call to CLEAR previous GRAPH on triplestore failed.")
+            return None
+
         if R is not None:
             print "export_to_triplestore function, completed publishing of B2Note annotations to Open Virtuoso triplestore."
             return '''
@@ -120,26 +138,24 @@ def export_to_triplestore():
                 <p>SPARQL endpoint: <a href="http://opseudat03.bsc.es:8890/sparql" target="_blank">http://opseudat03.bsc.es:8890/sparql</a></p>
                 <p>Example query:<p>
                 <pre>SELECT DISTINCT ?file ?free_text ?semantic_label
-                FROM &#60;urn:dav:home:b2note:rdf_sink>
-                WHERE {
-                 ?s ?p &#60;http://www.w3.org/ns/oa#Annotation>.
-                 ?s &#60;http://www.w3.org/ns/oa#hasTarget> ?file.
-                 ?s &#60;http://www.w3.org/ns/oa#hasBody> ?b.
-                 OPTIONAL{
-                  ?b &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ?free_text.
-                 }
-                 OPTIONAL{
-                  ?b &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#type> &#60;http://www.w3.org/ns/oa#Composite>.
-                  ?b &#60;http://www.w3.org/ns/activitystreams#items> ?d.
-                  ?d &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> ?e.
-                  ?e &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f.
-                  ?f &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ?semantic_label.
-                 }
-                }
-                LIMIT 50
-                </pre>
-            '''
-
+FROM &#60;urn:dav:home:b2note:rdf_sink>
+WHERE {
+ ?s ?p &#60;http://www.w3.org/ns/oa#Annotation>.
+ ?s &#60;http://www.w3.org/ns/oa#hasTarget> ?file.
+ ?s &#60;http://www.w3.org/ns/oa#hasBody> ?b.
+ OPTIONAL{
+  ?b &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ?free_text.
+ }
+ OPTIONAL{
+  ?b &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#type> &#60;http://www.w3.org/ns/oa#Composite>.
+  ?b &#60;http://www.w3.org/ns/activitystreams#items> ?d.
+  ?d &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> ?e.
+  ?e &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f.
+  ?f &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ?semantic_label.
+ }
+}
+LIMIT 50
+</pre>'''
         else:
             print "export_to_triplestore function, could not send rdf/xml file content to Open Virtuoso rdf-sink."
             stdlogger.error(
