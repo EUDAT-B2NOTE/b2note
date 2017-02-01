@@ -289,28 +289,28 @@ def hostpage(request):
     """
 
     buttons_info_text = """
-http://hdl.handle.net/11304/31c0d886-b988-11e3-8cd7-14feb57d12b9
-https://b2share.eudat.eu/record/30
+http://hdl.handle.net/11304/3720bb44-831c-48f3-9847-6988a41236e1
+https://b2share.eudat.eu/records/b1092be3cd4844e0bffd7b669521ba3c
 Orthography-based dating and localisation of Middle Dutch charters
 
 http://hdl.handle.net/11304/3522daa6-b988-11e3-8cd7-14feb57d12b9
-https://b2share.eudat.eu/record/45
+https://b2share.eudat.eu/records/39fa39965b314f658e4a198a78d7f6b5
 ImageJ plugin ColonyArea
 
 http://hdl.handle.net/11304/6a9078c4-c3b0-11e3-8cd7-14feb57d12b9
-https://b2share.eudat.eu/record/66
+https://b2share.eudat.eu/records/5b1ac2030a9f4338bba9d92593e2e5e4
 REST paper 2014
 
 http://hdl.handle.net/11304/69430fd2-e7d6-11e3-b2d7-14feb57d12b9
-https://b2share.eudat.eu/record/88
+https://b2share.eudat.eu/records/8f90692d770249f08e42d4613e91dbea
 piSVM Analytics Runtimes JUDGE Cluster Rome Images 55 Features
 
 http://hdl.handle.net/11304/fe356a8e-3f2b-11e4-81ac-dcbd1b51435e
-https://b2share.eudat.eu/record/125
+https://b2share.eudat.eu/records/f253047b330449d69594f60aebbf3d62
 GoNL SNPs and Indels release 5
 
 http://hdl.handle.net/11304/9061f60c-41cf-11e4-81ac-dcbd1b51435e
-https://b2share.eudat.eu/record/127
+https://b2share.eudat.eu/records/5a62838104c14932823cfd905eb438fc
 Influence of smoking and obesity in sperm quality
     """
 
