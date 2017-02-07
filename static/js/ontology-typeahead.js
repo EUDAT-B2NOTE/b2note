@@ -65,8 +65,7 @@ $(document).ready( function() {
         remote: {
             // What may be a relevant size of class subset for the user to select from VS. transaction size x user population?
             /*url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select?q=labels:%QUERY&wt=json&indent=true&rows=1000',*/
-            /*url: window.location.protocol + '//b2note.bsc.es/solr/cleanup_test/select',*/
-            url: 'https://b2note.bsc.es/solr/cleanup_test/select',
+            url: window.location.protocol + '//b2note.bsc.es/solr/cleanup_test/select',
             /*url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select',*/
             /* 20161109, abremaud@escienceafactory.com
                 Boosting exact match on term label from Solr.
