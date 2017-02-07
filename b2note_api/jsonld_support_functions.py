@@ -53,6 +53,7 @@ def retrieve_annotation_jsonld_from_api():
                 else:
                     print "retrieve_annotation_jsonld_from_api function, no jsonld data retrieved, page:" + str(pg) +"."
                     stdlogger.error("retrieve_annotation_jsonld_from_api, no jsonld data retrieved, page:" + str(pg) +".")
+
             out = annL
         else:
             print "retrieve_annotation_jsonld_from_api function, no jsonld data retrieved."
