@@ -10,10 +10,33 @@ $(document).ready( function() {
     // constructs the suggestion engine
     var engine = new Bloodhound({
         datumTokenizer: function (datum) {
-            return Bloodhound.tokenizers.whitespace(datum.title);
+            return Bloodhound.tokenizers.whitespace(datum.label);
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace,
+        sufficient: 199,
+        prefetch: {
+            url: '../static/files/sample.json',
+            //cache: false,
+            filter: function(response) {
+                console.log("THIS WORKS HERE TOO")
+                //console.log(response)
+                return $.map(response, function(item) {
+                    return {
+                      labels: item.labels,
+                      label: item.labels,
+                      ontology_acronym : item.ontology_acronym,
+                      short_form : item.short_form,
+                      json_document: item
+                    }
+                });
+            }
+        },
+        identify : function(item) {
+            //console.log('identify GETS CALLED ' + item.label);
+            return item.label + item.ontology_acronym + item.short_form;
+        },
         sorter: function(a, b) {
+          if (typeof a.labels !== 'undefined') {
                 //get input text
             var InputString=   $('[id^="id_q"]').val();
 
@@ -61,11 +84,15 @@ $(document).ready( function() {
                 if (a["norm(labels)"]<b["norm(labels)"]) { return 1 }
                 //return a.labels.localeCompare(b.labels);
             }
+          } else {
+            return -1;
+          }
         },
         remote: {
             // What may be a relevant size of class subset for the user to select from VS. transaction size x user population?
             /*url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select?q=labels:%QUERY&wt=json&indent=true&rows=1000',*/
-            url: window.location.protocol + '//b2note.bsc.es/solr/cleanup_test/select',
+            /*url: window.location.protocol + '//b2note.bsc.es/solr/cleanup_test/select',*/
+            url: 'https://b2note.bsc.es/solr/cleanup_test/select',
             /*url: window.location.protocol + '//b2note.bsc.es/solr/b2note_index/select',*/
             /* 20161109, abremaud@escienceafactory.com
                 Boosting exact match on term label from Solr.
@@ -97,9 +124,9 @@ $(document).ready( function() {
                     qstr = data.responseHeader.params.q.substring(beg+2,fin);
                 }
                 truncated_data = engine.sorter(data.response.docs);
-                trunc_n = 1000
+                trunc_n = 1000;
                 if ((qstr.length<=4) && (qstr.split(/-_ /).length<=1)) {
-                    trunc_n = 100
+                    trunc_n = 100;
                 }
                 if (truncated_data.length>trunc_n) {
                     truncated_data = truncated_data.slice(0,trunc_n);
@@ -120,6 +147,7 @@ $(document).ready( function() {
     });
 
     // initializes the engine
+    engine.clearPrefetchCache();
     engine.initialize();
 
     // gets the subject selected to provide the subject_tofeed field
