@@ -67,6 +67,17 @@ $(document).ready( function() {
                         if (a.labels.length > b.labels.length) {
                             return 1;
                         } else {
+                            //relegate containing digit or capital letter
+                            if (/\d/.test(a.labels)) { return 1 }
+                            if (/\d/.test(b.labels)) { return -1 }
+
+                            if ((a.labels.length>1) && (a.labels.slice(1,a.labels.length) !== a.labels.slice(1,a.labels.length).toLowerCase() )) {
+                                return 1
+                            }
+                            if ((b.labels.length>1) && (b.labels.slice(1,b.labels.length) !== b.labels.slice(1,b.labels.length).toLowerCase() )) {
+                                return -1
+                            }
+
                             //alphabetical order
                             return a.labels.localeCompare(b.labels);
                         }
