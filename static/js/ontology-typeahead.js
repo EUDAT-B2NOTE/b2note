@@ -31,6 +31,10 @@ $(document).ready( function() {
                 });
             }
         },
+        identify : function(item) {
+            //console.log('identify GETS CALLED ' + item.label);
+            return item.label + item.ontology_acronym + item.short_form;
+        },
         sorter: function(a, b) {
           if (typeof a.labels !== 'undefined') {
                 //get input text
@@ -81,7 +85,6 @@ $(document).ready( function() {
                 //return a.labels.localeCompare(b.labels);
             }
           } else {
-            console.log("IT DOES")
             return -1;
           }
         },
