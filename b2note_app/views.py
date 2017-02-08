@@ -54,6 +54,25 @@ def b2share_correct_url( url ):
     return out
 
 
+
+#@login_required
+#def typeahead_testbench(request):
+#    return render(request, "b2note_app/typeahead_testbench.html")
+
+
+
+@login_required
+def json_sample(request):
+    print os.getcwd()
+    nf = open("static/files/sample.json", "r")
+    jsondt = nf.read()
+    print json.dumps(jsondt, indent=2)
+    nf.close()
+    json_data = HttpResponse(json.dumps(jsondt, indent=2), mimetype= 'application/json')
+    return json_data
+
+
+
 @login_required
 def export_annotations(request):
     """
