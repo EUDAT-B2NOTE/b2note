@@ -17,6 +17,7 @@
 	background: #FFFFFF url("../images/bg_b2note.jpg") no-repeat fixed center center;
 }
 
+
 #section_create .tt-menu * {
     /* http://stackoverflow.com/questions/23981704/typeahead-always-shows-only-5-suggestions-maximum*/
     width: 290px;
