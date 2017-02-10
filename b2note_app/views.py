@@ -57,9 +57,9 @@ def index(request):
 
 
 
-#@login_required
-#def typeahead_testbench(request):
-#    return render(request, "b2note_app/typeahead_testbench.html")
+@login_required
+def typeahead_testbench(request):
+    return render(request, "b2note_app/typeahead_testbench.html")
 
 
 @login_required

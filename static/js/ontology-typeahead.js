@@ -266,8 +266,7 @@ $(document).ready( function() {
                     ' -No results-',
                     '</div>'
                 ].join('\n'),
-                suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}' + ' {{extra}}' + '{{#if count}}<span style="font-size:12px;">[{{count}} classes]</span>{{/if}}</p>')
-//                suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}' + ' {{extra}}' + ' <span class="badge">{{count}}</span></p>')
+                suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}' + ' <span style="font-size:12px;">{{extra}}</span>' + '{{#if count}}<span class="badge" style="background:grey;width:auto;font-size:11px;padding:4px;padding-top:2px;padding-bottom:2px;">{{count}}</span>{{/if}}</p>')
             },
             engine: Handlebars
 	// defines the event 'onclick'
