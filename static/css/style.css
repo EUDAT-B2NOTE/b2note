@@ -772,6 +772,11 @@
     text-align: justify;
 }
 
+.pending-message {
+    display: none;
+}
+
+
 
 #link_to_top {
     font-size: 10px;

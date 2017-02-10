@@ -260,17 +260,23 @@ $(document).ready( function() {
             limit: Infinity,
 
             templates: {
-                pending: '<div class="pending-message" style="color:#cccccc;">Suggestions incoming...</div>',
+                pending: '<div class="pending-message" style="font-size:12px;color:#cccccc;">Suggestions incoming...</div>',
                 empty: [
                     '<div class="empty-message">',
                     ' -No results-',
                     '</div>'
                 ].join('\n'),
+                footer: '<div class="pending-message" style="font-size:12px;color:#cccccc;">More suggestions incoming...</div>',
                 suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}' + ' <span style="font-size:12px;">{{extra}}</span>' + '{{#if count}}<span class="badge" style="background:grey;width:auto;font-size:11px;padding:4px;padding-top:2px;padding-bottom:2px;">{{count}}</span>{{/if}}</p>')
             },
             engine: Handlebars
-	// defines the event 'onclick'
+        }).on('typeahead:asyncrequest', function(data) {
+            // https://github.com/twitter/typeahead.js/issues/166
+            $('.pending-message').show();
+        }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+            $('.pending-message').hide();
         }).on('typeahead:selected', function(evt, data) {
+    	 // defines the event 'onclick'
 	     /* pablo.rodenas@bsc.es, 19012016
 	      *
 	      * Problem: AJAX post method alone does not redirect to Django page.
