@@ -27,7 +27,7 @@ $(document).ready( function() {
                     label: s,
                     extra: ' (' + input[k]['ontology_acronym'] + sf + ')',
                     count: null,
-                    json_document: [input[k]],
+                    json_document: input[k],
                 }
                 aggl['norm(labels)'] = input[k]['norm(labels)'];
                 newL.push( aggl );
@@ -35,9 +35,13 @@ $(document).ready( function() {
             } else {
                 idx = labL.indexOf(s);
                 if (newL[idx].label == s){
-                    newL[idx].json_document.push( input[k] );
+                    //newL[idx].json_document.push( input[k] );
                     newL[idx].extra = null;
-                    newL[idx].count = newL[idx].json_document.length;
+                    if (newL[idx].count == null) {
+                        newL[idx].count = 2;
+                    } else {
+                        newL[idx].count = newL[idx].count+1; //newL[idx].json_document.length;
+                    }
                 }
             }
         }

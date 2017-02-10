@@ -27,9 +27,6 @@ from rdflib.serializer import Serializer
 
 stdlogger = logging.getLogger('b2note')
 
-def index(request):
-    return HttpResponse("replace me with index text")
-
 
 def b2share_correct_url( url ):
     out = None
@@ -55,10 +52,14 @@ def b2share_correct_url( url ):
 
 
 
+def index(request):
+    return HttpResponse("replace me with index text")
+
+
+
 #@login_required
 #def typeahead_testbench(request):
 #    return render(request, "b2note_app/typeahead_testbench.html")
-
 
 
 @login_required
@@ -421,6 +422,7 @@ def edit_annotation(request):
                         if isinstance(jo, (str, unicode)):
                             o = None
                             o = json.loads( jo )
+                            #if o and isinstance(o, list) and len(o)>0: o = o[0]
                             if o and isinstance(o, dict):
                                 if "uris" in o.keys():
                                     if o["uris"] and isinstance(o["uris"], (str, unicode)):
@@ -615,6 +617,8 @@ def create_annotation(request):
                 if isinstance(request.POST.get('subject_tofeed'), (str, unicode)):
                     o = None
                     o = json.loads( request.POST.get('ontology_json') )
+                    #if o and isinstance(o, (str, unicode)): o = json.loads(o)
+                    #if o and isinstance(o, list) and len(o)>0: o = o[0]
                     if o and isinstance(o, dict):
                         if "uris" in o.keys():
                             if o["uris"] and isinstance(o["uris"], (str, unicode)):
@@ -686,7 +690,7 @@ def create_annotation(request):
                         if D[0].body[0].type=="Composite":
                             request.session["duplicate"] = {
                                 "label": D[0].body[0].items[1].value,
-                                "shortform": D[0].body[0].items[1].source[::-1][:D[0].body[0].items[1].source[::-1].find("/")][::-1],
+                                "shortform": D[0].body[0].items[0].source[::-1][:D[0].body[0].items[0].source[::-1].find("/")][::-1],
                             }
                         else:
                             request.session["duplicate"] = { "label": D[0].body[0].value, }
@@ -956,7 +960,7 @@ def myannotations(request):
                             if isinstance(r[A.body[0].items[0].source], dict):
                                 if "ontology_acronym" in r[A.body[0].items[0].source].keys():
                                     link_info_ontologyacronym = r[A.body[0].items[0].source]["ontology_acronym"]
-                                if "ontology_acronym" in r[A.body[0].items[0].source].keys():
+                                if "short_form" in r[A.body[0].items[0].source].keys():
                                     link_info_shortform = r[A.body[0].items[0].source]["short_form"]
 
                 semantic_list = Annotation.objects.raw_query({'body.items.source': A.body[0].items[0].source})
@@ -1409,6 +1413,8 @@ def process_semantic_entry( entry=None, query_dict=None, search_str=None ):
         if isinstance(query_dict, dict) and isinstance(entry, dict):
             if "search_param" in entry.keys():
                 if entry["search_param"]:
+                    #if isinstance(entry["search_param"], (str, unicode)): entry["search_param"] = json.loads(entry["search_param"])
+                    #if isinstance(entry["search_param"], list) and len(entry["search_param"])>0: entry["search_param"] = entry["search_param"][0]
                     if isinstance(entry["search_param"], dict):
                         if "uris" in entry["search_param"].keys():
                             uri = None
@@ -1519,7 +1525,6 @@ def process_search_query( form ):
                 #VA = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
                 VA = Annotation.objects.raw_query({"$or": [{"body.value": {"$in": query_dict[k]}},
                                                            {"body.items.value": {"$in": query_dict[k]}}]})
-
             if k == "body_val_or":
                 #VO = Annotation.objects.raw_query({"body.value": {"$in": query_dict[ k ]}})
                 VO = Annotation.objects.raw_query({"$or": [{"body.value": {"$in": query_dict[k]}},
@@ -1946,196 +1951,6 @@ def select_search_results(request):
     }
 
     return render(request, "b2note_app/select_search_results.html", data_dict)
-
-
-@login_required
-def search_annotations_bck(request):
-    keywd_json = None
-    label_match = None
-    synonym_match = None
-
-    if request.POST.get('ontology_json'):
-
-        keywd_json = request.POST.get('ontology_json')
-
-        keywd_json = json.loads( keywd_json )
-
-        if keywd_json:
-
-            if isinstance(keywd_json, dict):
-
-                if "labels" in keywd_json.keys():
-
-                    if keywd_json["labels"]:
-
-                        if isinstance(keywd_json["labels"], (str, unicode)):
-
-                            if keywd_json["labels"].lower() != keywd_json["labels"]:
-
-                                label_match = list(chain(SearchAnnotation( keywd_json["labels"] ), SearchAnnotation( keywd_json["labels"].lower() )))
-
-                            else:
-
-                                label_match = list(chain(SearchAnnotation(keywd_json["labels"]),))
-
-                            #r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=synonyms:"'+ keywd_json["labels"] +'"&fl=labels&wt=json&indent=true&rows=1000')
-                            r = requests.get('https://b2note.bsc.es/solr/cleanup_test/select?q=synonyms:"'+ keywd_json["labels"] +'"&fl=labels&wt=json&indent=true&rows=1000')
-
-                            r = r.json()
-
-                            if synonym_match is None: synonym_match = []
-
-                            if r:
-
-                                if isinstance(r, dict):
-
-                                    if "response" in r.keys():
-
-                                        if r["response"]:
-
-                                            if isinstance(r["response"], dict):
-
-                                                if "docs" in r["response"].keys():
-
-                                                    if isinstance(r["response"]["docs"], list):
-
-                                                        for syn_match in r["response"]["docs"]:
-
-                                                            if syn_match:
-
-                                                                if isinstance(syn_match, dict):
-
-                                                                    if "labels" in syn_match.keys():
-
-                                                                        if syn_match["labels"]:
-
-                                                                            if isinstance(syn_match["labels"], (str, unicode)):
-
-                                                                                synonym_match.append(
-                                                                                    SearchAnnotation(
-                                                                                        syn_match["labels"]))
-
-                                                                                if syn_match["labels"].lower() != syn_match["labels"]:
-
-                                                                                    synonym_match.append(
-                                                                                        SearchAnnotation(
-                                                                                            syn_match[
-                                                                                                "labels"].lower()))
-
-
-                if "synonyms" in keywd_json.keys():
-
-                    if keywd_json["synonyms"]:
-
-                        if isinstance(keywd_json["synonyms"], list):
-
-                            for syn in keywd_json["synonyms"]:
-
-                                if isinstance( syn, (str, unicode) ):
-
-                                    if synonym_match is None: synonym_match = []
-
-                                    synonym_match.append( SearchAnnotation( syn ) )
-
-                                    #r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=synonyms:"' + syn + '"&fl=labels&wt=json&indent=true&rows=1000')
-                                    r = requests.get('https://b2note.bsc.es/solr/cleanup_test/select?q=synonyms:"' + syn + '"&fl=labels&wt=json&indent=true&rows=1000')
-
-                                    r = r.json()
-
-                                    if r:
-
-                                        if isinstance(r, dict):
-
-                                            if "response" in r.keys():
-
-                                                if r["response"]:
-
-                                                    if isinstance(r["response"], dict):
-
-                                                        if "docs" in r["response"].keys():
-
-                                                            if isinstance(r["response"]["docs"], list):
-
-                                                                for syn_match in r["response"]["docs"]:
-
-                                                                    if syn_match:
-
-                                                                        if isinstance(syn_match, dict):
-
-                                                                            if "labels" in syn_match.keys():
-
-                                                                                if syn_match["labels"]:
-
-                                                                                    if isinstance(syn_match["labels"], (str, unicode)):
-
-                                                                                        synonym_match.append(
-                                                                                            SearchAnnotation(
-                                                                                                syn_match["labels"]))
-
-                                                                                        if syn_match["labels"].lower() != syn_match[
-                                                                                                    "labels"]:
-
-                                                                                            synonym_match.append(
-                                                                                                SearchAnnotation(
-                                                                                                    syn_match[
-                                                                                                        "labels"].lower()))
-
-    # Avoid duplicate results being returned in synonym_match:
-
-    id_list = []
-
-    if label_match:
-
-        for qsv in label_match:
-
-            if qsv.jsonld_id:
-
-                if qsv.jsonld_id not in id_list:
-
-                    id_list.append(qsv.jsonld_id)
-
-    pre_synonym_match = None
-
-    if synonym_match:
-
-        pre_synonym_match = copy.deepcopy(synonym_match)
-
-        synonym_match = []
-
-    if pre_synonym_match:
-
-        for qs in pre_synonym_match:
-
-            for qsv in qs.values():
-
-                if isinstance(qsv, dict):
-
-                    if "jsonld_id" in qsv.keys():
-
-                        if qsv["jsonld_id"]:
-
-                            if qsv["jsonld_id"] not in id_list:
-
-                                id_list.append(qsv["jsonld_id"])
-
-                                synonym_match.append(qs)
-
-    user_nickname = None
-    if request.session.get('user')!=None:
-        userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
-        user_nickname = userprofile.nickname
-
-    navbarlinks = list_navbarlinks(request, ["Search", "Help page"])
-    navbarlinks.append({"url": "/help#helpsection_searchpage", "title": "Help page", "icon": "question-sign"})
-    shortcutlinks = list_shortcutlinks(request, ["Search"])
-
-    return render(request, "b2note_app/searchpage.html", {
-        'navbarlinks': navbarlinks,
-        'shortcutlinks': shortcutlinks,
-        'user_nickname': user_nickname,
-        'keywd_json': keywd_json,
-        'label_match': label_match,
-        'synonym_match':synonym_match})
 
 
 def helppage(request):
