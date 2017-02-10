@@ -7,6 +7,43 @@
 
 $(document).ready( function() {
 
+    var agglomerateOnLabel = function(input){
+        labL = []
+        newL = []
+        for (k=0;k<input.length;k++){
+
+            s = input[k].labels;
+            s = s.replace(/([a-z])([A-Z])/g, '$1 $2');
+            s = s.replace(/[_.:]/g, ' ');
+            s = s.toLowerCase();
+            s = s.replace(/^./, function(str){ return str.toUpperCase(); });
+
+            if (labL.indexOf(s)<0) {
+                sf = null;
+                if (typeof input[k]['short_form'] !== 'undefined') {
+                    sf = ' ' + input[k]['short_form'].slice(input[k]['short_form'].search(/[#/]/g)+1);
+                }
+                aggl = {
+                    label: s,
+                    extra: ' (' + input[k]['ontology_acronym'] + sf + ')',
+                    count: null,
+                    json_document: [input[k]],
+                }
+                aggl['norm(labels)'] = input[k]['norm(labels)'];
+                newL.push( aggl );
+                labL.push(s);
+            } else {
+                idx = labL.indexOf(s);
+                if (newL[idx].label == s){
+                    newL[idx].json_document.push( input[k] );
+                    newL[idx].extra = null;
+                    newL[idx].count = newL[idx].json_document.length;
+                }
+            }
+        }
+        return newL
+    };
+
     // constructs the suggestion engine
     var engine = new Bloodhound({
         datumTokenizer: function (datum) {
@@ -18,86 +55,90 @@ $(document).ready( function() {
             url: '../static/files/sample.json',
             //cache: false,
             filter: function(response) {
-                console.log("THIS WORKS HERE TOO")
+                //console.log("THIS WORKS HERE TOO")
                 //console.log(response)
-                return $.map(response, function(item) {
+                aggl_data = agglomerateOnLabel( response );
+                return $.map(aggl_data, function(item) {
                     return {
-                      labels: item.labels,
-                      label: item.labels,
-                      ontology_acronym : item.ontology_acronym,
-                      short_form : item.short_form,
-                      json_document: item
+                        label: item.label,
+                        extra: item.extra,
+                        count: item.count,
+                        json_document: item.json_document
                     }
                 });
             }
         },
         identify : function(item) {
-            //console.log('identify GETS CALLED ' + item.label);
-            return item.label + item.ontology_acronym + item.short_form;
+            //console.log('identify GETS CALLED ');
+            return item.label; //+ item.ontology_acronym + item.short_form;
         },
         sorter: function(a, b) {
-          if (typeof a.labels !== 'undefined') {
-                //get input text
-            var InputString=   $('[id^="id_q"]').val();
+            //console.log('sorter GETS CALLED ');
+            if (typeof a.label !== 'undefined') {
+                    //get input text
+                var InputString =  $('[id^="id_q"]').val();
 
-                //move exact matches to top
-            if(InputString==a.labels){ return -1;}
-            if(InputString==b.labels){return 1;}
+                    //move exact matches to top
+                if(InputString==a.label){ return -1;}
+                if(InputString==b.label){return 1;}
 
-                //close match without case matching
-            if(InputString.toLowerCase() == a.labels.toLowerCase()){ return -1;}
-            if(InputString.toLowerCase()==b.labels.toLowerCase()){return 1;}
+                    //close match without case matching
+                if(InputString.toLowerCase() == a.label.toLowerCase()){ return -1;}
+                if(InputString.toLowerCase() == b.label.toLowerCase()){return 1;}
 
-                //Single token or multiple
-            if ( a["norm(labels)"] == 1 ){
-                    //decreasing value of Lucene/Solr label norm metric
-                if (a["norm(labels)"]>b["norm(labels)"]) {
-                    return -1
-                } else {
-                        //input string is label string prefix
-                    if( a.labels.toLowerCase().indexOf(InputString.toLowerCase()) == 0 ){
-                        if( b.labels.toLowerCase().indexOf(InputString.toLowerCase()) !== 0 ){ return -1; }
+                    //Single token or multiple
+                if ( a["norm(labels)"] == 1 ){
+                        //decreasing value of Lucene/Solr label norm metric
+                    if (a.label.split(/[^A-Za-z0-9]/).length>b.label.split(/[^A-Za-z0-9]/).length) {
+                        return -1
                     } else {
-                        if( b.labels.toLowerCase().indexOf(InputString.toLowerCase()) == 0 ){ return 1; }
-                    }
-                        //increasing string length
-                    if (a.labels.length < b.labels.length) {
-                        return -1;
-                    } else {
-                        if (a.labels.length > b.labels.length) {
-                            return 1;
+                            //input string is label string prefix
+                        if( a.label.toLowerCase().indexOf(InputString.toLowerCase()) == 0 ){
+                            if( b.label.toLowerCase().indexOf(InputString.toLowerCase()) !== 0 ){ return -1; }
                         } else {
-                            //relegate containing digit or capital letter
-                            if (/\d/.test(a.labels)) { return 1 }
-                            if (/\d/.test(b.labels)) { return -1 }
+                            if( b.label.toLowerCase().indexOf(InputString.toLowerCase()) == 0 ){ return 1; }
+                        }
+                            //increasing string length
+                        if (a.label.length < b.label.length) {
+                            return -1;
+                        } else {
+                            if (a.label.length > b.label.length) {
+                                return 1;
+                            } else {
+                                //relegate containing digit or capital letter
+                                if (/\d/.test(a.label)) { return 1 }
+                                if (/\d/.test(b.label)) { return -1 }
 
-                            if ((a.labels.length>1) && (a.labels.slice(1,a.labels.length) !== a.labels.slice(1,a.labels.length).toLowerCase() )) {
-                                return 1
-                            }
-                            if ((b.labels.length>1) && (b.labels.slice(1,b.labels.length) !== b.labels.slice(1,b.labels.length).toLowerCase() )) {
-                                return -1
-                            }
+                                if ((a.label.length>1) && (a.label.slice(1,a.label.length) !== a.label.slice(1,a.label.length).toLowerCase() )) {
+                                    return 1
+                                }
+                                if ((b.label.length>1) && (b.label.slice(1,b.label.length) !== b.label.slice(1,b.label.length).toLowerCase() )) {
+                                    return -1
+                                }
 
-                            //alphabetical order
-                            return a.labels.localeCompare(b.labels);
+                                //alphabetical order
+                                return a.label.localeCompare(b.label);
+                            }
                         }
                     }
+                } else {
+                        //input string is label string prefix
+                    if( a.label.toLowerCase().indexOf(InputString.toLowerCase()) == 0 ){ return -1 }
+                    if( b.label.toLowerCase().indexOf(InputString.toLowerCase()) == 0 ){ return 1 }
+                        //input string contained in label string
+                    if( a.label.toLowerCase().indexOf(InputString.toLowerCase())!== -1 ){ return -1 }
+                    if( b.label.toLowerCase().indexOf(InputString.toLowerCase())!== -1 ){ return 1 }
+
+                    if (a.label.split(/[^A-Za-z0-9]/).length > b.label.split(/[^A-Za-z0-9]/).length) { return -1 }
+                    if (a.label.split(/[^A-Za-z0-9]/).length < b.label.split(/[^A-Za-z0-9]/).length) { return 1 }
+
+                    if (a["norm(labels)"]>b["norm(labels)"]) { return -1 }
+                    if (a["norm(labels)"]<b["norm(labels)"]) { return 1 }
+                    //return a.label.localeCompare(b.label);
                 }
             } else {
-                    //input string is label string prefix
-                if( a.labels.toLowerCase().indexOf(InputString.toLowerCase()) == 0 ){ return -1;}
-                if( b.labels.toLowerCase().indexOf(InputString.toLowerCase()) == 0 ){ return 1; }
-                    //input string contained in label string
-                if( a.labels.toLowerCase().indexOf(InputString.toLowerCase())!== -1 ){ return -1;}
-                if( b.labels.toLowerCase().indexOf(InputString.toLowerCase())!== -1 ){ return 1; }
-
-                if (a["norm(labels)"]>b["norm(labels)"]) { return -1 }
-                if (a["norm(labels)"]<b["norm(labels)"]) { return 1 }
-                //return a.labels.localeCompare(b.labels);
+                return -1;
             }
-          } else {
-            return -1;
-          }
         },
         remote: {
             // What may be a relevant size of class subset for the user to select from VS. transaction size x user population?
@@ -112,7 +153,7 @@ $(document).ready( function() {
             /*rateLimitBy: 'debounce',*/
             /*rateLimitWait: 1400,*/
             prepare: function(query, settings) {
-                if ((query.length<=4) && (query.split(/-_ /).length<=1)) {
+                if ((query.length<=4) && (query.split(/[^A-Za-z0-9]/).length<=1)) {
                     //console.log("Less than four letters single word input")
                     settings.url += '?q=((labels:/' + query +'.*/)';
                 } else {
@@ -134,9 +175,14 @@ $(document).ready( function() {
                     fin = data.responseHeader.params.q.indexOf('.*');
                     qstr = data.responseHeader.params.q.substring(beg+2,fin);
                 }
-                truncated_data = engine.sorter(data.response.docs);
+
+                aggl_data = agglomerateOnLabel(data.response.docs);
+                //console.log(typeof data.response.docs + " " + typeof aggl_data)
+                truncated_data = engine.sorter( aggl_data );
+
+                //truncated_data = engine.sorter(data.response.docs);
                 trunc_n = 1000;
-                if ((qstr.length<=4) && (qstr.split(/-_ /).length<=1)) {
+                if ((qstr.length<=4) && (qstr.split(/[^A-Za-z0-9]/).length<=1)) {
                     trunc_n = 100;
                 }
                 if (truncated_data.length>trunc_n) {
@@ -147,10 +193,10 @@ $(document).ready( function() {
                 //return $.map(engine.sorter(data.response.docs), function (suggestionSet) {
                 //return $.map(data.response.docs, function (suggestionSet) {
                     return{
-                        label : suggestionSet.labels,
-                        ontology_acronym : suggestionSet.ontology_acronym,
-                        short_form : suggestionSet.short_form,
-			            json_document: suggestionSet
+                        label: suggestionSet.label,
+                        extra: suggestionSet.extra,
+                        count: suggestionSet.count,
+                        json_document: suggestionSet.json_document
                     };
                 });
             }
@@ -195,7 +241,13 @@ $(document).ready( function() {
             name: 'engine',
 	        display: function(data) {
 	            //console.log("TEST")
-                return data.label + '  (' + data.ontology_acronym + ':' + data.short_form + ')';
+                hint_msg = data.label;
+                if (data.extra !== null) {
+                    hint_msg = hint_msg + ' ' + data.extra;
+                } else if (data.count !== null) {
+                    hint_msg = hint_msg + ' ['+data.count+' classes]';
+                }
+                return hint_msg;
             },
 
             source: engine.ttAdapter(),
@@ -210,7 +262,8 @@ $(document).ready( function() {
                     ' -No results-',
                     '</div>'
                 ].join('\n'),
-                suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}' + ' ({{short_form}})</p>')
+                suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}' + ' {{extra}}' + '{{#if count}}<span style="font-size:12px;">[{{count}} classes]</span>{{/if}}</p>')
+//                suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}' + ' {{extra}}' + ' <span class="badge">{{count}}</span></p>')
             },
             engine: Handlebars
 	// defines the event 'onclick'
