@@ -796,6 +796,8 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
                         o = None
                         o = json.loads(object_json)
 
+                        #if o and isinstance(o, list) and len(o)>0: o = o[0]
+
                         if o and isinstance(o, dict):
                             if "uris" in o.keys():
                                 if o["uris"] and isinstance(o["uris"], (str, unicode)):
