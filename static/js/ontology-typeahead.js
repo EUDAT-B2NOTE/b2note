@@ -93,7 +93,7 @@ $(document).ready( function() {
                     //Single token or multiple
                 if ( a["norm(labels)"] == 1 ){
                         //decreasing value of Lucene/Solr label norm metric
-                    if (a.label.split(/[^A-Za-z0-9]/).length>b.label.split(/[^A-Za-z0-9]/).length) {
+                    if (a.label.split(/[^A-Za-z0-9]/).length<b.label.split(/[^A-Za-z0-9]/).length) {
                         return -1
                     } else {
                             //input string is label string prefix
