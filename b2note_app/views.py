@@ -15,7 +15,7 @@ from collections import OrderedDict
 from .mongo_support_functions import *
 from .models import *
 from .nav_support_functions import list_navbarlinks, list_shortcutlinks
-from .ext_api_support_functions import b2share_api_get_file_info_on_url
+#from .ext_api_support_functions import b2share_api_get_file_info_on_url
 
 from itertools import chain
 
@@ -413,6 +413,7 @@ def edit_annotation(request):
             a_id = request.POST.get('db_id')
             A = Annotation.objects.get(id=a_id)
             if A:
+                '''
                 if A.target[0].jsonld_id:
                     target_file_title = b2share_api_get_file_info_on_url(A.target[0].jsonld_id)
                 #print "# " * 6 + str(type(target_file_title))
@@ -426,10 +427,12 @@ def edit_annotation(request):
                 if target_file_title and isinstance(target_file_title, dict) and "title" in target_file_title.keys():
                     target_file_title = target_file_title["title"]
                 if not isinstance(target_file_title, (str, unicode)): target_file_title = None
+                '''
                 if not textinput_primer:
                     if A.body and A.body[0] and A.body[0].type and A.body[0].type=="Composite" and\
-                        A.body[0].items and len(A.body[0].items)>1 and A.body[0].items[1] and A.body[0].items[1].value:
-                        textinput_primer = A.body[0].items[1].value
+                        A.body[0].items and len(A.body[0].items)>1 and A.body[0].items[len(A.body[0].items)-1] and \
+                            A.body[0].items[len(A.body[0].items)-1].value:
+                        textinput_primer = A.body[0].items[len(A.body[0].items)-1].value
                 if request.POST.get('semantic_submit') is not None:
                     edited_semantic = False
                     if request.POST.get('ontology_json'):
@@ -437,24 +440,63 @@ def edit_annotation(request):
                         if isinstance(jo, (str, unicode)):
                             o = None
                             o = json.loads( jo )
-                            #if o and isinstance(o, list) and len(o)>0: o = o[0]
-                            if o and isinstance(o, dict):
-                                if "uris" in o.keys():
-                                    if o["uris"] and isinstance(o["uris"], (str, unicode)):
-                                        newbody = None
-                                        newbody = {"body": {"jsonld_id": o["uris"]}}
-                                        D = None
-                                        D = CheckDuplicateAnnotation( A.target[0].jsonld_id, newbody)
-                                        if not D:
-                                            id1 = None
-                                            id1 = MakeAnnotationSemanticTag(a_id, jo)
-                                            if id1: edited_semantic = True
-                                            if id1: SetDateTimeModified( id1 )
+
+                            if o and isinstance(o, list) and len(o) > 0:
+                                newbody = {}
+                                for oc in o:
+                                    if oc and isinstance(oc, dict):
+                                        if "uris" in oc.keys():
+                                            if oc["uris"] and isinstance(oc["uris"], (str, unicode)):
+                                                if "body" not in newbody.keys():
+                                                    newbody = {"body": {"jsonld_id": [oc["uris"]]}}
+                                                else:
+                                                    newbody["body"]["jsonld_id"].append(oc["uris"])
+                                            else:
+                                                print "Edit_annotation view, in semantic case, no value to uris key or neither string or unicode."
+                                                stdlogger.error("Edit_annotation view, semantic tag annotation would be a duplicate.")
                                         else:
-                                            duplicate = {
-                                                "label": D[0].body[0].items[1].value,
-                                                "shortform": D[0].body[0].items[0].source[::-1][:D[0].body[0].items[0].source[::-1].find("/")][::-1],
-                                            }
+                                            print "Edit_annotation view, in semantic case, no uris key."
+                                            stdlogger.error("Edit_annotation view, in semantic case, no uris key.")
+                                    else:
+                                        print "Edit_annotation view, in semantic case, list item is not dict."
+                                        stdlogger.error("Edit_annotation view, in semantic case, list item is not dict.")
+                                D = None
+                                if newbody and len(newbody) > 0:
+                                    D = CheckDuplicateAnnotation( A.target[0].jsonld_id, newbody )
+                                if not D:
+                                    id1 = None
+                                    id1 = MakeAnnotationSemanticTag(a_id, jo)
+                                    if id1: edited_semantic = True
+                                    if id1: SetDateTimeModified(id1)
+                                else:
+                                    duplicate = {
+                                        "label": D[0].body[0].items[len(D[0].body[0].items)-1].value,
+                                        "shortform": D[0].body[0].items[0].source[::-1][
+                                                     :D[0].body[0].items[0].source[::-1].find("/")][::-1],
+                                    }
+                                    print "Edit_annotation view, semantic tag annotation would be a duplicate."
+                                    stdlogger.info("Edit_annotation view, semantic tag annotation would be a duplicate.")
+                            else:
+                                print "Edit_annotation view, in semantic case, could not load json."
+                                stdlogger.error("Create_annotation view, in semantic case, could not load json.")
+                            # if o and isinstance(o, list) and len(o)>0: o = o[0]
+                            # if o and isinstance(o, dict):
+                            #     if "uris" in o.keys():
+                            #         if o["uris"] and isinstance(o["uris"], (str, unicode)):
+                            #             newbody = None
+                            #             newbody = {"body": {"jsonld_id": o["uris"]}}
+                            #             D = None
+                            #             D = CheckDuplicateAnnotation( A.target[0].jsonld_id, newbody)
+                            #             if not D:
+                            #                 id1 = None
+                            #                 id1 = MakeAnnotationSemanticTag(a_id, jo)
+                            #                 if id1: edited_semantic = True
+                            #                 if id1: SetDateTimeModified( id1 )
+                            #             else:
+                            #                 duplicate = {
+                            #                     "label": D[0].body[0].items[1].value,
+                            #                     "shortform": D[0].body[0].items[0].source[0][::-1][:D[0].body[0].items[0].source[0][::-1].find("/")][::-1],
+                            #                 }
 
                 elif request.POST.get('keyword_submit') is not None:
                     edited_keyword = False
@@ -491,7 +533,7 @@ def edit_annotation(request):
                                 else:
                                     if D[0].body[0].type=="Composite":
                                         duplicate = {
-                                            "label": D[0].body[0].items[1].value,
+                                            "label": D[0].body[0].items[len(D[0].body[0].items)-1].value,
                                             "shortform": D[0].body[0].items[0].source[::-1][:D[0].body[0].items[0].source[::-1].find("/")][::-1],
                                         }
                                     else:
@@ -518,7 +560,7 @@ def edit_annotation(request):
     shortcutlinks = list_shortcutlinks(request, [])
 
     data_dict = {
-        'target_file_title': target_file_title,
+        #'target_file_title': target_file_title,
         'textinput_primer': textinput_primer,
         'long_keyword': long_keyword,
         'has_semantic_equivalent': has_semantic_equivalent,
@@ -633,39 +675,80 @@ def create_annotation(request):
                 if isinstance(request.POST.get('subject_tofeed'), (str, unicode)):
                     o = None
                     o = json.loads( request.POST.get('ontology_json') )
-                    #if o and isinstance(o, (str, unicode)): o = json.loads(o)
-                    #if o and isinstance(o, list) and len(o)>0: o = o[0]
-                    if o and isinstance(o, dict):
-                        if "uris" in o.keys():
-                            if o["uris"] and isinstance(o["uris"], (str, unicode)):
-                                newbody = None
-                                newbody = {"body":{"jsonld_id": o["uris"] }}
-                                D = None
-                                D = CheckDuplicateAnnotation( request.POST.get('subject_tofeed'), newbody )
-                                if not D:
-                                    ann_id1 = CreateSemanticTag( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
-                                    ann_id2 = SetUserAsAnnotationCreator( request.session.get('user'), ann_id1 )
-                                    A = Annotation.objects.get( id = ann_id2 )
-                                    request.session["new_semantic"] = {
-                                        "label": A.body[0].items[1].value,
-                                        "shortform": A.body[0].items[0].source[::-1][:A.body[0].items[0].source[::-1].find("/")][::-1],
-                                    }
+                    if o and isinstance(o, list) and len(o)>0:
+                        newbody = {}
+                        for oc in o:
+                            if oc and isinstance(oc, dict):
+                                if "uris" in oc.keys():
+                                    if oc["uris"] and isinstance(oc["uris"], (str, unicode)):
+                                        if "body" not in newbody.keys():
+                                            newbody = {"body":{"jsonld_id":[oc["uris"]]}}
+                                        else:
+                                            newbody["body"]["jsonld_id"].append(oc["uris"])
+                                    else:
+                                        print "Create_annotation view, in semantic case, no value to uris key or neither string or unicode."
+                                        stdlogger.error("Create_annotation view, semantic tag annotation would be a duplicate.")
                                 else:
-                                    request.session["duplicate"] = {
-                                        "label": D[0].body[0].items[1].value,
-                                        "shortform": D[0].body[0].items[0].source[::-1][:D[0].body[0].items[0].source[::-1].find("/")][::-1],
-                                    }
-                                    print "Create_annotation view, semantic tag annotation would be a duplicate."
-                                    stdlogger.info("Create_annotation view, semantic tag annotation would be a duplicate.")
+                                    print "Create_annotation view, in semantic case, no uris key."
+                                    stdlogger.error("Create_annotation view, in semantic case, no uris key.")
                             else:
-                                print "Create_annotation view, in semantic case, no value to uris key or neither string or unicode."
-                                stdlogger.error("Create_annotation view, semantic tag annotation would be a duplicate.")
+                                print "Create_annotation view, in semantic case, list item is not dict."
+                                stdlogger.error("Create_annotation view, in semantic case, list item is not dict.")
+                        D = None
+                        if newbody and len(newbody)>0:
+                            D = CheckDuplicateAnnotation( request.POST.get('subject_tofeed'), newbody )
+                        if not D:
+                            ann_id1 = CreateSemanticTag(request.POST.get('subject_tofeed'), request.POST.get('ontology_json'))
+                            ann_id2 = SetUserAsAnnotationCreator(request.session.get('user'), ann_id1)
+                            A = Annotation.objects.get(id=ann_id2)
+                            request.session["new_semantic"] = {
+                                "label": A.body[0].items[len(A.body[0].items)-1].value,
+                                "shortform": A.body[0].items[0].source[::-1][
+                                             :A.body[0].items[0].source[::-1].find("/")][::-1],
+                            }
                         else:
-                            print "Create_annotation view, in semantic case, no uris key."
-                            stdlogger.error("Create_annotation view, in semantic case, no uris key.")
+                            request.session["duplicate"] = {
+                                "label": D[0].body[0].items[len(D[0].body[0].items)-1].value,
+                                "shortform": D[0].body[0].items[0].source[::-1][
+                                             :D[0].body[0].items[0].source[::-1].find("/")][::-1],
+                            }
+                            print "Create_annotation view, semantic tag annotation would be a duplicate."
+                            stdlogger.info("Create_annotation view, semantic tag annotation would be a duplicate.")
                     else:
                         print "Create_annotation view, in semantic case, could not load json."
                         stdlogger.error("Create_annotation view, in semantic case, could not load json.")
+
+                    # if o and isinstance(o, dict):
+                    #     if "uris" in o.keys():
+                    #         if o["uris"] and isinstance(o["uris"], (str, unicode)):
+                    #             newbody = None
+                    #             newbody = {"body":{"jsonld_id": o["uris"] }}
+                    #             D = None
+                    #             D = CheckDuplicateAnnotation( request.POST.get('subject_tofeed'), newbody )
+                    #             if not D:
+                    #                 ann_id1 = CreateSemanticTag( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
+                    #                 ann_id2 = SetUserAsAnnotationCreator( request.session.get('user'), ann_id1 )
+                    #                 A = Annotation.objects.get( id = ann_id2 )
+                    #                 request.session["new_semantic"] = {
+                    #                     "label": A.body[0].items[1].value,
+                    #                     "shortform": A.body[0].items[0].source[0][::-1][:A.body[0].items[0].source[0][::-1].find("/")][::-1],
+                    #                 }
+                    #             else:
+                    #                 request.session["duplicate"] = {
+                    #                     "label": D[0].body[0].items[1].value,
+                    #                     "shortform": D[0].body[0].items[0].source[0][::-1][:D[0].body[0].items[0].source[0][::-1].find("/")][::-1],
+                    #                 }
+                    #                 print "Create_annotation view, semantic tag annotation would be a duplicate."
+                    #                 stdlogger.info("Create_annotation view, semantic tag annotation would be a duplicate.")
+                    #         else:
+                    #             print "Create_annotation view, in semantic case, no value to uris key or neither string or unicode."
+                    #             stdlogger.error("Create_annotation view, semantic tag annotation would be a duplicate.")
+                    #     else:
+                    #         print "Create_annotation view, in semantic case, no uris key."
+                    #         stdlogger.error("Create_annotation view, in semantic case, no uris key.")
+                    # else:
+                    #     print "Create_annotation view, in semantic case, could not load json."
+                    #     stdlogger.error("Create_annotation view, in semantic case, could not load json.")
                 else:
                     print "Create_annotation view, in semantic case, target file id neither string nor unicode."
                     stdlogger.error("Create_annotation view, in semantic case, target file id neither string nor unicode.")
@@ -705,7 +788,7 @@ def create_annotation(request):
                     else:
                         if D[0].body[0].type=="Composite":
                             request.session["duplicate"] = {
-                                "label": D[0].body[0].items[1].value,
+                                "label": D[0].body[0].items[len(D[0].body[0].items)-1].value,
                                 "shortform": D[0].body[0].items[0].source[::-1][:D[0].body[0].items[0].source[::-1].find("/")][::-1],
                             }
                         else:
@@ -787,7 +870,8 @@ def annotation_summary(request):
 
                     if user_nickname and isinstance(user_nickname, (str, unicode)):
 
-                        allannotations_list = Annotation.objects.raw_query({'body.items.source': A.body[0].items[0].source, 'creator.nickname': { "$ne": user_nickname} })
+                        allannotations_list = Annotation.objects.raw_query({'body.items.source': A.body[0].items[0].source,
+                                                                            'creator.nickname': { "$ne": user_nickname} })
 
                     else:
 
@@ -809,6 +893,7 @@ def annotation_summary(request):
                     allannotations_list = A
 
                 if allannotations_list: all_or_mine = "others"
+
 
             elif request.POST.get('about_allsimilar_any')!=None:
 
@@ -947,11 +1032,12 @@ def myannotations(request):
         link_info_creatornickname = ""
         link_info_modified = ""
 
-        if A.body and A.body[0] and A.body[0].type=="Composite" and A.body[0].items and A.body[0].items[1].value:
-            if len(A.body[0].items[1].value) > 20: link_label = '...'
-            link_label = A.body[0].items[1].value[:20] + link_label
-            if len(A.body[0].items[1].value) > 40: link_info_label = '...'
-            link_info_label = A.body[0].items[1].value[:40] + link_info_label
+        if A.body and A.body[0] and A.body[0].type=="Composite" and A.body[0].items and A.body[0].items[len(A.body[0].items) - 1].value:
+            last_is_textual_index = len(A.body[0].items) - 1
+            if len(A.body[0].items[last_is_textual_index].value) > 20: link_label = '...'
+            link_label = A.body[0].items[last_is_textual_index].value[:20] + link_label
+            if len(A.body[0].items[last_is_textual_index].value) > 40: link_info_label = '...'
+            link_info_label = A.body[0].items[last_is_textual_index].value[:40] + link_info_label
         elif A.body and A.body[0] and not A.body[0].type=="Composite" and A.body[0].value:
             if len(A.body[0].value) > 20: link_label = '...'
             link_label = A.body[0].value[:20] + link_label
@@ -1119,11 +1205,12 @@ def allannotations(request):
         link_info_creatornickname = ""
         link_info_modified = ""
 
-        if A.body and A.body[0] and A.body[0].type=="Composite" and A.body[0].items and A.body[0].items[1].value:
-            if len(A.body[0].items[1].value) > 20: link_label = '...'
-            link_label = A.body[0].items[1].value[:20] + link_label
-            if len(A.body[0].items[1].value) > 40: link_info_label = '...'
-            link_info_label = A.body[0].items[1].value[:40] + link_info_label
+        if A.body and A.body[0] and A.body[0].type=="Composite" and A.body[0].items and A.body[0].items[len(A.body[0].items)-1].value:
+            last_is_textual_index = len(A.body[0].items)-1
+            if len(A.body[0].items[last_is_textual_index].value) > 20: link_label = '...'
+            link_label = A.body[0].items[last_is_textual_index].value[:20] + link_label
+            if len(A.body[0].items[last_is_textual_index].value) > 40: link_info_label = '...'
+            link_info_label = A.body[0].items[last_is_textual_index].value[:40] + link_info_label
         elif A.body and A.body[0] and not A.body[0].type=="Composite" and A.body[0].value:
             if len(A.body[0].value) > 20: link_label = '...'
             link_label = A.body[0].value[:20] + link_label
@@ -1430,7 +1517,7 @@ def process_semantic_entry( entry=None, query_dict=None, search_str=None ):
             if "search_param" in entry.keys():
                 if entry["search_param"]:
                     #if isinstance(entry["search_param"], (str, unicode)): entry["search_param"] = json.loads(entry["search_param"])
-                    #if isinstance(entry["search_param"], list) and len(entry["search_param"])>0: entry["search_param"] = entry["search_param"][0]
+                    if isinstance(entry["search_param"], list) and len(entry["search_param"])>0: entry["search_param"] = entry["search_param"][0]
                     if isinstance(entry["search_param"], dict):
                         if "uris" in entry["search_param"].keys():
                             uri = None
@@ -1787,6 +1874,7 @@ def search_annotations(request):
     }
 
     return render(request, "b2note_app/searchpage.html", data_dict)
+
 
 @login_required
 def select_search_results(request):
