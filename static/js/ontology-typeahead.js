@@ -27,7 +27,7 @@ $(document).ready( function() {
                     label: s,
                     extra: ' (' + input[k]['ontology_acronym'] + sf + ')',
                     count: null,
-                    json_document: input[k],
+                    json_document: [input[k]],
                 }
                 aggl['norm(labels)'] = input[k]['norm(labels)'];
                 newL.push( aggl );
@@ -35,7 +35,7 @@ $(document).ready( function() {
             } else {
                 idx = labL.indexOf(s);
                 if (newL[idx].label == s){
-                    //newL[idx].json_document.push( input[k] );
+                    newL[idx].json_document.push( input[k] );
                     newL[idx].extra = null;
                     if (newL[idx].count == null) {
                         newL[idx].count = 2;
@@ -54,7 +54,7 @@ $(document).ready( function() {
             return Bloodhound.tokenizers.whitespace(datum.label);
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace,
-        sufficient: 199,
+        sufficient: 201,
         prefetch: {
             url: '../static/files/sample.json',
             //cache: false,
@@ -192,7 +192,7 @@ $(document).ready( function() {
                 if (truncated_data.length>trunc_n) {
                     truncated_data = truncated_data.slice(0,trunc_n);
                 }
-                console.log('Matches (n): '+ data.response.numFound + ', Solr response time (ms): ' + data.responseHeader.QTime + ', Display: ' + truncated_data.length)
+                //console.log('Matches (n): '+ data.response.numFound + ', Solr response time (ms): ' + data.responseHeader.QTime + ', Display: ' + truncated_data.length)
                 return $.map(truncated_data, function (suggestionSet) {
                 //return $.map(engine.sorter(data.response.docs), function (suggestionSet) {
                 //return $.map(data.response.docs, function (suggestionSet) {
