@@ -478,7 +478,7 @@ def edit_annotation(request):
                                     stdlogger.info("Edit_annotation view, semantic tag annotation would be a duplicate.")
                             else:
                                 print "Edit_annotation view, in semantic case, could not load json."
-                                stdlogger.error("Create_annotation view, in semantic case, could not load json.")
+                                stdlogger.error("Edit_annotation view, in semantic case, could not load json.")
                             # if o and isinstance(o, list) and len(o)>0: o = o[0]
                             # if o and isinstance(o, dict):
                             #     if "uris" in o.keys():
@@ -1517,47 +1517,61 @@ def process_semantic_entry( entry=None, query_dict=None, search_str=None ):
             if "search_param" in entry.keys():
                 if entry["search_param"]:
                     #if isinstance(entry["search_param"], (str, unicode)): entry["search_param"] = json.loads(entry["search_param"])
-                    if isinstance(entry["search_param"], list) and len(entry["search_param"])>0: entry["search_param"] = entry["search_param"][0]
-                    if isinstance(entry["search_param"], dict):
-                        if "uris" in entry["search_param"].keys():
-                            uri = None
-                            uri = entry["search_param"]["uris"]
-                            if uri and isinstance(uri, (str, unicode)):
-                                if "logical" in entry.keys():
-                                    if entry["logical"] and isinstance(entry["logical"], (str, unicode)):
-                                        for logic in ["AND", "OR", "NOT", "XOR"]:
-                                            if entry["logical"] == logic:
-                                                query_dict["body_id_"+str(logic).lower()].append( uri )
-                                                if "labels" in entry["search_param"].keys() and \
-                                                    entry["search_param"]["labels"] and \
-                                                    isinstance( entry["search_param"]["labels"], (str,unicode) ):
-                                                        query_dict["body_val_" + str(logic).lower()].append( str(entry["search_param"]["labels"]) )
-                                                        search_str += " " + str(logic).upper() + \
-                                                                      " " + str(entry["search_param"]["labels"]) + \
-                                                                      "  (" + str(extract_shortform( entry["search_param"] )) + ")"
-                                                else:
-                                                    search_str += " " + str(logic).upper() + \
-                                                                  " " + str(extract_shortform( entry["search_param"] ))
-                                    elif entry["logical"] is None:
-                                        query_dict["body_id_or"].append(uri)
-                                        if "labels" in entry["search_param"].keys() and \
-                                                entry["search_param"]["labels"] and \
-                                                isinstance(entry["search_param"]["labels"], (str, unicode)):
-                                                query_dict["body_val_or"].append(str(entry["search_param"]["labels"]))
-                                                search_str += " " + str(entry["search_param"]["labels"]) + \
-                                                              "  (" + str(extract_shortform(entry["search_param"])) + ")"
-                                        else:
-                                            search_str += " " + str(extract_shortform(entry["search_param"]))
+                    if isinstance(entry["search_param"], list) and len(entry["search_param"]) > 0:
+                        setof_labels = set()
+                        setof_uris = set()
+                        setof_shortf = set()
+                        setof_syns = set()
+                        if "logical" in entry.keys():
+                            if entry["logical"] and isinstance(entry["logical"], (str, unicode)):
+                                for logic in ["AND", "OR", "NOT", "XOR"]:
+                                    if entry["logical"] == logic:
+                                        for oc in entry["search_param"]:
+                                            if isinstance(oc, dict):
+                                                if "uris" in oc.keys() and oc["uris"] and isinstance(oc["uris"], (str, unicode)):
+                                                    setof_uris = oc["uris"]
+                                                if "labels" in oc.keys() and oc["labels"] and isinstance( oc["labels"], (str,unicode) ):
+                                                    setof_labels.add( str(oc["labels"]) )
+                                                setof_shortf.add( str(extract_shortform( oc )) )
+                                        for u in setof_uris:
+                                            query_dict["body_id_" + str(logic).lower()].append( u )
+                                        for labl in setof_labels:
+                                            query_dict["body_val_" + str(logic).lower()].append( labl )
+                                        search_str += " " + str(logic).upper() + \
+                                                      " " + ", ".join(setof_labels) + \
+                                                      "  (" + ", ".join(setof_shortf) + ")"
+                            elif entry["logical"] is None:
+                                for oc in entry["search_param"]:
+                                    if isinstance(oc, dict):
+                                        if "uris" in oc.keys() and oc["uris"] and isinstance(oc["uris"], (str, unicode)):
+                                            setof_uris = oc["uris"]
+                                        if "labels" in oc.keys() and oc["labels"] and isinstance( oc["labels"], (str,unicode) ):
+                                            setof_labels.add( str(oc["labels"]) )
+                                        setof_shortf.add( str(extract_shortform( oc )) )
+                                for u in setof_uris:
+                                    query_dict["body_id_or"].append( u )
+                                for labl in setof_labels:
+                                    query_dict["body_val_or"].append( labl )
+                                search_str += " " + ", ".join(setof_labels) + \
+                                              "  (" + ", ".join(setof_shortf) + ")"
+                            else:
+                                for oc in entry["search_param"]:
+                                    if isinstance(oc, dict):
+                                        setof_shortf.add(str(extract_shortform( oc )))
+                                search_str += " " + ", ".join(setof_shortf)
 
                         if "syn_incl" in entry.keys() and entry["syn_incl"] is True:
-                            if "synonyms" in entry["search_param"].keys():
-                                syns = None
-                                syns = entry["search_param"]["synonyms"]
-                                if syns and isinstance(syns, list):
-                                    for syn in syns:
-                                        if syn and isinstance(syn, (str, unicode)):
-                                            query_dict["body_val_syn"].append( syn )
-                                            search_str += " SYN " + syn
+                            for oc in entry["search_param"]:
+                                if isinstance(oc, dict) and "synonyms" in oc.keys():
+                                    syns = None
+                                    syns = oc["synonyms"]
+                                    if syns and isinstance(syns, list):
+                                        for syn in syns:
+                                            if syn and isinstance(syn, (str, unicode)):
+                                                setof_syns.add( syn )
+                            for syn in setof_syns:
+                                query_dict["body_val_syn"].append( syn )
+                            search_str += " SYN " + ", ".join(setof_syns)
     return query_dict, search_str
 
 
