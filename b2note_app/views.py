@@ -15,6 +15,7 @@ from collections import OrderedDict
 from .mongo_support_functions import *
 from .models import *
 from .nav_support_functions import list_navbarlinks, list_shortcutlinks
+from .ext_api_support_functions import b2share_api_get_file_info_on_url
 
 from itertools import chain
 
@@ -406,11 +407,25 @@ def edit_annotation(request):
     duplicate = None
     long_keyword = None
     has_semantic_equivalent = None
+    target_file_title = None
     if request.POST.get('db_id'):
         if isinstance(request.POST.get('db_id'), (str, unicode)):
             a_id = request.POST.get('db_id')
             A = Annotation.objects.get(id=a_id)
             if A:
+                if A.target[0].jsonld_id:
+                    target_file_title = b2share_api_get_file_info_on_url(A.target[0].jsonld_id)
+                #print "# " * 6 + str(type(target_file_title))
+                #print json.dumps(target_file_title, indent=2)
+                if target_file_title and isinstance(target_file_title, dict) and "metadata" in target_file_title.keys():
+                    target_file_title = target_file_title["metadata"]
+                if target_file_title and isinstance(target_file_title, dict) and "titles" in target_file_title.keys():
+                    target_file_title = target_file_title["titles"]
+                if target_file_title and isinstance(target_file_title, list):
+                    target_file_title = target_file_title[0]
+                if target_file_title and isinstance(target_file_title, dict) and "title" in target_file_title.keys():
+                    target_file_title = target_file_title["title"]
+                if not isinstance(target_file_title, (str, unicode)): target_file_title = None
                 if not textinput_primer:
                     if A.body and A.body[0] and A.body[0].type and A.body[0].type=="Composite" and\
                         A.body[0].items and len(A.body[0].items)>1 and A.body[0].items[1] and A.body[0].items[1].value:
@@ -503,6 +518,7 @@ def edit_annotation(request):
     shortcutlinks = list_shortcutlinks(request, [])
 
     data_dict = {
+        'target_file_title': target_file_title,
         'textinput_primer': textinput_primer,
         'long_keyword': long_keyword,
         'has_semantic_equivalent': has_semantic_equivalent,

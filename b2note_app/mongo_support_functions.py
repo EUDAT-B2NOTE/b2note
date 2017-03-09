@@ -793,59 +793,66 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
                 if A:
 
                     if object_json and isinstance(object_json, (str, unicode)):
-                        o = None
-                        o = json.loads(object_json)
+                        ojl = None
+                        ojl = json.loads(object_json)
 
-                        #if o and isinstance(o, list) and len(o)>0: o = o[0]
+                        if ojl and isinstance(ojl, list) and len(ojl)>0:
+                            object_label = ""
+                            object_uri = set()
 
-                        if o and isinstance(o, dict):
-                            if "uris" in o.keys():
-                                if o["uris"] and isinstance(o["uris"], (str, unicode)):
-                                    object_uri = ""
-                                    object_label = ""
-                                    object_uri = o["uris"]
+                            for o in ojl:
+                                if o and isinstance(o, dict):
+                                    if "uris" in o.keys():
+                                        if o["uris"] and isinstance(o["uris"], (str, unicode)):
+                                            object_uri.add( o["uris"] )
+                                        else:
+                                            print "MakeAnnotationSemanticTag function, dictionary field at key 'uris' does not resolve in a valid string."
+                                            stdlogger.error("MakeAnnotationSemanticTag function, dictionary field at key 'uris' does not resolve in a valid string.")
+                                    else:
+                                        print "MakeAnnotationSemanticTag function, dictionary does not contain a field with key 'uris'."
+                                        stdlogger.error("MakeAnnotationSemanticTag function, dictionary does not contain a field with key 'uris'.")
 
-                                    if "labels" in o.keys():
-                                        if o["labels"] and isinstance(o["labels"], (str, unicode)):
-                                            object_label = o["labels"]
-
-                                    stsr = SemanticTagSpecificResource(
-                                                    type = "SpecificResource",
-                                                    source = object_uri
-                                                )
-                                    sttb = SemanticTagTextualBody(
-                                                    type = "TextualBody",
-                                                    value = object_label
-                                                )
-                                    itemz = [stsr, sttb]
-
-                                    A.body = [
-                                        SemanticTagBodySet(
-                                            type    = "Composite",
-                                            items   = itemz,
-                                            purpose = "tagging"
-                                        )
-                                    ]
-
-                                    A.save()
-
-                                    db_id = SetAnnotationMotivation( A.id, "tagging" )
-
-                                    print "MakeAnnotationSemanticTag function, made annotation semantic tag: ", str(db_id)
-                                    stdlogger.info("MakeAnnotationSemanticTag function, made annotation semantic tag: " + str(db_id))
-                                    return db_id
-
+                                    if not object_label:
+                                        if "labels" in o.keys():
+                                            if o["labels"] and isinstance(o["labels"], (str, unicode)):
+                                                object_label = o["labels"]
                                 else:
-                                    print "MakeAnnotationSemanticTag function, dictionary field at key 'uris' does not resolve in a valid string."
-                                    stdlogger.error("MakeAnnotationSemanticTag function, dictionary field at key 'uris' does not resolve in a valid string.")
-                                    return False
-                            else:
-                                print "MakeAnnotationSemanticTag function, dictionary does not contain a field with key 'uris'."
-                                stdlogger.error("MakeAnnotationSemanticTag function, dictionary does not contain a field with key 'uris'.")
-                                return False
+                                    print "MakeAnnotationSemanticTag function, provided json list item is not dictionary."
+                                    stdlogger.error(
+                                        "MakeAnnotationSemanticTag function, provided json list item is not dictionary.")
+
+                            itemz = []
+                            for o_uri in object_uri:
+                                stsr = SemanticTagSpecificResource(
+                                                type = "SpecificResource",
+                                                source = o_uri
+                                            )
+                                itemz.append(stsr)
+                            sttb = SemanticTagTextualBody(
+                                            type = "TextualBody",
+                                            value = object_label
+                                        )
+                            itemz.append(sttb)
+
+                            A.body = [
+                                SemanticTagBodySet(
+                                    type    = "Composite",
+                                    items   = itemz,
+                                    purpose = "tagging"
+                                )
+                            ]
+
+                            A.save()
+
+                            db_id = SetAnnotationMotivation( A.id, "tagging" )
+
+                            print "MakeAnnotationSemanticTag function, made annotation semantic tag: ", str(db_id)
+                            stdlogger.info("MakeAnnotationSemanticTag function, made annotation semantic tag: " + str(db_id))
+                            return db_id
+
                         else:
-                            print "MakeAnnotationSemanticTag function, provided json does not load as a python dictionary."
-                            stdlogger.error("MakeAnnotationSemanticTag function, provided json does not load as a python dictionary.")
+                            print "MakeAnnotationSemanticTag function, provided json does not load as a python list."
+                            stdlogger.error("MakeAnnotationSemanticTag function, provided json does not load as a python list.")
                             return False
                     else:
                         print "MakeAnnotationSemanticTag function, provided json object is neither string nor unicode."
@@ -1127,11 +1134,18 @@ def CheckDuplicateAnnotation( target=None, annotation_body=None ):
             if isinstance(target, (str, unicode)):
                 if 'body' in annotation_body:
                     A = None
-                    if 'jsonld_id' in annotation_body['body'] and isinstance(annotation_body['body']['jsonld_id'], (str, unicode)) and len(annotation_body['body']['jsonld_id']) > 0:
-                        A = Annotation.objects.raw_query({'target.jsonld_id':target,'body.items.source':annotation_body['body']['jsonld_id']})
+                    if 'jsonld_id' in annotation_body['body'].keys() and \
+                            isinstance(annotation_body['body']['jsonld_id'], list) and \
+                                    len(annotation_body['body']['jsonld_id']) > 0:
+                        A = Annotation.objects.raw_query({'target.jsonld_id':target,'body.items.source':{"$in":annotation_body['body']['jsonld_id']}})
                     else:
-                        if 'value' in annotation_body['body']:
-                            A = Annotation.objects.raw_query({'target.jsonld_id':target,'body.value':annotation_body['body']['value']})
+                        if 'value' in annotation_body['body'].keys():
+                            A = Annotation.objects.raw_query(
+                                {'target.jsonld_id':target,
+                                 '$or':[
+                                     {'body.value': annotation_body['body']['value']},
+                                     {'body.items.value': annotation_body['body']['value']}
+                                 ]})
                         else:
                             print "CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary."
                             stdlogger.error("CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary.")
