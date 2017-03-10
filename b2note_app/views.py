@@ -701,16 +701,29 @@ def create_annotation(request):
                             ann_id1 = CreateSemanticTag(request.POST.get('subject_tofeed'), request.POST.get('ontology_json'))
                             ann_id2 = SetUserAsAnnotationCreator(request.session.get('user'), ann_id1)
                             A = Annotation.objects.get(id=ann_id2)
+                            setof_shortf = set()
+                            for oc in A.body[0].items:
+                                if oc.type == "SpecificResource":
+                                    if isinstance(oc.source, (str, unicode)):
+                                        setof_shortf.add( oc.source[::-1][:oc.source[::-1].find("/")][::-1] )
                             request.session["new_semantic"] = {
                                 "label": A.body[0].items[len(A.body[0].items)-1].value,
-                                "shortform": A.body[0].items[0].source[::-1][
-                                             :A.body[0].items[0].source[::-1].find("/")][::-1],
+                                "shortform": ", ".join(setof_shortf),
                             }
                         else:
+                            setof_labels = set()
+                            setof_shortf = set()
+                            for dupl in D:
+                                for oc in dupl.body[0].items:
+                                    if oc.type == "SpecificResource":
+                                        if isinstance(oc.source, (str, unicode)):
+                                            setof_shortf.add(oc.source[::-1][:oc.source[::-1].find("/")][::-1])
+                                    if oc.type == "TextualBody":
+                                        if isinstance(oc.value, (str, unicode)):
+                                            setof_labels.add( oc.value )
                             request.session["duplicate"] = {
-                                "label": D[0].body[0].items[len(D[0].body[0].items)-1].value,
-                                "shortform": D[0].body[0].items[0].source[::-1][
-                                             :D[0].body[0].items[0].source[::-1].find("/")][::-1],
+                                "label": ", ".join(setof_labels),
+                                "shortform": ", ".join(setof_shortf),
                             }
                             print "Create_annotation view, semantic tag annotation would be a duplicate."
                             stdlogger.info("Create_annotation view, semantic tag annotation would be a duplicate.")
@@ -864,18 +877,21 @@ def annotation_summary(request):
 
             if request.POST.get('about_allsimilar')!=None:
 
-                if A.body[0].type and A.body[0].type=="Composite" and A.body[0].items and A.body[0].items[0].source:
+                if A.body[0].type and A.body[0].type=="Composite" and A.body[0].items:
 
-                    r = solr_fetchorigintermonid([A.body[0].items[0].source])
+                    uri_list = [m.source for m in A.body[0].items if m.type=="SpecificResource"]
+
+                    r = solr_fetchorigintermonid( uri_list )
 
                     if user_nickname and isinstance(user_nickname, (str, unicode)):
 
-                        allannotations_list = Annotation.objects.raw_query({'body.items.source': A.body[0].items[0].source,
-                                                                            'creator.nickname': { "$ne": user_nickname} })
+                        allannotations_list = Annotation.objects.raw_query(
+                            {'body.items.source': {"$in": uri_list},'creator.nickname': {"$ne": user_nickname}}
+                        )
 
                     else:
 
-                        allannotations_list = Annotation.objects.raw_query({'body.items.source': A.body[0].items[0].source})
+                        allannotations_list = Annotation.objects.raw_query({'body.items.source': {"$in": uri_list}})
 
                 elif A.body[0].type and not A.body[0].type=="Composite" and A.body[0].value and A.motivation and A.motivation[0]=="tagging":
 
@@ -897,11 +913,13 @@ def annotation_summary(request):
 
             elif request.POST.get('about_allsimilar_any')!=None:
 
-                if A.body[0].type and A.body[0].type=="Composite" and A.body[0].items and A.body[0].items[0].source:
+                if A.body[0].type and A.body[0].type=="Composite" and A.body[0].items:
 
-                    r = solr_fetchorigintermonid([A.body[0].items[0].source])
+                    uri_list = [m.source for m in A.body[0].items if m.type == "SpecificResource"]
 
-                    allannotations_list = Annotation.objects.raw_query({'body.items.source': A.body[0].items[0].source})
+                    r = solr_fetchorigintermonid( uri_list )
+
+                    allannotations_list = Annotation.objects.raw_query({'body.items.source': {"$in": uri_list}})
 
                 elif A.body[0].type and not A.body[0].type=="Composite" and A.body[0].value and A.motivation and A.motivation[0]=="tagging":
 
@@ -916,12 +934,14 @@ def annotation_summary(request):
 
             elif request.POST.get('about_mysimilar') != None:
 
-                if A.body[0].type and A.body[0].type=="Composite" and A.body[0].items and A.body[0].items[0].source:
+                if A.body[0].type and A.body[0].type=="Composite" and A.body[0].items:
 
-                    r = solr_fetchorigintermonid( [A.body[0].items[0].source] )
+                    uri_list = [m.source for m in A.body[0].items if m.type == "SpecificResource"]
+
+                    r = solr_fetchorigintermonid( uri_list )
 
                     allannotations_list = Annotation.objects.raw_query(
-                        {'body.items.source': A.body[0].items[0].source, 'creator.nickname': user_nickname})
+                        {'body.items.source': {"$in": uri_list}, 'creator.nickname': user_nickname})
 
                 elif A.body[0].type and not A.body[0].type=="Composite" and A.body[0].value and A.motivation and A.motivation[0] == "tagging":
 
@@ -936,22 +956,41 @@ def annotation_summary(request):
 
             if not allannotations_list: allannotations_list = [A]
 
+            r4 = []
+            ooarnb = []
             if r:
                 for rr in r.keys():
                     rrr = r[rr]
+                    setof_syns = set()
                     if isinstance(rrr, dict) and "synonyms" in rrr.keys():
-                        rrr["synonyms"] = str(", ".join(rrr["synonyms"]))
+                        if rrr["synonyms"] and isinstance(rrr["synonyms"], list):
+                            for syno in rrr["synonyms"]:
+                                if isinstance(syno, (str, unicode)):
+                                    try:
+                                        setof_syns.add(str(syno))
+                                    except:
+                                        print ">>>" + syno
+                        elif isinstance(rrr["synonyms"], (str, unicode)):
+                            setof_syns.add(str(rrr["synonyms"]))
+                        rrr["synonyms"] = str(", ".join(setof_syns))
                     if isinstance(rrr, dict) and "acrs_of_ontologies_reusing_uri" in rrr.keys():
+                        ooarnb.append( len(rrr["acrs_of_ontologies_reusing_uri"]) )
                         rrr["acrs_of_ontologies_reusing_uri"] = sorted(rrr["acrs_of_ontologies_reusing_uri"])
                         rrr["acrs_of_ontologies_reusing_uri"] = str(", ".join(rrr["acrs_of_ontologies_reusing_uri"]))
-                    break
+                    else:
+                        ooarnb.append( 0 )
+                    r4.append( rrr )
+            ooarnb = OrderedDict(sorted(enumerate(ooarnb), key=lambda x: x[1])).keys()
+            r4 = [ r4[x] for x in ooarnb[::-1] ]
+
 
     navbarlinks = list_navbarlinks(request, ["Help page"])
     navbarlinks.append({"url": "/help#helpsection_annotationsummarypage", "title": "Help page", "icon": "question-sign"})
     shortcutlinks = list_shortcutlinks(request, [])
 
     data_dict = {
-        'r': rrr,
+        'rows_of_dots': range(int((float(len(r4))+float(10))/float(11))),
+        'r4': r4,
         'all_or_mine': all_or_mine,
         'navbarlinks': navbarlinks,
         'shortcutlinks': shortcutlinks,
