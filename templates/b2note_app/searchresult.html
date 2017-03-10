@@ -5,19 +5,20 @@
     <h3>Search results</h3>
 
     <script type="text/javascript">
+        //http://stackoverflow.com/questions/27646284/how-to-expand-the-text-on-clicking-the-read-more-button-or-link
         $(document).ready(function() {
-            $(".expanded").hide();
+            $(".query_string_expanded").hide();
 
-            $(".expanded a, .collapsed a").click(function(eve) {
+            $(".query_string_expanded a, .query_string_collapsed a").click(function(eve) {
                 eve.preventDefault();
-                $(".expanded, .collapsed").toggle();
+                $(".query_string_expanded, .query_string_collapsed").toggle();
             });
         });
     </script>
 
     <div class="container" style="margin-top:20px;margin-bottom:50px;">
 
-        <span class="collapsed">
+        <span class="query_string_collapsed">
             <p style="font-size:12px" title="{{search_str|truncatechars:500}}{%if search_str|length > 100 %}&#13;&#13;(Click caret to view full query).{% endif %}"><label>Query:</label>
                 {{ search_str|truncatechars:100 }}
                 {%if search_str|length > 100 %}
@@ -26,7 +27,7 @@
             </p>
         </span>
 
-        <span class="expanded">
+        <span class="query_string_expanded">
             <p style="font-size:12px" title="Click caret to fold-up query">
                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-triangle-top" style="border-width:8px;font-size:16px;"></span></a>
                 <label>Query:</label>
