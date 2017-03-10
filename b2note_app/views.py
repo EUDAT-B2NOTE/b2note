@@ -969,9 +969,12 @@ def annotation_summary(request):
                                     try:
                                         setof_syns.add(str(syno))
                                     except:
-                                        print ">>>" + syno
+                                        pass
                         elif isinstance(rrr["synonyms"], (str, unicode)):
-                            setof_syns.add(str(rrr["synonyms"]))
+                            try:
+                                setof_syns.add(str(rrr["synonyms"]))
+                            except:
+                                pass
                         rrr["synonyms"] = str(", ".join(setof_syns))
                     if isinstance(rrr, dict) and "acrs_of_ontologies_reusing_uri" in rrr.keys():
                         ooarnb.append( len(rrr["acrs_of_ontologies_reusing_uri"]) )
