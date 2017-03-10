@@ -1717,23 +1717,25 @@ def process_search_query( form ):
         for ann in VA:
             v = {}
             if ann.body and ann.body[0] and ann.body[0].type and ann.body[0].type=="Composite":
-                v = { ann.body[0].items[1].value }
+                v = { ann.body[0].items[len(ann.body[0].items)-1].value }
             elif ann.body and ann.body[0] and ann.body[0].value:
                 v = { ann.body[0].value }
             for anno in VA:
                 if ann.target[0].jsonld_id == anno.target[0].jsonld_id:
                     if ann.body and ann.body[0] and ann.body[0].type and ann.body[0].type == "Composite":
-                        v.add( ann.body[0].items[1].value )
+                        v.add( ann.body[0].items[len(ann.body[0].items)-1].value )
                     elif ann.body and ann.body[0] and ann.body[0].value:
                         v.add( ann.body[0].value )
             z = {}
             if ann.body and ann.body[0] and ann.body[0].type and ann.body[0].type == "Composite":
-                z = {ann.body[0].items[0].source}
+                z = set( [ str(itm.source) for itm in ann.body[0].items if itm.type == "SpecificResource" ] )
             if IA:
                 for anno in IA:
                     if ann.target[0].jsonld_id == anno.target[0].jsonld_id:
                         if ann.body and ann.body[0] and ann.body[0].type and ann.body[0].type == "Composite":
-                            z.add(ann.body[0].items[0].source)
+                            for itm in ann.body[0].items:
+                                if itm.type == "SpecificResource":
+                                    z.add( str(itm.source) )
             if v == set(query_dict["body_val_and"]) and z == set(query_dict["body_id_and"]):
                 exact.append( ann.target[0].jsonld_id )
 

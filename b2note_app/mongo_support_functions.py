@@ -1129,7 +1129,7 @@ def CheckDuplicateAnnotation( target=None, annotation_body=None ):
         output:
             boolean: True/False
     """
-    try:    
+    try:
         if target:
             if isinstance(target, (str, unicode)):
                 if 'body' in annotation_body:
