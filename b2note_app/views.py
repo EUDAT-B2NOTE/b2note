@@ -698,7 +698,13 @@ def create_annotation(request):
                         if newbody and len(newbody)>0:
                             D = CheckDuplicateAnnotation( request.POST.get('subject_tofeed'), newbody )
                         if not D:
-                            ann_id1 = CreateSemanticTag(request.POST.get('subject_tofeed'), request.POST.get('ontology_json'))
+                            tg_pid = None
+                            if request.POST.get('pid_tofeed') != None: tg_pid = request.POST.get('pid_tofeed')
+                            ann_id1 = CreateSemanticTag(
+                                subject_url =   request.POST.get('subject_tofeed'),
+                                subject_pid =   tg_pid,
+                                object_json =   request.POST.get('ontology_json'),
+                            )
                             ann_id2 = SetUserAsAnnotationCreator(request.session.get('user'), ann_id1)
                             A = Annotation.objects.get(id=ann_id2)
                             setof_shortf = set()
@@ -730,38 +736,6 @@ def create_annotation(request):
                     else:
                         print "Create_annotation view, in semantic case, could not load json."
                         stdlogger.error("Create_annotation view, in semantic case, could not load json.")
-
-                    # if o and isinstance(o, dict):
-                    #     if "uris" in o.keys():
-                    #         if o["uris"] and isinstance(o["uris"], (str, unicode)):
-                    #             newbody = None
-                    #             newbody = {"body":{"jsonld_id": o["uris"] }}
-                    #             D = None
-                    #             D = CheckDuplicateAnnotation( request.POST.get('subject_tofeed'), newbody )
-                    #             if not D:
-                    #                 ann_id1 = CreateSemanticTag( request.POST.get('subject_tofeed'), request.POST.get('ontology_json') )
-                    #                 ann_id2 = SetUserAsAnnotationCreator( request.session.get('user'), ann_id1 )
-                    #                 A = Annotation.objects.get( id = ann_id2 )
-                    #                 request.session["new_semantic"] = {
-                    #                     "label": A.body[0].items[1].value,
-                    #                     "shortform": A.body[0].items[0].source[0][::-1][:A.body[0].items[0].source[0][::-1].find("/")][::-1],
-                    #                 }
-                    #             else:
-                    #                 request.session["duplicate"] = {
-                    #                     "label": D[0].body[0].items[1].value,
-                    #                     "shortform": D[0].body[0].items[0].source[0][::-1][:D[0].body[0].items[0].source[0][::-1].find("/")][::-1],
-                    #                 }
-                    #                 print "Create_annotation view, semantic tag annotation would be a duplicate."
-                    #                 stdlogger.info("Create_annotation view, semantic tag annotation would be a duplicate.")
-                    #         else:
-                    #             print "Create_annotation view, in semantic case, no value to uris key or neither string or unicode."
-                    #             stdlogger.error("Create_annotation view, semantic tag annotation would be a duplicate.")
-                    #     else:
-                    #         print "Create_annotation view, in semantic case, no uris key."
-                    #         stdlogger.error("Create_annotation view, in semantic case, no uris key.")
-                    # else:
-                    #     print "Create_annotation view, in semantic case, could not load json."
-                    #     stdlogger.error("Create_annotation view, in semantic case, could not load json.")
                 else:
                     print "Create_annotation view, in semantic case, target file id neither string nor unicode."
                     stdlogger.error("Create_annotation view, in semantic case, target file id neither string nor unicode.")
@@ -794,7 +768,13 @@ def create_annotation(request):
                     D = None
                     D = CheckDuplicateAnnotation(request.POST.get('subject_tofeed'), newbody)
                     if not D:
-                        ann_id1 = CreateFreeTextKeyword( request.POST.get('subject_tofeed'), request.POST.get('keyword_text') )
+                        tg_pid = None
+                        if request.POST.get('pid_tofeed') != None: tg_pid = request.POST.get('pid_tofeed')
+                        ann_id1 = CreateFreeTextKeyword(
+                            subject_url =   request.POST.get('subject_tofeed'),
+                            subject_pid =   tg_pid,
+                            text        =   request.POST.get('keyword_text')
+                        )
                         ann_id2 = SetUserAsAnnotationCreator(request.session.get('user'), ann_id1 )
                         A = Annotation.objects.get( id = ann_id2 )
                         request.session["new_keyword"] = { "label": A.body[0].value, }
@@ -811,7 +791,13 @@ def create_annotation(request):
 
         elif request.POST.get('comment_submit')!=None:
             if request.POST.get('comment_text') and request.POST.get('subject_tofeed'):
-                ann_id1 = CreateFreeTextComment(request.POST.get('subject_tofeed'), request.POST.get('comment_text'))
+                tg_pid = None
+                if request.POST.get('pid_tofeed') != None: tg_pid = request.POST.get('pid_tofeed')
+                ann_id1 = CreateFreeTextComment(
+                    subject_url =   request.POST.get('subject_tofeed'),
+                    subject_pid =   tg_pid,
+                    text        =   request.POST.get('comment_text')
+                )
                 ann_id2 = SetUserAsAnnotationCreator(request.session.get('user'), ann_id1)
                 A = Annotation.objects.get(id=ann_id2)
                 request.session["new_comment"] = {"label": A.body[0].value,}
@@ -862,6 +848,8 @@ def annotation_summary(request):
     r = None
 
     rrr = None
+
+    r4 = []
 
     all_or_mine = None
 

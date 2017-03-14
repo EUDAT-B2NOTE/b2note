@@ -594,7 +594,7 @@ def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
 #     return False
 
 
-def CreateSemanticTag( subject_url=None, object_json=None ):
+def CreateSemanticTag( subject_url=None, subject_pid=None, object_json=None ):
     """
       Function: CreateSemanticTag
       ----------------------------
@@ -612,7 +612,7 @@ def CreateSemanticTag( subject_url=None, object_json=None ):
         if subject_url and isinstance(subject_url, (str, unicode)):
 
             my_id = None
-            my_id = CreateAnnotation(subject_url)
+            my_id = CreateAnnotation(subject_url, subject_pid)
     
             if my_id:
 
@@ -649,7 +649,7 @@ def CreateSemanticTag( subject_url=None, object_json=None ):
     return False
 
 
-def CreateFreeTextKeyword( subject_url=None, text=None ):
+def CreateFreeTextKeyword( subject_url=None, subject_pid=None, text=None ):
     """
       Function: CreateFreeTextKeyword
       ----------------------------
@@ -664,7 +664,7 @@ def CreateFreeTextKeyword( subject_url=None, text=None ):
     """
     try:
 
-        my_id = CreateAnnotation(subject_url)
+        my_id = CreateAnnotation(subject_url, subject_pid)
 
         if my_id:
 
@@ -708,7 +708,7 @@ def CreateFreeTextKeyword( subject_url=None, text=None ):
     return False
 
 
-def CreateFreeTextComment(subject_url=None, text=None):
+def CreateFreeTextComment(subject_url=None, subject_pid=None, text=None):
     """
       Function: CreateFreeTextComment
       ----------------------------
@@ -723,7 +723,7 @@ def CreateFreeTextComment(subject_url=None, text=None):
     """
     try:
 
-        my_id = CreateAnnotation(subject_url)
+        my_id = CreateAnnotation(subject_url, subject_pid)
 
         if my_id:
 
@@ -828,6 +828,7 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
                                                 source = o_uri
                                             )
                                 itemz.append(stsr)
+
                             sttb = SemanticTagTextualBody(
                                             type = "TextualBody",
                                             value = object_label
@@ -942,7 +943,7 @@ def MakeAnnotationFreeText( db_id=None, text=None ):
     return False
 
 
-def CreateAnnotation(target=None):
+def CreateAnnotation(target=None, pid=None):
     """
       Function: CreateAnnotation
       ----------------------------
@@ -966,8 +967,17 @@ def CreateAnnotation(target=None):
                     #name       = ["B2Note semantic annotator"],
                     #nickname   = "B2Note v1.0",
                     #email      = ["abremaud@esciencefactory.com"],
-                    homepage   = ["https://b2note.bsc.es"],
+                    homepage    = ["https://b2note.bsc.es"],
                     )
+
+                if pid and isinstance(pid, (str, unicode)):
+                    ExtSpeRes   =   ExternalSpecificResource(
+                        source      =   target,
+                        type        =   "SpecificResource",
+                        jsonld_id   =   pid
+                    )
+                else:
+                    ExtSpeRes   =   ExternalSpecificResource( source=target, type="SpecificResource" )
 
                 ann = Annotation(
                     jsonld_context  = [global_settings.JSONLD_CONTEXT_URL],
