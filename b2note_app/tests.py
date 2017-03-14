@@ -263,7 +263,7 @@ class B2noteappTest(TestCase):
         # DB just created with no annotations in there
         before = Annotation.objects.filter().count()
         self.assertEqual(before, 0)
-        a = CreateSemanticTag(u"https://b2share.eudat.eu/record/30", '{"uris":"test_uri", "labels": "test_label"}')
+        a = CreateSemanticTag(u"https://b2share.eudat.eu/record/30", '[{"uris":"test_uri", "labels": "test_label"}]')
         self.assertTrue(a)
         # DB with 1 annotations created
         after = Annotation.objects.filter().count()
@@ -278,9 +278,9 @@ class B2noteappTest(TestCase):
             --------------------
             Tests the no creation of invalid semantic tags using the mongo support function.
         """
-        a = CreateSemanticTag(1234, '{"uris":"test_uri", "labels": "test_label"}')
+        a = CreateSemanticTag(1234, '[{"uris":"test_uri", "labels": "test_label"}]')
         self.assertTrue(not a)
-        a = CreateSemanticTag(u"https://b2share.eudat.eu/record/30", '{"labels": "test_label"}')
+        a = CreateSemanticTag(u"https://b2share.eudat.eu/record/30", '[{"labels": "test_label"}]')
         self.assertTrue(not a)
         
     def test_create_free_text_keyword(self):
