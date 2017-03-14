@@ -364,8 +364,8 @@ class B2noteappTest(TestCase):
         json_dict = {}
         json_dict['pid_tofeed'] = 'pid_test'
         json_dict['subject_tofeed'] = 'https://b2share.eudat.eu/record/30'
-        json_dict['ontology_json'] = json.dumps({'labels' : 'annotation_test',
-                                                'uris': 'uri_test'})
+        json_dict['ontology_json'] = json.dumps([{'labels' : 'annotation_test',
+                                                'uris': 'uri_test'}])
         json_dict['semantic_submit'] = 'test'
 
         self.login()
