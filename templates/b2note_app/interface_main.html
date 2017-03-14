@@ -130,6 +130,7 @@
                                 <form action="/interface_main" method="post">
                                     {% csrf_token %}
                                     <input type="text" name="subject_tofeed" value="{{subject_tofeed}}" hidden>
+                                    {% if pid_tofeed %}<input type="text" name="pid_tofeed" value="{{pid_tofeed}}" hidden>{% endif %}
                                     <input type="text" name="textinput_primer" value="{{has_semantic_equivalent}}" hidden>
                                     <input type="submit" class="btn btn-default" name="semantic_submit" id="primed_semantic_submit" value="Semantic" title="Create a semantic annotation."/>
                                 </form>
@@ -138,6 +139,7 @@
                                 <form action="/create_annotation" method="post">
                                     {% csrf_token %}
                                     <input type="text" name="subject_tofeed" value="{{subject_tofeed}}" hidden>
+                                    {% if pid_tofeed %}<input type="text" name="pid_tofeed" value="{{pid_tofeed}}" hidden>{% endif %}
                                     <input type="text" name="confirm_flag" value="confirmed" hidden>
                                     <input type="text" name="keyword_text" value="{{has_semantic_equivalent}}" hidden>
                                     <input type="submit" class="btn btn-default" name="keyword_submit" id="confirmed_keyword_submit" value="Keyword" title="Create the free-text keyword annotation."/>
@@ -162,6 +164,7 @@
                                 <form action="/create_annotation" method="post">
                                     {% csrf_token %}
                                     <input type="text" name="subject_tofeed" value="{{subject_tofeed}}" hidden>
+                                    {% if pid_tofeed %}<input type="text" name="pid_tofeed" value="{{pid_tofeed}}" hidden>{% endif %}
                                     <input type="text" name="enforce_flag" value="confirmed" hidden>
                                     <input type="text" name="confirm_flag" value="confirmed" hidden>
                                     <input type="text" name="keyword_text" value="{{long_keyword}}" hidden>
@@ -172,6 +175,7 @@
                                 <form action="/create_annotation" method="post">
                                     {% csrf_token %}
                                     <input type="text" name="subject_tofeed" value="{{subject_tofeed}}" hidden>
+                                    {% if pid_tofeed %}<input type="text" name="pid_tofeed" value="{{pid_tofeed}}" hidden>{% endif %}
                                     <input type="text" name="comment_text" value="{{long_keyword}}" hidden>
                                     <input type="submit" class="btn btn-default" name="comment_submit" id="primed_comment_submit" value="Comment" title="Create a comment annotation."/>
                                 </form>
@@ -196,7 +200,8 @@
                                 <div id="semantic_formgroup" class="form-group col-xs-9" style="padding-right:5px;padding-left:0px;margin-left:0px;">
                                     {% csrf_token %}
                                     <input type="hidden" name="ontology_json" id="ontology_json">
-                                    <input type="text" name="subject_tofeed" id="semantic_target_id" value="{{subject_tofeed}}" hidden>
+                                    <input type="text" name="subject_tofeed" id="semantic_target_url" value="{{subject_tofeed}}" hidden>
+                                    {% if pid_tofeed %}<input type="text" name="pid_tofeed" id="semantic_target_id" value="{{pid_tofeed}}" hidden>{% endif %}
                                     {% if textinput_primer %}
                                         <input type="text" class="form-control" name="q" id="id_q" value="{% if query %}{{ query }}{% else %}{{textinput_primer}}{% endif %}" autocomplete="off" spellcheck="false" dir="auto" autofocus/>
                                     {% else %}
@@ -212,7 +217,8 @@
                             <form class="form-inline" action="/create_annotation" method="post">
                                 <div id="keyword_formgroup" class="form-group col-xs-9" style="padding-right:5px;padding-left:0px;margin-left:0px;">
                                     {% csrf_token %}
-                                    <input type="text" name="subject_tofeed" id="keyword_target_id" value="{{subject_tofeed}}" hidden>
+                                    <input type="text" name="subject_tofeed" id="keyword_target_url" value="{{subject_tofeed}}" hidden>
+                                    {% if pid_tofeed %}<input type="text" name="pid_tofeed" id="keyword_target_id" value="{{pid_tofeed}}" hidden>{% endif %}
                                     <input type="text" name="keyword_text" class="form-control custom-control" id="keyword_input" placeholder="Type-in a keyword."/>
                                     <!--<span class="input-group-addon btn btn-primary" title="Create an annotation using my free-text keyword." onClick="get_free_text()">Create</span>-->
                                 </div>
@@ -225,7 +231,8 @@
                             <form class="form-inline" action="/create_annotation" method="post">
                                 <div id="comment_formgroup" class="form-group col-xs-9" style="padding-right:2px;padding-left:2px;margin-left:0px;">
                                     {% csrf_token %}
-                                    <input type="text" name="subject_tofeed" id="comment_target_id" value="{{subject_tofeed}}" hidden>
+                                    <input type="text" name="subject_tofeed" id="comment_target_url" value="{{subject_tofeed}}" hidden>
+                                    {% if pid_tofeed %}<input type="text" name="pid_tofeed" id="comment_target_id" value="{{pid_tofeed}}" hidden>{% endif %}
                                     <textarea name="comment_text" rows="3" class="form-control custom-control" id="comment_input" placeholder="Type your comment."></textarea>
                                 </div>
                                 <input type="submit" class="btn btn-default col-xs-3" name="comment_submit" id="comment_submit" value="Create" title="Create an annotation using my comment."/>

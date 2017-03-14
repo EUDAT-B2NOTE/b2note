@@ -612,6 +612,7 @@ def CreateSemanticTag( subject_url=None, subject_pid=None, object_json=None ):
         if subject_url and isinstance(subject_url, (str, unicode)):
 
             my_id = None
+
             my_id = CreateAnnotation(subject_url, subject_pid)
     
             if my_id:
@@ -622,8 +623,8 @@ def CreateSemanticTag( subject_url=None, subject_pid=None, object_json=None ):
 
                     db_id = SetAnnotationMotivation( db_id, "tagging" )
 
-                    print "MakeAnnotationSemanticTag function, made annotation semantic tag: ", str(db_id)
-                    stdlogger.info("MakeAnnotationSemanticTag function, made annotation semantic tag: " + str(db_id))
+                    print "CreateSemanticTag function, made annotation semantic tag: ", str(db_id)
+                    stdlogger.info("CreateSemanticTag function, made annotation semantic tag: " + str(db_id))
                     return db_id
 
                 else:
@@ -971,18 +972,19 @@ def CreateAnnotation(target=None, pid=None):
                     )
 
                 if pid and isinstance(pid, (str, unicode)):
-                    ExtSpeRes   =   ExternalSpecificResource(
+                    ext_spe_res   =   ExternalSpecificResource(
                         source      =   target,
                         type        =   "SpecificResource",
                         jsonld_id   =   pid
                     )
                 else:
-                    ExtSpeRes   =   ExternalSpecificResource( source=target, type="SpecificResource" )
+                    ext_spe_res   =   ExternalSpecificResource( source=target, type="SpecificResource" )
 
                 ann = Annotation(
                     jsonld_context  = [global_settings.JSONLD_CONTEXT_URL],
                     type            = ["Annotation"],
-                    target          = [ExternalResource( jsonld_id = target )],
+                    target          = [ ext_spe_res ],
+                    #target          = [ExternalResource( jsonld_id = target )],
                     generator       = [ gen_agt ]
                     )
                 ann.save()
