@@ -279,9 +279,9 @@ class TextualBody(models.Model):
 
 
 class ExternalSpecificResource(models.Model):
-	jsonld_id	= models.CharField( max_length = 4096, null=True )					# can be IRI with fragment component
-	type	    = ListField( models.CharField( max_length = 64 ), null=True )		# rdf:class
-	source		= models.CharField( max_length = 4096 )
+	jsonld_id	= models.CharField( max_length = 4096, null=True )	# file PID
+	type		= models.CharField( max_length = 256, null=True )	# (rdf:type) oa:SpecificResource
+	source		= models.CharField( max_length = 4096 )				# file URL (required)
 
 
 
