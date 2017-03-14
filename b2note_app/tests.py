@@ -280,7 +280,7 @@ class B2noteappTest(TestCase):
         """
         a = CreateSemanticTag(1234, '{"uris":"test_uri", "labels": "test_label"}')
         self.assertTrue(not a)
-        a = CreateSemanticTag(u"https://b2share.eudat.eu/record/30", '[{"labels": "test_label"}]')
+        a = CreateSemanticTag(u"https://b2share.eudat.eu/record/30", '{"labels": "test_label"}')
         self.assertTrue(not a)
         
     def test_create_free_text_keyword(self):
