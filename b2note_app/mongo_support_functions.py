@@ -944,7 +944,7 @@ def MakeAnnotationFreeText( db_id=None, text=None ):
     return False
 
 
-def CreateAnnotation(target=None, pid=None):
+def CreateAnnotation(target_url=None, target_pid=None):
     """
       Function: CreateAnnotation
       ----------------------------
@@ -958,9 +958,9 @@ def CreateAnnotation(target=None, pid=None):
     """
     try:
 
-        if target:
+        if target_url:
 
-            if isinstance(target, (str, unicode)) and len(target)>0:
+            if isinstance(target_url, (str, unicode)) and len(target_url)>0:
 
                 gen_agt = Agent(
                     type        = ["Software"],
@@ -971,14 +971,14 @@ def CreateAnnotation(target=None, pid=None):
                     homepage    = ["https://b2note.bsc.es"],
                     )
 
-                if pid and isinstance(pid, (str, unicode)):
+                if target_pid and isinstance(target_pid, (str, unicode)):
                     ext_spe_res   =   ExternalSpecificResource(
-                        source      =   target,
+                        source      =   target_url,
                         type        =   "SpecificResource",
-                        jsonld_id   =   pid
+                        jsonld_id   =   target_pid
                     )
                 else:
-                    ext_spe_res   =   ExternalSpecificResource( source=target, type="SpecificResource" )
+                    ext_spe_res   =   ExternalSpecificResource( source=target_url, type="SpecificResource" )
 
                 ann = Annotation(
                     jsonld_context  = [global_settings.JSONLD_CONTEXT_URL],
@@ -999,12 +999,12 @@ def CreateAnnotation(target=None, pid=None):
 
             else:
                 print "CreateAnnotation function, provided 'target' argument not a valid str or unicode."
-                stdlogger.error("CreateAnnotation function, provided 'target' argument not a valid str or unicode.")
+                stdlogger.error("CreateAnnotation function, provided 'target_url' argument not a valid str or unicode.")
                 return False
 
         else:
-            print "CreateAnnotation function, missing 'target' argument."
-            stdlogger.error("CreateAnnotation function, missing 'target' argument.")
+            print "CreateAnnotation function, missing 'target_url' argument."
+            stdlogger.error("CreateAnnotation function, missing 'target_url' argument.")
             return False
     
     except ValueError:
@@ -1128,7 +1128,7 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
 
 
 
-def CheckDuplicateAnnotation( target=None, annotation_body=None ):
+def CheckDuplicateAnnotation( target_url=None, target_pid=None, annotation_body=None ):
     """
       Function: CheckDuplicateAnnotation
       --------------------------------------------
@@ -1142,22 +1142,47 @@ def CheckDuplicateAnnotation( target=None, annotation_body=None ):
             boolean: True/False
     """
     try:
-        if target:
-            if isinstance(target, (str, unicode)):
+        if target_url:
+            if isinstance(target_url, (str, unicode)):
                 if 'body' in annotation_body:
                     A = None
                     if 'jsonld_id' in annotation_body['body'].keys() and \
                             isinstance(annotation_body['body']['jsonld_id'], list) and \
                                     len(annotation_body['body']['jsonld_id']) > 0:
-                        A = Annotation.objects.raw_query({'target.jsonld_id':target,'body.items.source':{"$in":annotation_body['body']['jsonld_id']}})
+                        if target_pid and isinstance(target_pid, (str, unicode)):
+                            A = Annotation.objects.raw_query(
+                                {'$or':[
+                                    {'target.source': target_url},
+                                    {'target.jsonld_id': target_pid}
+                                    ],
+                                 'body.items.source':{'$in':annotation_body['body']['jsonld_id']}
+                                 }
+                            )
+                        else:
+                            A = Annotation.objects.raw_query(
+                                {'target.source': target_url,
+                                 'body.items.source': {'$in':annotation_body['body']['jsonld_id']}
+                                 }
+                            )
                     else:
                         if 'value' in annotation_body['body'].keys():
-                            A = Annotation.objects.raw_query(
-                                {'target.jsonld_id':target,
-                                 '$or':[
-                                     {'body.value': annotation_body['body']['value']},
-                                     {'body.items.value': annotation_body['body']['value']}
-                                 ]})
+                            if target_pid and isinstance(target_pid, (str, unicode)):
+                                A = Annotation.objects.raw_query(
+                                    {'target.jsonld_id':target_pid,
+                                     '$or':[
+                                         {'body.value': annotation_body['body']['value']},
+                                         {'body.items.value': annotation_body['body']['value']}
+                                     ]})
+                            else:
+                                A = Annotation.objects.raw_query(
+                                    {'$or':[
+                                        {'target.source': target_url},
+                                        {'target.jsonld_id': target_pid}
+                                        ],
+                                     '$or': [
+                                         {'body.value': annotation_body['body']['value']},
+                                         {'body.items.value': annotation_body['body']['value']}
+                                     ]})
                         else:
                             print "CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary."
                             stdlogger.error("CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary.")
@@ -1171,12 +1196,12 @@ def CheckDuplicateAnnotation( target=None, annotation_body=None ):
                     stdlogger.error("CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary.")
                     return False
             else:
-                print "CheckDuplicateAnnotation function, provided 'target' argument not a valid str or unicode."
-                stdlogger.error("CheckDuplicateAnnotation function, provided 'target' argument not a valid str or unicode.")
+                print "CheckDuplicateAnnotation function, provided 'target_url' argument not a valid str or unicode."
+                stdlogger.error("CheckDuplicateAnnotation function, provided 'target_url' argument not a valid str or unicode.")
                 return False
         else:
-            print "CheckDuplicateAnnotation function, missing 'target' argument."
-            stdlogger.error("CheckDuplicateAnnotation function, missing 'target' argument.")
+            print "CheckDuplicateAnnotation function, missing 'target_url' argument."
+            stdlogger.error("CheckDuplicateAnnotation function, missing 'target_url' argument.")
             return False
     
     except ValueError:

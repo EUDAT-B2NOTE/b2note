@@ -96,6 +96,10 @@ def test_export():
                     if isinstance(ann, dict):
                         if "target" in ann.keys():
                             if isinstance(ann["target"], dict):
+                                if "source" in ann["target"].keys():
+                                    if isinstance(ann["target"]["source"],(str, unicode)):
+                                        if ann["target"]["source"].find(" ")>0:
+                                            ann["target"]["source"] = ann["target"]["source"].replace(" ", "%20")
                                 if "id" in ann["target"].keys():
                                     if isinstance(ann["target"]["id"],(str, unicode)):
                                         if ann["target"]["id"].find(" ")>0:
@@ -265,6 +269,10 @@ def export_to_triplestore():
                 if isinstance(ann, dict):
                     if "target" in ann.keys():
                         if isinstance(ann["target"], dict):
+                            if "source" in ann["target"].keys():
+                                if isinstance(ann["target"]["source"], (str, unicode)):
+                                    if ann["target"]["source"].find(" ") > 0:
+                                        ann["target"]["source"] = ann["target"]["source"].replace(" ", "%20")
                             if "id" in ann["target"].keys():
                                 if isinstance(ann["target"]["id"],(str, unicode)):
                                     if ann["target"]["id"].find(" ")>0:

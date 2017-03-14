@@ -462,7 +462,15 @@ def edit_annotation(request):
                                         stdlogger.error("Edit_annotation view, in semantic case, list item is not dict.")
                                 D = None
                                 if newbody and len(newbody) > 0:
-                                    D = CheckDuplicateAnnotation( A.target[0].jsonld_id, newbody )
+                                    try: tg_source = A.target[0].source
+                                    except: tg_source = None
+                                    try: tg_id = A.target[0].jsonld_id
+                                    except: tg_id = None
+                                    D = CheckDuplicateAnnotation(
+                                        target_url      = tg_source,
+                                        target_pid      = tg_id,
+                                        annotation_body = newbody
+                                    )
                                 if not D:
                                     id1 = None
                                     id1 = MakeAnnotationSemanticTag(a_id, jo)
@@ -479,24 +487,6 @@ def edit_annotation(request):
                             else:
                                 print "Edit_annotation view, in semantic case, could not load json."
                                 stdlogger.error("Edit_annotation view, in semantic case, could not load json.")
-                            # if o and isinstance(o, list) and len(o)>0: o = o[0]
-                            # if o and isinstance(o, dict):
-                            #     if "uris" in o.keys():
-                            #         if o["uris"] and isinstance(o["uris"], (str, unicode)):
-                            #             newbody = None
-                            #             newbody = {"body": {"jsonld_id": o["uris"]}}
-                            #             D = None
-                            #             D = CheckDuplicateAnnotation( A.target[0].jsonld_id, newbody)
-                            #             if not D:
-                            #                 id1 = None
-                            #                 id1 = MakeAnnotationSemanticTag(a_id, jo)
-                            #                 if id1: edited_semantic = True
-                            #                 if id1: SetDateTimeModified( id1 )
-                            #             else:
-                            #                 duplicate = {
-                            #                     "label": D[0].body[0].items[1].value,
-                            #                     "shortform": D[0].body[0].items[0].source[0][::-1][:D[0].body[0].items[0].source[0][::-1].find("/")][::-1],
-                            #                 }
 
                 elif request.POST.get('keyword_submit') is not None:
                     edited_keyword = False
@@ -523,7 +513,16 @@ def edit_annotation(request):
                                 newbody = None
                                 newbody = {"body": {"value": k_text}}
                                 D = None
-                                D = CheckDuplicateAnnotation( A.target[0].jsonld_id, newbody)
+                                try: tg_source = A.target[0].source
+                                except: tg_source = None
+                                try: tg_id = A.target[0].jsonld_id
+                                except: tg_id = None
+                                D = CheckDuplicateAnnotation(
+                                    target_url      = tg_source,
+                                    target_pid      = tg_id,
+                                    annotation_body = newbody
+                                )
+
                                 if not D:
                                     id1 = None
                                     id1 = MakeAnnotationFreeText(a_id, k_text)
@@ -696,10 +695,20 @@ def create_annotation(request):
                                 stdlogger.error("Create_annotation view, in semantic case, list item is not dict.")
                         D = None
                         if newbody and len(newbody)>0:
-                            D = CheckDuplicateAnnotation( request.POST.get('subject_tofeed'), newbody )
+                            tg_source = None
+                            if request.POST.get('subject_tofeed') != None and isinstance(request.POST.get('subject_tofeed'), (str, unicode)):
+                                tg_source = request.POST.get('subject_tofeed')
+                            tg_id = None
+                            if request.POST.get('pid_tofeed') != None and isinstance(request.POST.get('pid_tofeed'), (str, unicode)):
+                                tg_id = request.POST.get('pid_tofeed')
+                            D = CheckDuplicateAnnotation(
+                                target_url      = tg_source,
+                                target_pid      = tg_id,
+                                annotation_body = newbody
+                            )
                         if not D:
                             tg_pid = None
-                            if request.POST.get('pid_tofeed') != None: tg_pid = request.POST.get('pid_tofeed')
+                            if request.POST.get('pid_tofeed') != None and isinstance(request.POST.get('pid_tofeed'), (str, unicode)): tg_pid = request.POST.get('pid_tofeed')
                             ann_id1 = CreateSemanticTag(
                                 subject_url =   request.POST.get('subject_tofeed'),
                                 subject_pid =   tg_pid,
@@ -737,8 +746,8 @@ def create_annotation(request):
                         print "Create_annotation view, in semantic case, could not load json."
                         stdlogger.error("Create_annotation view, in semantic case, could not load json.")
                 else:
-                    print "Create_annotation view, in semantic case, target file id neither string nor unicode."
-                    stdlogger.error("Create_annotation view, in semantic case, target file id neither string nor unicode.")
+                    print "Create_annotation view, in semantic case, target file url neither string nor unicode."
+                    stdlogger.error("Create_annotation view, in semantic case, target file url neither string nor unicode.")
             else:
                 print "Create_annotation view, missing parameter to create semantic annotation."
                 stdlogger.error("Create_annotation view, missing parameter to create semantic annotation.")
@@ -766,6 +775,18 @@ def create_annotation(request):
                     newbody = None
                     newbody = {"body": {"value": request.POST.get('keyword_text')}}
                     D = None
+                    tg_source = None
+                    if request.POST.get('subject_tofeed') != None and isinstance(request.POST.get('subject_tofeed'), (str, unicode)):
+                        tg_source = request.POST.get('subject_tofeed')
+                    tg_id = None
+                    if request.POST.get('pid_tofeed') != None and isinstance(request.POST.get('pid_tofeed'), (str, unicode)):
+                        tg_id = request.POST.get('pid_tofeed')
+                    D = CheckDuplicateAnnotation(
+                        target_url=tg_source,
+                        target_pid=tg_id,
+                        annotation_body=newbody
+                    )
+
                     D = CheckDuplicateAnnotation(request.POST.get('subject_tofeed'), newbody)
                     if not D:
                         tg_pid = None
@@ -1205,7 +1226,7 @@ def allannotations(request):
         user_nickname = userprofile.nickname
 
     try:
-        allannotations_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
+        allannotations_list = Annotation.objects.raw_query({'target.source': subject_tofeed})
     except Annotation.DoesNotExist:
         allannotations_list = []
 
@@ -1448,7 +1469,7 @@ def interface_main(request):
         # https://github.com/aparo/django-mongodb-engine/blob/master/docs/embedded-objects.rst
         if user_nickname:
             annotation_list = Annotation.objects.raw_query({'creator.nickname': user_nickname})
-        allannotations_list = Annotation.objects.raw_query({'target.jsonld_id': subject_tofeed})
+        allannotations_list = Annotation.objects.raw_query({'target.source': subject_tofeed})
     except Annotation.DoesNotExist:
         allannotations_list = []
 
@@ -1709,7 +1730,7 @@ def process_search_query( form ):
             elif ann.body and ann.body[0] and ann.body[0].value:
                 v = { ann.body[0].value }
             for anno in VA:
-                if ann.target[0].jsonld_id == anno.target[0].jsonld_id:
+                if ann.target[0].source == anno.target[0].source:
                     if ann.body and ann.body[0] and ann.body[0].type and ann.body[0].type == "Composite":
                         v.add( ann.body[0].items[len(ann.body[0].items)-1].value )
                     elif ann.body and ann.body[0] and ann.body[0].value:
@@ -1719,33 +1740,33 @@ def process_search_query( form ):
                 z = set( [ str(itm.source) for itm in ann.body[0].items if itm.type == "SpecificResource" ] )
             if IA:
                 for anno in IA:
-                    if ann.target[0].jsonld_id == anno.target[0].jsonld_id:
+                    if ann.target[0].source == anno.target[0].source:
                         if ann.body and ann.body[0] and ann.body[0].type and ann.body[0].type == "Composite":
                             for itm in ann.body[0].items:
                                 if itm.type == "SpecificResource":
                                     z.add( str(itm.source) )
             if v == set(query_dict["body_val_and"]) and z == set(query_dict["body_id_and"]):
-                exact.append( ann.target[0].jsonld_id )
+                exact.append( ann.target[0].source )
 
     if VO:
         for ann in VO:
-            exact.append(ann.target[0].jsonld_id)
+            exact.append(ann.target[0].source)
 
     if IO:
         for ann in IO:
-            exact.append(ann.target[0].jsonld_id)
+            exact.append(ann.target[0].source)
 
     if VS:
         for ann in VS:
-            related.append( ann.target[0].jsonld_id )
+            related.append( ann.target[0].source )
 
     if VX:
         for ann in VX:
             if exact:
-                if ann.target[0].jsonld_id: exact.append( ann.target[0].jsonld_id )
+                if ann.target[0].source: exact.append( ann.target[0].source )
                 coll = set()
                 for url in exact:
-                    if url == ann.target[0].jsonld_id:
+                    if url == ann.target[0].source:
                         coll.add( url )
                 for url in coll:
                     exact.remove( url )
@@ -1753,10 +1774,10 @@ def process_search_query( form ):
     if IX:
         for ann in IX:
             if exact:
-                if ann.target[0].jsonld_id: exact.append( ann.target[0].jsonld_id )
+                if ann.target[0].source: exact.append( ann.target[0].source )
                 coll = set()
                 for url in exact:
-                    if url == ann.target[0].jsonld_id:
+                    if url == ann.target[0].source:
                         coll.add( url )
                 for url in coll:
                     exact.remove( url )
@@ -1764,38 +1785,38 @@ def process_search_query( form ):
     if exact and VN:
         for ann in VN:
             for url in exact:
-                if ann.target[0].jsonld_id == url:
+                if ann.target[0].source == url:
                     exact.remove( url )
 
     if exact and IN:
         for ann in IN:
             for url in exact:
-                if ann.target[0].jsonld_id == url:
+                if ann.target[0].source == url:
                     exact.remove( url )
 
     if exact and query_dict["commenting"] is True:
 
         C = None
-        C = Annotation.objects.raw_query({"target.jsonld_id": {"$in": [u for u in exact]}})
+        C = Annotation.objects.raw_query({"target.source": {"$in": [u for u in exact]}})
 
         exact = set()
         if C:
             for ann in C:
-                if ann.target[0].jsonld_id not in exact:
+                if ann.target[0].source not in exact:
                     if ann.motivation and ann.motivation[0] == "commenting":
-                        exact.add( ann.target[0].jsonld_id )
+                        exact.add( ann.target[0].source )
 
     if related and query_dict["commenting"] is True:
 
         C = None
-        C = Annotation.objects.raw_query({"target.jsonld_id": {"$in": [u for u in related]}})
+        C = Annotation.objects.raw_query({"target.source": {"$in": [u for u in related]}})
 
         related = set()
         if C:
             for ann in C:
-                if ann.target[0].jsonld_id not in related:
+                if ann.target[0].source not in related:
                     if ann.motivation and ann.motivation[0] == "commenting":
-                        related.add(ann.target[0].jsonld_id)
+                        related.add(ann.target[0].source)
 
 
     exact = list(set( exact ))
@@ -1999,13 +2020,13 @@ def select_search_results(request):
             if "exact" in export_dic.keys() and export_dic["exact"] and isinstance(export_dic["exact"], list):
                 #response["exact_match"] = []
 
-                A = Annotation.objects.raw_query({"target.jsonld_id": {"$in": export_dic["exact"] }}).values()
+                A = Annotation.objects.raw_query({"target.source": {"$in": export_dic["exact"] }}).values()
 
                 for url in export_dic["exact"]:
                     if isinstance(url, (str, unicode)):
                         #exac = {"@context": global_settings.JSONLD_CONTEXT_URL}
                         cleaned = readyQuerySetValuesForDumpAsJSONLD([ann for ann in A if
-                                                                      ann["target"][0][1]["jsonld_id"] == url])
+                                                                      ann["target"][0][1]["source"] == url])
                         #cleaned = ridOflistsOfOneItem( cleaned )
                         #cleaned = orderedJSONLDfields( cleaned )
 
@@ -2025,13 +2046,13 @@ def select_search_results(request):
             if "related" in export_dic.keys() and export_dic["related"] and isinstance(export_dic["related"], list):
                 #response["synonym_match"] = []
 
-                A = Annotation.objects.raw_query({"target.jsonld_id": {"$in": export_dic["related"]}}).values()
+                A = Annotation.objects.raw_query({"target.source": {"$in": export_dic["related"]}}).values()
 
                 for url in export_dic["related"]:
                     if isinstance(url, (str, unicode)):
                         #relat = {"@context": global_settings.JSONLD_CONTEXT_URL}
                         cleaned = readyQuerySetValuesForDumpAsJSONLD([ann for ann in A if
-                                                                             ann["target"][0][1]["jsonld_id"] == url])
+                                                                             ann["target"][0][1]["source"] == url])
                         #cleaned = ridOflistsOfOneItem(cleaned)
                         #cleaned = orderedJSONLDfields(cleaned)
 
