@@ -278,7 +278,7 @@ class B2noteappTest(TestCase):
             --------------------
             Tests the no creation of invalid semantic tags using the mongo support function.
         """
-        a = CreateSemanticTag(1234, '[{"uris":"test_uri", "labels": "test_label"}]')
+        a = CreateSemanticTag(1234, '{"uris":"test_uri", "labels": "test_label"}')
         self.assertTrue(not a)
         a = CreateSemanticTag(u"https://b2share.eudat.eu/record/30", '[{"labels": "test_label"}]')
         self.assertTrue(not a)
