@@ -124,13 +124,6 @@ def export_annotations(request):
                 annotations_of = "all"
 
             if annotation_list:
-                """
-                abremaud@esciencedatalab.com, 20160303
-                Upon testing on json-ld online playground, none of the URLs provided in current
-                 web annotation specification document allowed the context to be retrieved
-                 with likely origin of trouble being CORS.
-                As a consequence we resort here to embedding rather than linking to the context.
-                """
                 now = datetime.datetime.now()
                 nowi = str(now.year) + str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(now.second)
 
@@ -787,7 +780,6 @@ def create_annotation(request):
                         annotation_body=newbody
                     )
 
-                    D = CheckDuplicateAnnotation(request.POST.get('subject_tofeed'), newbody)
                     if not D:
                         tg_pid = None
                         if request.POST.get('pid_tofeed') != None: tg_pid = request.POST.get('pid_tofeed')

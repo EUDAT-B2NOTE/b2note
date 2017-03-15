@@ -184,8 +184,8 @@ def SearchAnnotation( kw ):
         stdlogger.error("SearchAnnotation function did not complete.")
         return False
 
-    print "SearchAnnotation function did not complete succesfully."
-    stdlogger.error("SearchAnnotation function did not complete succesfully.")
+    print "SearchAnnotation function did not complete successfully."
+    stdlogger.error("SearchAnnotation function did not complete successfully.")
     return False
 
 
@@ -226,8 +226,8 @@ def RetrieveUserAnnotations( nickname=None ):
         stdlogger.error("RetrieveUserFileAnnotations function did not complete.")
         return False
 
-    print "RetrieveUserFileAnnotations function did not complete succesfully."
-    stdlogger.error("RetrieveUserFileAnnotations function did not complete succesfully.")
+    print "RetrieveUserFileAnnotations function did not complete successfully."
+    stdlogger.error("RetrieveUserFileAnnotations function did not complete successfully.")
     return False
 
 
@@ -244,7 +244,7 @@ def RetrieveFileAnnotations( subject_url ):
             dic: Dictionary with the values of the annotations.
     """
     try:
-        annotations = Annotation.objects.raw_query({'target.jsonld_id': subject_url})
+        annotations = Annotation.objects.raw_query({'target.source': subject_url})
 
     except Annotation.DoesNotExist:
         annotations = []
@@ -345,8 +345,8 @@ def SetDateTimeModified( db_id=None ):
         stdlogger.error("SetDateTimeModified function did not complete.")
         return False
 
-    print "SetDateTimeModified function did not complete succesfully."
-    stdlogger.error("SetDateTimeModified function did not complete succesfully.")
+    print "SetDateTimeModified function did not complete successfully."
+    stdlogger.error("SetDateTimeModified function did not complete successfully.")
     return False
 
 
@@ -427,8 +427,8 @@ def SetAnnotationMotivation( db_id=None, motiv=None ):
         stdlogger.error("SetAnnotationMotivation function did not complete.")
         return False
 
-    print "SetAnnotationMotivation function did not complete succesfully."
-    stdlogger.error("SetAnnotationMotivation function did not complete succesfully.")
+    print "SetAnnotationMotivation function did not complete successfully."
+    stdlogger.error("SetAnnotationMotivation function did not complete successfully.")
     return False
 
 
@@ -496,8 +496,8 @@ def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
         stdlogger.error("SetUserAsAnnotationCreator function did not complete.")
         return False
 
-    print "SetUserAsAnnotationCreator function did not complete succesfully."
-    stdlogger.error("SetUserAsAnnotationCreator function did not complete succesfully.")
+    print "SetUserAsAnnotationCreator function did not complete successfully."
+    stdlogger.error("SetUserAsAnnotationCreator function did not complete successfully.")
     return False
 
 
@@ -589,8 +589,8 @@ def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
 #         stdlogger.error("DuplicateAnnotation function, did not complete.")
 #         return False
 #
-#     print "DuplicateAnnotation function did not complete succesfully."
-#     stdlogger.error("DuplicateAnnotation function did not complete succesfully.")
+#     print "DuplicateAnnotation function did not complete successfully."
+#     stdlogger.error("DuplicateAnnotation function did not complete successfully.")
 #     return False
 
 
@@ -645,8 +645,8 @@ def CreateSemanticTag( subject_url=None, subject_pid=None, object_json=None ):
         stdlogger.error("CreateSemanticTag function did not complete.")
         return False
 
-    print "CreateSemanticTag function did not complete succesfully."
-    stdlogger.error("CreateSemanticTag function did not complete succesfully.")
+    print "CreateSemanticTag function did not complete successfully."
+    stdlogger.error("CreateSemanticTag function did not complete successfully.")
     return False
 
 
@@ -704,8 +704,8 @@ def CreateFreeTextKeyword( subject_url=None, subject_pid=None, text=None ):
         stdlogger.error("CreateFreeTextKeyword function did not complete.")
         return False
 
-    print "CreateFreeTextKeyword function did not complete succesfully."
-    stdlogger.error("CreateFreeTextKeyword function did not complete succesfully.")
+    print "CreateFreeTextKeyword function did not complete successfully."
+    stdlogger.error("CreateFreeTextKeyword function did not complete successfully.")
     return False
 
 
@@ -764,8 +764,8 @@ def CreateFreeTextComment(subject_url=None, subject_pid=None, text=None):
         stdlogger.info("CreateFreeTextComment function did not complete.")
         return False
 
-    print "CreateFreeTextComment function did not complete succesfully."
-    stdlogger.info("CreateFreeTextComment function did not complete succesfully.")
+    print "CreateFreeTextComment function did not complete successfully."
+    stdlogger.info("CreateFreeTextComment function did not complete successfully.")
     return False
 
 
@@ -878,8 +878,8 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
         stdlogger.error("MakeAnnotationSemanticTag function did not complete.")
         return False
 
-    print "MakeAnnotationSemanticTag function did not complete succesfully."
-    stdlogger.error("MakeAnnotationSemanticTag function did not complete succesfully.")
+    print "MakeAnnotationSemanticTag function did not complete successfully."
+    stdlogger.error("MakeAnnotationSemanticTag function did not complete successfully.")
     return False
 
 
@@ -939,8 +939,8 @@ def MakeAnnotationFreeText( db_id=None, text=None ):
         stdlogger.error("MakeAnnotationFreeText function did not complete.")
         return False
 
-    print "MakeAnnotationFreeText function did not complete succesfully."
-    stdlogger.error("MakeAnnotationFreeText function did not complete succesfully.")
+    print "MakeAnnotationFreeText function did not complete successfully."
+    stdlogger.error("MakeAnnotationFreeText function did not complete successfully.")
     return False
 
 
@@ -1012,8 +1012,8 @@ def CreateAnnotation(target_url=None, target_pid=None):
         stdlogger.error("CreateAnnotation function, did not complete.")
         return False
 
-    print "CreateAnnotation function did not complete succesfully."
-    stdlogger.error("CreateAnnotation function did not complete succesfully.")
+    print "CreateAnnotation function did not complete successfully."
+    stdlogger.error("CreateAnnotation function did not complete successfully.")
     return False
 
 
