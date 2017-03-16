@@ -601,15 +601,22 @@ def CreateSemanticTag( subject_url=None, subject_pid=None, object_json=None ):
         Creates an annotation in MongoDB.
         
         params:
-            subject_url (str): URL of the annotation to create.
-            object_json (str): JSON of the annotation provided by SOLR
+            subject_url (str): URL of the target file of the annotation to create.
+            subject_pid (str): PID of the target file of the annotation to create. (either URL or PID required, both recommended)
+                Providing only PID creates an annotation the target of which is an external resource with only identifier
+                    the PID under jsonld_id field.
+                Provinding only URL creates an annotation the target of which is an external specific resource of type
+                    oa:SpecificResource with only identifier the URL under source field.
+                Providing both creates an annotation the target of which is an external specific resource of type
+                    oa:SpecificResource with identifiers the URL under source field and the PID under jsonld_id field.
+            object_json (str): JSON of the annotation provided by SOLR (list of dicts with ontology class information)
         
         returns:
             db_id (str): database id of the modified annotation if successful, False otherwise.
     """
     try:
 
-        if subject_url and isinstance(subject_url, (str, unicode)):
+        if (subject_url and isinstance(subject_url, (str, unicode))) or (subject_pid and isinstance(subject_pid, (str, unicode))):
 
             my_id = None
 
@@ -657,7 +664,14 @@ def CreateFreeTextKeyword( subject_url=None, subject_pid=None, text=None ):
         Creates an annotation in MongoDB.
         
         params:
-            subject_url (str): URL of the annotation to create.
+            subject_url (str): URL of the target file of the annotation to create.
+            subject_pid (str): PID of the target file of the annotation to create. (either URL or PID required, both recommended)
+                Providing only PID creates an annotation the target of which is an external resource with only identifier
+                    the PID under jsonld_id field.
+                Provinding only URL creates an annotation the target of which is an external specific resource of type
+                    oa:SpecificResource with only identifier the URL under source field.
+                Providing both creates an annotation the target of which is an external specific resource of type
+                    oa:SpecificResource with identifiers the URL under source field and the PID under jsonld_id field.
             text (str): Free text introduced by the user
         
         returns:
@@ -716,7 +730,14 @@ def CreateFreeTextComment(subject_url=None, subject_pid=None, text=None):
         Creates an annotation in MongoDB.
 
         params:
-            subject_url (str): URL of the annotation to create.
+            subject_url (str): URL of the target file of the annotation to create.
+            subject_pid (str): PID of the target file of the annotation to create. (either URL or PID required, both recommended)
+                Providing only PID creates an annotation the target of which is an external resource with only identifier
+                    the PID under jsonld_id field.
+                Provinding only URL creates an annotation the target of which is an external specific resource of type
+                    oa:SpecificResource with only identifier the URL under source field.
+                Providing both creates an annotation the target of which is an external specific resource of type
+                    oa:SpecificResource with identifiers the URL under source field and the PID under jsonld_id field.
             text (str): Free text introduced by the user
 
         returns:
@@ -951,16 +972,24 @@ def CreateAnnotation(target_url=None, target_pid=None):
         Creates an annotation in MongoDB.
         
         params:
-            target (str): URL of the annotation to create.
+            subject_url (str): URL of the target file of the annotation to create.
+            subject_pid (str): PID of the target file of the annotation to create. (either URL or PID required, both recommended)
+                Providing only PID creates an annotation the target of which is an external resource with only identifier
+                    the PID under jsonld_id field.
+                Provinding only URL creates an annotation the target of which is an external specific resource of type
+                    oa:SpecificResource with only identifier the URL under source field.
+                Providing both creates an annotation the target of which is an external specific resource of type
+                    oa:SpecificResource with identifiers the URL under source field and the PID under jsonld_id field.
         
         returns:
             id (str): database id of the created annotation document.
     """
     try:
 
-        if target_url:
+        if target_url or target_pid:
 
-            if isinstance(target_url, (str, unicode)) and len(target_url)>0:
+            if (isinstance(target_pid, (str, unicode)) and len(target_pid) > 0) or \
+                    (isinstance(target_url, (str, unicode)) and len(target_url) > 0):
 
                 gen_agt = Agent(
                     type        = ["Software"],
@@ -968,34 +997,50 @@ def CreateAnnotation(target_url=None, target_pid=None):
                     #name       = ["B2Note semantic annotator"],
                     #nickname   = "B2Note v1.0",
                     #email      = ["abremaud@esciencefactory.com"],
-                    homepage    = ["https://b2note.bsc.es"],
+                    homepage    = ["https://b2note.bsc.es"]
                     )
 
-                if target_pid and isinstance(target_pid, (str, unicode)):
-                    ext_spe_res   =   ExternalSpecificResource(
-                        source      =   target_url,
-                        type        =   "SpecificResource",
-                        jsonld_id   =   target_pid
+                ext_res = None
+                if isinstance(target_pid, (str, unicode)) and len(target_pid) > 0:
+                    if isinstance(target_url, (str, unicode)) and len(target_url) > 0:
+                        ext_res = ExternalSpecificResource(
+                            type        =   "SpecificResource",
+                            source      =   target_url,
+                            jsonld_id   =   target_pid
+                        )
+                    else:
+                        ext_res = ExternalResource(
+                            jsonld_id   =   target_pid
+                        )
+                elif isinstance(target_url, (str, unicode)) and len(target_url) > 0:
+                    ext_res = ExternalSpecificResource(
+                        type            =   "SpecificResource",
+                        source          =   target_url
                     )
+
+                if ext_res:
+
+                    ann = Annotation(
+                        jsonld_context  = [global_settings.JSONLD_CONTEXT_URL],
+                        type            = ["Annotation"],
+                        target          = [ ext_res ],
+                        #target          = [ExternalResource( jsonld_id = target )],
+                        generator       = [ gen_agt ]
+                        )
+                    ann.save()
+
+                    ann = Annotation.objects.get(id=ann.id)
+                    ann.jsonld_id = global_settings.ROOT_ANNOTATION_ID + ann.id
+                    ann.save()
+
+                    print "CreateAnnotation function, created annotation document with id: " + str(ann.id)
+                    stdlogger.info("CreateAnnotation function, created annotation document with id: " + str(ann.id))
+                    return ann.id
+
                 else:
-                    ext_spe_res   =   ExternalSpecificResource( source=target_url, type="SpecificResource" )
-
-                ann = Annotation(
-                    jsonld_context  = [global_settings.JSONLD_CONTEXT_URL],
-                    type            = ["Annotation"],
-                    target          = [ ext_spe_res ],
-                    #target          = [ExternalResource( jsonld_id = target )],
-                    generator       = [ gen_agt ]
-                    )
-                ann.save()
-
-                ann = Annotation.objects.get(id=ann.id)
-                ann.jsonld_id = global_settings.ROOT_ANNOTATION_ID + ann.id
-                ann.save()
-
-                print "CreateAnnotation function, created annotation document with id: " + str(ann.id)
-                stdlogger.info("CreateAnnotation function, created annotation document with id: " + str(ann.id))
-                return ann.id
+                    print "CreateAnnotation function, external resource was not constructed."
+                    stdlogger.error("CreateAnnotation function, external resource was not constructed.")
+                    return False
 
             else:
                 print "CreateAnnotation function, provided 'target' argument not a valid str or unicode."
@@ -1003,8 +1048,8 @@ def CreateAnnotation(target_url=None, target_pid=None):
                 return False
 
         else:
-            print "CreateAnnotation function, missing 'target_url' argument."
-            stdlogger.error("CreateAnnotation function, missing 'target_url' argument.")
+            print "CreateAnnotation function, missing file identifier argument."
+            stdlogger.error("CreateAnnotation function, missing file identifier argument.")
             return False
     
     except ValueError:
@@ -1142,43 +1187,56 @@ def CheckDuplicateAnnotation( target_url=None, target_pid=None, annotation_body=
             boolean: True/False
     """
     try:
-        if target_url:
-            if isinstance(target_url, (str, unicode)):
+        if target_url or target_pid:
+            if isinstance(target_url, (str, unicode)) or isinstance(target_pid, (str, unicode)):
                 if 'body' in annotation_body:
                     A = None
                     if 'jsonld_id' in annotation_body['body'].keys() and \
                             isinstance(annotation_body['body']['jsonld_id'], list) and \
                                     len(annotation_body['body']['jsonld_id']) > 0:
-                        if target_pid and isinstance(target_pid, (str, unicode)):
+                        if target_pid and target_url:
                             A = Annotation.objects.raw_query(
-                                {'$or':[
+                                {'$and':[
                                     {'target.source': target_url},
                                     {'target.jsonld_id': target_pid}
                                     ],
                                  'body.items.source':{'$in':annotation_body['body']['jsonld_id']}
                                  }
                             )
-                        else:
+                        elif target_url:
                             A = Annotation.objects.raw_query(
                                 {'target.source': target_url,
                                  'body.items.source': {'$in':annotation_body['body']['jsonld_id']}
                                  }
                             )
+                        elif target_pid:
+                            A = Annotation.objects.raw_query(
+                                {'target.jsonld_id': target_pid,
+                                 'body.items.source': {'$in':annotation_body['body']['jsonld_id']}
+                                 }
+                            )
                     else:
                         if 'value' in annotation_body['body'].keys():
-                            if target_pid and isinstance(target_pid, (str, unicode)):
+                            if target_pid and target_url:
                                 A = Annotation.objects.raw_query(
-                                    {'target.jsonld_id':target_pid,
+                                    {'$and':[
+                                        {'target.source': target_url},
+                                        {'target.jsonld_id': target_pid}
+                                        ],
                                      '$or':[
                                          {'body.value': annotation_body['body']['value']},
                                          {'body.items.value': annotation_body['body']['value']}
                                      ]})
-                            else:
+                            elif target_url:
                                 A = Annotation.objects.raw_query(
-                                    {'$or':[
-                                        {'target.source': target_url},
-                                        {'target.jsonld_id': target_pid}
-                                        ],
+                                    {'target.source': target_url,
+                                     '$or': [
+                                         {'body.value': annotation_body['body']['value']},
+                                         {'body.items.value': annotation_body['body']['value']}
+                                     ]})
+                            elif target_pid:
+                                A = Annotation.objects.raw_query(
+                                    {'target.jsonld_id': target_pid,
                                      '$or': [
                                          {'body.value': annotation_body['body']['value']},
                                          {'body.items.value': annotation_body['body']['value']}
