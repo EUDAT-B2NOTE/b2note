@@ -158,8 +158,8 @@ class Agent(models.Model):
 
 
 class SemanticTagSpecificResource(models.Model):
-	type		= models.CharField( max_length = 256,  null=True )	# (rdf:type) oa:SpecificResource
-	source		= models.CharField( max_length = 4096, null=True )
+	type		= models.CharField( max_length = 256, null=True )	# (rdf:type) oa:SpecificResource
+	source		= models.CharField( max_length = 4096 )
 
 
 class SemanticTagTextualBody(models.Model):
@@ -275,6 +275,14 @@ class TextualBody(models.Model):
 	#created		= models.DateTimeField( auto_now_add=True, null=True )  # dcterms:created MUST xsd:dateTime SHOULD timezone.
 	#modified 	= models.DateTimeField( null=True )  	# MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	#modified 	= models.DateTimeField( auto_now=True, null=True )  	# MUST xsd:dateTime with the UTC timezone expressed as "Z".
+
+
+
+class ExternalSpecificResource(models.Model):
+	jsonld_id	= models.CharField( max_length = 4096, null=True )	# file PID
+	type		= models.CharField( max_length = 256, null=True )	# (rdf:type) oa:SpecificResource
+	source		= models.CharField( max_length = 4096 )				# file URL (required)
+
 
 
 class ExternalResource(models.Model):

@@ -184,8 +184,8 @@ def SearchAnnotation( kw ):
         stdlogger.error("SearchAnnotation function did not complete.")
         return False
 
-    print "SearchAnnotation function did not complete succesfully."
-    stdlogger.error("SearchAnnotation function did not complete succesfully.")
+    print "SearchAnnotation function did not complete successfully."
+    stdlogger.error("SearchAnnotation function did not complete successfully.")
     return False
 
 
@@ -226,8 +226,8 @@ def RetrieveUserAnnotations( nickname=None ):
         stdlogger.error("RetrieveUserFileAnnotations function did not complete.")
         return False
 
-    print "RetrieveUserFileAnnotations function did not complete succesfully."
-    stdlogger.error("RetrieveUserFileAnnotations function did not complete succesfully.")
+    print "RetrieveUserFileAnnotations function did not complete successfully."
+    stdlogger.error("RetrieveUserFileAnnotations function did not complete successfully.")
     return False
 
 
@@ -244,7 +244,7 @@ def RetrieveFileAnnotations( subject_url ):
             dic: Dictionary with the values of the annotations.
     """
     try:
-        annotations = Annotation.objects.raw_query({'target.jsonld_id': subject_url})
+        annotations = Annotation.objects.raw_query({'target.source': subject_url})
 
     except Annotation.DoesNotExist:
         annotations = []
@@ -345,8 +345,8 @@ def SetDateTimeModified( db_id=None ):
         stdlogger.error("SetDateTimeModified function did not complete.")
         return False
 
-    print "SetDateTimeModified function did not complete succesfully."
-    stdlogger.error("SetDateTimeModified function did not complete succesfully.")
+    print "SetDateTimeModified function did not complete successfully."
+    stdlogger.error("SetDateTimeModified function did not complete successfully.")
     return False
 
 
@@ -427,8 +427,8 @@ def SetAnnotationMotivation( db_id=None, motiv=None ):
         stdlogger.error("SetAnnotationMotivation function did not complete.")
         return False
 
-    print "SetAnnotationMotivation function did not complete succesfully."
-    stdlogger.error("SetAnnotationMotivation function did not complete succesfully.")
+    print "SetAnnotationMotivation function did not complete successfully."
+    stdlogger.error("SetAnnotationMotivation function did not complete successfully.")
     return False
 
 
@@ -496,8 +496,8 @@ def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
         stdlogger.error("SetUserAsAnnotationCreator function did not complete.")
         return False
 
-    print "SetUserAsAnnotationCreator function did not complete succesfully."
-    stdlogger.error("SetUserAsAnnotationCreator function did not complete succesfully.")
+    print "SetUserAsAnnotationCreator function did not complete successfully."
+    stdlogger.error("SetUserAsAnnotationCreator function did not complete successfully.")
     return False
 
 
@@ -589,30 +589,38 @@ def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
 #         stdlogger.error("DuplicateAnnotation function, did not complete.")
 #         return False
 #
-#     print "DuplicateAnnotation function did not complete succesfully."
-#     stdlogger.error("DuplicateAnnotation function did not complete succesfully.")
+#     print "DuplicateAnnotation function did not complete successfully."
+#     stdlogger.error("DuplicateAnnotation function did not complete successfully.")
 #     return False
 
 
-def CreateSemanticTag( subject_url=None, object_json=None ):
+def CreateSemanticTag( subject_url=None, subject_pid=None, object_json=None ):
     """
       Function: CreateSemanticTag
       ----------------------------
         Creates an annotation in MongoDB.
         
         params:
-            subject_url (str): URL of the annotation to create.
-            object_json (str): JSON of the annotation provided by SOLR
+            subject_url (str): URL of the target file of the annotation to create.
+            subject_pid (str): PID of the target file of the annotation to create. (either URL or PID required, both recommended)
+                Providing only PID creates an annotation the target of which is an external resource with only identifier
+                    the PID under jsonld_id field.
+                Provinding only URL creates an annotation the target of which is an external specific resource of type
+                    oa:SpecificResource with only identifier the URL under source field.
+                Providing both creates an annotation the target of which is an external specific resource of type
+                    oa:SpecificResource with identifiers the URL under source field and the PID under jsonld_id field.
+            object_json (str): JSON of the annotation provided by SOLR (list of dicts with ontology class information)
         
         returns:
             db_id (str): database id of the modified annotation if successful, False otherwise.
     """
     try:
 
-        if subject_url and isinstance(subject_url, (str, unicode)):
+        if (subject_url and isinstance(subject_url, (str, unicode))) or (subject_pid and isinstance(subject_pid, (str, unicode))):
 
             my_id = None
-            my_id = CreateAnnotation(subject_url)
+
+            my_id = CreateAnnotation(subject_url, subject_pid)
     
             if my_id:
 
@@ -622,8 +630,8 @@ def CreateSemanticTag( subject_url=None, object_json=None ):
 
                     db_id = SetAnnotationMotivation( db_id, "tagging" )
 
-                    print "MakeAnnotationSemanticTag function, made annotation semantic tag: ", str(db_id)
-                    stdlogger.info("MakeAnnotationSemanticTag function, made annotation semantic tag: " + str(db_id))
+                    print "CreateSemanticTag function, made annotation semantic tag: ", str(db_id)
+                    stdlogger.info("CreateSemanticTag function, made annotation semantic tag: " + str(db_id))
                     return db_id
 
                 else:
@@ -644,19 +652,26 @@ def CreateSemanticTag( subject_url=None, object_json=None ):
         stdlogger.error("CreateSemanticTag function did not complete.")
         return False
 
-    print "CreateSemanticTag function did not complete succesfully."
-    stdlogger.error("CreateSemanticTag function did not complete succesfully.")
+    print "CreateSemanticTag function did not complete successfully."
+    stdlogger.error("CreateSemanticTag function did not complete successfully.")
     return False
 
 
-def CreateFreeTextKeyword( subject_url=None, text=None ):
+def CreateFreeTextKeyword( subject_url=None, subject_pid=None, text=None ):
     """
       Function: CreateFreeTextKeyword
       ----------------------------
         Creates an annotation in MongoDB.
         
         params:
-            subject_url (str): URL of the annotation to create.
+            subject_url (str): URL of the target file of the annotation to create.
+            subject_pid (str): PID of the target file of the annotation to create. (either URL or PID required, both recommended)
+                Providing only PID creates an annotation the target of which is an external resource with only identifier
+                    the PID under jsonld_id field.
+                Provinding only URL creates an annotation the target of which is an external specific resource of type
+                    oa:SpecificResource with only identifier the URL under source field.
+                Providing both creates an annotation the target of which is an external specific resource of type
+                    oa:SpecificResource with identifiers the URL under source field and the PID under jsonld_id field.
             text (str): Free text introduced by the user
         
         returns:
@@ -664,7 +679,7 @@ def CreateFreeTextKeyword( subject_url=None, text=None ):
     """
     try:
 
-        my_id = CreateAnnotation(subject_url)
+        my_id = CreateAnnotation(subject_url, subject_pid)
 
         if my_id:
 
@@ -703,19 +718,26 @@ def CreateFreeTextKeyword( subject_url=None, text=None ):
         stdlogger.error("CreateFreeTextKeyword function did not complete.")
         return False
 
-    print "CreateFreeTextKeyword function did not complete succesfully."
-    stdlogger.error("CreateFreeTextKeyword function did not complete succesfully.")
+    print "CreateFreeTextKeyword function did not complete successfully."
+    stdlogger.error("CreateFreeTextKeyword function did not complete successfully.")
     return False
 
 
-def CreateFreeTextComment(subject_url=None, text=None):
+def CreateFreeTextComment(subject_url=None, subject_pid=None, text=None):
     """
       Function: CreateFreeTextComment
       ----------------------------
         Creates an annotation in MongoDB.
 
         params:
-            subject_url (str): URL of the annotation to create.
+            subject_url (str): URL of the target file of the annotation to create.
+            subject_pid (str): PID of the target file of the annotation to create. (either URL or PID required, both recommended)
+                Providing only PID creates an annotation the target of which is an external resource with only identifier
+                    the PID under jsonld_id field.
+                Provinding only URL creates an annotation the target of which is an external specific resource of type
+                    oa:SpecificResource with only identifier the URL under source field.
+                Providing both creates an annotation the target of which is an external specific resource of type
+                    oa:SpecificResource with identifiers the URL under source field and the PID under jsonld_id field.
             text (str): Free text introduced by the user
 
         returns:
@@ -723,7 +745,7 @@ def CreateFreeTextComment(subject_url=None, text=None):
     """
     try:
 
-        my_id = CreateAnnotation(subject_url)
+        my_id = CreateAnnotation(subject_url, subject_pid)
 
         if my_id:
 
@@ -763,8 +785,8 @@ def CreateFreeTextComment(subject_url=None, text=None):
         stdlogger.info("CreateFreeTextComment function did not complete.")
         return False
 
-    print "CreateFreeTextComment function did not complete succesfully."
-    stdlogger.info("CreateFreeTextComment function did not complete succesfully.")
+    print "CreateFreeTextComment function did not complete successfully."
+    stdlogger.info("CreateFreeTextComment function did not complete successfully.")
     return False
 
 
@@ -828,6 +850,7 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
                                                 source = o_uri
                                             )
                                 itemz.append(stsr)
+
                             sttb = SemanticTagTextualBody(
                                             type = "TextualBody",
                                             value = object_label
@@ -876,8 +899,8 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
         stdlogger.error("MakeAnnotationSemanticTag function did not complete.")
         return False
 
-    print "MakeAnnotationSemanticTag function did not complete succesfully."
-    stdlogger.error("MakeAnnotationSemanticTag function did not complete succesfully.")
+    print "MakeAnnotationSemanticTag function did not complete successfully."
+    stdlogger.error("MakeAnnotationSemanticTag function did not complete successfully.")
     return False
 
 
@@ -937,28 +960,36 @@ def MakeAnnotationFreeText( db_id=None, text=None ):
         stdlogger.error("MakeAnnotationFreeText function did not complete.")
         return False
 
-    print "MakeAnnotationFreeText function did not complete succesfully."
-    stdlogger.error("MakeAnnotationFreeText function did not complete succesfully.")
+    print "MakeAnnotationFreeText function did not complete successfully."
+    stdlogger.error("MakeAnnotationFreeText function did not complete successfully.")
     return False
 
 
-def CreateAnnotation(target=None):
+def CreateAnnotation(target_url=None, target_pid=None):
     """
       Function: CreateAnnotation
       ----------------------------
         Creates an annotation in MongoDB.
         
         params:
-            target (str): URL of the annotation to create.
+            subject_url (str): URL of the target file of the annotation to create.
+            subject_pid (str): PID of the target file of the annotation to create. (either URL or PID required, both recommended)
+                Providing only PID creates an annotation the target of which is an external resource with only identifier
+                    the PID under jsonld_id field.
+                Provinding only URL creates an annotation the target of which is an external specific resource of type
+                    oa:SpecificResource with only identifier the URL under source field.
+                Providing both creates an annotation the target of which is an external specific resource of type
+                    oa:SpecificResource with identifiers the URL under source field and the PID under jsonld_id field.
         
         returns:
             id (str): database id of the created annotation document.
     """
     try:
 
-        if target:
+        if target_url or target_pid:
 
-            if isinstance(target, (str, unicode)) and len(target)>0:
+            if (isinstance(target_pid, (str, unicode)) and len(target_pid) > 0) or \
+                    (isinstance(target_url, (str, unicode)) and len(target_url) > 0):
 
                 gen_agt = Agent(
                     type        = ["Software"],
@@ -966,33 +997,59 @@ def CreateAnnotation(target=None):
                     #name       = ["B2Note semantic annotator"],
                     #nickname   = "B2Note v1.0",
                     #email      = ["abremaud@esciencefactory.com"],
-                    homepage   = ["https://b2note.bsc.es"],
+                    homepage    = ["https://b2note.bsc.es"]
                     )
 
-                ann = Annotation(
-                    jsonld_context  = [global_settings.JSONLD_CONTEXT_URL],
-                    type            = ["Annotation"],
-                    target          = [ExternalResource( jsonld_id = target )],
-                    generator       = [ gen_agt ]
+                ext_res = None
+                if isinstance(target_pid, (str, unicode)) and len(target_pid) > 0:
+                    if isinstance(target_url, (str, unicode)) and len(target_url) > 0:
+                        ext_res = ExternalSpecificResource(
+                            type        =   "SpecificResource",
+                            source      =   target_url,
+                            jsonld_id   =   target_pid
+                        )
+                    else:
+                        ext_res = ExternalResource(
+                            jsonld_id   =   target_pid
+                        )
+                elif isinstance(target_url, (str, unicode)) and len(target_url) > 0:
+                    ext_res = ExternalSpecificResource(
+                        type            =   "SpecificResource",
+                        source          =   target_url
                     )
-                ann.save()
 
-                ann = Annotation.objects.get(id=ann.id)
-                ann.jsonld_id = global_settings.ROOT_ANNOTATION_ID + ann.id
-                ann.save()
+                if ext_res:
 
-                print "CreateAnnotation function, created annotation document with id: " + str(ann.id)
-                stdlogger.info("CreateAnnotation function, created annotation document with id: " + str(ann.id))
-                return ann.id
+                    ann = Annotation(
+                        jsonld_context  = [global_settings.JSONLD_CONTEXT_URL],
+                        type            = ["Annotation"],
+                        target          = [ ext_res ],
+                        #target          = [ExternalResource( jsonld_id = target )],
+                        generator       = [ gen_agt ]
+                        )
+                    ann.save()
+
+                    ann = Annotation.objects.get(id=ann.id)
+                    ann.jsonld_id = global_settings.ROOT_ANNOTATION_ID + ann.id
+                    ann.save()
+
+                    print "CreateAnnotation function, created annotation document with id: " + str(ann.id)
+                    stdlogger.info("CreateAnnotation function, created annotation document with id: " + str(ann.id))
+                    return ann.id
+
+                else:
+                    print "CreateAnnotation function, external resource was not constructed."
+                    stdlogger.error("CreateAnnotation function, external resource was not constructed.")
+                    return False
 
             else:
                 print "CreateAnnotation function, provided 'target' argument not a valid str or unicode."
-                stdlogger.error("CreateAnnotation function, provided 'target' argument not a valid str or unicode.")
+                stdlogger.error("CreateAnnotation function, provided 'target_url' argument not a valid str or unicode.")
                 return False
 
         else:
-            print "CreateAnnotation function, missing 'target' argument."
-            stdlogger.error("CreateAnnotation function, missing 'target' argument.")
+            print "CreateAnnotation function, missing file identifier argument."
+            stdlogger.error("CreateAnnotation function, missing file identifier argument.")
             return False
     
     except ValueError:
@@ -1000,8 +1057,8 @@ def CreateAnnotation(target=None):
         stdlogger.error("CreateAnnotation function, did not complete.")
         return False
 
-    print "CreateAnnotation function did not complete succesfully."
-    stdlogger.error("CreateAnnotation function did not complete succesfully.")
+    print "CreateAnnotation function did not complete successfully."
+    stdlogger.error("CreateAnnotation function did not complete successfully.")
     return False
 
 
@@ -1116,7 +1173,7 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
 
 
 
-def CheckDuplicateAnnotation( target=None, annotation_body=None ):
+def CheckDuplicateAnnotation( target_url=None, target_pid=None, annotation_body=None ):
     """
       Function: CheckDuplicateAnnotation
       --------------------------------------------
@@ -1130,22 +1187,60 @@ def CheckDuplicateAnnotation( target=None, annotation_body=None ):
             boolean: True/False
     """
     try:
-        if target:
-            if isinstance(target, (str, unicode)):
+        if target_url or target_pid:
+            if isinstance(target_url, (str, unicode)) or isinstance(target_pid, (str, unicode)):
                 if 'body' in annotation_body:
                     A = None
                     if 'jsonld_id' in annotation_body['body'].keys() and \
                             isinstance(annotation_body['body']['jsonld_id'], list) and \
                                     len(annotation_body['body']['jsonld_id']) > 0:
-                        A = Annotation.objects.raw_query({'target.jsonld_id':target,'body.items.source':{"$in":annotation_body['body']['jsonld_id']}})
+                        if target_pid and target_url:
+                            A = Annotation.objects.raw_query(
+                                {'$and':[
+                                    {'target.source': target_url},
+                                    {'target.jsonld_id': target_pid}
+                                    ],
+                                 'body.items.source':{'$in':annotation_body['body']['jsonld_id']}
+                                 }
+                            )
+                        elif target_url:
+                            A = Annotation.objects.raw_query(
+                                {'target.source': target_url,
+                                 'body.items.source': {'$in':annotation_body['body']['jsonld_id']}
+                                 }
+                            )
+                        elif target_pid:
+                            A = Annotation.objects.raw_query(
+                                {'target.jsonld_id': target_pid,
+                                 'body.items.source': {'$in':annotation_body['body']['jsonld_id']}
+                                 }
+                            )
                     else:
                         if 'value' in annotation_body['body'].keys():
-                            A = Annotation.objects.raw_query(
-                                {'target.jsonld_id':target,
-                                 '$or':[
-                                     {'body.value': annotation_body['body']['value']},
-                                     {'body.items.value': annotation_body['body']['value']}
-                                 ]})
+                            if target_pid and target_url:
+                                A = Annotation.objects.raw_query(
+                                    {'$and':[
+                                        {'target.source': target_url},
+                                        {'target.jsonld_id': target_pid}
+                                        ],
+                                     '$or':[
+                                         {'body.value': annotation_body['body']['value']},
+                                         {'body.items.value': annotation_body['body']['value']}
+                                     ]})
+                            elif target_url:
+                                A = Annotation.objects.raw_query(
+                                    {'target.source': target_url,
+                                     '$or': [
+                                         {'body.value': annotation_body['body']['value']},
+                                         {'body.items.value': annotation_body['body']['value']}
+                                     ]})
+                            elif target_pid:
+                                A = Annotation.objects.raw_query(
+                                    {'target.jsonld_id': target_pid,
+                                     '$or': [
+                                         {'body.value': annotation_body['body']['value']},
+                                         {'body.items.value': annotation_body['body']['value']}
+                                     ]})
                         else:
                             print "CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary."
                             stdlogger.error("CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary.")
@@ -1159,12 +1254,12 @@ def CheckDuplicateAnnotation( target=None, annotation_body=None ):
                     stdlogger.error("CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary.")
                     return False
             else:
-                print "CheckDuplicateAnnotation function, provided 'target' argument not a valid str or unicode."
-                stdlogger.error("CheckDuplicateAnnotation function, provided 'target' argument not a valid str or unicode.")
+                print "CheckDuplicateAnnotation function, provided 'target_url' argument not a valid str or unicode."
+                stdlogger.error("CheckDuplicateAnnotation function, provided 'target_url' argument not a valid str or unicode.")
                 return False
         else:
-            print "CheckDuplicateAnnotation function, missing 'target' argument."
-            stdlogger.error("CheckDuplicateAnnotation function, missing 'target' argument.")
+            print "CheckDuplicateAnnotation function, missing 'target_url' argument."
+            stdlogger.error("CheckDuplicateAnnotation function, missing 'target_url' argument.")
             return False
     
     except ValueError:

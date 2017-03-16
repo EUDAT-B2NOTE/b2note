@@ -58,7 +58,7 @@
                             </td>
                             <td class="col-xs-11">
                                 <input type="hidden" name="exact_url{{forloop.counter0}}" value="{{f.url}}" />
-                                <a href="{{f.url}}" target="_parent" title="Click to view on B2Share"><span>{{ f.url }}</span></a>
+                                <a href="{{f.url}}" target="_blank" title="Click to view on B2Share"><span>{{ f.url }}</span></a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -85,7 +85,7 @@
                                 </td>
                                 <td class="col-xs-11">
                                     <input type="hidden" name="related_url{{forloop.counter0}}" value="{{f.url}}"/>
-                                    <a href="{{f.url}}" target="_parent" title="Click to view on B2Share">{{f.url}}</a>
+                                    <a href="{{f.url}}" target="_blank" title="Click to view on B2Share">{{f.url}}</a>
                                 </td>
                             </tr>
                         {% endfor %}
