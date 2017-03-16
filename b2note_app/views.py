@@ -1479,6 +1479,9 @@ def interface_main(request):
         userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
         user_nickname = userprofile.nickname
 
+    annotation_list = []
+    allannotations_list = []
+
     #http://stackoverflow.com/questions/5508888/matching-query-does-not-exist-error-in-django
     try:
         # https://blog.scrapinghub.com/2013/05/13/mongo-bad-for-scraped-data/

@@ -362,7 +362,7 @@ class B2noteappTest(TestCase):
         """
         url = reverse("b2note_app.views.create_annotation")
         json_dict = {}
-        json_dict['pid_tofeed'] = 'pid_test'
+        json_dict['pid_tofeed'] = 'http://hdl.handle.net/11304/test'
         json_dict['subject_tofeed'] = 'https://b2share.eudat.eu/record/30'
         json_dict['ontology_json'] = json.dumps([{'labels' : 'annotation_test',
                                                 'uris': 'uri_test'}])
