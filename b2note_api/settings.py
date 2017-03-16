@@ -48,13 +48,14 @@ body = {
                     'type' : 'string',
                     },
                 },
-            'items': { 'type' : 'list',
-                       'schema' : {
-                           'type' : 'string',
-                           'source' : 'string',
-                           'value' : 'string'
-                       }
-                   },
+            'items': {
+                'type' : 'list',
+                'schema' : {
+                    'type' :    {'type': 'string'},
+                    'source' :  {'type': 'string'},
+                    'value' :   {'type': 'string'}
+                },
+            },
             #'language' : {
             #    'type' : 'list',
             #    'schema' : {
@@ -79,15 +80,12 @@ body = {
         }
 
 target = {
-            'type' : 'list',
-            'schema' : {
-                'jsonld_id' : { 'type' : 'string' },
-                'type' : {
-                    'type' : 'list',
-                    'schema' : {
-                        'type' : 'string',
-                        },
-                    },
+            'type': 'list',
+            'schema': {
+                'type': {'type': 'string'},
+                #'jsonld_id' :   { 'type' : 'string' },
+                #'source' :      { 'type' : 'string' }
+            },
                 #'format' : {
                 #    'type' : 'list',
                 #    'schema' : {
@@ -127,7 +125,6 @@ target = {
                 #        'type' : 'string',
                 #        },
                 #    },
-                },
             }
 
 annotations = {
@@ -137,7 +134,9 @@ annotations = {
                     'modified',
                     'generated',
                     'motivation',
+                    'target.type',
                     'target.jsonld_id',
+                    'target.source',
                     'body.type',
                     'body.value',
                     'body.purpose',
@@ -157,6 +156,8 @@ annotations = {
                         'modified': 1,
                         'generated': 1,
                         'motivation': 1,
+                        'target.type': 1,
+                        'target.source': 1,
                         'target.jsonld_id': 1,
                         'body.type': 1,
                         'body.value': 1,
@@ -271,8 +272,3 @@ if "VIRTUOSO_B2NOTE_USR" in os.environ.keys():
     virtuoso_settings['VIRTUOSO_B2NOTE_USR'] = os.environ['VIRTUOSO_B2NOTE_USR']
 if "VIRTUOSO_B2NOTE_PWD" in os.environ.keys():
     virtuoso_settings['VIRTUOSO_B2NOTE_PWD'] = os.environ['VIRTUOSO_B2NOTE_PWD']
-
-
-
-
-
