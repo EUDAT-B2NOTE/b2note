@@ -427,10 +427,10 @@ def edit_annotation(request):
                             A.body[0].items[len(A.body[0].items)-1].value:
                         textinput_primer = A.body[0].items[len(A.body[0].items)-1].value
 
-                try: tg_source = A.target[0].source
-                except: tg_source = None
-                try: tg_id = A.target[0].jsonld_id
-                except: tg_id = None
+                tg_source = None
+                if hasattr(A.target[0], "source"): tg_source = A.target[0].source
+                tg_id = None
+                if hasattr(A.target[0], "jsonld_id"): tg_id = A.target[0].jsonld_id
 
                 if tg_id or tg_source:
                     if request.POST.get('semantic_submit') is not None:
@@ -1237,7 +1237,12 @@ def allannotations(request):
         user_nickname = userprofile.nickname
 
     try:
-        allannotations_list = Annotation.objects.raw_query({'target.source': subject_tofeed})
+        if subject_tofeed and pid_tofeed:
+            allannotations_list = Annotation.objects.raw_query({'target.source': subject_tofeed, 'target.jsonld_id': pid_tofeed})
+        elif subject_tofeed:
+            allannotations_list = Annotation.objects.raw_query({'target.source': subject_tofeed})
+        elif pid_tofeed:
+            allannotations_list = Annotation.objects.raw_query({'target.jsonld_id': pid_tofeed})
     except Annotation.DoesNotExist:
         allannotations_list = []
 
@@ -1480,8 +1485,14 @@ def interface_main(request):
         # https://github.com/aparo/django-mongodb-engine/blob/master/docs/embedded-objects.rst
         if user_nickname:
             annotation_list = Annotation.objects.raw_query({'creator.nickname': user_nickname})
-        allannotations_list = Annotation.objects.raw_query({'target.source': subject_tofeed})
+        if subject_tofeed and pid_tofeed:
+            allannotations_list = Annotation.objects.raw_query({'target.source': subject_tofeed, 'target.jsonld_id': pid_tofeed})
+        elif subject_tofeed:
+            allannotations_list = Annotation.objects.raw_query({'target.source': subject_tofeed})
+        elif pid_tofeed:
+            allannotations_list = Annotation.objects.raw_query({'target.jsonld_id': pid_tofeed})
     except Annotation.DoesNotExist:
+        annotation_list = []
         allannotations_list = []
 
     allannotations_list = sorted(allannotations_list, key=lambda Annotation: Annotation.created, reverse=True)
