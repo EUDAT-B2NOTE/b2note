@@ -87,20 +87,22 @@ function get_free_text() {
 *
 */
 $(document).ready( function() {
-    document.getElementById('button1').classList.add('activated');
-    last_id = 'button1'
-    var reply_click = function(){
-        if (last_id){
-            document.getElementById(last_id).classList.remove('activated');
+    if(document.getElementById('button1')) {
+        document.getElementById('button1').classList.add('activated');
+        last_id = 'button1'
+        var reply_click = function(){
+            if (last_id){
+                document.getElementById(last_id).classList.remove('activated');
+            }
+            document.getElementById(this.id).classList.add('activated');
+            last_id = this.id
         }
-        document.getElementById(this.id).classList.add('activated');
-        last_id = this.id
-    }
-    n = 1
-    id = 'button'+ n
-    while (document.getElementById(id)){
-        document.getElementById(id).onclick = reply_click;
-        n = n + 1;
-        id = 'button' + n;
+        n = 1
+        id = 'button'+ n
+        while (document.getElementById(id)){
+            document.getElementById(id).onclick = reply_click;
+            n = n + 1;
+            id = 'button' + n;
+        }
     }
 });
