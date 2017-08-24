@@ -64,6 +64,12 @@
 	padding-bottom: 2px;
 }
 
+.activated {
+	border: 1px black;
+	cursor: default !important;
+	border-left: 2px #19428e solid;
+}
+
 
 #hostpage h1 {
 	padding-top: 10px;
