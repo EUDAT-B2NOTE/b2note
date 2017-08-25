@@ -232,6 +232,12 @@
     margin-top: 5px;
 }
 
+.captcha-refresh {
+    position: relative;
+    top: -59px;
+    left: 130px;
+}
+
 #disclaimer_paragraph {
     font-size: 11px;
     text-align: justify;
