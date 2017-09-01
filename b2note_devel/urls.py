@@ -30,4 +30,5 @@ urlpatterns = patterns('',
     url(r'^annotation_summary$', 'b2note_app.views.annotation_summary'),
     url(r'^select_search_results$', 'b2note_app.views.select_search_results'),
     url(r'^json_sample$', 'b2note_app.views.json_sample'),
+    url(r'^(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$', 'b2note_app.views.hostpage', name='reset_password_test'),
 )

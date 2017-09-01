@@ -20,12 +20,12 @@
 	#header {height: auto !important; }
 
 	#hostpage {background: #FFFFFF; }
-	#content {background: #FFFFFF url("static/images/bg_b2note.jpg") no-repeat fixed center center !important; padding-bottom: 40px;}
+	#content {background: #FFFFFF url("/static/images/bg_b2note.jpg") no-repeat fixed center center !important; padding-bottom: 40px;}
 
 	#hostpage h1 {text-align: left;}
 	footer {
-	    /* background: #dddddd url("static/images/decor-footer.png") no-repeat scroll right bottom; */
-	    background: #f7f3e9 url("static/images/color-line.png") repeat-x scroll left top;
+	    /* background: #dddddd url("/static/images/decor-footer.png") no-repeat scroll right bottom; */
+	    background: #f7f3e9 url("/static/images/color-line.png") repeat-x scroll left top;
 	    height: auto;
 	    padding: 20px 40px;
 	}
@@ -75,7 +75,7 @@
             <section class="row clearfix">
 
               <div class="col-xs-12 col-sm-12 col-md-2">
-                    <img alt="EUDAT" title="EUDAT" src="static/images/logo.png" style="width: 100%;"/>
+                    <img alt="EUDAT" title="EUDAT" src="/static/images/logo.png" style="width: 100%;"/>
                 </div>
 
                 <div class="col-xs-12 col-sm-12 col-md-10">
@@ -97,7 +97,7 @@
         <div class = "container">
 
             <!-- http://stackoverflow.com/questions/12102464/how-do-i-make-iframes-load-only-on-a-button-click -->
-            <iframe id="b2note_iframe" name="b2note_iframe" src="interface_main"
+            <iframe id="b2note_iframe" name="b2note_iframe" src="{{src}}"
                 width={{iframe_on}} onload="load_iframe('{{ subject_tofeed }}')"
                 scrolling="no"></iframe>
 
