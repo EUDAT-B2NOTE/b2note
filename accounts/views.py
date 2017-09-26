@@ -256,7 +256,7 @@ class PasswordResetConfirmView(FormView):
                 messages.success(request, 'Password has been reset.')
                 return self.form_valid(form)
             else:
-                messages.error(request, 'Password reset has not been unsuccessful.')
+                messages.error(request, 'Password reset has not been successful.')
                 return self.form_invalid(form)
         else:
             messages.error(request,'The reset password link is no longer valid.')
@@ -325,7 +325,7 @@ class ResetPasswordRequestView(FormView):
                     send_mail(subject, email, DEFAULT_FROM_EMAIL, [user.username], fail_silently=False)
                 result = self.form_valid(form)
                 messages.success(request,
-                                 'An email has been sent. Please check inbox to continue reseting password.')
+                                 'An email has been sent. Please check inbox to continue resetting password.')
                 return result
             result = self.form_invalid(form)
             messages.error(request, 'This email address does not qualify.')
@@ -432,3 +432,4 @@ def logout(request):
     """
     django_logout(request)
     return redirect('/accounts/login')
+

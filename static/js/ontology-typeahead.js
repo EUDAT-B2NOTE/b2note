@@ -267,7 +267,7 @@ $(document).ready( function() {
                     '</div>'
                 ].join('\n'),
                 footer: '<div class="pending-message" style="font-size:12px;color:#cccccc;">More suggestions incoming...</div>',
-                suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}' + ' <span style="font-size:12px;">{{extra}}</span>' + '{{#if count}}<span class="badge" style="background:grey;width:auto;font-size:11px;padding:4px;padding-top:2px;padding-bottom:2px;">{{count}}</span>{{/if}}</p>')
+                suggestion: Handlebars.compile('<p class="Typeahead-input tt-input">{{label}}' + ' <span style="font-size:12px;background:inherit !important;">{{extra}}</span>' + '{{#if count}}<span class="badge" style="background:grey;width:auto;font-size:11px;padding:4px;padding-top:2px;padding-bottom:2px;">{{count}}</span>{{/if}}</p>')
             },
             engine: Handlebars
         }).on('typeahead:asyncrequest', function(data) {

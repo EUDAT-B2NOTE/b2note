@@ -289,7 +289,7 @@ def settings(request):
     return render(request, 'b2note_app/default.html', {'text': text, "subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 
 
-def hostpage(request):
+def hostpage(request, uidb64=None, token=None):
     """
       Function: hostpage
       ----------------------------
@@ -328,6 +328,15 @@ https://b2share.eudat.eu/records/5a62838104c14932823cfd905eb438fc
 Influence of smoking and obesity in sperm quality
     """
 
+    # If the user came from a password reset link they received from an email, we change the page the iframe loads
+    reset_password = True
+    if uidb64 == None or token == None :
+        reset_password = False
+    url = "/interface_main"
+    if reset_password :
+        url = "/accounts/reset_password_confirm/" + uidb64 + '-' + token
+
+
     buttons_info, k = [], 1
     file_pid, file_url, link_label = "", "", ""
     for line in buttons_info_text.splitlines():
@@ -347,7 +356,7 @@ Influence of smoking and obesity in sperm quality
         elif line != "":
             link_label = line
 
-    return render(request, 'b2note_app/hostpage.html', {'iframe_on': 350, 'buttons_info':buttons_info})
+    return render(request, 'b2note_app/hostpage.html', {'iframe_on': 350, 'buttons_info':buttons_info, 'src': url})
 
 
 @login_required

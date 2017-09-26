@@ -70,7 +70,7 @@
         </div>
 
 		<div class="container" id="semantic">
-			<h4>Semantic tag <a href="#myannotations_summary" id="link_to_top">^top</a></h4>
+			<h4>Semantic tag <a href="#wayback" id="link_to_top">^top</a></h4>
 			{% if semantic_table %}
 				<table class="table table-condensed table-responsive table-striped" >
 					<th>Label</th><th>Nb files</th><th colspan="2">Actions</th>
@@ -119,12 +119,12 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 					{% endfor %}
 				</table>
 			{% else %}
-				<p>No semantic tag annotation about this file.</p>
+				<p>You haven't made a semantic tag annotation yet.</p>
 			{% endif %}
 		</div>
 
 		<div class="container" id="keyword">
-			<h4>Free-text keyword <a href="#myannotations_summary" id="link_to_top">^top</a></h4>
+			<h4>Free-text keyword <a href="#wayback" id="link_to_top">^top</a></h4>
 			{% if keyword_table %}
 				<table class="table table-condensed table-responsive table-striped" >
 					<th>Label</th><th style="white-space:normal;">Nb files</th><th colspan="2">Actions</th>
@@ -175,12 +175,12 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 					{% endfor %}
 				</table>
 			{% else %}
-				<p>No free-text keyword annotation about this file.</p>
+				<p>You haven't made a free-text keyword annotation yet.</p>
 			{% endif %}
 		</div>
 
 		<div class="container" id="comment">
-			<h4>Comment <a href="#myannotations_summary" id="link_to_top">^top</a></h4>
+			<h4>Comment <a href="#wayback" id="link_to_top">^top</a></h4>
 			{% if comment_table %}
 				<table class="table table-condensed table-responsive table-striped" >
 					<th>Label</th><th colspan="2">Actions</th>
@@ -223,7 +223,7 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 					{% endfor %}
 				</table>
 			{% else %}
-				<p>No comment annotation about this file.</p>
+				<p>You haven't made a comment annotation yet.</p>
 			{% endif %}
 		</div>
 	</div>
