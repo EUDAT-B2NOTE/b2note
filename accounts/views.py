@@ -21,6 +21,7 @@ from forms.user_feebacks import FeedbackForm, FeatureForm, BugReportForm
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
+from django.db import IntegrityError
 import logging
 
 stdlogger = logging.getLogger('b2note')
@@ -414,7 +415,16 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(data=request.POST)
         if form.is_valid():
-            user = form.save()
+            try:
+                user = form.save()
+            except IntegrityError:
+                # catch "UNIQUE constraint failed" error
+                # May catch other errors in which case the error message displayed in the UI would not be accurate
+                return render_to_response(
+                    'accounts/register.html',
+                    {'navbarlinks': navbarlinks, 'shortcutlinks': shortcutlinks, 'form': form, 'alreadytaken': True},
+                    context_instance=RequestContext(request)
+                )
             return redirect('/login')
         else:
             print form.errors
