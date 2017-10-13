@@ -82,3 +82,55 @@ function get_free_text() {
             });
     }
 }
+/*
+* Give a different css class to the button corresponding to the file we're currently annotating.
+*
+*/
+$(document).ready( function() {
+    if(document.getElementById('button1')) {
+        document.getElementById('button1').classList.add('activated');
+        last_id = 'button1'
+        var reply_click = function(){
+            if (last_id){
+                document.getElementById(last_id).classList.remove('activated');
+            }
+            document.getElementById(this.id).classList.add('activated');
+            last_id = this.id
+        }
+        n = 1
+        id = 'button'+ n
+        while (document.getElementById(id)){
+            document.getElementById(id).onclick = reply_click;
+            n = n + 1;
+            id = 'button' + n;
+        }
+    }
+});
+
+/*
+* Add a refresh button to captchas
+* https://stackoverflow.com/questions/18972515/how-to-create-ajax-refresh-for-django-simple-captcha
+*/
+$(function() {
+    // Add refresh button after field (this can be done in the template as well)
+    /*
+    $('img.captcha').after(
+            $('<br><a href="#void" id="captcha-refresh-button" class="captcha-refresh">Refresh</a>')
+    );
+    */
+
+    // Click-handler for the refresh-link
+    $('.captcha-refresh').click(function(){
+        var $form = $(this).parents('form');
+        var url = location.protocol + "//" + window.location.hostname + ":"
+                  + location.port + "/captcha/refresh/";
+
+        // Make the AJAX-call
+        $.getJSON(url, {}, function(json) {
+            $form.find('input[name="captcha_0"]').val(json.key);
+            $form.find('img.captcha').attr('src', json.image_url);
+        });
+
+        return false;
+    });
+});

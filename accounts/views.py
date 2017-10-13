@@ -21,6 +21,7 @@ from forms.user_feebacks import FeedbackForm, FeatureForm, BugReportForm
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
+from django.db import IntegrityError
 import logging
 
 stdlogger = logging.getLogger('b2note')
@@ -256,7 +257,7 @@ class PasswordResetConfirmView(FormView):
                 messages.success(request, 'Password has been reset.')
                 return self.form_valid(form)
             else:
-                messages.error(request, 'Password reset has not been unsuccessful.')
+                messages.error(request, 'Password reset has not been successful.')
                 return self.form_invalid(form)
         else:
             messages.error(request,'The reset password link is no longer valid.')
@@ -325,7 +326,7 @@ class ResetPasswordRequestView(FormView):
                     send_mail(subject, email, DEFAULT_FROM_EMAIL, [user.username], fail_silently=False)
                 result = self.form_valid(form)
                 messages.success(request,
-                                 'An email has been sent. Please check inbox to continue reseting password.')
+                                 'An email has been sent. Please check inbox to continue resetting password.')
                 return result
             result = self.form_invalid(form)
             messages.error(request, 'This email address does not qualify.')
@@ -414,7 +415,16 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(data=request.POST)
         if form.is_valid():
-            user = form.save()
+            try:
+                user = form.save()
+            except IntegrityError:
+                # catch "UNIQUE constraint failed" error
+                # May catch other errors in which case the error message displayed in the UI would not be accurate
+                return render_to_response(
+                    'accounts/register.html',
+                    {'navbarlinks': navbarlinks, 'shortcutlinks': shortcutlinks, 'form': form, 'alreadytaken': True},
+                    context_instance=RequestContext(request)
+                )
             return redirect('/login')
         else:
             print form.errors
@@ -432,3 +442,4 @@ def logout(request):
     """
     django_logout(request)
     return redirect('/accounts/login')
+

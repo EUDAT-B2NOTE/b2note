@@ -5,7 +5,7 @@ from collections import OrderedDict
 from jsonld_support_functions import readyQuerySetValuesForDumpAsJSONLD, ridOflistsOfOneItem, orderedJSONLDfields
 from jsonld_support_functions import retrieve_annotation_jsonld_from_api, addarobase_totypefieldname, httpPutRdfXmlFileContentToOpenVirtuoso
 from django.conf import settings as global_settings
-import json, os, copy
+import json, os, copy, urllib
 import logging
 
 import rdflib
@@ -14,6 +14,8 @@ from rdflib.plugin import Serializer, Parser
 rdflib.plugin.register('json-ld', Serializer, 'rdflib_jsonld.serializer', 'JsonLDSerializer')
 rdflib.plugin.register('json-ld', Parser, 'rdflib_jsonld.parser', 'JsonLDParser')
 
+import requests, datetime
+from requests.auth import HTTPBasicAuth
 
 stdlogger = logging.getLogger('b2note')
 
@@ -53,11 +55,208 @@ app.config['SWAGGER_INFO'] = {
 # }}}})
 
 
+@app.route('/test_export')
+def test_export():
+
+    out = "TEST"#None
+    try:
+        #staticpath = global_settings.STATIC_PATH
+        #return staticpath[:len(staticpath)-staticpath[::-1].find('/')]
+        #return staticpath[:len(staticpath)-staticpath[::-1].find('/')-1] + '/b2note_api/test_rdf.rdf'
+        #nf = open(os.path.join(staticpath[:len(staticpath)-staticpath[::-1].find('/')-1], '/b2note_api/test_rdf.rdf'), 'w')
+        apipath = "/bsc/public/b2note_project/b2note_devel/"
+        nf = open(apipath+"b2note_api/test_rdf.rdf", "w")
+        nf.write('''<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+   xmlns:oa="http://www.w3.org/ns/oa#"
+   xmlns:as="http://www.w3.org/ns/activitystreams#"
+   xmlns:foaf="http://xmlns.com/foaf/0.1/"
+   xmlns:dcterms="http://purl.org/dc/terms/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+</rdf:RDF>
+''')
+
+        nf.close()
+
+        t_start = datetime.datetime.now()
+
+        annL = None
+        annL = retrieve_annotation_jsonld_from_api()
+
+        t_api = datetime.datetime.now()
+
+        if annL:
+            # Replace field name "type" by "@type" for rdflib-jsonld correct processing
+            annL = addarobase_totypefieldname(annL)
+            # B2SHARE sends fiel urls containing whitespace characters,
+            # that rdflib refuses to serialize, replace by %20
+            if annL:
+                for ann in annL:
+                    if isinstance(ann, dict):
+                        if "target" in ann.keys():
+                            if isinstance(ann["target"], dict):
+                                if "source" in ann["target"].keys():
+                                    if isinstance(ann["target"]["source"],(str, unicode)):
+                                        if ann["target"]["source"].find(" ")>0:
+                                            ann["target"]["source"] = ann["target"]["source"].replace(" ", "%20")
+                                if "id" in ann["target"].keys():
+                                    if isinstance(ann["target"]["id"],(str, unicode)):
+                                        if ann["target"]["id"].find(" ")>0:
+                                            ann["target"]["id"] = ann["target"]["id"].replace(" ", "%20")
+            else:
+                print("export_to_triplestore function, no annotation list from addarobase function.")
+                stdlogger.error("export_to_triplestore function, no annotation list from addarobase function.")
+                return None
+        else:
+            print("export_to_triplestore function, no annotation list retrieved.")
+            stdlogger.error("export_to_triplestore function, no annotation list retrieved.")
+            return None
+
+        t_nospace = datetime.datetime.now()
+
+        # Re-set blank node ids in existing graph
+        prog = 0
+        bnc = 0
+        nf = open(apipath + "b2note_api/test_rdf.rdf", "r")
+        nRDF = nf.read()
+        nf.close()
+        while '''rdf:nodeID="''' in nRDF[prog:]:
+            b = prog + nRDF[prog:].find('''rdf:nodeID="''') + len('''rdf:nodeID="''')
+            f = b + nRDF[b:].find('''"''')
+            prog = b
+            old_node_id = nRDF[b:f]
+            if old_node_id[:len("B2NOTEBLANKNODE")] != "B2NOTEBLANKNODE":
+                new_node_id = "B2NOTEBLANKNODE" + str(bnc)
+                nRDF = nRDF.replace(old_node_id, new_node_id)
+                bnc += 1
+        nf = open(apipath + "b2note_api/test_rdf.rdf", "w")
+        nf.write(nRDF)
+        nf.close()
+
+        g = None
+        nRDF = None
+        if annL:
+            for ann in annL:
+                # Build-up graph from jsonld list of annotations
+                g = Graph().parse(data=json.dumps(ann), format='json-ld')
+
+                if g:
+                    # The library adds a trailing slash character to the Software homepage url
+                    for s, p, o in g.triples((None, None, term.URIRef(u"https://b2note.bsc.es/"))):
+                        g.add((s, p, term.URIRef(u"https://b2note.bsc.es")))
+                    for s, p, o in g.triples((None, None, term.URIRef(u"https://b2note.bsc.es/"))):
+                        g.remove((s, p, term.URIRef(u"https://b2note.bsc.es/")))
+                else:
+                    print("export_to_triplestore function, no graph parsed from json-ld.")
+                    stdlogger.error("export_to_triplestore function, no graph parsed from json-ld.")
+                    return None
+
+                files = None
+                if g:
+                    files = g.serialize(format='xml')
+
+                descr = None
+                if files:
+                    b = files.find('''<rdf:Description''')
+                    b = b - files[:b][::-1].find('''>''') + 1
+                    f = files.find('''</rdf:RDF>''')
+                    descr = files[b:f]
+                    if descr:
+                        prog = 0
+                        while '''rdf:nodeID="''' in descr[prog:]:
+                            b = prog + descr[prog:].find('''rdf:nodeID="''') + len('''rdf:nodeID="''')
+                            f = b + descr[b:].find('''"''')
+                            prog = b
+                            old_node_id = descr[b:f]
+                            print prog, bnc, b, f, old_node_id
+                            if old_node_id[:len("B2NOTEBLANKNODE")] != "B2NOTEBLANKNODE":
+                                new_node_id = "B2NOTEBLANKNODE" + str(bnc)
+                                descr = descr.replace(old_node_id, new_node_id)
+                                bnc += 1
+                else:
+                    print("export_to_triplestore function, no graph from removing trailing slash from software homepage url.")
+                    stdlogger.error("export_to_triplestore function, no graph from removing trailing slash from software homepage url.")
+                    return None
+
+                if descr:
+                    nf = open(apipath+"b2note_api/test_rdf.rdf", "r")
+                    nRDF = nf.read()
+                    nf.close()
+
+                    nf = open(apipath+"b2note_api/test_rdf.rdf", "w")
+                    nf.write(nRDF[:nRDF.find('''</rdf:RDF>''')] + files[b:f] + '\n' + '''</rdf:RDF>''')
+                    nf.close()
+
+                else:
+                    print("export_to_triplestore function, no annotation description extracted from serilalized RDF.")
+                    stdlogger.error("export_to_triplestore function, no annotation description extracted from serilalized RDF.")
+                    return None
+
+            t_makegraph = datetime.datetime.now()
+
+            R = None
+            if nRDF:
+                R = httpPutRdfXmlFileContentToOpenVirtuoso(
+                    'http://opseudat03.bsc.es:8890/DAV/home/b2note/rdf_sink/annotations.rdf',
+                    virtuoso_settings['VIRTUOSO_B2NOTE_USR'],
+                    virtuoso_settings['VIRTUOSO_B2NOTE_PWD'],
+                    nRDF)
+            else:
+                print("export_to_triplestore function, replacement RDF was not constructed.")
+                stdlogger.error("export_to_triplestore function, replacement RDF was not constructed.")
+                return None
+
+            t_sending = datetime.datetime.now()
+
+            if R is not None:
+                return '''
+                <h1>DONE</h1>
+                <br>
+                <p>Nb annotations: '''+str(len(annL))+'''</p>
+                <p>t_start: 0, 0, '''+str(t_start)+'''</p>
+                <p>t_api: '''+str(t_api-t_start)+''', '''+str(t_api-t_start)+''', '''+str(t_api)+'''</p>
+                <p>t_nospace: '''+str(t_nospace-t_api)+''', '''+str(t_nospace-t_start)+''', '''+str(t_nospace)+'''</p>
+                <p>t_makegraph: '''+str(t_makegraph-t_api)+''', '''+str(t_makegraph-t_start)+''', '''+str(t_makegraph)+'''</p>
+                <p>t_sending: '''+str(t_sending-t_api)+''', '''+str(t_sending-t_start)+''', '''+str(t_sending)+'''</p>
+                <br>
+                <pre>'''+R.text+'''</pre>
+                <br>
+                <p>Example query:<p>
+                <pre>SELECT DISTINCT ?file ?free_text ?semantic_label
+FROM &#60;urn:dav:home:b2note:rdf_sink>
+WHERE {
+ ?s ?p &#60;http://www.w3.org/ns/oa#Annotation>.
+ ?s &#60;http://www.w3.org/ns/oa#hasTarget> ?file.
+ ?s &#60;http://www.w3.org/ns/oa#hasBody> ?b.
+ OPTIONAL{
+  ?b &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ?free_text.
+ }
+ OPTIONAL{
+  ?b &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#type> &#60;http://www.w3.org/ns/oa#Composite>.
+  ?b &#60;http://www.w3.org/ns/activitystreams#items> ?d.
+  ?d &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> ?e.
+  ?e &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f.
+  ?f &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ?semantic_label.
+ }
+}
+LIMIT 50
+</pre>
+'''
+
+    except:
+        print("export_to_triplestore function, did not complete.")
+        stdlogger.error("export_to_triplestore function, did not complete.")
+        return False
+
+    return out
+
 
 @app.route('/export_to_triplestore')
 def export_to_triplestore():
     out = None
     try:
+
         annL = None
         annL = retrieve_annotation_jsonld_from_api()
 
@@ -70,6 +269,10 @@ def export_to_triplestore():
                 if isinstance(ann, dict):
                     if "target" in ann.keys():
                         if isinstance(ann["target"], dict):
+                            if "source" in ann["target"].keys():
+                                if isinstance(ann["target"]["source"], (str, unicode)):
+                                    if ann["target"]["source"].find(" ") > 0:
+                                        ann["target"]["source"] = ann["target"]["source"].replace(" ", "%20")
                             if "id" in ann["target"].keys():
                                 if isinstance(ann["target"]["id"],(str, unicode)):
                                     if ann["target"]["id"].find(" ")>0:
@@ -107,11 +310,26 @@ def export_to_triplestore():
             stdlogger.error("export_to_triplestore function, no graph from removing trailing slash from software homepage url.")
             return None
 
+        # CLEAR previous graph
+        graph_urn = "urn:dav:home:b2note:rdf_sink"
+        q   = urllib.quote_plus('CLEAR GRAPH <' + graph_urn + '>')
+        url = 'http://opseudat03.bsc.es:8890/sparql?query=' + q
+        rc = None
+        rc   = requests.get(url, auth=HTTPBasicAuth(
+            virtuoso_settings['VIRTUOSO_B2NOTE_USR'],
+            virtuoso_settings['VIRTUOSO_B2NOTE_PWD']))
+
         R = None
-        R = httpPutRdfXmlFileContentToOpenVirtuoso('http://opseudat03.bsc.es:8890/DAV/home/b2note/rdf_sink/test.rdf',
-                                                   virtuoso_settings['VIRTUOSO_B2NOTE_USR'],
-                                                   virtuoso_settings['VIRTUOSO_B2NOTE_PWD'],
-                                                   files)
+        if rc and rc.text and isinstance(rc.text, (str, unicode)) and rc.text.find("Clear graph &lt;"+graph_urn+"&gt; -- done")>0:
+            R = httpPutRdfXmlFileContentToOpenVirtuoso('http://opseudat03.bsc.es:8890/DAV/home/b2note/rdf_sink/annotations.rdf',
+                                                       virtuoso_settings['VIRTUOSO_B2NOTE_USR'],
+                                                       virtuoso_settings['VIRTUOSO_B2NOTE_PWD'],
+                                                       files)
+        else:
+            print("export_to_triplestore function, call to CLEAR previous GRAPH on triplestore failed.")
+            stdlogger.error("export_to_triplestore function, call to CLEAR previous GRAPH on triplestore failed.")
+            return None
+
         if R is not None:
             print "export_to_triplestore function, completed publishing of B2Note annotations to Open Virtuoso triplestore."
             return '''
@@ -120,26 +338,24 @@ def export_to_triplestore():
                 <p>SPARQL endpoint: <a href="http://opseudat03.bsc.es:8890/sparql" target="_blank">http://opseudat03.bsc.es:8890/sparql</a></p>
                 <p>Example query:<p>
                 <pre>SELECT DISTINCT ?file ?free_text ?semantic_label
-                FROM &#60;urn:dav:home:b2note:rdf_sink>
-                WHERE {
-                 ?s ?p &#60;http://www.w3.org/ns/oa#Annotation>.
-                 ?s &#60;http://www.w3.org/ns/oa#hasTarget> ?file.
-                 ?s &#60;http://www.w3.org/ns/oa#hasBody> ?b.
-                 OPTIONAL{
-                  ?b &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ?free_text.
-                 }
-                 OPTIONAL{
-                  ?b &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#type> &#60;http://www.w3.org/ns/oa#Composite>.
-                  ?b &#60;http://www.w3.org/ns/activitystreams#items> ?d.
-                  ?d &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> ?e.
-                  ?e &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f.
-                  ?f &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ?semantic_label.
-                 }
-                }
-                LIMIT 50
-                </pre>
-            '''
-
+FROM &#60;urn:dav:home:b2note:rdf_sink>
+WHERE {
+ ?s ?p &#60;http://www.w3.org/ns/oa#Annotation>.
+ ?s &#60;http://www.w3.org/ns/oa#hasTarget> ?file.
+ ?s &#60;http://www.w3.org/ns/oa#hasBody> ?b.
+ OPTIONAL{
+  ?b &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ?free_text.
+ }
+ OPTIONAL{
+  ?b &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#type> &#60;http://www.w3.org/ns/oa#Composite>.
+  ?b &#60;http://www.w3.org/ns/activitystreams#items> ?d.
+  ?d &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> ?e.
+  ?e &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f.
+  ?f &#60;http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ?semantic_label.
+ }
+}
+LIMIT 50
+</pre>'''
         else:
             print "export_to_triplestore function, could not send rdf/xml file content to Open Virtuoso rdf-sink."
             stdlogger.error(
