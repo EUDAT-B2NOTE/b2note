@@ -11,7 +11,7 @@
         {% if messages %}
         <ul class="messages">
             {% for message in messages %}
-            <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
             {% endfor %}
             {% endif %}
         </ul>
@@ -72,6 +72,7 @@
                 {% endif %}
 
             {% endfor %}
+            <tr><td><a href="#void" id="captcha-refresh-button" class="captcha-refresh">Refresh</a></td></tr>
 
             <div class="container">
 

@@ -19,8 +19,8 @@
                             <td colspan="2" style="margin-top:25px;font-size:12px;">
                                 <div class="container col-xs-12">
                                     {% if ann %}
-                                        {% if ann.body.0.value or shortform %}
-                                            {{ann.body.0.value}} ({{shortform}})
+                                        {% if ann.body.0.items.1.value or shortform %}
+                                            {{ann.body.0.items.1.value}} ({{shortform}})
                                         {% endif %}
                                     {% endif %}
                                 </div>
@@ -39,8 +39,8 @@
                             <td colspan="2" style="margin-top:25px;font-size:12px;">
                                 <div class="container col-xs-12">
                                     {% if ann %}
-                                        {% if ann.body.0.value or shortform %}
-                                            {{ann.body.0.value}} ({{shortform}})
+                                        {% if ann.body.0.items.1.value or shortform %}
+                                            {{ann.body.0.items.1.value}} ({{shortform}})
                                         {% endif %}
                                     {% endif %}
                                 </div>
