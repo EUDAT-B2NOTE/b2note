@@ -213,13 +213,6 @@ class B2noteappTest(TestCase):
             Creates a new entry in the DB of Annotations
         """
         return Annotation.objects.create(jsonld_id=jsonld_id, type=type)
-
-    def test_create_account_same_credentials(self):
-        self.username = 'test'
-        self.password = '123456'
-        self.email = 'test@test.com'
-        self.db = 'users'
-        self.db_user = UserCred.objects.create_user(username=self.username, email=self.email, password=self.password, db=self.db)
     
     def test_create_annotation_db(self):
         """
