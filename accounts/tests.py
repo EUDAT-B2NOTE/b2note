@@ -35,7 +35,22 @@ class AccountTest(TestCase):
         store.save()
         self.session = store
         self.client.cookies[settings.SESSION_COOKIE_NAME] = store.session_key
-        
+
+    def test_register_with_same_credentials(self):
+        response = self.client.post('/register', {
+            'username': self.email,
+            'password': self.password,
+            'first_name': 'a',
+            'last_name': 'a',
+            'organozation': 'a',
+            'job_title': 'a',
+            'annotator_exp': 'a',
+            'country': 'a'
+        }, follow=True)
+        print("testing registraton")
+        print(response.status_code)
+        self.assertEqual(response.status_code, 200)
+
     def test_login(self):
         self.user = authenticate(email=self.email,password=self.password,db=self.db_user.getDB())
         response = self.client.post('/login', {'username': self.email, 'password': self.password}, follow=True)
