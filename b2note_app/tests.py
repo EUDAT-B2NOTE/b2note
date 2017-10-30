@@ -263,7 +263,10 @@ class B2noteappTest(TestCase):
         # DB just created with no annotations in there
         before = Annotation.objects.filter().count()
         self.assertEqual(before, 0)
-        a = CreateSemanticTag(u"https://b2share.eudat.eu/record/30", '{"uris":"test_uri", "labels": "test_label"}')
+        a = CreateSemanticTag(
+            subject_url=u"https://b2share.eudat.eu/record/30",
+            subject_pid=u"http://hdl.handle.net/11304/test",
+            object_json='[{"uris":"test_uri", "labels": "test_label"}]')
         self.assertTrue(a)
         # DB with 1 annotations created
         after = Annotation.objects.filter().count()
@@ -278,9 +281,15 @@ class B2noteappTest(TestCase):
             --------------------
             Tests the no creation of invalid semantic tags using the mongo support function.
         """
-        a = CreateSemanticTag(1234, '{"uris":"test_uri", "labels": "test_label"}')
+        a = CreateSemanticTag(
+            subject_url=1234,
+            subject_pid=u"http://hdl.handle.net/11304/test",
+            object_json='{"uris":"test_uri", "labels": "test_label"}')
         self.assertTrue(not a)
-        a = CreateSemanticTag(u"https://b2share.eudat.eu/record/30", '{"labels": "test_label"}')
+        a = CreateSemanticTag(
+            subject_url=u"https://b2share.eudat.eu/record/30",
+            subject_pid=u"http://hdl.handle.net/11304/test",
+            object_json='{"labels": "test_label"}')
         self.assertTrue(not a)
         
     def test_create_free_text_keyword(self):
@@ -292,7 +301,10 @@ class B2noteappTest(TestCase):
         # DB just created with no annotations in there
         before = Annotation.objects.filter().count()
         self.assertEqual(before, 0)
-        a = CreateFreeTextKeyword(u"https://b2share.eudat.eu/record/30", u"testing free text")
+        a = CreateFreeTextKeyword(
+            subject_url="https://b2share.eudat.eu/record/30",
+            subject_pid=u"http://hdl.handle.net/11304/test",
+            text=u"testing free text")
         self.assertTrue(a)
         # DB with 1 annotations created
         after = Annotation.objects.filter().count()
@@ -307,9 +319,15 @@ class B2noteappTest(TestCase):
             --------------------
             Tests the no creation of invalid free text keywords using the mongo support function.
         """
-        a = CreateFreeTextKeyword(u"https://b2share.eudat.eu/record/30", 1234)
+        a = CreateFreeTextKeyword(
+            subject_url=u"https://b2share.eudat.eu/record/30",
+            subject_pid=None,
+            text=1234)
         self.assertTrue(not a)
-        a = CreateFreeTextKeyword(u"https://b2share.eudat.eu/record/30", "")
+        a = CreateFreeTextKeyword(
+            subject_url=u"https://b2share.eudat.eu/record/30",
+            subject_pid=None,
+            text="")
         self.assertTrue(not a)
         
     def test_settings_view(self):
@@ -362,10 +380,10 @@ class B2noteappTest(TestCase):
         """
         url = reverse("b2note_app.views.create_annotation")
         json_dict = {}
-        json_dict['pid_tofeed'] = 'pid_test'
+        json_dict['pid_tofeed'] = 'http://hdl.handle.net/11304/test'
         json_dict['subject_tofeed'] = 'https://b2share.eudat.eu/record/30'
-        json_dict['ontology_json'] = json.dumps({'labels' : 'annotation_test',
-                                                'uris': 'uri_test'})
+        json_dict['ontology_json'] = json.dumps([{'labels' : 'annotation_test',
+                                                'uris': 'uri_test'}])
         json_dict['semantic_submit'] = 'test'
 
         self.login()

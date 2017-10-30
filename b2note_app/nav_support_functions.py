@@ -8,7 +8,7 @@ def list_navbarlinks(request=None, links_out=[]):
             {"url": "/accounts/profilepage", "title": "Account", "icon": "user"},
             {"url": "/search", "title": "Search", "icon": "search"},
             {"url": "/export", "title": "Download", "icon": "download-alt"},
-            {"url": "/accounts/logout", "title": "Logout", "icon": "log-out"},
+            {"url": "/accounts/logout", "title": "Logout and close", "icon": "log-out"},
             {"url": "/help", "title": "Help page", "icon": "question-sign"},
         ]
     else:

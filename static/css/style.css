@@ -17,18 +17,26 @@
 	background: #FFFFFF url("../images/bg_b2note.jpg") no-repeat fixed center center;
 }
 
+
 #section_create .tt-menu * {
     /* http://stackoverflow.com/questions/23981704/typeahead-always-shows-only-5-suggestions-maximum*/
     width: 290px;
 	margin-left: 0px;
     max-height: 300px;
-    /*overflow-y: auto;*/
-    overflow-y: scroll;
+    overflow-y: visible;
 	font-size: 14px;
-	word-break: break-all;
-	background: white;
     padding-left: 2px;
     padding-right: 2px;
+    background-color: white;
+}
+
+#section_create .tt-menu * :hover {
+    cursor: pointer;
+    background-color: #66aaff;
+}
+
+.tt-highlight {
+    background: inherit !important;
 }
 
 #select_semantic .tt-menu * {
@@ -61,6 +69,12 @@
 	padding: 0px;
 	padding-top: 2px;
 	padding-bottom: 2px;
+}
+
+.activated {
+	border: 1px black;
+	cursor: default !important;
+	border-left: 2px #19428e solid;
 }
 
 
@@ -118,6 +132,7 @@
 #header img {
 	padding: 5px;
 	margin-left: 5px;
+	width: 200px !important;
 }
 
 .clear{
@@ -125,7 +140,7 @@
 }
 
 #b2note_iframe {
-	height: 500px !important;
+	height: 500px;
     visibility: hidden;
 	/* float: right; */
 	margin: 5px 5px 15px 5px;
@@ -133,10 +148,16 @@
 	-moz-border-radius: 20px;
 	border-radius: 5px;
 	text-align: center;
+    /* doesn't move*/
 	position: fixed;
 	right: 5px;
-	/*overflow: scroll;*/
-	/*overflow: hidden;*/
+	top: 118px;
+
+	/* does move
+	position: absolute;
+	right: 5px;
+	top: 120px;
+	*/
 }
 
 #consolepagebody {
@@ -179,7 +200,7 @@
 
 #main {
     margin-top:15px;
-    height: 425px;
+    height: 441px;
     overflow-y: scroll;
 }
 
@@ -209,6 +230,12 @@
 #confirmpassowrdform.container img[class="captcha"] {
     margin-left: 15px;
     margin-top: 5px;
+}
+
+.captcha-refresh {
+    position: relative;
+    top: -59px;
+    left: 130px;
 }
 
 #disclaimer_paragraph {
@@ -770,6 +797,11 @@
 #help-content p {
     text-align: justify;
 }
+
+.pending-message {
+    display: none;
+}
+
 
 
 #link_to_top {

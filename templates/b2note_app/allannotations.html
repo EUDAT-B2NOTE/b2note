@@ -85,7 +85,20 @@
 		</div>
 
 		<div class="container" id="semantic">
-			<h4>Semantic tag <a href="#allannotations_summary" id="link_to_top">^top</a></h4>
+			<h4>Semantic tag <a href="#wayback" id="link_to_top">^top</a></h4>
+			<!--
+			None of these work:
+			https://stackoverflow.com/questions/4147112/how-to-jump-to-top-of-browser-page
+			https://www.w3schools.com/howto/howto_js_scroll_to_top.asp
+			<button onclick="$('html,body').scrollTop(0);" id="myBtn" title="Go to top">Top</button>
+			<button onclick="$(window).scrollTop(0);" id="myBtn" title="Go to top">Top</button>
+			<button onclick="scroll(0,0);" id="myBtn" title="Go to top">Top</button>
+			<button onclick="window && window.scroll(0,0);" id="myBtn" title="Go to top">Top</button>
+			<button onclick="window.scroll(0,0);" id="myBtn" title="Go to top">Top</button>
+			<button onclick="window.scrollTo(0, 0);" id="myBtn" title="Go to top">Top</button>
+			<button onclick="document.body.scrollTop = 0;" id="myBtn" title="Go to top">Top</button>
+			<button onclick="document.documentElement.scrollTop = 0;" id="myBtn" title="Go to top">Top</button>
+			-->
 			{% if semantic_table %}
 				<table class="table table-condensed table-responsive table-striped" >
 					<tr class="table_header_grey">
@@ -154,7 +167,7 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 		</div>
 
 		<div class="container" id="keyword">
-			<h4>Free-text keyword <a href="#allannotations_summary" id="link_to_top">^top</a></h4>
+			<h4>Free-text keyword <a href="#wayback" id="link_to_top">^top</a></h4>
 			{% if keyword_table %}
 				<table class="table table-condensed table-responsive table-striped" >
 					<th>Label</th><th colspan="2">N Files</th><th colspan="2">Actions</th>
@@ -221,7 +234,7 @@ Click for full info." style="font-size:12px;padding:2px;margin-right:10px;"/>
 		</div>
 
 		<div class="container" id="comment">
-			<h4>Comment <a href="#allannotations_summary" id="link_to_top">^top</a></span></h4>
+			<h4>Comment <a href="#wayback" id="link_to_top">^top</a></span></h4>
 			{% if comment_table %}
 				<table class="table table-condensed table-responsive table-striped" >
 					<th>Label</th><th colspan="2">Actions</th>
