@@ -47,7 +47,7 @@ class AccountTest(TestCase):
             'annotator_exp': 'a',
             'country': 'a'
         }, follow=True)
-        print("testing registraton")
+        print("testing registration")
         print(response.status_code)
         self.assertEqual(response.status_code, 200)
 

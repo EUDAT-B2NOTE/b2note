@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render, render_to_response, redirect
 from django.template import RequestContext
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 from django.forms.models import model_to_dict
@@ -365,11 +365,214 @@ def profilepage(request):
         return False
 
 
+
+from oic.oic import Client
+from oic.utils.authn.client import CLIENT_AUTHN_METHOD
+from oic.oic.message import ProviderConfigurationResponse
+from oic.oic.message import RegistrationResponse
+import json
+from oic import rndstr
+from oic.utils.http_util import Redirect
+from oic.oic.message import AuthorizationResponse
+import os
+from django.http import HttpResponse
+
+
+def prepare_client():
+    # http://pyoidc.readthedocs.io/en/latest/examples/rp.html
+    # Instantiate a client
+    client = Client(client_authn_method=CLIENT_AUTHN_METHOD)
+    # Register the OP
+    # DEV endpoints
+    issuer = "https://unity.eudat-aai.fz-juelich.de:8443"
+    auth = "https://unity.eudat-aai.fz-juelich.de:8443/oauth2-as/oauth2-authz"
+    tok = "https://unity.eudat-aai.fz-juelich.de:8443/oauth2/token"
+    usrinfo = "https://unity.eudat-aai.fz-juelich.de:8443/oauth2/userinfo"
+    # PROD endpoints
+    # issuer = "https://b2access.eudat.eu:8443"
+    # authEP = "https://b2access.eudat.eu:8443/oauth2-as/oauth2-authz"
+    # tokenEP = "https://b2access.eudat.eu:8443/oauth2/token"
+    # usrinfoEP = "https://b2access.eudat.eu:8443/oauth2/userinfo"
+    op_info = ProviderConfigurationResponse(issuer=issuer, authorization_endpoint=auth, token_endpoint=tok, userinfo_endpoint=usrinfo)
+    client.provider_info = op_info
+    # Set our credentials (that we got from manually registering to B2Access)
+    try:
+        dir = os.path.dirname(__file__)
+        client_credentials = json.load(open(dir + '/client_credentials.json'))
+        id = client_credentials['client_id']
+        secret = client_credentials['client_secret']
+    except:
+        print "Error when reading client_credential.json"
+        stdlogger.error("Error when reading client_credential.json")
+        id = "error"
+        secret = "error"
+    #id = 'b2note-dev'
+    #secret = 'B2Note-B2Access'
+    # /!\ Added the redirect URI here, else it's not defined later (in args ={[...] client.registration_response["redirect_uris"][0])
+    # LOCAL redirect URI
+    uri = "http://b2note-local.dev/accounts/auth_redirected"
+    # DEV redirect URI
+    # uri = "https://b2note-dev.bsc.es/accounts/auth_redirected"
+    # PROD redirect URI
+    # uri = ""
+    uris = [uri]
+    info = {"client_id": id, "client_secret": secret, "redirect_uris": uris}
+    client_reg = RegistrationResponse(**info)
+    client.store_registration_info(client_reg)
+    return client
+
+global client
+client = prepare_client()
+
+def auth_main(request):
+    """
+      Function: auth
+      ----------------------------
+        Trying out pyOIDC
+
+        input:
+
+        output:
+
+    """
+    # http://pyoidc.readthedocs.io/en/latest/examples/rp.html
+    # Auth code
+    request.session["nonce"] = rndstr()
+    request.session["state"] = rndstr()
+    args = {"client_id": client.client_id, "response_type": "code", "scope": ["openid"], "nonce": request.session["nonce"],
+            "redirect_uri": client.registration_response["redirect_uris"][0], "state": request.session["state"]}
+    auth_req = client.construct_AuthorizationRequest(request_args=args)
+    # /!\ client.authorization_endpoint used in the example is not defined (or it's an empty string maybe)
+    # using client.provider_info["authorization_endpoint"] instead
+    login_url = auth_req.request(client.provider_info["authorization_endpoint"])
+    return redirect(login_url)
+    # Redirect (cap R) does not work
+    #return Redirect(login_url)
+    # return render(request, "accounts/auth_main.html", {'url': login_url, 'EP': client.provider_info["authorization_endpoint"]})
+
+
+def auth_redirected(request):
+    """
+      Function: auth
+      ----------------------------
+        Trying out pyOIDC
+
+        input:
+
+
+        output:
+
+    """
+    # http://pyoidc.readthedocs.io/en/latest/examples/rp.html
+    # If you're in a WSGI environment
+    # response = os.environ.get("QUERY_STRING")
+    # this doesn't work, at least for the local version.
+    response = request.GET.urlencode()
+    aresp = client.parse_response(AuthorizationResponse, info=response, sformat="urlencoded")
+    code = aresp["code"]
+    assert aresp["state"] == request.session["state"]
+    # Using code to get token
+    args = {"code": aresp["code"]}
+    # I had the error:
+    # MissingEndpoint at /auth_redirected, No 'token_endpoint' specified
+    # fix:
+    client.token_endpoint = client.provider_info["token_endpoint"]
+    resp = client.do_access_token_request(state=aresp["state"], request_args=args, authn_method="client_secret_basic")
+
+
+    # try:
+    #     resp = client.do_access_token_request(state=aresp["state"],
+    #                                           request_args=args,
+    #                                           authn_method="client_secret_basic"
+    #                                           )
+    # except:
+    #     print "auth_redirected view, could not request access token"
+    #     stdlogger.error("auth_redirected view, could not request access token")
+    #     return HttpResponse('error <script type="text/javascript"> setTimeout(function(){window.close()}, 700); </script>')
+
+    # Use token to get User Info
+    # userinfo = client.do_user_info_request(state=aresp["state"])
+    email = "b@b.com"
+
+    # Check wether the user has a b2note account or not
+    registered = False
+    user = authenticate(email=email, password="password")
+    if user is not None:
+        registered = True
+
+    # If he does not, create it
+    if not registered:
+        # create account
+        # email = email
+        # password = "password"
+        # everything else = whatever, as long as I can create the account
+        pass
+
+    # Login
+    user = authenticate(email=email, password="password")
+    if user is not None:
+        if user.is_active:
+            django_login(request, user)
+            request.session["user"] = user.annotator_id.annotator_id
+
+    # Close popup
+    #return HttpResponse('Connected <script type="text/javascript"> setTimeout(function(){window.close()}, 700); </script>')
+
+    # in interface main: branch incomplete account
+    # in newregister: update account
+    code = user.annotator_id.organization
+    return render(request, "accounts/auth_redirected.html", {'code': code})
+
+
+
 def login(request):
     """
     Log in view
     """
+    navbarlinks = list_navbarlinks(request, ["Login", "Help page"])
+    navbarlinks.append({"url": "/help#helpsection_loginpage", "title": "Help page", "icon": "question-sign"})
+    shortcutlinks = []
 
+    login_failed_msg = False
+
+    if request.method == 'POST':
+        login_failed_msg = True
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = authenticate(email=request.POST['username'], password=request.POST['password'])
+            if user is not None:
+                if user.is_active:
+                    django_login(request, user)
+                    request.session["user"] = user.annotator_id.annotator_id
+                    login_failed_msg = False
+                    return redirect('/interface_main')
+    else:
+        if request.session.get("user"):
+            return redirect('/interface_main', context=RequestContext(request))
+        else:
+            form = AuthenticationForm()
+    #return HttpResponse('buton placeholder <script type="text/javascript"> window.open("http://b2note-local.dev/accounts/auth_main", "ggl", "height=700,width=1700,top=200"); </script>')
+    return render_to_response('accounts/login.html',{'form': form},
+                              context_instance=RequestContext(request, {
+                                  'login_failed_msg': login_failed_msg,
+                                  'navbarlinks': navbarlinks,
+                                  'shortcutlinks': shortcutlinks,
+                                  "pid_tofeed": request.session.get("pid_tofeed"),
+                                  "subject_tofeed": request.session.get("subject_tofeed"),
+                              }))
+
+
+def polling(request):
+    if request.session.get("user"):
+        return HttpResponse('logged')
+    else:
+        return HttpResponse('not logged')
+
+
+def old_login(request):
+    """
+    Log in view
+    """
     navbarlinks = list_navbarlinks(request, ["Login", "Help page"])
     navbarlinks.append({"url": "/help#helpsection_loginpage", "title": "Help page", "icon": "question-sign"})
     shortcutlinks = []
@@ -393,7 +596,7 @@ def login(request):
         else:
             form = AuthenticationForm()
 
-    return render_to_response('accounts/login.html',{'form': form},
+    return render_to_response('accounts/old_login.html',{'form': form},
                               context_instance=RequestContext(request, {
                                   'login_failed_msg': login_failed_msg,
                                   'navbarlinks': navbarlinks,
