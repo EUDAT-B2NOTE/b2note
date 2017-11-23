@@ -25,7 +25,7 @@
             <br>
             <br>
             <br>
-            <input type="button" value="old b2note login" onclick='window.location="http://b2note-local.dev/accounts/old_login"'> </input>
+            <input type="button" value="old b2note login" onclick='window.location="/accounts/old_login"'> </input>
 
         </div>
     </div>
@@ -57,9 +57,9 @@ var opened = false
 a = ""
 doit = function(){
     setTimeout(function(){
-        a = httpGet('http://b2note-local.dev/accounts/polling')
+        a = httpGet('/accounts/polling')
         if(a=="logged"){
-            window.location="http://b2note-local.dev/interface_main"
+            window.location="/interface_main"
         }
         else if (opened){
             waiting()
@@ -77,7 +77,7 @@ waiting = function(){
 
 
 b2access = function(){
-    window.open("http://b2note-local.dev/accounts/auth_main", "B2Access", "height=700,width=1700,top=200");
+    window.open("/accounts/auth_main", "B2Access", "height=700,width=1700,top=200");
 }
 b2access()
 

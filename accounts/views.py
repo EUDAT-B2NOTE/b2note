@@ -401,16 +401,26 @@ def prepare_client():
         client_credentials = json.load(open(dir + '/client_credentials.json'))
         id = client_credentials['client_id']
         secret = client_credentials['client_secret']
+        uri = client_credentials['client_redirect_uri']
     except:
         print "Error when reading client_credential.json"
         stdlogger.error("Error when reading client_credential.json")
         id = "error"
         secret = "error"
+        uri = "error"
     #id = 'b2note-dev'
     #secret = 'B2Note-B2Access'
     # /!\ Added the redirect URI here, else it's not defined later (in args ={[...] client.registration_response["redirect_uris"][0])
+    # All uri athe the same time
+    #domain_root = request.META['HTTP_HOST']
+    #if domain_root and isinstance(domain_root, (unicode, str)) and domain_root[:len("http://b2note")] == "http://b2note":
+    #    domain_root = "https://b2note" + domain_root[len("http://b2note"):]
+    #uri = domain_root + "/accounts/auth_redirected"
+
+
+
     # LOCAL redirect URI
-    uri = "http://b2note-local.dev/accounts/auth_redirected"
+    #uri = "http://b2note-local.dev/accounts/auth_redirected"
     # DEV redirect URI
     # uri = "https://b2note-dev.bsc.es/accounts/auth_redirected"
     # PROD redirect URI
