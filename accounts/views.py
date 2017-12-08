@@ -24,6 +24,7 @@ from django.db.models.query_utils import Q
 from django.db import IntegrityError
 import logging
 
+
 stdlogger = logging.getLogger('b2note')
 
 
@@ -376,6 +377,8 @@ from oic.utils.http_util import Redirect
 from oic.oic.message import AuthorizationResponse
 import os
 from django.http import HttpResponse
+import json
+import requests.packages.urllib3
 
 
 def prepare_client():
@@ -388,6 +391,7 @@ def prepare_client():
     auth = "https://unity.eudat-aai.fz-juelich.de:8443/oauth2-as/oauth2-authz"
     tok = "https://unity.eudat-aai.fz-juelich.de:8443/oauth2/token"
     usrinfo = "https://unity.eudat-aai.fz-juelich.de:8443/oauth2/userinfo"
+
     # PROD endpoints
     # issuer = "https://b2access.eudat.eu:8443"
     # authEP = "https://b2access.eudat.eu:8443/oauth2-as/oauth2-authz"
@@ -395,6 +399,7 @@ def prepare_client():
     # usrinfoEP = "https://b2access.eudat.eu:8443/oauth2/userinfo"
     op_info = ProviderConfigurationResponse(issuer=issuer, authorization_endpoint=auth, token_endpoint=tok, userinfo_endpoint=usrinfo)
     client.provider_info = op_info
+
     # Set our credentials (that we got from manually registering to B2Access)
     try:
         dir = os.path.dirname(__file__)
@@ -431,6 +436,55 @@ def prepare_client():
     client.store_registration_info(client_reg)
     return client
 
+# def prepare_client():
+#     # http://pyoidc.readthedocs.io/en/latest/examples/rp.html
+#     # Instantiate a client
+#     client = Client(client_authn_method=CLIENT_AUTHN_METHOD)
+#     # Register the OP
+#
+#     #uid = "https://unity.eudat-aai.fz-juelich.de:8443"
+#     uid = "https://unity.eudat-aai.fz-juelich.de:8443/oauth2/well-known/openid-configuration"
+#     #uid = "https://b2access.eudat.eu:8443/oauth2/.well-known/openid-configuration"
+#     #uid = "https://google.com"
+#     issuer = client.discover(uid)
+#
+#
+#     # Set our credentials (that we got from manually registering to B2Access)
+#     try:
+#         dir = os.path.dirname(__file__)
+#         client_credentials = json.load(open(dir + '/client_credentials.json'))
+#         id = client_credentials['client_id']
+#         secret = client_credentials['client_secret']
+#         uri = client_credentials['client_redirect_uri']
+#     except:
+#         print "Error when reading client_credential.json"
+#         stdlogger.error("Error when reading client_credential.json")
+#         id = "error"
+#         secret = "error"
+#         uri = "error"
+#     #id = 'b2note-dev'
+#     #secret = 'B2Note-B2Access'
+#     # /!\ Added the redirect URI here, else it's not defined later (in args ={[...] client.registration_response["redirect_uris"][0])
+#     # All uri athe the same time
+#     #domain_root = request.META['HTTP_HOST']
+#     #if domain_root and isinstance(domain_root, (unicode, str)) and domain_root[:len("http://b2note")] == "http://b2note":
+#     #    domain_root = "https://b2note" + domain_root[len("http://b2note"):]
+#     #uri = domain_root + "/accounts/auth_redirected"
+#
+#
+#
+#     # LOCAL redirect URI
+#     #uri = "http://b2note-local.dev/accounts/auth_redirected"
+#     # DEV redirect URI
+#     # uri = "https://b2note-dev.bsc.es/accounts/auth_redirected"
+#     # PROD redirect URI
+#     # uri = ""
+#     uris = [uri]
+#     info = {"client_id": id, "client_secret": secret, "redirect_uris": uris}
+#     client_reg = RegistrationResponse(**info)
+#     client.store_registration_info(client_reg)
+#     return client
+
 global client
 client = prepare_client()
 
@@ -449,7 +503,7 @@ def auth_main(request):
     # Auth code
     request.session["nonce"] = rndstr()
     request.session["state"] = rndstr()
-    args = {"client_id": client.client_id, "response_type": "code", "scope": ["openid"], "nonce": request.session["nonce"],
+    args = {"client_id": client.client_id, "response_type": "code", "scope": ["openid", "USER_PROFILE"], "nonce": request.session["nonce"],
             "redirect_uri": client.registration_response["redirect_uris"][0], "state": request.session["state"]}
     auth_req = client.construct_AuthorizationRequest(request_args=args)
     # /!\ client.authorization_endpoint used in the example is not defined (or it's an empty string maybe)
@@ -458,7 +512,7 @@ def auth_main(request):
     return redirect(login_url)
     # Redirect (cap R) does not work
     #return Redirect(login_url)
-    # return render(request, "accounts/auth_main.html", {'url': login_url, 'EP': client.provider_info["authorization_endpoint"]})
+    #return render(request, "accounts/auth_main.html", {'args': args})
 
 
 def auth_redirected(request):
@@ -477,19 +531,55 @@ def auth_redirected(request):
     # If you're in a WSGI environment
     # response = os.environ.get("QUERY_STRING")
     # this doesn't work, at least for the local version.
-    response = request.GET.urlencode()
+    #response = request.GET.urlencode()
+    response = request.get_full_path()
+    response = response[len('/accounts/auth_redirected'):]
     aresp = client.parse_response(AuthorizationResponse, info=response, sformat="urlencoded")
     code = aresp["code"]
     assert aresp["state"] == request.session["state"]
+
+
+
     # Using code to get token
     args = {"code": aresp["code"]}
+    # https://github.com/OpenIDC/pyoidc/blob/3d5cfd78fb3662dc2a07d6e6909598db89a7217c/src/oic/oic/consumer.py
+    #args.update({"client_secret": "B2Note-B2Access",
+    #             "client_id": "b2note-dev",
+    #             "secret_type": "Bearer",
+    #             "redirect_uri": "http://b2note-local.dev/accounts/auth_redirected",
+    #             })
     # I had the error:
     # MissingEndpoint at /auth_redirected, No 'token_endpoint' specified
     # fix:
     client.token_endpoint = client.provider_info["token_endpoint"]
+    #return render(request, "accounts/auth_redirected.html", {'state': aresp["state"], 'request_args': args})
+
+    # do_access_token_request modified to remove decoding and verification
     resp = client.do_access_token_request(state=aresp["state"], request_args=args, authn_method="client_secret_basic")
+    resp_json = json.loads(resp)
+    access_token = resp_json["access_token"]
+    request.session["access_token"] = access_token
 
 
+    # verify token (to do)
+    token_info_endpoint = "https://unity.eudat-aai.fz-juelich.de:8443/oauth2/tokeninfo"
+    token_info = requests.get(token_info_endpoint, verify=False, headers={'Authorization': 'Bearer ' + access_token})
+
+
+
+    # use token to get user info
+    user_info_endpoint = "https://unity.eudat-aai.fz-juelich.de:8443/oauth2/userinfo"
+    user_info = requests.get(user_info_endpoint, verify=False, headers={'Authorization': 'Bearer ' + access_token})
+    user_info = user_info.text
+    user_info = json.loads(user_info)
+    request.session["auth_email"] = user_info["email"]
+    request.session["auth_cn"] = user_info["cn"]
+    request.session["auth_name"] = user_info["name"]
+    request.session["auth_id"] = user_info["unity:persistent"]
+    request.session["auth_sub"] = user_info["sub"]
+    request.session["auth_urn"] = user_info["urn:oid:2.5.4.49"]
+
+    return render(request, "accounts/auth_redirected.html", {'state': user_info})
     # try:
     #     resp = client.do_access_token_request(state=aresp["state"],
     #                                           request_args=args,
@@ -500,38 +590,81 @@ def auth_redirected(request):
     #     stdlogger.error("auth_redirected view, could not request access token")
     #     return HttpResponse('error <script type="text/javascript"> setTimeout(function(){window.close()}, 700); </script>')
 
-    # Use token to get User Info
-    # userinfo = client.do_user_info_request(state=aresp["state"])
-    email = "b@b.com"
 
-    # Check wether the user has a b2note account or not
-    registered = False
-    user = authenticate(email=email, password="password")
+    # if user has an account, sign in. If user has no account, write it down
+    user = authenticate(email=request.session.get("auth_email"), password="password")
     if user is not None:
-        registered = True
-
-    # If he does not, create it
-    if not registered:
-        # create account
-        # email = email
-        # password = "password"
-        # everything else = whatever, as long as I can create the account
-        pass
-
-    # Login
-    user = authenticate(email=email, password="password")
-    if user is not None:
+        # Login
         if user.is_active:
             django_login(request, user)
             request.session["user"] = user.annotator_id.annotator_id
+    else:
+        request.session["registration_state"] = "todo"
+
+
 
     # Close popup
-    #return HttpResponse('Connected <script type="text/javascript"> setTimeout(function(){window.close()}, 700); </script>')
+    return HttpResponse('Connected <script type="text/javascript"> setTimeout(function(){window.close()}, 700); </script>')
 
-    # in interface main: branch incomplete account
-    # in newregister: update account
-    code = user.annotator_id.organization
-    return render(request, "accounts/auth_redirected.html", {'code': code})
+
+
+
+    # # Check wether the user has a b2note account or not
+    # registered = False
+    # user = authenticate(email=email, password="password")
+    # #from django.contrib.auth import get_user_model
+    # #User = get_user_model()
+    # #user = User.objects.get(password="password")
+    # if user is not None:
+    #     registered = True
+    # #return render(request, "accounts/auth_redirected.html", {'state': user.annotator_id.email})
+    #
+    # # If he does not, create it
+    # if not registered:
+    #     # create account
+    #     # email = email
+    #     # password = "password"
+    #     # everything else = whatever, as long as I can create the account
+    #     data = {
+    #         "username": email,
+    #         "password1": "password",
+    #         "password2": "password",
+    #         "nickname": "password",
+    #         "first_name": "password",
+    #         "last_name": "password",
+    #         "job_title": "password",
+    #         "organization": "password",
+    #         "country": "password",
+    #         "annotator_exp": "password"
+    #     }
+    #     form = RegistrationForm(data=data)
+    #
+    #     registered = "courge"
+    #     if form.is_valid():
+    #         registered += "lamantin"
+    #         try:
+    #             user = form.save()
+    #         except IntegrityError:
+    #             # catch "UNIQUE constraint failed" error
+    #             # May catch other errors in which case the error message displayed in the UI would not be accurate
+    #             registered += "pasteque"
+    #             pass
+    #
+    #
+    # # Login
+    # user = authenticate(email=email, password="password")
+    # if user is not None:
+    #     if user.is_active:
+    #         django_login(request, user)
+    #         request.session["user"] = user.annotator_id.annotator_id
+    #
+    # # Close popup
+    # #return HttpResponse('Connected <script type="text/javascript"> setTimeout(function(){window.close()}, 700); </script>')
+    #
+    # # in interface main: branch incomplete account
+    # # in newregister: update account
+    # #code = user.annotator_id.organization
+    # return render(request, "accounts/auth_redirected.html", {'state': registered})
 
 
 
@@ -573,10 +706,13 @@ def login(request):
 
 
 def polling(request):
+    #return HttpResponse(request.session.get("auth_state"))
     if request.session.get("user"):
         return HttpResponse('logged')
+    elif (request.session.get('registration_state') == "todo"):
+        return HttpResponse('do_registration')
     else:
-        return HttpResponse('not logged')
+        return HttpResponse('wait')
 
 
 def old_login(request):
@@ -615,8 +751,60 @@ def old_login(request):
                                   "subject_tofeed": request.session.get("subject_tofeed")
                               }))
 
+def abort(request):
+    request.session['user'] = None
+    request.session["registration_state"] = None
+    request.session['auth_email'] = None
+    return redirect('/interface_main')
+
 
 def register(request):
+    """
+    User registration view.
+    """
+
+    navbarlinks = list_navbarlinks(request, ["Registration", "Help page"])
+    navbarlinks.append({"url": "/help#helpsection_registrationpage", "title": "Help page", "icon": "question-sign"})
+    shortcutlinks = list_shortcutlinks(request, ["Registration"])
+
+
+    email = request.session["auth_email"]
+    name = request.session["auth_email"]
+    surname = request.session["auth_email"]
+
+    if request.method == 'POST':
+        form = RegistrationForm(data=request.POST)
+        if form.is_valid():
+            try:
+                user = form.save()
+                request.session["registration_state"] = "done"
+                user = authenticate(email=email, password="password")
+                if user.is_active:
+                    django_login(request, user)
+                    request.session["user"] = user.annotator_id.annotator_id
+            except IntegrityError:
+                # catch "UNIQUE constraint failed" error
+                # May catch other errors in which case the error message displayed in the UI would not be accurate
+                return render_to_response(
+                    'accounts/register.html',
+                    {'navbarlinks': navbarlinks, 'shortcutlinks': shortcutlinks, 'form': form, 'alreadytaken': True},
+                    context_instance=RequestContext(request)
+                )
+
+            return redirect('/interface_main')
+        else:
+            print form.errors
+    else:
+        form = RegistrationForm()
+    return render_to_response('accounts/register.html', {
+        'navbarlinks': navbarlinks,
+        'shortcutlinks': shortcutlinks,
+        'auth_email': email,
+        'auth_name': name,
+        'auth_surname': surname,
+        'form': form,}, context_instance=RequestContext(request))
+
+def old_register(request):
     """
     User registration view.
     """
@@ -634,7 +822,7 @@ def register(request):
                 # catch "UNIQUE constraint failed" error
                 # May catch other errors in which case the error message displayed in the UI would not be accurate
                 return render_to_response(
-                    'accounts/register.html',
+                    'accounts/old_register.html',
                     {'navbarlinks': navbarlinks, 'shortcutlinks': shortcutlinks, 'form': form, 'alreadytaken': True},
                     context_instance=RequestContext(request)
                 )
@@ -643,7 +831,7 @@ def register(request):
             print form.errors
     else:
         form = RegistrationForm()
-    return render_to_response('accounts/register.html', {
+    return render_to_response('accounts/old_register.html', {
         'navbarlinks': navbarlinks,
         'shortcutlinks': shortcutlinks,
         'form': form,}, context_instance=RequestContext(request))

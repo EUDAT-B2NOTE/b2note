@@ -12,6 +12,8 @@ urlpatterns = patterns('',
     url(r'^auth_redirected', 'accounts.views.auth_redirected', name='redirected'),
     url(r'^login$', 'accounts.views.login', name='login'),
     url(r'^polling$', 'accounts.views.polling', name='polling'),
+    url(r'^abort$', 'accounts.views.abort', name='abort'),
+    url(r'^old_register$', 'accounts.views.old_register', name='old_register'),
 
 
 
