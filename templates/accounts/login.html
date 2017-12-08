@@ -14,18 +14,17 @@
 
     <div class="container" id="loginform">
         <div class="container col-xs-12 pull-center" style="margin-left:0;padding-left:5;margin-bottom:20px;">
-            B2note uses a popup to connect to your b2access user account.
-            Please allow b2note to open popups in the settings of your browser.
+            <h3>Login</h3><br>
+            <p>B2note uses a popup to connect to your b2access user account.
+                Please allow b2note to open popups in the settings of your browser.</p>
             <br><br>
-            <input id="login_button" type="button" value="Login with B2Access" onclick='b2access(); opened = true'> </input>
+            <button class="btn btn-default"  onclick='b2access(); opened = true'>Login with B2Access</button>
             <br>
             <br>
             <div id="waiting"></div>
             <br>
             <br>
-            <br>
-            <br>
-            <input type="button" value="old b2note login" onclick='window.location="/accounts/old_login"'> </input>
+            <button style="display: none" class="btn btn-default" onclick='window.location="/accounts/old_login"'>Old b2note login</button>
 
         </div>
     </div>
@@ -58,7 +57,10 @@ a = ""
 doit = function(){
     setTimeout(function(){
         a = httpGet('/accounts/polling')
-        if(a=="logged"){
+        if (a=="logged"){
+            window.location="/interface_main"
+        }
+        else if (a=="do_registration"){
             window.location="/interface_main"
         }
         else if (opened){
@@ -77,7 +79,7 @@ waiting = function(){
 
 
 b2access = function(){
-    window.open("/accounts/auth_main", "B2Access", "height=700,width=1700,top=200");
+    window.open("/accounts/auth_main", "B2Access", "width=1700");
 }
 b2access()
 

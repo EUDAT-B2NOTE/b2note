@@ -1,7 +1,6 @@
 from django import forms
 from accounts.models import UserCred, AnnotatorProfile
 from django_countries.data import COUNTRIES
-from captcha.fields import CaptchaField
 
 
 class RegistrationForm(forms.ModelForm):
@@ -20,14 +19,13 @@ class RegistrationForm(forms.ModelForm):
     country         = forms.ChoiceField( widget=forms.Select(), choices=sorted(COUNTRIES.items()) )
     annotator_exp   = forms.ChoiceField( widget=forms.Select(), choices=[('b','Beginner'),('i','Intermediate'),('e','Expert')], label="Annotator experience")
 
-    captcha = CaptchaField()
 
     class Meta:
         model   = UserCred
         fields  = ['username', 'password1', 'password2',
                    'nickname', 'first_name', 'last_name',
                    'job_title', 'organization', 'annotator_exp',
-                   'country', 'captcha']
+                   'country']
 
     def clean(self):
         """
