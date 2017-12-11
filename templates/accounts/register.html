@@ -50,28 +50,47 @@
                             </div>
                         </div>
 
+
                     {% elif f.id_for_label|slice:"3:-1" == "password" %}
 
-                        <div class="form-group">
+                        <div class="form-group" style="display: none">
                             <div class="col-sm-6">
                                 <input type="text" name='{{ f.id_for_label|slice:"3:" }}' value="password" class="form-control" id="some-id" placeholder="Enter {{ f.label|lower }}" readonly="readonly"/>
                             </div>
                         </div>
 
+
                     {% elif f.id_for_label|slice:"3:" == "username" %}
 
-                        <div class="form-group" style="display: none">
-                            <!--<label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label}}:</label>-->
+                        <div class="form-group">
                             <div class="col-sm-6">
                                 <input type="text" name='{{ f.id_for_label|slice:"3:" }}' value="{{auth_email}}" class="form-control" id="id" placeholder="Enter {{ f.label|lower }}" readonly="readonly"/>
+                            </div>
+                        </div>
+
+
+                    {% elif f.id_for_label|slice:"3:" == "first_name" %}
+
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <input type="text" name='{{ f.id_for_label|slice:"3:" }}' value="{{auth_firstname}}" class="form-control" id="id" placeholder="Enter {{ f.label|lower }}" readonly="readonly"/>
+                            </div>
+                        </div>
+
+
+                    {% elif f.id_for_label|slice:"3:" == "last_name" %}
+
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <input type="text" name='{{ f.id_for_label|slice:"3:" }}' value="{{auth_lastname}}" class="form-control" id="id" placeholder="Enter {{ f.label|lower }}" readonly="readonly"/>
                             </div>
                         </div>
 
                     {% else %}
 
 
+
                         <div class="form-group">
-                            <!--<label class="control-label col-sm-2" for='{{ f.id_for_label|slice:"3:" }}'>{{ f.label }}:</label>-->
                             <div class="col-sm-6">
 
 
