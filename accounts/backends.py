@@ -7,32 +7,16 @@ class EmailAuthBackend(object):
     A custom authentication backend. Allows users to log in using their email address.
     """
 
-    def authenticate(self, email=None, password=None, db='users', needpassword=True):
+    def authenticate(self, email=None, password=None, db='users'):
         """
         Authentication method
-        
-        if needpassword is set to False, will return the user regardless of password
-        
         """
         try:
             user = UserCred.objects.using(db).get(username=email)
-            if user.check_password(password) or not needpassword:
+            if user.check_password(password):
                 return user
         except UserCred.DoesNotExist:
             return None
-
-    # old auth method
-    # def authenticate(self, email=None, password=None, db='users'):
-    #     """
-    #     Authentication method
-    #     """
-    #     try:
-    #         user = UserCred.objects.using(db).get(username=email)
-    #         if user.check_password(password):
-    #             return user
-    #     except UserCred.DoesNotExist:
-    #         return None
-
 
     def get_user(self, user_id, db='users'):
         try:
