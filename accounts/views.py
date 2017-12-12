@@ -2,7 +2,7 @@ from django.shortcuts import render, render_to_response, redirect
 from django.template import RequestContext
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 from django.forms.models import model_to_dict
-from accounts.forms import AuthenticationForm, RegistrationForm, ProfileForm
+from accounts.forms import AuthenticationForm, RegistrationForm, OldRegistrationForm, ProfileForm
 from accounts.models import AnnotatorProfile, UserCred, UserFeedback, FeatureRequest, BugReport
 
 from b2note_app.nav_support_functions import list_navbarlinks, list_shortcutlinks
@@ -522,7 +522,7 @@ def auth_redirected(request):
 
 
     # if user has an account, sign in. If user has no account, write that down
-    user = authenticate(email=request.session.get("auth_email"), password="password")
+    user = authenticate(email=request.session.get("auth_email"), needpassword=False)
     if user is not None:
         # Login
         if user.is_active:
@@ -693,7 +693,7 @@ def old_register(request):
     shortcutlinks = list_shortcutlinks(request, ["Registration"])
 
     if request.method == 'POST':
-        form = RegistrationForm(data=request.POST)
+        form = OldRegistrationForm(data=request.POST)
         if form.is_valid():
             try:
                 user = form.save()
@@ -709,7 +709,7 @@ def old_register(request):
         else:
             print form.errors
     else:
-        form = RegistrationForm()
+        form = OldRegistrationForm()
     return render_to_response('accounts/old_register.html', {
         'navbarlinks': navbarlinks,
         'shortcutlinks': shortcutlinks,
