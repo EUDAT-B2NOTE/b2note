@@ -10,15 +10,20 @@
 	<div class=container id="helpsection_loginpage">
 		<h4>Login page <a href="#wayback" id="link_to_top">^top</a></h4>
 		<p>Welcome to the B2NOTE annotation service.</p>
-		<p>B2NOTE is currently designed as a crowdsourcing service which implies that all the annotations are accessible publicly. To guarantee on one side your privacy and on the other side to keep track of the origin of annotation records, you must authenticate using B2Access.</p>
-		<p> When B2Note is loaded, a window for authenticating with B2Access pops up. If your browser blocks such popup windows, you can click the button "Login with B2Access" to open that window manually. After the authentication with B2Access, if it is your first time using B2Note, you will be asked some <a href="#helpsection_registrationpage">B2Note-specific information</a>, like your pseudonym which will be used to publish your annotations.</p>
+		<p>B2NOTE is currently designed as a crowdsourcing service which implies that all the annotations are accessible publicly. To guarantee on one side your privacy and on the other side to keep track of the origin of annotation records, you must first <a href="#helpsection_registrationpage">register to create an annotator profile</a> with a pseudonym which will be used to publish your annotation.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/Login_menu_empty_numbers.png" %} style="width:200px;"/></p>
+		<p>This page is the entry point to access the service and allows you either <a href="#helpsection_registrationpage">register</a> as first time user (2) or log in directly if you already created an account (1). In case you forgot your password, you can re-initialize it by clicking on the link “Forgot password” (3)</p>
 	</div>
 
 	<div class=container id="helpsection_registrationpage">
 		<h4>Registration<a href="#wayback" id="link_to_top">^top</a></h4>
-		<p>Fill in the required information to create an annotator profile.</p>
-		<p>If you forgot to fill-in some information, a red error message will appear above the field to correct.</p>
+		<p>Fill in the required information to create an annotator profile and do not forget to enter the captcha before submitting.</p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/registration_page_top_04.png" %} style="width:200px;"/></p>
+		<p><br></p>
+		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/registration_page_bottom.png" %} style="width:200px;"/></p>
+		<p>If you forgot to fill-in some information or provided an invalid email address, a red error message will appear above the field to correct.</p>
 		<p>Upon successful registration you should be redirected to the <a href="#helpsection_loginpage">Login page</a>.</p>
+
 	</div>
 
 	<div class=container id="helpsection_mainpage">
