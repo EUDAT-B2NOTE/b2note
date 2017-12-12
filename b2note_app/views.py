@@ -1481,6 +1481,9 @@ def interface_main(request):
         if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
 
     user_nickname = None
+    if not request.session.get('user') and request.session.get('registration_state') == "todo" and request.session.get('auth_email') is not None:
+        context = RequestContext(request, {"subject_tofeed": subject_tofeed, "pid_tofeed":pid_tofeed})
+        return redirect('accounts/register', context=context)
     if not request.session.get('user'):
         context = RequestContext(request, {"subject_tofeed": subject_tofeed, "pid_tofeed":pid_tofeed})
         return redirect('accounts/login', context=context)
