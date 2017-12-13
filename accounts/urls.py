@@ -2,8 +2,8 @@ from django.conf.urls import patterns, url
 from views import ResetPasswordRequestView, PasswordResetConfirmView
 
 urlpatterns = patterns('',
-    url(r'^register$', 'accounts.views.register', name='register'),
-    url(r'^old_login$', 'accounts.views.old_login', name='oldlogin'),
+    #url(r'^old_register$', 'accounts.views.old_register', name='old_register'),
+    #url(r'^old_login$', 'accounts.views.old_login', name='oldlogin'),
     url(r'^logout$', 'accounts.views.logout', name='logout'),
     url(r'^profilepage$', 'accounts.views.profilepage', name='profile'),
     url(r'^feedbackpage$', 'accounts.views.feedbackpage', name='feedback'),
@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     url(r'^login$', 'accounts.views.login', name='login'),
     url(r'^polling$', 'accounts.views.polling', name='polling'),
     url(r'^abort$', 'accounts.views.abort', name='abort'),
-    url(r'^old_register$', 'accounts.views.old_register', name='old_register'),
+    url(r'^register$', 'accounts.views.register', name='register'),
 
 
 
