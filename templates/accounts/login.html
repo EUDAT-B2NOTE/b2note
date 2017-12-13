@@ -18,7 +18,7 @@
             <p>B2note uses a popup to connect to your b2access user account.
                 Please allow b2note to open popups in the settings of your browser.</p>
             <br><br>
-            <button class="btn btn-default"  onclick='b2access(); opened = true'>Login with B2Access</button>
+            <button class="btn btn-default"  onclick='b2access();'>Login with B2Access</button>
             <br>
             <br>
             <div id="waiting"></div>
@@ -51,8 +51,7 @@ xmlHttp.send(null);
 }
 */
 
-var opened = false
-// this asks the server if we're logged in, every 2 seconds. If we are, we get redirected to interface_main.
+// this asks the server if we're logged in, every 2 seconds. If we are, or if we need registration, we get redirected to interface_main.
 a = ""
 doit = function(){
     setTimeout(function(){
@@ -63,8 +62,8 @@ doit = function(){
         else if (a=="do_registration"){
             window.location="/interface_main"
         }
-        else if (opened){
-            waiting()
+        else {
+            waiting(a)
         }
         doit()
     }, 2000);
@@ -72,16 +71,25 @@ doit = function(){
 doit()
 
 // display a message for the user
-waiting = function(){
+// a is worth "wait" if the popup was opened, and "canceled" if the user declined B2Access
+waiting = function(x){
     div = document.getElementById('waiting')
-    div.innerHTML = "Connecting..."
+    if (x=="wait"){
+        div.innerHTML = "Connecting..."
+    }
+    else {
+        div.innerHTML = ""
+    }
 }
-
 
 b2access = function(){
     window.open("/accounts/auth_main", "B2Access", "width=1700");
 }
-b2access()
+// only open popup when the user is not comming from the logout page
+{% if popup %}
+    b2access()
+{% endif %}
+
 
 
 </script>
