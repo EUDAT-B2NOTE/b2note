@@ -435,6 +435,7 @@ def auth_main(request):
         Redirects to B2Access for authentication
 
     """
+    request.session["popup_state"] = "ongoing"
     # http://pyoidc.readthedocs.io/en/latest/examples/rp.html
     # Auth code
     request.session["nonce"] = rndstr()
@@ -462,7 +463,14 @@ def auth_redirected(request):
     response = request.get_full_path()
     response = response[len('/accounts/auth_redirected'):]
     aresp = client.parse_response(AuthorizationResponse, info=response, sformat="urlencoded")
-    code = aresp["code"]
+
+    try:
+        code = aresp["code"]
+    except:
+        request.session["popup_state"]="canceled"
+        return HttpResponse('Authentication canceled <script type="text/javascript"> setTimeout(function(){window.close()}, 700); </script>')
+
+
     assert aresp["state"] == request.session["state"]
 
 
@@ -562,6 +570,12 @@ def login(request):
             return redirect('/interface_main', context=RequestContext(request))
         else:
             form = AuthenticationForm()
+
+    popup = 1
+    if request.session.get("popup")==0:
+        popup = 0
+        request.session["popup"] = 1
+
     return render_to_response('accounts/login.html',{'form': form},
                               context_instance=RequestContext(request, {
                                   'login_failed_msg': login_failed_msg,
@@ -569,6 +583,7 @@ def login(request):
                                   'shortcutlinks': shortcutlinks,
                                   "pid_tofeed": request.session.get("pid_tofeed"),
                                   "subject_tofeed": request.session.get("subject_tofeed"),
+                                  "popup": popup,
                               }))
 
 
@@ -577,6 +592,8 @@ def polling(request):
         return HttpResponse('logged')
     elif (request.session.get('registration_state') == "todo"):
         return HttpResponse('do_registration')
+    elif (request.session.get('popup_state') == "canceled"):
+        return HttpResponse('cancel')
     else:
         return HttpResponse('wait')
 
@@ -721,5 +738,6 @@ def logout(request):
     Log out view
     """
     django_logout(request)
+    request.session["popup"] = 0
     return redirect('/accounts/login')
 
