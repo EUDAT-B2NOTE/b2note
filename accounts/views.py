@@ -390,17 +390,32 @@ def prepare_client():
 
 
     # Register the OP
+    # endpoints are now loaded from a json file rather than defined here
     # DEV endpoints
-    issuer = "https://unity.eudat-aai.fz-juelich.de:443"
-    auth = "https://unity.eudat-aai.fz-juelich.de:443/oauth2-as/oauth2-authz"
-    tok = "https://unity.eudat-aai.fz-juelich.de:443/oauth2/token"
-    usrinfo = "https://unity.eudat-aai.fz-juelich.de:443/oauth2/userinfo"
+    # issuer = "https://unity.eudat-aai.fz-juelich.de:443"
+    # authorization_endpoint = "https://unity.eudat-aai.fz-juelich.de:443/oauth2-as/oauth2-authz"
+    # token_endpoint = "https://unity.eudat-aai.fz-juelich.de:443/oauth2/token"
+    # userinfo_endpoint = "https://unity.eudat-aai.fz-juelich.de:443/oauth2/userinfo"
     # PROD endpoints
     # issuer = "https://b2access.eudat.eu:443"
-    # authEP = "https://b2access.eudat.eu:443/oauth2-as/oauth2-authz"
-    # tokenEP = "https://b2access.eudat.eu:443/oauth2/token"
-    # usrinfoEP = "https://b2access.eudat.eu:443/oauth2/userinfo"
-    op_info = ProviderConfigurationResponse(issuer=issuer, authorization_endpoint=auth, token_endpoint=tok, userinfo_endpoint=usrinfo)
+    # authorization_endpoint = "https://b2access.eudat.eu:443/oauth2-as/oauth2-authz"
+    # token_endpoint = "https://b2access.eudat.eu:443/oauth2/token"
+    # userinfo_endpoint = "https://b2access.eudat.eu:443/oauth2/userinfo"
+    try:
+        dir = os.path.dirname(__file__)
+        provider_endpoints = json.load(open(dir + '/provider_endpoints.json'))
+        issuer = provider_endpoints['issuer']
+        authorization_endpoint = provider_endpoints['authorization_endpoint']
+        token_endpoint = provider_endpoints['token_endpoint']
+        userinfo_endpoint = provider_endpoints['userinfo_endpoint']
+    except:
+        print "Error when reading provider_endpoints.json"
+        stdlogger.error("Error when reading provider_endpoints.json")
+        issuer = "error"
+        authorization_endpoint = "error"
+        token_endpoint = "error"
+        userinfo_endpoint = "error"
+    op_info = ProviderConfigurationResponse(issuer=issuer, authorization_endpoint=authorization_endpoint, token_endpoint=token_endpoint, userinfo_endpoint=userinfo_endpoint)
     client.provider_info = op_info
 
 
@@ -454,48 +469,46 @@ def auth_redirected(request):
     """
       Function: auth
       ----------------------------
-        Deal with the user after they're redirected from B2Access
+        Deal with the user after they are redirected from B2Access
 
     """
     # http://pyoidc.readthedocs.io/en/latest/examples/rp.html
+
+    # Get the code
     # response = os.environ.get("QUERY_STRING")
     # doesn't work
     response = request.get_full_path()
     response = response[len('/accounts/auth_redirected'):]
     aresp = client.parse_response(AuthorizationResponse, info=response, sformat="urlencoded")
-
     try:
         code = aresp["code"]
     except:
         request.session["popup_state"]="canceled"
         return HttpResponse('Authentication canceled <script type="text/javascript"> setTimeout(function(){window.close()}, 700); </script>')
+    try:
+        assert aresp["state"] == request.session["state"]
+    except:
+        request.session["popup_state"]="canceled"
+        print "Incorrect authentication state"
+        stdlogger.error("Incorrect authentication state")
+        return HttpResponse('Authentication canceled, incorrect state <script type="text/javascript"> setTimeout(function(){window.close()}, 700); </script>')
 
 
-    assert aresp["state"] == request.session["state"]
-
-
-    # Using code to get token
+    # Use code to get token
     args = {"code": aresp["code"]}
     # I had the error:
     # MissingEndpoint at /auth_redirected, No 'token_endpoint' specified
     # fix:
     client.token_endpoint = client.provider_info["token_endpoint"]
-
-    # do_access_token_request was modified to remove the attempt at decoding and verification
-    resp = client.do_access_token_request(state=aresp["state"], request_args=args, authn_method="client_secret_basic")
+    # pyoidc function do_access_token_request was modified: added 'verify=False' parameter to remove the attempt at decoding and verification
+    resp = client.do_access_token_request(state=aresp["state"], request_args=args, authn_method="client_secret_basic", verify=False)
     resp_json = json.loads(resp)
     access_token = resp_json["access_token"]
     request.session["access_token"] = access_token
 
 
-    # https://github.com/EUDAT-B2ACCESS/b2access-probe/blob/master/check_b2access.py
-    # verify token (to do)
-    #token_info_endpoint = "https://unity.eudat-aai.fz-juelich.de:443/oauth2/tokeninfo"
-    #token_info = requests.get(token_info_endpoint, verify=False, headers={'Authorization': 'Bearer ' + access_token})
-
-
     # use token to get user info
-    user_info_endpoint = "https://unity.eudat-aai.fz-juelich.de:443/oauth2/userinfo"
+    user_info_endpoint = client.provider_info['userinfo_endpoint']
     user_info = requests.get(user_info_endpoint, verify=False, headers={'Authorization': 'Bearer ' + access_token})
     user_info = user_info.text
     user_info = json.loads(user_info)
