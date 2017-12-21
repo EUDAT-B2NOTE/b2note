@@ -14,6 +14,7 @@ addons:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
+  - pip install git+https://github.com/AymRod/pyoidc
   - pip install git+http://github.com/django-nonrel/django@nonrel-1.5
   - pip install git+http://github.com/django-nonrel/django-dbindexer@master
   - pip install git+http://github.com/django-nonrel/djangotoolbox@master
