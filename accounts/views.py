@@ -512,12 +512,26 @@ def auth_redirected(request):
     user_info = requests.get(user_info_endpoint, verify=False, headers={'Authorization': 'Bearer ' + access_token})
     user_info = user_info.text
     user_info = json.loads(user_info)
-    request.session["auth_email"] = user_info["email"]
-    request.session["auth_cn"] = user_info["cn"]
-    request.session["auth_name"] = user_info["name"]
-    request.session["auth_id"] = user_info["unity:persistent"]
-    request.session["auth_sub"] = user_info["sub"]
-    request.session["auth_urn"] = user_info["urn:oid:2.5.4.49"]
+    if "email" in user_info:
+        request.session["auth_email"] = user_info["email"]
+    else:
+        print "Error when reading user email from B2Access"
+        stdlogger.error("Error when reading user email from B2Access")
+    if "name" in user_info:
+        # this is for the dev version of b2access
+        request.session["auth_name"] = user_info["name"]
+    elif "distinguishedName" in user_info:
+        # this is for the master version of b2access
+        # u'distinguishedName': u'/C=EU/O=EUDAT/OU=B2ACCESS/CN=31eec9c8-e99e-4393-87d9-3d62d7b04369/CN=aymeric rodriguez',
+        request.session["auth_dn"] = user_info["distinguishedName"]
+        request.session["auth_name"] = request.session["auth_dn"].split("/")[-1][3:]
+    else:
+        print "Error when reading user name from B2Access"
+        stdlogger.error("Error when reading user name from B2Access")
+    #request.session["auth_cn"] = user_info["cn"]
+    #request.session["auth_id"] = user_info["unity:persistent"]
+    #request.session["auth_sub"] = user_info["sub"]
+    #request.session["auth_urn"] = user_info["urn:oid:2.5.4.49"]
 
 
     #debug: display user_info
@@ -525,7 +539,7 @@ def auth_redirected(request):
 
 
     # parsing name
-    name = user_info["name"]
+    name = request.session["auth_name"]
     space = False
     for i in range(len(name)):
         if name[i] == " ":
@@ -653,11 +667,12 @@ def abort(request):
     request.session["registration_state"] = None
 
     request.session['auth_email'] = None
-    request.session["auth_cn"] = None
+    #request.session["auth_cn"] = None
     request.session["auth_name"] = None
-    request.session["auth_id"] = None
-    request.session["auth_sub"] = None
-    request.session["auth_urn"] = None
+    request.session["auth_dn"] = None
+    #request.session["auth_id"] = None
+    #request.session["auth_sub"] = None
+    #request.session["auth_urn"] = None
     request.session["auth_firstname"] = None
     request.session["auth_surname"] = None
     request.session["popup"] = 0
