@@ -22,6 +22,20 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
 from django.db import IntegrityError
+
+from oic.oic import Client
+from oic.utils.authn.client import CLIENT_AUTHN_METHOD
+from oic.oic.message import ProviderConfigurationResponse
+from oic.oic.message import RegistrationResponse
+import json
+from oic import rndstr
+from oic.utils.http_util import Redirect
+from oic.oic.message import AuthorizationResponse
+import os
+from django.http import HttpResponse
+import json
+import requests.packages.urllib3
+
 import logging
 
 
@@ -366,21 +380,6 @@ def profilepage(request):
         return False
 
 
-
-from oic.oic import Client
-from oic.utils.authn.client import CLIENT_AUTHN_METHOD
-from oic.oic.message import ProviderConfigurationResponse
-from oic.oic.message import RegistrationResponse
-import json
-from oic import rndstr
-from oic.utils.http_util import Redirect
-from oic.oic.message import AuthorizationResponse
-import os
-from django.http import HttpResponse
-import json
-import requests.packages.urllib3
-
-
 def prepare_client():
     # http://pyoidc.readthedocs.io/en/latest/examples/rp.html
 
@@ -450,6 +449,7 @@ def auth_main(request):
         Redirects to B2Access for authentication
 
     """
+    request.session["connecting"] = 1
     request.session["popup_state"] = "ongoing"
     # http://pyoidc.readthedocs.io/en/latest/examples/rp.html
     # Auth code
@@ -483,15 +483,17 @@ def auth_redirected(request):
     try:
         code = aresp["code"]
     except:
+        request.session["connecting"] = 0
         request.session["popup_state"]="canceled"
-        return HttpResponse('Authentication canceled <script type="text/javascript"> setTimeout(function(){window.close()}, 700); </script>')
+        return HttpResponse('Authentication canceled <script type="text/javascript"> setTimeout(function(){window.close()}, 1000); </script>')
     try:
         assert aresp["state"] == request.session["state"]
     except:
+        request.session["connecting"] = 0
         request.session["popup_state"]="canceled"
         print "Incorrect authentication state"
         stdlogger.error("Incorrect authentication state")
-        return HttpResponse('Authentication canceled, incorrect state <script type="text/javascript"> setTimeout(function(){window.close()}, 700); </script>')
+        return HttpResponse('Authentication canceled, incorrect state <script type="text/javascript"> setTimeout(function(){window.close()}, 1000); </script>')
 
 
     # Use code to get token
@@ -568,6 +570,7 @@ def auth_redirected(request):
 
 
     # Close popup
+    request.session["connecting"] = 0
     return HttpResponse('Success <script type="text/javascript"> setTimeout(function(){window.close()}, 700); </script>')
 
 
@@ -580,6 +583,8 @@ def login(request):
     shortcutlinks = []
 
     login_failed_msg = False
+
+    request.session["connecting"] = 0
 
     if request.method == 'POST':
         login_failed_msg = True
@@ -621,8 +626,10 @@ def polling(request):
         return HttpResponse('do_registration')
     elif (request.session.get('popup_state') == "canceled"):
         return HttpResponse('cancel')
-    else:
+    elif (request.session["connecting"] == 1):
         return HttpResponse('wait')
+    else:
+        return HttpResponse('')
 
 
 def old_login(request):
