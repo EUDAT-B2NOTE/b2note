@@ -11,14 +11,16 @@
 		<h4>Login page <a href="#wayback" id="link_to_top">^top</a></h4>
 		<p>Welcome to the B2NOTE annotation service.</p>
 		<p>B2NOTE is currently designed as a crowdsourcing service which implies that all the annotations are accessible publicly. To guarantee on one side your privacy and on the other side to keep track of the origin of annotation records, you must authenticate using B2Access.</p>
-		<p> When B2Note is loaded, a window for authenticating with B2Access pops up. If your browser blocks such popup windows, you can click the button "Login with B2Access" to open that window manually. After the authentication with B2Access, if it is your first time using B2Note, you will be asked some <a href="#helpsection_registrationpage">B2Note-specific information</a>, like your pseudonym which will be used to publish your annotations.</p>
+		<p> When B2Note is loaded, a window for authenticating with B2Access pops up. If your browser blocks such popup windows, you can click the button "Login with B2Access" to open that window manually.
+			During the authentication in B2Access, you are given the option to check a checkbox that says "Remember the settings for this service and do not show this dialog again". If you wish to use multiple accounts, it is advised not to check that checkbox.
+			After the authentication with B2Access, if it is your first time using B2Note, you will be asked some <a href="#helpsection_registrationpage">B2Note-specific information</a>, like your pseudonym which will be used to publish your annotations.</p>
 	</div>
 
 	<div class=container id="helpsection_registrationpage">
 		<h4>Registration<a href="#wayback" id="link_to_top">^top</a></h4>
 		<p>Fill in the required information to create an annotator profile.</p>
 		<p>If you forgot to fill-in some information, a red error message will appear above the field to correct.</p>
-		<p>Upon successful registration you should be redirected to the <a href="#helpsection_loginpage">Login page</a>.</p>
+		<p>Upon successful registration you will be automatically logged in and redirected to the <a href="#helpsection_mainpage">Main page</a>.</p>
 	</div>
 
 	<div class=container id="helpsection_mainpage">
@@ -32,7 +34,7 @@
 			<li><b><a href="#help_subsection_main_panel">Main panel</a></b>: create an annotation.</li>
 			<li><b><a href="#help_subsection_main_allmy">“All my annotations”</a></b>: visualise a summary of your annotations and access more detailed information.</li>
 			<li><b><a href="#help_subsection_main_allann">“All annotations about this file”</a></b>: visualise a summary of the annotations about the current file and access more detailed information.</li>
-			<li><b><a href="#help_subsection_main_feedback_button">Feedbacks button</a></b>: assess the service, request a new feature or report a bug.</li>
+			<li><b><a href="#help_subsection_main_feedback_button">Contact and support request button</a></b>: Request a new feature or report a bug.</li>
 		</ol>
 
 
@@ -131,9 +133,9 @@
 			<li><p>Click the <b><a href="#helpsection_allannotationspage">“All annotations about this file”</a></b> section title to the page containing all summary tables for annotations created about the file.</p></li>
 		</ul>
 
-		<h5 id="help_subsection_main_feedback_button">Feedbacks button</h5>
+		<h5 id="help_subsection_main_feedback_button">Contact and support request button</h5>
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/main_page_feedback_button.png" %} style="width:200px;"/></p>
-		<p><b>“Let us know what you think” button</b>: access the <a href="#helpsection_feedbackpage">feedback page</a> with forms for providing us an assessment about B2NOTE, requesting a new feature or reporting a bug.</p>
+		<p><b>“Contact and support request” button</b>: access the feedback page on EUDAT, for requesting a new feature or reporting a bug.</p>
 	</div>
 
 	<div class=container id="helpsection_myannotationspage">
@@ -328,21 +330,6 @@
 		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/user_account_page_fresh.png" %} style="width:200px;"/></p>
 		<p>This page displays your annotator profile information as filled-in during your registration to the service, with the obvious exception of the password field.</p>
 		<p>This information is not accessible to other users.</p>
-	</div>
-
-	<div class=container id="helpsection_feedbackpage">
-		<h4>Feedback page <a href="#wayback" id="link_to_top">^top</a></h4>
-		<p>Provide your assessment, feature request or bug report about B2NOTE service.</p>
-		<p>Access this page by clicking the <a href="#helpsection_mainpage">“Let us know what you think” button</a> at the bottom of the B2NOTE console main page.</p>
-		<p>This page comprises a single panel divided-up in 3 tabs. Each tab contains a form for sending a different set of informations to the service maintainers.</p>
-		<p style="text-align:center;"><img src={% static "images/helppage_screenshots/Feedbacks_page_02.png" %} style="width:200px;"/></p>
-		<ol>
-			<li><p><b>Assess the service</b>: provide you ratings about the service and more specific comments.</p></li>
-			<li><p><b>Request a new feature</b>: provide the description of a feature or functionality that could improve the service.</p></li>
-			<li><p><b>Report a bug</b>: provide information describing a service disfunction that you identified.</p></li>
-		</ol>
-		<p>Each form is to be completed and submitted independently.</p>
-		<p>Fill in the required information and do not forget to enter the captcha before submitting.</p>
 	</div>
 
 	<a href="#wayback" id="link_to_top">^top</a>
