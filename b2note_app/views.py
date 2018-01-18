@@ -356,7 +356,17 @@ Influence of smoking and obesity in sperm quality
         elif line != "":
             link_label = line
 
-    return render(request, 'b2note_app/hostpage.html', {'iframe_on': 350, 'buttons_info':buttons_info, 'src': url})
+    # check wether this is the production or sandbox version
+    try:
+        dir = os.path.dirname(__file__)
+        version_json = json.load(open(dir + '/version.json'))
+        version = version_json['version']
+    except:
+        print "Error when reading version.json"
+        stdlogger.error("Error when reading version.json")
+        version = "error"
+
+    return render(request, 'b2note_app/hostpage.html', {'iframe_on': 350, 'buttons_info':buttons_info, 'src': url, 'version': version})
 
 
 @login_required
