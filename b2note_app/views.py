@@ -32,7 +32,7 @@ stdlogger = logging.getLogger('b2note')
 def b2share_correct_url( url ):
     out = None
     try:
-        if url and isinstance(url, (str, unicode)) and len(url)>0:
+        if url and isinstance(url, str) and len(url)>0:
             if url[:len("http://trng-b2share.eudat.eu")] == "http://trng-b2share.eudat.eu" \
                     or url[:len("https://trng-b2share.eudat.eu")]=="https://trng-b2share.eudat.eu" \
                     or url[:len("https://b2share.eudat.eu")]=="https://b2share.eudat.eu" \
@@ -44,10 +44,10 @@ def b2share_correct_url( url ):
                 else:
                     out = "https://trng-b2share.eudat.eu"+"/"+url
         else:
-            print "B2share_correct_url function, URL not valid or too short."
+            print("B2share_correct_url function, URL not valid or too short.")
             stdlogger.error("B2share_correct_url function, URL not valid or too short.")
     except:
-        print "B2share_correct_url function did not complete succesfully."
+        print("B2share_correct_url function did not complete succesfully.")
         stdlogger.error("B2share_correct_url function did not complete succesfully.")
     return out
 
@@ -65,10 +65,10 @@ def typeahead_testbench(request):
 
 @login_required
 def json_sample(request):
-    print os.getcwd()
+    print(os.getcwd())
     nf = open("static/files/sample.json", "r")
     jsondt = nf.read()
-    print json.dumps(jsondt, indent=2)
+    print(json.dumps(jsondt, indent=2))
     nf.close()
     json_data = HttpResponse(json.dumps(jsondt, indent=2), mimetype= 'application/json')
     return json_data
@@ -111,16 +111,16 @@ def export_annotations(request):
         annotation_list = None
         annotations_of = None
 
-        if subject_tofeed and isinstance(subject_tofeed, (str, unicode)):
+        if subject_tofeed and isinstance(subject_tofeed, str):
 
             if request.POST.get('user_annotations') != None and user_nickname:
                 annotation_list = RetrieveUserAnnotations(user_nickname)
-                annotation_list = annotation_list.values()
+                annotation_list = list(annotation_list.values())
                 annotations_of = "mine"
 
             elif request.POST.get('all_annotations') != None:
                 annotation_list = RetrieveFileAnnotations(subject_tofeed)
-                annotation_list = annotation_list.values()
+                annotation_list = list(annotation_list.values())
                 annotations_of = "all"
 
             if annotation_list:
@@ -162,11 +162,11 @@ def export_annotations(request):
             return render(request, 'b2note_app/export.html', data_dict)
 
         else:
-            print "Redirecting from export view."
+            print("Redirecting from export view.")
             stdlogger.info("Redirecting from export view.")
             return redirect('/accounts/logout')
     except Exception:
-        print "Could not export or redirect from export view."
+        print("Could not export or redirect from export view.")
         stdlogger.error("Could not export or redirect from export view.")
         return redirect('/export')
 
@@ -220,10 +220,10 @@ def download_rdfxml(request):
     g = Graph().parse(data=json.dumps(json_data), format='json-ld')
 
     # The library adds a trailing slash character to the Software homepage url
-    for s, p, o in g.triples((None, None, term.URIRef(u"https://b2note.bsc.es/"))): g.add(
-        (s, p, term.URIRef(u"https://b2note.bsc.es")))
-    for s, p, o in g.triples((None, None, term.URIRef(u"https://b2note.bsc.es/"))): g.remove(
-        (s, p, term.URIRef(u"https://b2note.bsc.es/")))
+    for s, p, o in g.triples((None, None, term.URIRef("https://b2note.bsc.es/"))): g.add(
+        (s, p, term.URIRef("https://b2note.bsc.es")))
+    for s, p, o in g.triples((None, None, term.URIRef("https://b2note.bsc.es/"))): g.remove(
+        (s, p, term.URIRef("https://b2note.bsc.es/")))
 
     rdfxml_data = g.serialize(format='xml')
     rdfxml_data = HttpResponse(rdfxml_data, mimetype='application/rdf+xml')
@@ -362,7 +362,7 @@ Influence of smoking and obesity in sperm quality
         version_json = json.load(open(dir + '/version.json'))
         version = version_json['version']
     except:
-        print "Error when reading version.json"
+        print("Error when reading version.json")
         stdlogger.error("Error when reading version.json")
         version = "error"
 
@@ -421,7 +421,7 @@ def edit_annotation(request):
     has_semantic_equivalent = None
     target_file_title = None
     if request.POST.get('db_id'):
-        if isinstance(request.POST.get('db_id'), (str, unicode)):
+        if isinstance(request.POST.get('db_id'), str):
             a_id = request.POST.get('db_id')
             A = Annotation.objects.get(id=a_id)
             if A:
@@ -456,7 +456,7 @@ def edit_annotation(request):
                         edited_semantic = False
                         if request.POST.get('ontology_json'):
                             jo = request.POST.get('ontology_json')
-                            if isinstance(jo, (str, unicode)):
+                            if isinstance(jo, str):
                                 o = None
                                 o = json.loads( jo )
 
@@ -464,20 +464,20 @@ def edit_annotation(request):
                                     newbody = {}
                                     for oc in o:
                                         if oc and isinstance(oc, dict):
-                                            if "uris" in oc.keys():
-                                                if oc["uris"] and isinstance(oc["uris"], (str, unicode)):
-                                                    if "body" not in newbody.keys():
+                                            if "uris" in list(oc.keys()):
+                                                if oc["uris"] and isinstance(oc["uris"], str):
+                                                    if "body" not in list(newbody.keys()):
                                                         newbody = {"body": {"jsonld_id": [oc["uris"]]}}
                                                     else:
                                                         newbody["body"]["jsonld_id"].append(oc["uris"])
                                                 else:
-                                                    print "Edit_annotation view, in semantic case, no value to uris key or neither string or unicode."
+                                                    print("Edit_annotation view, in semantic case, no value to uris key or neither string or unicode.")
                                                     stdlogger.error("Edit_annotation view, semantic tag annotation would be a duplicate.")
                                             else:
-                                                print "Edit_annotation view, in semantic case, no uris key."
+                                                print("Edit_annotation view, in semantic case, no uris key.")
                                                 stdlogger.error("Edit_annotation view, in semantic case, no uris key.")
                                         else:
-                                            print "Edit_annotation view, in semantic case, list item is not dict."
+                                            print("Edit_annotation view, in semantic case, list item is not dict.")
                                             stdlogger.error("Edit_annotation view, in semantic case, list item is not dict.")
                                     D = None
                                     if newbody and len(newbody) > 0:
@@ -503,23 +503,23 @@ def edit_annotation(request):
                                             "label": ", ".join(setof_lbls),
                                             "shortform": ", ".join(setof_shortf)
                                         }
-                                        print "Edit_annotation view, semantic tag annotation would be a duplicate."
+                                        print("Edit_annotation view, semantic tag annotation would be a duplicate.")
                                         stdlogger.info("Edit_annotation view, semantic tag annotation would be a duplicate.")
                                 else:
-                                    print "Edit_annotation view, in semantic case, could not load json."
+                                    print("Edit_annotation view, in semantic case, could not load json.")
                                     stdlogger.error("Edit_annotation view, in semantic case, could not load json.")
 
                     elif request.POST.get('keyword_submit') is not None:
                         edited_keyword = False
                         if request.POST.get('keyword_text'):
                             k_text = request.POST.get('keyword_text')
-                            if isinstance(k_text, (str, unicode)):
+                            if isinstance(k_text, str):
                                 pass_on = False
                                 if not request.POST.get('confirm_flag'):
                                     r = solr_fetchtermonexactlabel( k_text )
                                     if r and len(r) > 0:
                                         has_semantic_equivalent = k_text
-                                        print "Create_annotation view, keyword has semantic tag equivalent."
+                                        print("Create_annotation view, keyword has semantic tag equivalent.")
                                         stdlogger.info("Create_annotation view, keyword has semantic tag equivalent.")
                                         pass_on = True
 
@@ -567,7 +567,7 @@ def edit_annotation(request):
                         edited_comment = False
                         if request.POST.get('comment_text'):
                             c_text = request.POST.get('comment_text')
-                            if isinstance(c_text, (str, unicode)):
+                            if isinstance(c_text, str):
                                 id1 = None
                                 id1 = MakeAnnotationFreeText( a_id , c_text )
                                 id1 = SetAnnotationMotivation( id1, "commenting" )
@@ -631,7 +631,7 @@ def delete_annotation(request):
         the_id = None
         the_id = request.POST.get('db_id')
         if the_id:
-            if isinstance( the_id, (str, unicode)):
+            if isinstance( the_id, str):
                 if request.POST.get("delete_confirmed") is None:
                     navbarlinks = list_navbarlinks(request, [])
                     shortcutlinks = list_shortcutlinks(request, [])
@@ -652,27 +652,27 @@ def delete_annotation(request):
                             request.session["annotation_deleted"] = True
                             return redirect('/interface_main')
                         else:
-                            print "delete_annotation view, annotation delete not successful."
+                            print("delete_annotation view, annotation delete not successful.")
                             stdlogger.error("delete_annotation view, annotation delete not successful.")
                             pass
                     else:
-                        print "delete_annotation view, cannot delete annotation, current user is not owner."
+                        print("delete_annotation view, cannot delete annotation, current user is not owner.")
                         stdlogger.error("delete_annotation view, cannot delete annotation, current user is not owner.")
                         pass
                 else:
-                    print "delete_annotation view, no annotation with provided 'db_id': ", str( the_id )
+                    print("delete_annotation view, no annotation with provided 'db_id': ", str( the_id ))
                     stdlogger.error("delete_annotation view, no annotation with provided 'db_id': " + str( the_id ))
                     pass
             else:
-                print "delete_annotation view, provided parameter 'db_id' neither str nor unicode."
+                print("delete_annotation view, provided parameter 'db_id' neither str nor unicode.")
                 stdlogger.error("delete_annotation view, provided parameter 'db_id' neither str nor unicode.")
                 pass
         else:
-            print "delete_annotation view, missing POST parameter 'db_id'."
+            print("delete_annotation view, missing POST parameter 'db_id'.")
             stdlogger.error("delete_annotation view, missing POST parameter 'db_id'.")
             pass
     else:
-        print "delete_annotation view, user is not logged-in."
+        print("delete_annotation view, user is not logged-in.")
         stdlogger.error("delete_annotation view, user is not logged-in.")
         return redirect('/accounts/logout')
 
@@ -703,11 +703,11 @@ def create_annotation(request):
 
         tg_source = None
         if request.POST.get('subject_tofeed'): tg_source = request.POST.get('subject_tofeed')
-        if not isinstance(tg_source, (str, unicode)): tg_source = None
+        if not isinstance(tg_source, str): tg_source = None
 
         tg_id = None
         if request.POST.get('pid_tofeed'): tg_id = request.POST.get('pid_tofeed')
-        if not isinstance(tg_id, (str, unicode)): tg_id = None
+        if not isinstance(tg_id, str): tg_id = None
 
         if tg_id or tg_source:
 
@@ -717,27 +717,27 @@ def create_annotation(request):
                     try:
                         o = json.loads(request.POST.get('ontology_json'))
                     except:
-                        print "Create_annotation view, in semantic case, could not load json from POST data."
+                        print("Create_annotation view, in semantic case, could not load json from POST data.")
                         stdlogger.error("Create_annotation view, in semantic case, could not load json from POST data.")
                 if o and isinstance(o, list) and len(o) > 0:
 
                     newbody = {}
                     for oc in o:
                         if oc and isinstance(oc, dict):
-                            if "uris" in oc.keys():
-                                if oc["uris"] and isinstance(oc["uris"], (str, unicode)):
-                                    if "body" not in newbody.keys():
+                            if "uris" in list(oc.keys()):
+                                if oc["uris"] and isinstance(oc["uris"], str):
+                                    if "body" not in list(newbody.keys()):
                                         newbody = {"body":{"jsonld_id":[oc["uris"]]}}
                                     else:
                                         newbody["body"]["jsonld_id"].append(oc["uris"])
                                 else:
-                                    print "Create_annotation view, in semantic case, no value to uris key or neither string or unicode."
+                                    print("Create_annotation view, in semantic case, no value to uris key or neither string or unicode.")
                                     stdlogger.error("Create_annotation view, semantic tag annotation would be a duplicate.")
                             else:
-                                print "Create_annotation view, in semantic case, no uris key."
+                                print("Create_annotation view, in semantic case, no uris key.")
                                 stdlogger.error("Create_annotation view, in semantic case, no uris key.")
                         else:
-                            print "Create_annotation view, in semantic case, list item is not dict."
+                            print("Create_annotation view, in semantic case, list item is not dict.")
                             stdlogger.error("Create_annotation view, in semantic case, list item is not dict.")
                     D = None
                     if newbody and len(newbody)>0:
@@ -757,7 +757,7 @@ def create_annotation(request):
                         setof_shortf = set()
                         for oc in A.body[0].items:
                             if oc.type == "SpecificResource":
-                                if isinstance(oc.source, (str, unicode)):
+                                if isinstance(oc.source, str):
                                     setof_shortf.add( oc.source[::-1][:oc.source[::-1].find("/")][::-1] )
                         request.session["new_semantic"] = {
                             "label": A.body[0].items[len(A.body[0].items)-1].value,
@@ -769,23 +769,23 @@ def create_annotation(request):
                         for dupl in D:
                             for oc in dupl.body[0].items:
                                 if oc.type == "SpecificResource":
-                                    if isinstance(oc.source, (str, unicode)):
+                                    if isinstance(oc.source, str):
                                         setof_shortf.add(oc.source[::-1][:oc.source[::-1].find("/")][::-1])
                                 if oc.type == "TextualBody":
-                                    if isinstance(oc.value, (str, unicode)):
+                                    if isinstance(oc.value, str):
                                         setof_labels.add( oc.value )
                         request.session["duplicate"] = {
                             "label": ", ".join(setof_labels),
                             "shortform": ", ".join(setof_shortf),
                         }
-                        print "Create_annotation view, semantic tag annotation would be a duplicate."
+                        print("Create_annotation view, semantic tag annotation would be a duplicate.")
                         stdlogger.info("Create_annotation view, semantic tag annotation would be a duplicate.")
                 else:
-                    print "Create_annotation view, missing list of ontology classes to create semantic annotation."
+                    print("Create_annotation view, missing list of ontology classes to create semantic annotation.")
                     stdlogger.error("Create_annotation view, missing list of ontology classes to create semantic annotation.")
 
             elif request.POST.get('keyword_submit')!=None:
-                if request.POST.get('keyword_text') and isinstance(request.POST.get('keyword_text'),(str, unicode)):
+                if request.POST.get('keyword_text') and isinstance(request.POST.get('keyword_text'),str):
 
                     keyword_text = request.POST.get('keyword_text')
 
@@ -794,7 +794,7 @@ def create_annotation(request):
                         r = solr_fetchtermonexactlabel( keyword_text )
                         if r and len(r)>0:
                             request.session["has_semantic_equivalent"] = keyword_text
-                            print "Create_annotation view, keyword has semantic tag equivalent."
+                            print("Create_annotation view, keyword has semantic tag equivalent.")
                             stdlogger.info("Create_annotation view, keyword has semantic tag equivalent.")
                             pass_on = True
 
@@ -832,11 +832,11 @@ def create_annotation(request):
                                 }
                             else:
                                 request.session["duplicate"] = { "label": D[0].body[0].value, }
-                            print "Create_annotation view, free-text keyword annotation would be a duplicate."
+                            print("Create_annotation view, free-text keyword annotation would be a duplicate.")
                             stdlogger.info("Create_annotation view, free-text keyword annotation would be a duplicate.")
 
             elif request.POST.get('comment_submit')!=None:
-                if request.POST.get('comment_text') and isinstance(request.POST.get('comment_text'),(str, unicode)):
+                if request.POST.get('comment_text') and isinstance(request.POST.get('comment_text'),str):
 
                     comment_text = request.POST.get('comment_text')
 
@@ -850,7 +850,7 @@ def create_annotation(request):
                     request.session["new_comment"] = {"label": A.body[0].value,}
 
         else:
-           print "Create_annotation view, in semantic case, no target file identifier or neither string nor unicode."
+           print("Create_annotation view, in semantic case, no target file identifier or neither string nor unicode.")
            stdlogger.error("Create_annotation view, in semantic case, no target file identifier or neither string nor unicode.")
 
     return redirect("/interface_main")
@@ -908,7 +908,7 @@ def annotation_summary(request):
 
     if request.POST.get('db_id')!=None:
 
-        if isinstance(request.POST.get('db_id'), (str, unicode)):
+        if isinstance(request.POST.get('db_id'), str):
 
             A = Annotation.objects.get( id = request.POST.get('db_id') )
 
@@ -922,7 +922,7 @@ def annotation_summary(request):
 
                     r = solr_fetchorigintermonid( uri_list )
 
-                    if user_nickname and isinstance(user_nickname, (str, unicode)):
+                    if user_nickname and isinstance(user_nickname, str):
 
                         allannotations_list = Annotation.objects.raw_query(
                             {'body.items.source': {"$in": uri_list},'creator.nickname': {"$ne": user_nickname}}
@@ -934,7 +934,7 @@ def annotation_summary(request):
 
                 elif A.body[0].type and not A.body[0].type=="Composite" and A.body[0].value and A.motivation and A.motivation[0]=="tagging":
 
-                    if user_nickname and isinstance(user_nickname, (str, unicode)):
+                    if user_nickname and isinstance(user_nickname, str):
 
                         allannotations_list = Annotation.objects.raw_query(
                             {'body.value': A.body[0].value, 'motivation': "tagging", 'creator.nickname': { "$ne": user_nickname} })
@@ -998,31 +998,31 @@ def annotation_summary(request):
             r4 = []
             ooarnb = []
             if r:
-                for rr in r.keys():
+                for rr in list(r.keys()):
                     rrr = r[rr]
                     setof_syns = set()
-                    if isinstance(rrr, dict) and "synonyms" in rrr.keys():
+                    if isinstance(rrr, dict) and "synonyms" in list(rrr.keys()):
                         if rrr["synonyms"] and isinstance(rrr["synonyms"], list):
                             for syno in rrr["synonyms"]:
-                                if isinstance(syno, (str, unicode)):
+                                if isinstance(syno, str):
                                     try:
                                         setof_syns.add(str(syno))
                                     except:
                                         pass
-                        elif isinstance(rrr["synonyms"], (str, unicode)):
+                        elif isinstance(rrr["synonyms"], str):
                             try:
                                 setof_syns.add(str(rrr["synonyms"]))
                             except:
                                 pass
                         rrr["synonyms"] = str(", ".join(setof_syns))
-                    if isinstance(rrr, dict) and "acrs_of_ontologies_reusing_uri" in rrr.keys():
+                    if isinstance(rrr, dict) and "acrs_of_ontologies_reusing_uri" in list(rrr.keys()):
                         ooarnb.append( len(rrr["acrs_of_ontologies_reusing_uri"]) )
                         rrr["acrs_of_ontologies_reusing_uri"] = sorted(rrr["acrs_of_ontologies_reusing_uri"])
                         rrr["acrs_of_ontologies_reusing_uri"] = str(", ".join(rrr["acrs_of_ontologies_reusing_uri"]))
                     else:
                         ooarnb.append( 0 )
                     r4.append( rrr )
-            ooarnb = OrderedDict(sorted(enumerate(ooarnb), key=lambda x: x[1])).keys()
+            ooarnb = list(OrderedDict(sorted(enumerate(ooarnb), key=lambda x: x[1])).keys())
             r4 = [ r4[x] for x in ooarnb[::-1] ]
 
 
@@ -1031,7 +1031,7 @@ def annotation_summary(request):
     shortcutlinks = list_shortcutlinks(request, [])
 
     data_dict = {
-        'rows_of_dots': range(int((float(len(r4))+float(10))/float(11))),
+        'rows_of_dots': list(range(int((float(len(r4))+float(10))/float(11)))),
         'r4': r4,
         'all_or_mine': all_or_mine,
         'navbarlinks': navbarlinks,
@@ -1139,11 +1139,11 @@ def myannotations(request):
                 link_info_shortform = ""
                 if r:
                     if isinstance(r, dict):
-                        if A.body[0].items[0].source in r.keys():
+                        if A.body[0].items[0].source in list(r.keys()):
                             if isinstance(r[A.body[0].items[0].source], dict):
-                                if "ontology_acronym" in r[A.body[0].items[0].source].keys():
+                                if "ontology_acronym" in list(r[A.body[0].items[0].source].keys()):
                                     link_info_ontologyacronym = r[A.body[0].items[0].source]["ontology_acronym"]
-                                if "short_form" in r[A.body[0].items[0].source].keys():
+                                if "short_form" in list(r[A.body[0].items[0].source].keys()):
                                     link_info_shortform = r[A.body[0].items[0].source]["short_form"]
 
                 semantic_list = Annotation.objects.raw_query({'body.items.source': A.body[0].items[0].source})
@@ -1318,11 +1318,11 @@ def allannotations(request):
                 link_info_shortform = ""
                 if r:
                     if isinstance(r, dict):
-                        if A.body[0].items[0].source in r.keys():
+                        if A.body[0].items[0].source in list(r.keys()):
                             if isinstance(r[A.body[0].items[0].source], dict):
-                                if "ontology_acronym" in r[A.body[0].items[0].source].keys():
+                                if "ontology_acronym" in list(r[A.body[0].items[0].source].keys()):
                                     link_info_ontologyacronym = r[A.body[0].items[0].source]["ontology_acronym"]
-                                if "ontology_acronym" in r[A.body[0].items[0].source].keys():
+                                if "ontology_acronym" in list(r[A.body[0].items[0].source].keys()):
                                     link_info_shortform = r[A.body[0].items[0].source]["short_form"]
 
                 semantic_list = Annotation.objects.raw_query({'body.items.source': A.body[0].items[0].source})
@@ -1453,12 +1453,12 @@ def interface_main(request):
         request.session["new_comment"] = None
 
     has_semantic_equivalent = None
-    if "has_semantic_equivalent" in request.session.keys() and request.session["has_semantic_equivalent"]:
+    if "has_semantic_equivalent" in list(request.session.keys()) and request.session["has_semantic_equivalent"]:
         has_semantic_equivalent = request.session["has_semantic_equivalent"]
         request.session["has_semantic_equivalent"] = None
 
     long_keyword = None
-    if "long_keyword" in request.session.keys() and request.session["long_keyword"]:
+    if "long_keyword" in list(request.session.keys()) and request.session["long_keyword"]:
         long_keyword = request.session["long_keyword"]
         request.session["long_keyword"] = None
 
@@ -1467,10 +1467,10 @@ def interface_main(request):
         textinput_primer = request.POST.get('textinput_primer')
 
     annotation_deleted = None
-    if "annotation_deleted" in request.session.keys() and request.session["annotation_deleted"]==True:
+    if "annotation_deleted" in list(request.session.keys()) and request.session["annotation_deleted"]==True:
         annotation_deleted = "success"
         request.session["annotation_deleted"] = None
-    elif "annotation_deleted" in request.session.keys() and request.session["annotation_deleted"]==False:
+    elif "annotation_deleted" in list(request.session.keys()) and request.session["annotation_deleted"]==False:
         annotation_deleted = "abort"
         request.session["annotation_deleted"] = None
 
@@ -1594,15 +1594,15 @@ def extract_shortform( e=None ):
     if e:
         if isinstance(e, dict):
             sf = "--"
-            if "short_form" in e.keys():
-                if e["short_form"] and isinstance(e["short_form"], (str, unicode)):
+            if "short_form" in list(e.keys()):
+                if e["short_form"] and isinstance(e["short_form"], str):
                     sf = e["short_form"]
-                    if "ontology_acronym" in e.keys():
-                        if e["ontology_acronym"] and isinstance(e["ontology_acronym"], (str, unicode)):
+                    if "ontology_acronym" in list(e.keys()):
+                        if e["ontology_acronym"] and isinstance(e["ontology_acronym"], str):
                             if e["ontology_acronym"] not in e["short_form"]:
                                 sf = e["ontology_acronym"] + ":" + e["short_form"]
-            elif "uris" in e.keys():
-                if e["uris"] and isinstance( e["uris"], (str,unicode) ):
+            elif "uris" in list(e.keys()):
+                if e["uris"] and isinstance( e["uris"], str ):
                     uri = e["uris"]
                     sf = uri[::-1][:uri[::-1].find(" / ")][::-1]
             out = sf
@@ -1612,7 +1612,7 @@ def process_semantic_entry( entry=None, query_dict=None, search_str=None ):
     if not search_str: search_str = ""
     if query_dict and entry:
         if isinstance(query_dict, dict) and isinstance(entry, dict):
-            if "search_param" in entry.keys():
+            if "search_param" in list(entry.keys()):
                 if entry["search_param"]:
                     #if isinstance(entry["search_param"], (str, unicode)): entry["search_param"] = json.loads(entry["search_param"])
                     if isinstance(entry["search_param"], list) and len(entry["search_param"]) > 0:
@@ -1620,15 +1620,15 @@ def process_semantic_entry( entry=None, query_dict=None, search_str=None ):
                         setof_uris = set()
                         setof_shortf = set()
                         setof_syns = set()
-                        if "logical" in entry.keys():
-                            if entry["logical"] and isinstance(entry["logical"], (str, unicode)):
+                        if "logical" in list(entry.keys()):
+                            if entry["logical"] and isinstance(entry["logical"], str):
                                 for logic in ["AND", "OR", "NOT", "XOR"]:
                                     if entry["logical"] == logic:
                                         for oc in entry["search_param"]:
                                             if isinstance(oc, dict):
-                                                if "uris" in oc.keys() and oc["uris"] and isinstance(oc["uris"], (str, unicode)):
+                                                if "uris" in list(oc.keys()) and oc["uris"] and isinstance(oc["uris"], str):
                                                     setof_uris = oc["uris"]
-                                                if "labels" in oc.keys() and oc["labels"] and isinstance( oc["labels"], (str,unicode) ):
+                                                if "labels" in list(oc.keys()) and oc["labels"] and isinstance( oc["labels"], str ):
                                                     setof_labels.add( str(oc["labels"]) )
                                                 setof_shortf.add( str(extract_shortform( oc )) )
                                         for u in setof_uris:
@@ -1641,9 +1641,9 @@ def process_semantic_entry( entry=None, query_dict=None, search_str=None ):
                             elif entry["logical"] is None:
                                 for oc in entry["search_param"]:
                                     if isinstance(oc, dict):
-                                        if "uris" in oc.keys() and oc["uris"] and isinstance(oc["uris"], (str, unicode)):
+                                        if "uris" in list(oc.keys()) and oc["uris"] and isinstance(oc["uris"], str):
                                             setof_uris = oc["uris"]
-                                        if "labels" in oc.keys() and oc["labels"] and isinstance( oc["labels"], (str,unicode) ):
+                                        if "labels" in list(oc.keys()) and oc["labels"] and isinstance( oc["labels"], str ):
                                             setof_labels.add( str(oc["labels"]) )
                                         setof_shortf.add( str(extract_shortform( oc )) )
                                 for u in setof_uris:
@@ -1658,14 +1658,14 @@ def process_semantic_entry( entry=None, query_dict=None, search_str=None ):
                                         setof_shortf.add(str(extract_shortform( oc )))
                                 search_str += " " + ", ".join(setof_shortf)
 
-                        if "syn_incl" in entry.keys() and entry["syn_incl"] is True:
+                        if "syn_incl" in list(entry.keys()) and entry["syn_incl"] is True:
                             for oc in entry["search_param"]:
-                                if isinstance(oc, dict) and "synonyms" in oc.keys():
+                                if isinstance(oc, dict) and "synonyms" in list(oc.keys()):
                                     syns = None
                                     syns = oc["synonyms"]
                                     if syns and isinstance(syns, list):
                                         for syn in syns:
-                                            if syn and isinstance(syn, (str, unicode)):
+                                            if syn and isinstance(syn, str):
                                                 setof_syns.add( syn )
                             for syn in setof_syns:
                                 query_dict["body_val_syn"].append( syn )
@@ -1680,14 +1680,14 @@ def process_keyword_entry( entry=None, query_dict=None, search_str=None ):
     if not search_str: search_str = ""
     if query_dict and entry:
         if isinstance(query_dict, dict) and isinstance(entry, dict):
-            if "search_param" in entry.keys():
+            if "search_param" in list(entry.keys()):
                 if entry["search_param"]:
-                    if isinstance(entry["search_param"], (str, unicode)):
+                    if isinstance(entry["search_param"], str):
                         kwd = None
                         kwd = entry["search_param"]
-                        if kwd and isinstance(kwd, (str, unicode)):
-                            if "logical" in entry.keys():
-                                if entry["logical"] and isinstance(entry["logical"], (str, unicode)):
+                        if kwd and isinstance(kwd, str):
+                            if "logical" in list(entry.keys()):
+                                if entry["logical"] and isinstance(entry["logical"], str):
                                     for logic in ["AND", "OR", "NOT", "XOR"]:
                                         if entry["logical"] == logic:
                                             query_dict["body_val_"+str(logic).lower()].append( kwd )
@@ -1715,8 +1715,8 @@ def process_search_query( form ):
     if form:
         for entry in form:
             if isinstance(entry, dict):
-                if "type" in entry.keys():
-                    if entry["type"] and isinstance(entry["type"], (str, unicode)):
+                if "type" in list(entry.keys()):
+                    if entry["type"] and isinstance(entry["type"], str):
                         if entry["type"] == "Semantic tag":
                             query_dict, search_str = process_semantic_entry( entry, query_dict, search_str )
                         elif entry["type"] == "Free-text keyword":
@@ -1735,7 +1735,7 @@ def process_search_query( form ):
     IN=""
     IX=""
 
-    for k, v in query_dict.iteritems():
+    for k, v in query_dict.items():
 
         if v and isinstance(v,list) and len(v)>0:
 
@@ -2191,24 +2191,24 @@ def select_search_results(request):
         "related": [],
     }
 
-    if "search_str" in request.session.keys() and request.session["search_str"]:
-        if isinstance(request.session["search_str"], (str, unicode)):
+    if "search_str" in list(request.session.keys()) and request.session["search_str"]:
+        if isinstance(request.session["search_str"], str):
             search_str = request.session["search_str"]
 
     if request.POST.get("submit_toselect") is not None:
-        if "search_str" in request.session.keys() and request.session["search_str"]:
-            if isinstance(request.session["search_str"], (str, unicode)):
+        if "search_str" in list(request.session.keys()) and request.session["search_str"]:
+            if isinstance(request.session["search_str"], str):
                 search_str = request.session["search_str"]
-        if "exact" in request.session.keys() and request.session["exact"]:
+        if "exact" in list(request.session.keys()) and request.session["exact"]:
             if isinstance(request.session["exact"], (list,set)):
                 for url in request.session["exact"]:
-                    if url and isinstance(url, (str, unicode)):
+                    if url and isinstance(url, str):
                         export_dic["exact"].append( {"checked": True, "url": url} )
                         all_exact_cbox = True
-        if "related" in request.session.keys() and request.session["related"]:
+        if "related" in list(request.session.keys()) and request.session["related"]:
             if isinstance(request.session["related"], (list,set)):
                 for url in request.session["related"]:
-                    if url and isinstance(url, (str, unicode)):
+                    if url and isinstance(url, str):
                         export_dic["related"].append( {"checked": True, "url": url} )
                         all_related_cbox = True
 
@@ -2228,16 +2228,16 @@ def select_search_results(request):
             nowi = str(now.year)+str(now.month)+str(now.day)+str(now.hour)+str(now.minute)+str(now.second)
 
             #if search_str and isinstance(search_str, (str, unicode)): response["query string"] = search_str
-            if "exact" in export_dic.keys() and export_dic["exact"] and isinstance(export_dic["exact"], list):
+            if "exact" in list(export_dic.keys()) and export_dic["exact"] and isinstance(export_dic["exact"], list):
                 #response["exact_match"] = []
 
-                A = Annotation.objects.raw_query({"$or":[\
+                A = list(Annotation.objects.raw_query({"$or":[\
                     {"target.source": {"$in": export_dic["exact"] }},
                     {"target.jsonld_id": {"$in": export_dic["exact"] }}
-                ]}).values()
+                ]}).values())
 
                 for url in export_dic["exact"]:
-                    if isinstance(url, (str, unicode)):
+                    if isinstance(url, str):
                         #exac = {"@context": global_settings.JSONLD_CONTEXT_URL}
                         cleaned = readyQuerySetValuesForDumpAsJSONLD(
                             [ann for ann in A if ann["target"][0][1]["source"] == url or ann["target"][0][1]["jsonld_id"] == url]
@@ -2258,16 +2258,16 @@ def select_search_results(request):
                         if not isinstance(cleaned, list): cleaned = [cleaned]
                         response = cleaned
 
-            if "related" in export_dic.keys() and export_dic["related"] and isinstance(export_dic["related"], list):
+            if "related" in list(export_dic.keys()) and export_dic["related"] and isinstance(export_dic["related"], list):
                 #response["synonym_match"] = []
 
-                A = Annotation.objects.raw_query({"$or": [ \
+                A = list(Annotation.objects.raw_query({"$or": [ \
                     {"target.source": {"$in": export_dic["related"]}},
                     {"target.jsonld_id": {"$in": export_dic["related"]}}
-                ]}).values()
+                ]}).values())
 
                 for url in export_dic["related"]:
-                    if isinstance(url, (str, unicode)):
+                    if isinstance(url, str):
                         #relat = {"@context": global_settings.JSONLD_CONTEXT_URL}
                         cleaned = readyQuerySetValuesForDumpAsJSONLD(
                             [ann for ann in A if ann["target"][0][1]["source"] == url or ann["target"][0][1]["jsonld_id"] == url]
@@ -2314,20 +2314,20 @@ def select_search_results(request):
             all_exact_cbox = True
         else:
             all_exact_cbox = False
-        if "exact" in request.session.keys() and request.session["exact"]:
+        if "exact" in list(request.session.keys()) and request.session["exact"]:
             if isinstance(request.session["exact"], (list, set)):
                 for url in request.session["exact"]:
-                    if url and isinstance(url, (str, unicode)):
+                    if url and isinstance(url, str):
                         export_dic["exact"].append({"checked": all_exact_cbox, "url": url})
 
         if request.POST.get("related_cbox") == "on":
             all_related_cbox = True
         else:
             all_related_cbox = False
-        if "related" in request.session.keys() and request.session["related"]:
+        if "related" in list(request.session.keys()) and request.session["related"]:
             if isinstance(request.session["related"], (list, set)):
                 for url in request.session["related"]:
-                    if url and isinstance(url, (str, unicode)):
+                    if url and isinstance(url, str):
                         export_dic["related"].append({"checked": all_related_cbox, "url": url})
 
     data_dict = {

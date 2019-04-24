@@ -1,7 +1,3 @@
-
-
-
-
 # Django settings for b2note_devel project.
 
 import os
@@ -12,7 +8,7 @@ TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 STATIC_PATH = os.path.join(BASE_DIR,'static')
 
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -62,7 +58,7 @@ TIME_ZONE = 'Europe/Madrid'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
-SITE_ID = u'566ed4d6af03426177ca1663'
+SITE_ID = '566ed4d6af03426177ca1663'
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.

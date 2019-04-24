@@ -10,4 +10,4 @@ def write_to_solr(data, solr_location):
 
     # How you'd index data.
     solr.add(data)
-    print "data added to solr"
+    print("data added to solr")

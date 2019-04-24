@@ -70,7 +70,7 @@ def check_urls(urllist, depth=0):
             
             if response is not None:
                 if response.status_code != 200 and response.status_code != 302:
-                    print test_url + ": " + str(response.status_code)
+                    print(test_url + ": " + str(response.status_code))
                     return False
     return True
 
@@ -154,8 +154,8 @@ class B2noteappTest(TestCase):
         """
         from mongoengine.connection import connect, disconnect
         disconnect()
-        import urllib, os
-        pwd = urllib.quote_plus(os.environ['MONGODB_PWD'])
+        import urllib.request, urllib.parse, urllib.error, os
+        pwd = urllib.parse.quote_plus(os.environ['MONGODB_PWD'])
         uri = "mongodb://" + os.environ['MONGODB_USR'] + ":" + pwd + "@127.0.0.1/" + self.mongodb_name + "?authMechanism=SCRAM-SHA-1"
         
         connect(self.mongodb_name, host=uri)
@@ -233,8 +233,8 @@ class B2noteappTest(TestCase):
         # DB just created with no annotations in there
         before = Annotation.objects.filter().count()
         self.assertEqual(before, 0)
-        a = CreateAnnotation(u"test_target")
-        self.assertTrue(type(a) is unicode and len(a)>0)
+        a = CreateAnnotation("test_target")
+        self.assertTrue(type(a) is str and len(a)>0)
         # DB with 1 annotations created
         after = Annotation.objects.filter().count()
         self.assertEqual(after, 1)
@@ -264,8 +264,8 @@ class B2noteappTest(TestCase):
         before = Annotation.objects.filter().count()
         self.assertEqual(before, 0)
         a = CreateSemanticTag(
-            subject_url=u"https://b2share.eudat.eu/record/30",
-            subject_pid=u"http://hdl.handle.net/11304/test",
+            subject_url="https://b2share.eudat.eu/record/30",
+            subject_pid="http://hdl.handle.net/11304/test",
             object_json='[{"uris":"test_uri", "labels": "test_label"}]')
         self.assertTrue(a)
         # DB with 1 annotations created
@@ -283,12 +283,12 @@ class B2noteappTest(TestCase):
         """
         a = CreateSemanticTag(
             subject_url=1234,
-            subject_pid=u"http://hdl.handle.net/11304/test",
+            subject_pid="http://hdl.handle.net/11304/test",
             object_json='{"uris":"test_uri", "labels": "test_label"}')
         self.assertTrue(not a)
         a = CreateSemanticTag(
-            subject_url=u"https://b2share.eudat.eu/record/30",
-            subject_pid=u"http://hdl.handle.net/11304/test",
+            subject_url="https://b2share.eudat.eu/record/30",
+            subject_pid="http://hdl.handle.net/11304/test",
             object_json='{"labels": "test_label"}')
         self.assertTrue(not a)
         
@@ -303,8 +303,8 @@ class B2noteappTest(TestCase):
         self.assertEqual(before, 0)
         a = CreateFreeTextKeyword(
             subject_url="https://b2share.eudat.eu/record/30",
-            subject_pid=u"http://hdl.handle.net/11304/test",
-            text=u"testing free text")
+            subject_pid="http://hdl.handle.net/11304/test",
+            text="testing free text")
         self.assertTrue(a)
         # DB with 1 annotations created
         after = Annotation.objects.filter().count()
@@ -320,12 +320,12 @@ class B2noteappTest(TestCase):
             Tests the no creation of invalid free text keywords using the mongo support function.
         """
         a = CreateFreeTextKeyword(
-            subject_url=u"https://b2share.eudat.eu/record/30",
+            subject_url="https://b2share.eudat.eu/record/30",
             subject_pid=None,
             text=1234)
         self.assertTrue(not a)
         a = CreateFreeTextKeyword(
-            subject_url=u"https://b2share.eudat.eu/record/30",
+            subject_url="https://b2share.eudat.eu/record/30",
             subject_pid=None,
             text="")
         self.assertTrue(not a)

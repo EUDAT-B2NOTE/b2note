@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from views import ResetPasswordRequestView, PasswordResetConfirmView
+from .views import ResetPasswordRequestView, PasswordResetConfirmView
 
 urlpatterns = patterns('',
     #url(r'^old_register$', 'accounts.views.old_register', name='old_register'),

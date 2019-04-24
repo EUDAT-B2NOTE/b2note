@@ -27,7 +27,7 @@ class RegistrationForm(forms.ModelForm):
                    'country']
 
     def save(self, commit=True):
-        print type(self)
+        print(type(self))
         user = super(RegistrationForm, self).save(commit=False)
         user.set_password("password")
         if commit:

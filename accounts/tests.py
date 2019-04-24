@@ -48,7 +48,7 @@ class AccountTest(TestCase):
             'country': 'a'
         }, follow=True)
         print("testing registration")
-        print(response.status_code)
+        print((response.status_code))
         self.assertEqual(response.status_code, 200)
 
     def test_login(self):
@@ -60,18 +60,18 @@ class AccountTest(TestCase):
         session['user'] = self.user.annotator_id.annotator_id
         session.save()
         self.req = MyRequest(response.request, self.client.session, self.user)
-        print self.req.session.items()
+        print(list(self.req.session.items()))
         django_login(self.req, self.user)
         self.assertTrue(self.user.is_authenticated())
-        print self.req.session.items()
+        print(list(self.req.session.items()))
         
     def is_created(self):
         return UserCred.objects.get(username=self.email)        
         
     def test_logout(self):
         self.test_login()
-        print self.req.session.items()
+        print(list(self.req.session.items()))
         django_logout(self.req)
-        print self.req.session.items()
+        print(list(self.req.session.items()))
 
         

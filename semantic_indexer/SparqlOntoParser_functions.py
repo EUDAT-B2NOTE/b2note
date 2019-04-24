@@ -6,11 +6,11 @@
 import datetime, copy, rdflib, csv, json, time
 from rdflib import Graph
 
-from SparqlOntoParser_supports import get_json
-from SparqlOntoParser_supports import inputStringCheck, checkEndpointResponds, stringSimilarity
-from SparqlOntoParser_supports import obtainPredicateCount, mergeQueryResults
-from SparqlOntoParser_supports import modifyQueryForSubgraph, modifyQueryAddLimitAndOffset
-from SparqlOntoParser_supports import sparqlOneEndpoint, urllibOneEndpoint
+from .SparqlOntoParser_supports import get_json
+from .SparqlOntoParser_supports import inputStringCheck, checkEndpointResponds, stringSimilarity
+from .SparqlOntoParser_supports import obtainPredicateCount, mergeQueryResults
+from .SparqlOntoParser_supports import modifyQueryForSubgraph, modifyQueryAddLimitAndOffset
+from .SparqlOntoParser_supports import sparqlOneEndpoint, urllibOneEndpoint
 
 
 
@@ -56,7 +56,7 @@ class OntologyClass(object):
                     j= get_json(str(self.ontology_iri))
                 if isinstance(j, dict):
                     for k in ["name", "acronym"]:
-                        if k in j.keys() and isinstance(j[k], (str, unicode)):
+                        if k in list(j.keys()) and isinstance(j[k], str):
                             if k=="name": self.ontology_name.append(j[k])
                             if k=="acronym": self.ontology_acronym.append(j[k])
         except:
@@ -77,13 +77,13 @@ def fillOntoClassField(onto_class=None, fieldname=None, info=None):
 
             if isinstance(onto_class, OntologyClass):
 
-                if isinstance(fieldname, (str, unicode)):
+                if isinstance(fieldname, str):
 
-                    if fieldname in onto_class.__dict__.keys():
+                    if fieldname in list(onto_class.__dict__.keys()):
 
-                        if isinstance(onto_class.__dict__[fieldname], (str, unicode)):
+                        if isinstance(onto_class.__dict__[fieldname], str):
 
-                            if isinstance(info, (str, unicode)):
+                            if isinstance(info, str):
 
                                 onto_class.__dict__[fieldname] = info
 
@@ -95,7 +95,7 @@ def fillOntoClassField(onto_class=None, fieldname=None, info=None):
 
                         elif isinstance(onto_class.__dict__[fieldname], list):
 
-                            if isinstance(info, (str, unicode)) and info not in onto_class.__dict__[fieldname]:
+                            if isinstance(info, str) and info not in onto_class.__dict__[fieldname]:
 
                                 onto_class.__dict__[fieldname].append(info)
 
@@ -124,17 +124,17 @@ def updateOntoClassFields(onto_class=None, r=None):
 
             if isinstance(onto_class, OntologyClass) and isinstance(r, dict):
 
-                for k in r.keys():
+                for k in list(r.keys()):
 
-                    if isinstance(k, (str, unicode)):
+                    if isinstance(k, str):
 
                         if r[k]:
 
                             if isinstance(r[k], dict):
 
-                                if "value" in r[k].keys():
+                                if "value" in list(r[k].keys()):
 
-                                    if isinstance(r[k]["value"], (str, unicode)):
+                                    if isinstance(r[k]["value"], str):
 
                                         onto_class = fillOntoClassField(onto_class, k, r[k]["value"])
 
@@ -148,7 +148,7 @@ def updateOntoClassFields(onto_class=None, r=None):
 
     except:
 
-        print "Could not update ontology class fields."
+        print("Could not update ontology class fields.")
 
     return out
 
@@ -163,11 +163,11 @@ def buildOntoClassContainer(res):
 
             if isinstance(res, dict):
 
-                if "results" in res.keys():
+                if "results" in list(res.keys()):
 
                     if isinstance(res["results"], dict):
 
-                        if "bindings" in res["results"].keys():
+                        if "bindings" in list(res["results"].keys()):
 
                             if isinstance(res["results"]["bindings"], list):
 
@@ -181,7 +181,7 @@ def buildOntoClassContainer(res):
 
                                     counter += 1
 
-                                    if "uris" in r.keys() and "value" in r["uris"].keys() and isinstance(r["uris"]["value"], (str, unicode)):
+                                    if "uris" in list(r.keys()) and "value" in list(r["uris"].keys()) and isinstance(r["uris"]["value"], str):
 
                                         curr_class = None
 
@@ -215,7 +215,7 @@ def buildOntoClassContainer(res):
 
     except:
 
-        print "Could not build container of ontology classes."
+        print("Could not build container of ontology classes.")
 
     return out
 
@@ -232,7 +232,7 @@ def jsonOrFollow(url=None, pids=None, apikey=None, binding=None, follow_keys_lis
 
         if url:
 
-            if isinstance(url, (str, unicode)):
+            if isinstance(url, str):
 
                 if not apikey:
 
@@ -242,7 +242,7 @@ def jsonOrFollow(url=None, pids=None, apikey=None, binding=None, follow_keys_lis
 
                     o_meta = get_json(str(url), apikey)
 
-                elif isinstance(apikey, unicode):
+                elif isinstance(apikey, str):
 
                     o_meta = get_json(str(url), str(apikey))
 
@@ -254,25 +254,25 @@ def jsonOrFollow(url=None, pids=None, apikey=None, binding=None, follow_keys_lis
 
                     if isinstance(p, dict):
 
-                        for k in p.keys():
+                        for k in list(p.keys()):
 
-                            if p[k] in o_meta.keys():
+                            if p[k] in list(o_meta.keys()):
 
-                                if isinstance(o_meta[p[k]], (str, unicode)):
+                                if isinstance(o_meta[p[k]], str):
 
-                                    binding[unicode(k)] = {u'type': u'typed-literal', u'value': o_meta[p[k]]}
+                                    binding[str(k)] = {'type': 'typed-literal', 'value': o_meta[p[k]]}
 
                                 elif isinstance(o_meta[p[k]], list):
 
                                     for elit in o_meta[p[k]]:
 
-                                        if isinstance(elit, (str,unicode)):
+                                        if isinstance(elit, str):
 
-                                            if k not in binding.keys():
+                                            if k not in list(binding.keys()):
 
-                                                binding[unicode(k)] = []
+                                                binding[str(k)] = []
 
-                                            binding[unicode(k)].append({u'type': u'typed-literal', u'value': elit})
+                                            binding[str(k)].append({'type': 'typed-literal', 'value': elit})
 
                             elif follow_keys_list:
 
@@ -282,11 +282,11 @@ def jsonOrFollow(url=None, pids=None, apikey=None, binding=None, follow_keys_lis
 
                                         binding = jsonOrFollow(url, pids, apikey, binding, item)
 
-                                if isinstance(follow_keys_list, (str, unicode)):
+                                if isinstance(follow_keys_list, str):
 
-                                    if "links" in o_meta.keys() and isinstance(o_meta["links"], dict) and follow_keys_list in o_meta["links"].keys():
+                                    if "links" in list(o_meta.keys()) and isinstance(o_meta["links"], dict) and follow_keys_list in list(o_meta["links"].keys()):
 
-                                        if isinstance(o_meta["links"][follow_keys_list], (str, unicode)):
+                                        if isinstance(o_meta["links"][follow_keys_list], str):
 
                                             binding = jsonOrFollow(o_meta["links"][follow_keys_list], pids, apikey, binding)
 
@@ -294,7 +294,7 @@ def jsonOrFollow(url=None, pids=None, apikey=None, binding=None, follow_keys_lis
 
     except:
 
-        print "Could not json_or_follow."
+        print("Could not json_or_follow.")
 
     return out
 
@@ -311,11 +311,11 @@ def addOntoMetadataToMockSparql(res=None, pids=None, apikey=None):
 
             if isinstance(res, dict):
 
-                if "results" in res.keys():
+                if "results" in list(res.keys()):
 
                     if isinstance(res["results"], dict):
 
-                        if "bindings" in res["results"].keys():
+                        if "bindings" in list(res["results"].keys()):
 
                             if isinstance(res["results"]["bindings"], list):
 
@@ -323,17 +323,17 @@ def addOntoMetadataToMockSparql(res=None, pids=None, apikey=None):
 
                                     if isinstance(item, dict):
 
-                                        if "ontology_iri" in item.keys():
+                                        if "ontology_iri" in list(item.keys()):
 
                                             if isinstance(item["ontology_iri"], dict):
 
-                                                if "value" in item["ontology_iri"].keys():
+                                                if "value" in list(item["ontology_iri"].keys()):
 
-                                                    if isinstance(item["ontology_iri"]["value"], (str, unicode)):
+                                                    if isinstance(item["ontology_iri"]["value"], str):
 
                                                         binding = {}
 
-                                                        if item["ontology_iri"]["value"] in prev_onto_dict.keys():
+                                                        if item["ontology_iri"]["value"] in list(prev_onto_dict.keys()):
 
                                                             binding = prev_onto_dict[item["ontology_iri"]["value"]]
 
@@ -351,29 +351,29 @@ def addOntoMetadataToMockSparql(res=None, pids=None, apikey=None):
 
                                                             if isinstance(binding, dict):
 
-                                                                for k in binding.keys():
+                                                                for k in list(binding.keys()):
 
-                                                                    if isinstance(k, (str, unicode)) and "ontology_" in k:
+                                                                    if isinstance(k, str) and "ontology_" in k:
 
-                                                                        if "head" in res.keys():
+                                                                        if "head" in list(res.keys()):
 
                                                                             if isinstance(res["head"], dict):
 
-                                                                                if "vars" in res["head"].keys():
+                                                                                if "vars" in list(res["head"].keys()):
 
                                                                                     if isinstance(res["head"]["vars"], list):
 
                                                                                         if k not in res["head"]["vars"]:
 
-                                                                                            res["head"]["vars"].append(unicode(k))
+                                                                                            res["head"]["vars"].append(str(k))
 
-                                                                        item[unicode(k)] = binding[k]
+                                                                        item[str(k)] = binding[k]
 
                                 out = res
 
     except:
 
-        print "Could not add ontology metadata info to mock sparql json."
+        print("Could not add ontology metadata info to mock sparql json.")
 
     return out
 
@@ -394,46 +394,46 @@ def fillMockSparqlResultObjectWithCollectionItemInfo(coll_item=None, pids=None, 
 
                     if isinstance(p, dict):
 
-                        for k in p.keys():
+                        for k in list(p.keys()):
 
                             if k:
 
                                 fld_ctnt = None
 
-                                if p[k] in coll_item.keys():
+                                if p[k] in list(coll_item.keys()):
 
                                     fld_ctnt = coll_item[p[k]]
 
-                                elif "links" in coll_item.keys() and isinstance(coll_item["links"], dict) and p[k] in coll_item["links"].keys():
+                                elif "links" in list(coll_item.keys()) and isinstance(coll_item["links"], dict) and p[k] in list(coll_item["links"].keys()):
 
                                     fld_ctnt = coll_item["links"][p[k]]
 
                                 if fld_ctnt:
 
-                                    if isinstance(fld_ctnt, (str, unicode)):
+                                    if isinstance(fld_ctnt, str):
 
-                                        if k not in res["head"]["vars"]: res["head"]["vars"].append(unicode(k))
+                                        if k not in res["head"]["vars"]: res["head"]["vars"].append(str(k))
 
                                         if k == "uris" or k == "ontology_iri":
 
-                                            binding[unicode(k)] = {u'type': u'uri', u'value': unicode(fld_ctnt)}
+                                            binding[str(k)] = {'type': 'uri', 'value': str(fld_ctnt)}
 
                                         else:
 
-                                            binding[unicode(k)] = {u'type': u'typed-literal', u'value': unicode(fld_ctnt)}
+                                            binding[str(k)] = {'type': 'typed-literal', 'value': str(fld_ctnt)}
 
-                        for k in p.keys():
+                        for k in list(p.keys()):
 
                             if k:
 
                                 fld_ctnt = None
 
-                                if p[k] in coll_item.keys():
+                                if p[k] in list(coll_item.keys()):
 
                                     fld_ctnt = coll_item[p[k]]
 
-                                elif "links" in coll_item.keys() and isinstance(coll_item["links"], dict) and \
-                                                p[k] in coll_item["links"].keys():
+                                elif "links" in list(coll_item.keys()) and isinstance(coll_item["links"], dict) and \
+                                                p[k] in list(coll_item["links"].keys()):
 
                                     fld_ctnt = coll_item["links"][p[k]]
 
@@ -443,11 +443,11 @@ def fillMockSparqlResultObjectWithCollectionItemInfo(coll_item=None, pids=None, 
 
                                         for item in fld_ctnt:
 
-                                            if isinstance(item, (str, unicode)):
+                                            if isinstance(item, str):
 
-                                                if k not in res["head"]["vars"]: res["head"]["vars"].append(unicode(k))
+                                                if k not in res["head"]["vars"]: res["head"]["vars"].append(str(k))
 
-                                                binding[unicode(k)] = {u'type': u'typed-literal', u'value': unicode(item)}
+                                                binding[str(k)] = {'type': 'typed-literal', 'value': str(item)}
 
                                                 res["results"]["bindings"].append(copy.deepcopy(binding))
 
@@ -457,7 +457,7 @@ def fillMockSparqlResultObjectWithCollectionItemInfo(coll_item=None, pids=None, 
 
     except:
 
-        print "Could not fill mock SPARQL result object with collection item information."
+        print("Could not fill mock SPARQL result object with collection item information.")
 
     return out
 
@@ -472,11 +472,11 @@ def makeMockSparqlResultFromAPIclassCollection(props, pids):
 
             if isinstance(props, dict) and isinstance(pids, tuple):
 
-                if "collection" in props.keys():
+                if "collection" in list(props.keys()):
 
                     if isinstance(props["collection"], list):
 
-                        res = {u'head': {u'link': [], u'vars': []}, u'results': {u'distinct': False, u'bindings': [], u'ordered': True}}
+                        res = {'head': {'link': [], 'vars': []}, 'results': {'distinct': False, 'bindings': [], 'ordered': True}}
 
                         for coll_item in props["collection"]:
 
@@ -488,7 +488,7 @@ def makeMockSparqlResultFromAPIclassCollection(props, pids):
 
     except:
 
-        print "Could not make mock SPARQL result from API class collection."
+        print("Could not make mock SPARQL result from API class collection.")
 
     return out
 
@@ -512,7 +512,7 @@ def apiGatherPropertySetValuesFromAllClasses(from_uri=None, apikey=None, pids=No
 
                     container = []
 
-                    if "pageCount" in props.keys():
+                    if "pageCount" in list(props.keys()):
 
                         pageCount = props["pageCount"]
 
@@ -528,10 +528,10 @@ def apiGatherPropertySetValuesFromAllClasses(from_uri=None, apikey=None, pids=No
                             page_container = buildOntoClassContainer(res)
                             if page_container: container += page_container
 
-                            print "Processing page", str(curr_page+1) + "/" + str(pageCount), "using pageCount method.", \
-                                len(container), "in", time.time()-start, "s"
+                            print("Processing page", str(curr_page+1) + "/" + str(pageCount), "using pageCount method.", \
+                                len(container), "in", time.time()-start, "s")
 
-                    elif "nextPage" in props.keys():
+                    elif "nextPage" in list(props.keys()):
 
                         nextPage = True
 
@@ -560,7 +560,7 @@ def apiGatherPropertySetValuesFromAllClasses(from_uri=None, apikey=None, pids=No
 
     except:
 
-        print "Could gather set of properties from all API classes."
+        print("Could gather set of properties from all API classes.")
 
     return out
 
@@ -585,7 +585,7 @@ def repeatQueryInSmallerChunks(endpoint=None, pids=None, from_uri=None, apikey=N
 
                 if endpoint_type:
 
-                    if isinstance(endpoint_type, (str, unicode)):
+                    if isinstance(endpoint_type, str):
 
                         if endpoint_type == "endpoint_nsws":
 
@@ -600,9 +600,9 @@ def repeatQueryInSmallerChunks(endpoint=None, pids=None, from_uri=None, apikey=N
                         pids_test   +=  (p_test,)
                         pids_works  +=  (p_works,)
 
-                        for k in p.keys():
+                        for k in list(p.keys()):
 
-                            if isinstance(p[k], (str, unicode)):
+                            if isinstance(p[k], str):
 
                                 p_test[k] = p[k]
                                 query = makeQueryForPropertyValues( pids_test )
@@ -633,7 +633,7 @@ def repeatQueryInSmallerChunks(endpoint=None, pids=None, from_uri=None, apikey=N
 
                                 else:
 
-                                    p_test = {z:p_works[z] for z in p_works.keys()}
+                                    p_test = {z:p_works[z] for z in list(p_works.keys())}
 
                         if not worksatall: break
 
@@ -681,11 +681,11 @@ def repeatQueryInSmallerChunks(endpoint=None, pids=None, from_uri=None, apikey=N
 
                                 if isinstance(res_c, dict):
 
-                                    if "results" in res_c.keys():
+                                    if "results" in list(res_c.keys()):
 
                                         if isinstance(res_c["results"], dict):
 
-                                            if "bindings" in res_c["results"].keys():
+                                            if "bindings" in list(res_c["results"].keys()):
 
                                                 if isinstance(res_c["results"]["bindings"], list):
 
@@ -712,7 +712,7 @@ def repeatQueryInSmallerChunks(endpoint=None, pids=None, from_uri=None, apikey=N
 
     except:
 
-        print "Could not repeat query in smaller chunks."
+        print("Could not repeat query in smaller chunks.")
 
     return out
 
@@ -733,7 +733,7 @@ def sparqlGatherPropertySetvaluesFromAllClasses( endpoint=None, pids=None, from_
 
                 if endpoint_type:
 
-                    if isinstance(endpoint_type, (str, unicode)):
+                    if isinstance(endpoint_type, str):
 
                         if endpoint_type == "endpoint_nsws":
 
@@ -757,7 +757,7 @@ def sparqlGatherPropertySetvaluesFromAllClasses( endpoint=None, pids=None, from_
 
     except:
 
-        print "Could not gather set of properties from all sparql endpoint classes."
+        print("Could not gather set of properties from all sparql endpoint classes.")
 
     return out
 
@@ -778,7 +778,7 @@ def repeatPropQueryWithDecreasingLimit( endpoint=None, query=None, from_uri=None
 
                 if endpoint_type:
 
-                    if isinstance(endpoint_type, (str, unicode)):
+                    if isinstance(endpoint_type, str):
 
                         if endpoint_type == "endpoint_nsws":
 
@@ -814,7 +814,7 @@ def repeatPropQueryWithDecreasingLimit( endpoint=None, query=None, from_uri=None
 
                         while offset < pred_count and limit>0:
 
-                            print "processing:", offset, "+", limit
+                            print("processing:", offset, "+", limit)
 
                             if limit < 1: limit = 1
 
@@ -826,7 +826,7 @@ def repeatPropQueryWithDecreasingLimit( endpoint=None, query=None, from_uri=None
 
                             q = q[:q.find("LIMIT")] + "\nORDER BY ?oo\n" + q[q.find("LIMIT"):]
 
-                            print q
+                            print(q)
 
                             r = None
 
@@ -862,7 +862,7 @@ def repeatPropQueryWithDecreasingLimit( endpoint=None, query=None, from_uri=None
 
     except:
 
-        print "Could not repeat query with decreasing limit."
+        print("Could not repeat query with decreasing limit.")
 
     return out
 
@@ -882,22 +882,22 @@ def gatherPropIDsFromAPIendpoint( mandatory_prop_dict=None, optional_prop_dict=N
                     # Get the available resources
                     props = get_json( from_uri+"/properties/", apikey )
 
-                    res = {u'head': {u'link': [], u'vars': [u'oo']},
-                           u'results': {u'distinct': False, u'bindings': [], u'ordered': True}}
+                    res = {'head': {'link': [], 'vars': ['oo']},
+                           'results': {'distinct': False, 'bindings': [], 'ordered': True}}
 
                     joined_prop_dict = mandatory_prop_dict
 
-                    for k in optional_prop_dict.keys():
-                        if k not in joined_prop_dict.keys():
+                    for k in list(optional_prop_dict.keys()):
+                        if k not in list(joined_prop_dict.keys()):
                             joined_prop_dict[k] = optional_prop_dict[k]
 
-                    for key, val in joined_prop_dict.iteritems(): # from data input (i.e. parameters)
+                    for key, val in joined_prop_dict.items(): # from data input (i.e. parameters)
 
                         if inputStringCheck(key):
 
                             if key not in res["head"]["vars"]:
 
-                                res["head"]["vars"].append( unicode(key) )
+                                res["head"]["vars"].append( str(key) )
 
                             if inputStringCheck(val):
 
@@ -905,29 +905,29 @@ def gatherPropIDsFromAPIendpoint( mandatory_prop_dict=None, optional_prop_dict=N
 
                                     if isinstance(prop, dict):
 
-                                        if "label" in prop.keys() and "id" in prop.keys():
+                                        if "label" in list(prop.keys()) and "id" in list(prop.keys()):
 
-                                            if isinstance(prop["label"], (str,unicode)) and val.lower() in prop["label"].lower():
+                                            if isinstance(prop["label"], str) and val.lower() in prop["label"].lower():
 
                                                 res["results"]["bindings"].append(\
-                                                    {u'oo':{u'type': u'literal', u'value': unicode(prop["label"])},\
-                                                     unicode(key):{u'type': u'uri', u'value': unicode(prop["id"])}})
+                                                    {'oo':{'type': 'literal', 'value': str(prop["label"])},\
+                                                     str(key):{'type': 'uri', 'value': str(prop["id"])}})
 
                                             elif isinstance(prop["label"], list):
 
                                                 for item in prop["label"]:
 
-                                                    if isinstance(item, (str,unicode)) and val.lower() in item.lower():
+                                                    if isinstance(item, str) and val.lower() in item.lower():
 
                                                         res["results"]["bindings"].append(\
-                                                            {u'oo':{u'type': u'literal', u'value': unicode(item)},\
-                                                             unicode(key):{u'type': u'uri', u'value': unicode(prop["id"])}})
+                                                            {'oo':{'type': 'literal', 'value': str(item)},\
+                                                             str(key):{'type': 'uri', 'value': str(prop["id"])}})
 
                     out = res
 
     except:
 
-        print "Could not gather property IDs from API endpoint:", from_uri
+        print("Could not gather property IDs from API endpoint:", from_uri)
 
     return out
 
@@ -947,19 +947,19 @@ def obtainPropertyIDs( propsofi=None, endpoint=None, from_uri=None, apikey=None,
 
         # for keeping only the first item in the list of terms standing as value at dictionary key "None"
         # e.g. {'label': 'chamallow'}
-        mandatory_prop_dict = { k:m_prop_dict[k][j] for k in m_prop_dict.keys() if j<len(m_prop_dict[k]) }
+        mandatory_prop_dict = { k:m_prop_dict[k][j] for k in list(m_prop_dict.keys()) if j<len(m_prop_dict[k]) }
         # e.g. {'syn': 'salicorne'}
-        optional_prop_dict  = { k:o_prop_dict[k][j] for k in o_prop_dict.keys() if j<len(o_prop_dict[k]) }
+        optional_prop_dict  = { k:o_prop_dict[k][j] for k in list(o_prop_dict.keys()) if j<len(o_prop_dict[k]) }
 
 
         # for being able to store best string match results between current query results and previous ones
         # we increase depth of dictionary entries by making these entries (sub-)dictionaries themselves.
         # e.g. {'label': {'target': 'chamallow'}}
-        mandat_prop_dict = { k:{"target":mandatory_prop_dict[k]} for k in mandatory_prop_dict.keys() }
+        mandat_prop_dict = { k:{"target":mandatory_prop_dict[k]} for k in list(mandatory_prop_dict.keys()) }
         # e.g. {'syn': {'target': 'salicorne'}}
-        option_prop_dict = { k:{"target":optional_prop_dict[k]} for k in optional_prop_dict.keys() }
+        option_prop_dict = { k:{"target":optional_prop_dict[k]} for k in list(optional_prop_dict.keys()) }
 
-        max_hook_nb = max([ len(o_prop_dict[k]) for k in o_prop_dict.keys() ])
+        max_hook_nb = max([ len(o_prop_dict[k]) for k in list(o_prop_dict.keys()) ])
 
         # Interrupt before end of term list in case that for each term an exact property label match has been found and thus its ID stored.
         while (j==0 or j<max_hook_nb) and (not allPropertyIDsIdentified( mandat_prop_dict ) or not allPropertyIDsIdentified( option_prop_dict )):
@@ -1002,19 +1002,19 @@ def obtainPropertyIDs( propsofi=None, endpoint=None, from_uri=None, apikey=None,
             #
             # print option_prop_dict, "\n"
 
-            mandatory_prop_dict = { k:m_prop_dict[k][j] for k in m_prop_dict.keys() if j<len(m_prop_dict[k]) }
+            mandatory_prop_dict = { k:m_prop_dict[k][j] for k in list(m_prop_dict.keys()) if j<len(m_prop_dict[k]) }
 
-            optional_prop_dict =  { k:o_prop_dict[k][j] for k in o_prop_dict.keys() if j<len(o_prop_dict[k]) }
+            optional_prop_dict =  { k:o_prop_dict[k][j] for k in list(o_prop_dict.keys()) if j<len(o_prop_dict[k]) }
 
-            for k in mandatory_prop_dict.keys():
+            for k in list(mandatory_prop_dict.keys()):
 
-                if k in mandat_prop_dict.keys():
+                if k in list(mandat_prop_dict.keys()):
 
                     mandat_prop_dict[k]["target"] = mandatory_prop_dict[k]
 
-            for k in optional_prop_dict.keys():
+            for k in list(optional_prop_dict.keys()):
 
-                if k in optional_prop_dict.keys():
+                if k in list(optional_prop_dict.keys()):
 
                     option_prop_dict[k]["target"] = optional_prop_dict[k]
 
@@ -1028,7 +1028,7 @@ def obtainPropertyIDs( propsofi=None, endpoint=None, from_uri=None, apikey=None,
 
     except:
 
-        print "Could not proceed with obtaining property IDs."
+        print("Could not proceed with obtaining property IDs.")
 
     return out
 
@@ -1041,13 +1041,13 @@ def keepBestLabelsWithPerfectMatch( prop_dict ):
 
         p_dict = {}
 
-        for k in prop_dict.keys():
+        for k in list(prop_dict.keys()):
 
             if prop_dict[k]:
 
                 if type(prop_dict[k]) is dict:
 
-                    if "ID" and "match" in prop_dict[k].keys():
+                    if "ID" and "match" in list(prop_dict[k].keys()):
 
                         if prop_dict[k]["ID"] and prop_dict[k]["match"]:
 
@@ -1061,7 +1061,7 @@ def keepBestLabelsWithPerfectMatch( prop_dict ):
 
     except:
 
-        print "Could not proceed with keeping prop_dict best_match_labels with perfect match."
+        print("Could not proceed with keeping prop_dict best_match_labels with perfect match.")
 
     return out
 
@@ -1076,11 +1076,11 @@ def updateDictWithQueryResults( prop_dict, query_res ):
 
             if type(prop_dict) is dict and type(query_res) is dict:
 
-                if "head" in query_res.keys():
+                if "head" in list(query_res.keys()):
 
                     if "vars" in query_res["head"]:
 
-                        if "results" in query_res.keys():
+                        if "results" in list(query_res.keys()):
 
                             if "bindings" in query_res["results"]:
 
@@ -1088,19 +1088,19 @@ def updateDictWithQueryResults( prop_dict, query_res ):
 
                                     for item in query_res["head"]["vars"]: # item = "oo", "label", "def" (sparql_var)
 
-                                        if item in content.keys():
+                                        if item in list(content.keys()):
 
-                                            if 'value' in content[item].keys():
+                                            if 'value' in list(content[item].keys()):
 
-                                                if item in prop_dict.keys():
+                                                if item in list(prop_dict.keys()):
 
                                                     if type(prop_dict[item]) is dict:
 
-                                                        if "ID" not in prop_dict[item].keys():
+                                                        if "ID" not in list(prop_dict[item].keys()):
 
-                                                            if "oo" in content.keys():
+                                                            if "oo" in list(content.keys()):
 
-                                                                if 'value' in content["oo"].keys() and "target" in prop_dict[item].keys():
+                                                                if 'value' in list(content["oo"].keys()) and "target" in list(prop_dict[item].keys()):
 
                                                                     prop_dict[item]["ID"] = content[item]['value']
 
@@ -1108,9 +1108,9 @@ def updateDictWithQueryResults( prop_dict, query_res ):
 
                                                                     prop_dict[item]["match"] = stringSimilarity( content["oo"]['value'], prop_dict[item]["target"] )
 
-                                                        elif "target" in prop_dict[item].keys() and "match" in prop_dict[item].keys() and "oo" in content.keys():
+                                                        elif "target" in list(prop_dict[item].keys()) and "match" in list(prop_dict[item].keys()) and "oo" in list(content.keys()):
 
-                                                            if 'value' in content["oo"].keys() and type(str(prop_dict[item]["target"])) is str and type(prop_dict[item]["match"]) is float:
+                                                            if 'value' in list(content["oo"].keys()) and type(str(prop_dict[item]["target"])) is str and type(prop_dict[item]["match"]) is float:
 
                                                                 if stringSimilarity( content["oo"]['value'], prop_dict[item]["target"] ) > prop_dict[item]["match"]:
 
@@ -1124,7 +1124,7 @@ def updateDictWithQueryResults( prop_dict, query_res ):
 
     except:
 
-        print "Could not update dictionary with query results."
+        print("Could not update dictionary with query results.")
 
     return out
 
@@ -1141,9 +1141,9 @@ def allPropertyIDsIdentified( prop_dict ):
 
             if type(prop_dict) is dict:
 
-                for item in prop_dict.keys():
+                for item in list(prop_dict.keys()):
 
-                    if "ID" in prop_dict[item].keys() and "match" in prop_dict[item].keys():
+                    if "ID" in list(prop_dict[item].keys()) and "match" in list(prop_dict[item].keys()):
 
                         if type(str(prop_dict[item]["ID"])) is str and type(prop_dict[item]["match"]) is float:
 
@@ -1164,7 +1164,7 @@ def allPropertyIDsIdentified( prop_dict ):
 
     except:
 
-        print "Could not proceed with checking that all properties were identified."
+        print("Could not proceed with checking that all properties were identified.")
 
     return out
 
@@ -1187,17 +1187,17 @@ def switchKeysSparql2OntoClass(pids, propsofi):
 
                         switched = {}
 
-                        for key in p.keys():
+                        for key in list(p.keys()):
 
-                            if key and isinstance(key, (str, unicode)):
+                            if key and isinstance(key, str):
 
                                 for prop in propsofi:
 
                                     if isinstance(prop, dict):
 
-                                        if "output_name" and "sparql_var" in prop.keys():
+                                        if "output_name" and "sparql_var" in list(prop.keys()):
 
-                                            if isinstance(prop["sparql_var"], (str, unicode)) and isinstance(prop["output_name"], (str, unicode)):
+                                            if isinstance(prop["sparql_var"], str) and isinstance(prop["output_name"], str):
 
                                                 if prop["sparql_var"] == key:
 
@@ -1216,7 +1216,7 @@ def switchKeysSparql2OntoClass(pids, propsofi):
 
     except:
 
-        print "Could not switch pids dict keys from sparql to onto_class attribute field name."
+        print("Could not switch pids dict keys from sparql to onto_class attribute field name.")
 
     return out
 
@@ -1235,17 +1235,17 @@ def extractPropertiesOnRequiredStatus( propsofi=None, keyword=None ):
 
                 for prop in propsofi:
 
-                    if "required_status" in prop.keys():
+                    if "required_status" in list(prop.keys()):
 
                         if prop["required_status"] == keyword:
 
-                            if "sparql_var" in prop.keys():
+                            if "sparql_var" in list(prop.keys()):
 
-                                if None in prop.keys():
+                                if None in list(prop.keys()):
 
                                     for hook_str in prop[None]:
 
-                                        if prop["sparql_var"] in out.keys():
+                                        if prop["sparql_var"] in list(out.keys()):
 
                                             out[prop["sparql_var"]].append(hook_str)
 
@@ -1255,7 +1255,7 @@ def extractPropertiesOnRequiredStatus( propsofi=None, keyword=None ):
 
     except:
 
-        print "Could not extract properties based on keyword:", keyword
+        print("Could not extract properties based on keyword:", keyword)
 
     return out
 
@@ -1292,9 +1292,9 @@ def reformatpidsForAPIuse(pids=None, propsofi=None):
 
                     if isinstance(meta_pids, dict) and isinstance(pids_out, tuple):
 
-                        for k in meta_pids.keys():
+                        for k in list(meta_pids.keys()):
 
-                            if isinstance(k, (str, unicode)) and isinstance(meta_pids[k], (str, unicode)):
+                            if isinstance(k, str) and isinstance(meta_pids[k], str):
 
                                 if k and meta_pids[k]:
 
@@ -1304,9 +1304,9 @@ def reformatpidsForAPIuse(pids=None, propsofi=None):
 
                                         if isinstance( p, dict ):
 
-                                            if k in p.keys():
+                                            if k in list(p.keys()):
 
-                                                p[k] = unicode(meta_pids[k])
+                                                p[k] = str(meta_pids[k])
                                                 replaced = True
                                                 break
 
@@ -1316,17 +1316,17 @@ def reformatpidsForAPIuse(pids=None, propsofi=None):
 
                                             if isinstance( pids_out[1], dict ):
 
-                                                pids_out[1][k] = unicode(meta_pids[k])
+                                                pids_out[1][k] = str(meta_pids[k])
 
                                         else:
 
-                                            pids_out += ({k:unicode(meta_pids[k])},)
+                                            pids_out += ({k:str(meta_pids[k])},)
 
                 if pids_out: out = pids_out
 
     except:
 
-        print "Could not reformat pids structure for API use."
+        print("Could not reformat pids structure for API use.")
 
     return out
 
@@ -1343,7 +1343,7 @@ def makeQueryForPropertyIDs( mandatory_prop_dict=None, optional_prop_dict=None )
 
             if type(mandatory_prop_dict) is dict:
 
-                for m in mandatory_prop_dict.keys():
+                for m in list(mandatory_prop_dict.keys()):
 
                     if inputStringCheck( m ) and inputStringCheck(mandatory_prop_dict[m]):
 
@@ -1353,7 +1353,7 @@ def makeQueryForPropertyIDs( mandatory_prop_dict=None, optional_prop_dict=None )
 
             if type(optional_prop_dict) is dict:
 
-                for o in optional_prop_dict.keys():
+                for o in list(optional_prop_dict.keys()):
 
                     if inputStringCheck( o ) and inputStringCheck(optional_prop_dict[o]):
 
@@ -1367,7 +1367,7 @@ def makeQueryForPropertyIDs( mandatory_prop_dict=None, optional_prop_dict=None )
 
             if type(mandatory_prop_dict) is dict:
 
-                for m in mandatory_prop_dict.keys():
+                for m in list(mandatory_prop_dict.keys()):
 
                     if inputStringCheck( m ) and inputStringCheck( mandatory_prop_dict[m] ):
 
@@ -1410,7 +1410,7 @@ def makeQueryForPropertyIDs( mandatory_prop_dict=None, optional_prop_dict=None )
 
             if type(optional_prop_dict) is dict:
 
-                for o in optional_prop_dict.keys():
+                for o in list(optional_prop_dict.keys()):
 
                     if inputStringCheck( o ) and inputStringCheck( optional_prop_dict[o] ):
 
@@ -1437,7 +1437,7 @@ def makeQueryForPropertyIDs( mandatory_prop_dict=None, optional_prop_dict=None )
 
     except:
 
-        print "Could not write down sparql query for property IDs."
+        print("Could not write down sparql query for property IDs.")
 
     return out
 
@@ -1458,7 +1458,7 @@ def makeQueryForPropertyValues( pids = None ):
 
                     if isinstance(p, dict):
 
-                        for k in p.keys():
+                        for k in list(p.keys()):
 
                             if inputStringCheck( str(k) ):
 
@@ -1474,7 +1474,7 @@ def makeQueryForPropertyValues( pids = None ):
 
                 if isinstance(p, dict):
 
-                    for k in p.keys():
+                    for k in list(p.keys()):
 
                         if inputStringCheck( str(k) ) and inputStringCheck( str(p[k]) ):
 
@@ -1486,7 +1486,7 @@ def makeQueryForPropertyValues( pids = None ):
 
                 if isinstance(p, dict):
 
-                    for k in p.keys():
+                    for k in list(p.keys()):
 
                         if inputStringCheck( str(k) ) and inputStringCheck( str(p[k]) ):
 
@@ -1498,7 +1498,7 @@ def makeQueryForPropertyValues( pids = None ):
 
     except:
 
-        print "Could not write down sparql query for property values."
+        print("Could not write down sparql query for property values.")
 
     return out
 
@@ -1519,12 +1519,12 @@ def sparqlLocalFile( filepath, query ):
 
         except:
 
-            print "Could not process formulated query on indicated file."
+            print("Could not process formulated query on indicated file.")
             pass
 
     except:
 
-        print "Could not parse indicated file:", filepath
+        print("Could not parse indicated file:", filepath)
         pass
 
     return out
@@ -1544,7 +1544,7 @@ def csv2list( filepath ):
 
     except:
 
-        print "Could not load CSV file:", filepath
+        print("Could not load CSV file:", filepath)
         pass
 
     return out

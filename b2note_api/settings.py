@@ -268,7 +268,7 @@ virtuoso_settings = {
     'VIRTUOSO_B2NOTE_USR': "",
     'VIRTUOSO_B2NOTE_PWD': ""
 }
-if "VIRTUOSO_B2NOTE_USR" in os.environ.keys():
+if "VIRTUOSO_B2NOTE_USR" in list(os.environ.keys()):
     virtuoso_settings['VIRTUOSO_B2NOTE_USR'] = os.environ['VIRTUOSO_B2NOTE_USR']
-if "VIRTUOSO_B2NOTE_PWD" in os.environ.keys():
+if "VIRTUOSO_B2NOTE_PWD" in list(os.environ.keys()):
     virtuoso_settings['VIRTUOSO_B2NOTE_PWD'] = os.environ['VIRTUOSO_B2NOTE_PWD']

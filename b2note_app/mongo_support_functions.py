@@ -23,7 +23,7 @@ def addarobase_totypefieldname(o_in):
             o_out.append(addarobase_totypefieldname(item))
     elif isinstance(o_in, dict):
         o_out={}
-        for k in o_in.keys():
+        for k in list(o_in.keys()):
             if k=="type":
                 o_out["@type"] = addarobase_totypefieldname( o_in[k] )
             else:
@@ -38,7 +38,7 @@ def solr_fetchtermonexactlabel(label=None):
     out = None
     try:
         if label:
-            if isinstance(label, (str, unicode)):
+            if isinstance(label, str):
                 #r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=labels:"' + label + '"&wt=json&indent=true&start=0&rows=100')
                 r = requests.get('https://b2note.bsc.es/solr/cleanup_test/select?q=labels:"' + label + '"&wt=json&indent=true&start=0&rows=100')
                 out = []
@@ -47,13 +47,13 @@ def solr_fetchtermonexactlabel(label=None):
                         out.append( rr )
                 return out
             else:
-                print "solr_fetchtermonexactlabel fuction, parameter neither string nor unicode."
+                print("solr_fetchtermonexactlabel fuction, parameter neither string nor unicode.")
                 stdlogger.error("solr_fetchtermonexactlabel fuction, parameter neither string nor unicode.")
         else:
-            print "solr_fetchtermonexactlabel function, empty parameter."
+            print("solr_fetchtermonexactlabel function, empty parameter.")
             stdlogger.error("solr_fetchtermonexactlabel function, empty parameter.")
     except:
-        print "solr_fetchtermonexactlabel function, could not complete."
+        print("solr_fetchtermonexactlabel function, could not complete.")
         stdlogger.error("solr_fetchtermonexactlabel function, could not complete.")
         return False
     return False
@@ -66,7 +66,7 @@ def solr_fetchorigintermonid(ids=None):
             if isinstance(ids, list):
                 q_str = ""
                 for id in ids:
-                    if isinstance(id, (str, unicode)):
+                    if isinstance(id, str):
                         q_str += 'OR "' + id + '" '
                 if q_str:
                     q_str = q_str.replace("#","%23")
@@ -78,48 +78,48 @@ def solr_fetchorigintermonid(ids=None):
                         'https://b2note.bsc.es/solr/cleanup_test/select?q=uris:' + q_str +'&fl=ontology_acronym,ontology_name,description,uris,labels,short_form,synonyms,acrs_of_ontologies_reusing_uri&wt=json&indent=true&start=0&rows=' + str(10*len(ids)))
                     if r and r.json():
                         if isinstance(r.json(), dict):
-                            if "response" in r.json().keys():
+                            if "response" in list(r.json().keys()):
                                 if isinstance(r.json()["response"], dict):
-                                    if "docs" in r.json()["response"].keys():
+                                    if "docs" in list(r.json()["response"].keys()):
                                         if isinstance(r.json()["response"]["docs"], list):
                                             out = {}
                                             for rr in r.json()["response"]["docs"]:
                                                 if isinstance(rr, dict):
-                                                    if "ontology_acronym" in rr.keys() and "uris" in rr.keys():
-                                                        if rr["uris"] not in out.keys():
+                                                    if "ontology_acronym" in list(rr.keys()) and "uris" in list(rr.keys()):
+                                                        if rr["uris"] not in list(out.keys()):
                                                             out[ rr["uris"] ] = rr
                                                         elif rr["ontology_acronym"] in rr["uris"]:
                                                             out[ rr["uris"] ] = rr
                                             return out
                                         else:
-                                            print "solr_fetchorigintermonid fuction, requests object json>response>docs not a list."
+                                            print("solr_fetchorigintermonid fuction, requests object json>response>docs not a list.")
                                             stdlogger.error("solr_fetchorigintermonid fuction, requests object json>response>docs not a list.")
                                     else:
-                                        print "solr_fetchorigintermonid fuction, 'docs' not a key of requests object json>response dict."
+                                        print("solr_fetchorigintermonid fuction, 'docs' not a key of requests object json>response dict.")
                                         stdlogger.error("solr_fetchorigintermonid fuction, 'docs' not a key of requests object json>response dict.")
                                 else:
-                                    print "solr_fetchorigintermonid fuction, requests object json>response not a dict"
+                                    print("solr_fetchorigintermonid fuction, requests object json>response not a dict")
                                     stdlogger.error("solr_fetchorigintermonid fuction, requests object json>response not a dict")
                             else:
-                                print "solr_fetchorigintermonid fuction, 'response' not a key of requests object json dict."
+                                print("solr_fetchorigintermonid fuction, 'response' not a key of requests object json dict.")
                                 stdlogger.error("solr_fetchorigintermonid fuction, 'response' not a key of requests object json dict.")
                         else:
-                            print "solr_fetchorigintermonid fuction, requests object json not a dict."
+                            print("solr_fetchorigintermonid fuction, requests object json not a dict.")
                             stdlogger.error("solr_fetchorigintermonid fuction, requests object json not a dict.")
                     else:
-                        print "solr_fetchorigintermonid fuction, sorl fetch with no response or response not json."
+                        print("solr_fetchorigintermonid fuction, sorl fetch with no response or response not json.")
                         stdlogger.error("solr_fetchorigintermonid fuction, sorl fetch with no response or response not json.")
                 else:
-                    print "solr_fetchorigintermonid fuction, list item neither string nor unicode."
+                    print("solr_fetchorigintermonid fuction, list item neither string nor unicode.")
                     stdlogger.error("solr_fetchorigintermonid fuction, list item neither string nor unicode.")
             else:
-                print "solr_fetchorigintermonid fuction, paramter not a list."
+                print("solr_fetchorigintermonid fuction, paramter not a list.")
                 stdlogger.error("solr_fetchorigintermonid fuction, paramter not a list.")
         else:
-            print "solr_fetchorigintermonid function, empty parameter."
+            print("solr_fetchorigintermonid function, empty parameter.")
             stdlogger.error("solr_fetchorigintermonid function, empty parameter.")
     except:
-        print "solr_fetchorigintermonid function, could not complete."
+        print("solr_fetchorigintermonid function, could not complete.")
         stdlogger.error("solr_fetchorigintermonid function, could not complete.")
         return False
     return False
@@ -129,18 +129,18 @@ def solr_fetchtermonid(id=None):
     out = None
     try:
         if id:
-            if isinstance(id, (str, unicode)):
+            if isinstance(id, str):
                 #r = requests.get('https://b2note.bsc.es/solr/b2note_index/select?q=uris:"' + id + '"&wt=json&indent=true&start=0&rows=100')
                 r = requests.get('https://b2note.bsc.es/solr/cleanup_test/select?q=uris:"' + id + '"&wt=json&indent=true&start=0&rows=100')
                 return r
             else:
-                print "solr_fetchtermonid fuction, parameter neither string nor unicode."
+                print("solr_fetchtermonid fuction, parameter neither string nor unicode.")
                 stdlogger.error("solr_fetchtermonid fuction, parameter neither string nor unicode.")
         else:
-            print "solr_fetchtermonid function, empty parameter."
+            print("solr_fetchtermonid function, empty parameter.")
             stdlogger.error("solr_fetchtermonid function, empty parameter.")
     except:
-        print "solr_fetchtermonid function, could not complete."
+        print("solr_fetchtermonid function, could not complete.")
         stdlogger.error("solr_fetchtermonid function, could not complete.")
         return False
     return False
@@ -163,28 +163,28 @@ def SearchAnnotation( kw ):
 
         if kw:
 
-            if isinstance( kw, (str, unicode)):
+            if isinstance( kw, str):
 
                 A = Annotation.objects.raw_query({'body.value': kw})
 
-                print "SearchAnnotation function, returning annotations with body value: ", kw
+                print("SearchAnnotation function, returning annotations with body value: ", kw)
                 stdlogger.info("SearchAnnotation function, returning annotations with body value: " + str(kw))
                 return A
 
             else:
-                print "SearchAnnotation function, provided keyword argument neither str nor unicode."
+                print("SearchAnnotation function, provided keyword argument neither str nor unicode.")
                 stdlogger.error("SearchAnnotation function, provided keyword argument neither str nor unicode.")
                 return False
         else:
-            print "SearchAnnotation function, missing 'kw' string argument."
+            print("SearchAnnotation function, missing 'kw' string argument.")
             stdlogger.error("SearchAnnotation function, missing 'kw' string argument.")
             return False
     except:
-        print "SearchAnnotation function did not complete."
+        print("SearchAnnotation function did not complete.")
         stdlogger.error("SearchAnnotation function did not complete.")
         return False
 
-    print "SearchAnnotation function did not complete successfully."
+    print("SearchAnnotation function did not complete successfully.")
     stdlogger.error("SearchAnnotation function did not complete successfully.")
     return False
 
@@ -204,29 +204,29 @@ def RetrieveUserAnnotations( nickname=None ):
     """
     try:
 
-        if nickname and isinstance(nickname, (str, unicode)):
+        if nickname and isinstance(nickname, str):
             annotations = None
             annotations = Annotation.objects.raw_query({'creator.nickname': nickname})
             #annotations = sorted(annotations, key=lambda Annotation: Annotation.created, reverse=True)
             if annotations:
-                print "RetrieveUserFileAnnotations function, returning annotations."
+                print("RetrieveUserFileAnnotations function, returning annotations.")
                 stdlogger.info("RetrieveUserFileAnnotations function, returning annotations.")
                 return annotations
             else:
-                print "RetrieveUserFileAnnotations function, no annotations retrieved."
+                print("RetrieveUserFileAnnotations function, no annotations retrieved.")
                 stdlogger.info("RetrieveUserFileAnnotations function, no annotations retrieved.")
                 return None
         else:
-            print "RetrieveUserFileAnnotations function, provided nickname not valid:", nickname
+            print("RetrieveUserFileAnnotations function, provided nickname not valid:", nickname)
             stdlogger.info("RetrieveUserFileAnnotations function, provided nickname not valid:" + str(nickname))
             return False
 
     except Annotation.DoesNotExist:
-        print "RetrieveUserFileAnnotations function did not complete."
+        print("RetrieveUserFileAnnotations function did not complete.")
         stdlogger.error("RetrieveUserFileAnnotations function did not complete.")
         return False
 
-    print "RetrieveUserFileAnnotations function did not complete successfully."
+    print("RetrieveUserFileAnnotations function did not complete successfully.")
     stdlogger.error("RetrieveUserFileAnnotations function did not complete successfully.")
     return False
 
@@ -267,21 +267,21 @@ def DeleteFromPOSTinfo( db_id ):
     """
     del_flag = False
     try:
-        if db_id and isinstance(db_id, (str, unicode)) and len(db_id)>0:
+        if db_id and isinstance(db_id, str) and len(db_id)>0:
             Annotation.objects.get(id=db_id).delete()
             del_flag = True
         else:
-            print "Argument provided is not a valid collection document id"
+            print("Argument provided is not a valid collection document id")
             stdlogger.error("Argument provided is not a valid collection document id")
     except ValueError:
         pass
 
     if del_flag:
-        print "Removed an Annotation from DB"
+        print("Removed an Annotation from DB")
         stdlogger.info("Removed an Annotation from DB")
         return True
 
-    print "Could not remove from DB"
+    print("Could not remove from DB")
     stdlogger.error("Could not remove from DB")
     return False
 
@@ -302,7 +302,7 @@ def SetDateTimeModified( db_id=None ):
 
         if db_id:
 
-            if isinstance(db_id, (str, unicode)):
+            if isinstance(db_id, str):
 
                 A = None
                 A = Annotation.objects.get(id=db_id)
@@ -323,29 +323,29 @@ def SetDateTimeModified( db_id=None ):
 
                     A.save()
 
-                    print 'SetDateTimeModified function, "' + str(nowdt) + '" set as modified date time of annotation: ', str(db_id)
+                    print('SetDateTimeModified function, "' + str(nowdt) + '" set as modified date time of annotation: ', str(db_id))
                     stdlogger.info('SetDateTimeModified function, "' + str(nowdt) + '" set as modified date time of annotation: ' + str(db_id))
                     return A.id
 
                 else:
-                    print "SetDateTimeModified function, no annotation wit id: ", str(db_id)
+                    print("SetDateTimeModified function, no annotation wit id: ", str(db_id))
                     stdlogger.error("SetDateTimeModified function, no annotation wit id: " + str(db_id))
                     return False
             else:
-                print "SetDateTimeModified function, 'db_id' parameter neither str nor unicode."
+                print("SetDateTimeModified function, 'db_id' parameter neither str nor unicode.")
                 stdlogger.error("SetDateTimeModified function, 'db_id' parameter neither str nor unicode.")
                 return False
         else:
-            print "SetDateTimeModified function, missing parameter called 'db_id'."
+            print("SetDateTimeModified function, missing parameter called 'db_id'.")
             stdlogger.error("SetDateTimeModified function, missing parameter called 'db_id'.")
             return False
 
     except ValueError:
-        print "SetDateTimeModified function did not complete."
+        print("SetDateTimeModified function did not complete.")
         stdlogger.error("SetDateTimeModified function did not complete.")
         return False
 
-    print "SetDateTimeModified function did not complete successfully."
+    print("SetDateTimeModified function did not complete successfully.")
     stdlogger.error("SetDateTimeModified function did not complete successfully.")
     return False
 
@@ -368,7 +368,7 @@ def SetAnnotationMotivation( db_id=None, motiv=None ):
 
         if db_id:
 
-            if isinstance(db_id, (str, unicode)):
+            if isinstance(db_id, str):
 
                 A = None
                 A = Annotation.objects.get(id=db_id)
@@ -377,7 +377,7 @@ def SetAnnotationMotivation( db_id=None, motiv=None ):
 
                     if motiv:
 
-                        if isinstance(motiv, (str, unicode)):
+                        if isinstance(motiv, str):
 
                             if (motiv, motiv) in Annotation.MOTIVATION_CHOICES:
 
@@ -393,41 +393,41 @@ def SetAnnotationMotivation( db_id=None, motiv=None ):
 
                                 A.save()
 
-                                print 'SetAnnotationMotivation function, "' + motiv + '" set as motivation of annotation: ', str(db_id)
+                                print('SetAnnotationMotivation function, "' + motiv + '" set as motivation of annotation: ', str(db_id))
                                 stdlogger.info('SetAnnotationMotivation function, "' + motiv + '" set as motivation of annotation: ' + str(db_id))
                                 return A.id
 
                             else:
-                                print "SetAnnotationMotivation function, provided string parameter not part of predefined set of motivations."
+                                print("SetAnnotationMotivation function, provided string parameter not part of predefined set of motivations.")
                                 stdlogger.error("SetAnnotationMotivation function, provided string parameter not part of predefined set of motivations.")
                                 return False
                         else:
-                            print "SetAnnotationMotivation function, parameter provided for motivation neither string nor unicode."
+                            print("SetAnnotationMotivation function, parameter provided for motivation neither string nor unicode.")
                             stdlogger.error("SetAnnotationMotivation function, parameter provided for motivation neither string nor unicode.")
                             return False
                     else:
-                        print "SetAnnotationMotivation function, missing motivation parameter."
+                        print("SetAnnotationMotivation function, missing motivation parameter.")
                         stdlogger.error("SetAnnotationMotivation function, missing motivation parameter.")
                         return False
                 else:
-                    print "SetAnnotationMotivation function, no annotation wit id: ", str(db_id)
+                    print("SetAnnotationMotivation function, no annotation wit id: ", str(db_id))
                     stdlogger.error("SetAnnotationMotivation function, no annotation wit id: " + str(db_id))
                     return False
             else:
-                print "SetAnnotationMotivation function, 'db_id' parameter neither str nor unicode."
+                print("SetAnnotationMotivation function, 'db_id' parameter neither str nor unicode.")
                 stdlogger.error("SetAnnotationMotivation function, 'db_id' parameter neither str nor unicode.")
                 return False
         else:
-            print "SetAnnotationMotivation function, missing parameter called 'db_id'."
+            print("SetAnnotationMotivation function, missing parameter called 'db_id'.")
             stdlogger.error("SetAnnotationMotivation function, missing parameter called 'db_id'.")
             return False
 
     except ValueError:
-        print "SetAnnotationMotivation function did not complete."
+        print("SetAnnotationMotivation function did not complete.")
         stdlogger.error("SetAnnotationMotivation function did not complete.")
         return False
 
-    print "SetAnnotationMotivation function did not complete successfully."
+    print("SetAnnotationMotivation function did not complete successfully.")
     stdlogger.error("SetAnnotationMotivation function did not complete successfully.")
     return False
 
@@ -455,9 +455,9 @@ def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
 
             ap = AnnotatorProfile.objects.using('users').get(annotator_id=user_id)
 
-            if ap and ap.nickname and isinstance(ap.nickname, (str, unicode)):
+            if ap and ap.nickname and isinstance(ap.nickname, str):
 
-                if db_id and isinstance(db_id, (str, unicode)):
+                if db_id and isinstance(db_id, str):
 
                     annotation = None
 
@@ -471,32 +471,32 @@ def SetUserAsAnnotationCreator( user_id=None, db_id=None ):
                         )]
                         annotation.save()
 
-                        print "User with nickname ", str(ap.nickname) ,", set as annotation ", annotation.id ," creator"
+                        print("User with nickname ", str(ap.nickname) ,", set as annotation ", annotation.id ," creator")
                         stdlogger.info("User with nickname " + str(ap.nickname) + ", set as annotation " + annotation.id + " creator")
                         return annotation.id
 
                     else:
-                        print "SetUserAsAnnotationCreator function, no annotation were found matching this id: ", str(db_id)
+                        print("SetUserAsAnnotationCreator function, no annotation were found matching this id: ", str(db_id))
                         stdlogger.error("SetUserAsAnnotationCreator function, no annotation were found matching this id: " + str(db_id))
 
                 else:
-                    print "SetUserAsAnnotationCreator function, provided parameter for annotation id invalid."
+                    print("SetUserAsAnnotationCreator function, provided parameter for annotation id invalid.")
                     stdlogger.error("SetUserAsAnnotationCreator function, provided parameter for annotation id invalid.")
 
             else:
-                print "SetUserAsAnnotationCreator function, no registered annotator profile with id: ", user_id
+                print("SetUserAsAnnotationCreator function, no registered annotator profile with id: ", user_id)
                 stdlogger.error("SetUserAsAnnotationCreator function, no registered annotator profile with id: " + user_id)
 
         else:
-            print "SetCurrentUserAsAnnotationCreator function, provided parameter for annotator profile id invalid."
+            print("SetCurrentUserAsAnnotationCreator function, provided parameter for annotator profile id invalid.")
             stdlogger.error("SetCurrentUserAsAnnotationCreator function, provided parameter for annotator profile id invalid.")
 
     except Exception:
-        print "SetUserAsAnnotationCreator function did not complete."
+        print("SetUserAsAnnotationCreator function did not complete.")
         stdlogger.error("SetUserAsAnnotationCreator function did not complete.")
         return False
 
-    print "SetUserAsAnnotationCreator function did not complete successfully."
+    print("SetUserAsAnnotationCreator function did not complete successfully.")
     stdlogger.error("SetUserAsAnnotationCreator function did not complete successfully.")
     return False
 
@@ -616,7 +616,7 @@ def CreateSemanticTag( subject_url=None, subject_pid=None, object_json=None ):
     """
     try:
 
-        if (subject_url and isinstance(subject_url, (str, unicode))) or (subject_pid and isinstance(subject_pid, (str, unicode))):
+        if (subject_url and isinstance(subject_url, str)) or (subject_pid and isinstance(subject_pid, str)):
 
             my_id = None
 
@@ -624,35 +624,35 @@ def CreateSemanticTag( subject_url=None, subject_pid=None, object_json=None ):
     
             if my_id:
 
-                if object_json and isinstance(object_json, (str, unicode)):
+                if object_json and isinstance(object_json, str):
 
                     db_id = MakeAnnotationSemanticTag( my_id, object_json )
 
                     db_id = SetAnnotationMotivation( db_id, "tagging" )
 
-                    print "CreateSemanticTag function, made annotation semantic tag: ", str(db_id)
+                    print("CreateSemanticTag function, made annotation semantic tag: ", str(db_id))
                     stdlogger.info("CreateSemanticTag function, made annotation semantic tag: " + str(db_id))
                     return db_id
 
                 else:
-                    print "CreateSemanticTag function, provided json object is neither string nor unicode."
+                    print("CreateSemanticTag function, provided json object is neither string nor unicode.")
                     stdlogger.error("CreateSemanticTag function, provided json object is neither string nor unicode.")
                     return False
             else:
-                print "CreateSemanticTag function, internal call to CreateAnnotation function did not return an exploitable id reference."
+                print("CreateSemanticTag function, internal call to CreateAnnotation function did not return an exploitable id reference.")
                 stdlogger.error("CreateSemanticTag function, internal call to CreateAnnotation function did not return an exploitable id reference.")
                 return False
         else:
-            print "CreateSemanticTag function, provided parameter is not a valid string for subject_url."
+            print("CreateSemanticTag function, provided parameter is not a valid string for subject_url.")
             stdlogger.error("CreateSemanticTag function, provided parameter is not a valid string for subject_url.")
             return False
 
     except ValueError:
-        print "CreateSemanticTag function did not complete."
+        print("CreateSemanticTag function did not complete.")
         stdlogger.error("CreateSemanticTag function did not complete.")
         return False
 
-    print "CreateSemanticTag function did not complete successfully."
+    print("CreateSemanticTag function did not complete successfully.")
     stdlogger.error("CreateSemanticTag function did not complete successfully.")
     return False
 
@@ -683,9 +683,9 @@ def CreateFreeTextKeyword( subject_url=None, subject_pid=None, text=None ):
 
         if my_id:
 
-            if isinstance( my_id, (str, unicode) ):
+            if isinstance( my_id, str ):
 
-                if isinstance(text, (str, unicode)) and len(text) > 0:
+                if isinstance(text, str) and len(text) > 0:
 
                     db_id = None
                     db_id = MakeAnnotationFreeText(my_id, text)
@@ -693,32 +693,32 @@ def CreateFreeTextKeyword( subject_url=None, subject_pid=None, text=None ):
                     db_id = SetAnnotationMotivation( db_id, "tagging" )
 
                     if db_id:
-                        print "CreateFreeTextKeyword function, created free-text keyword annotation:", str(db_id)
+                        print("CreateFreeTextKeyword function, created free-text keyword annotation:", str(db_id))
                         stdlogger.info("CreateFreeTextKeyword function, created free-text keyword annotation:" + str(db_id))
                         return db_id
                     else:
-                        print "CreateFreeTextKeyword function, free-text keyword annotation make unreturned."
+                        print("CreateFreeTextKeyword function, free-text keyword annotation make unreturned.")
                         stdlogger.info("CreateFreeTextKeyword function, free-text keyword annotation make unreturned.")
                         return False
                 else:
-                    print "CreateFreeTextKeyword function, wrong text codification or empty text."
+                    print("CreateFreeTextKeyword function, wrong text codification or empty text.")
                     stdlogger.error("CreateFreeTextKeyword function, wrong text codification or empty text.")
                     return False
             else:
-                print "CreateFreeTextKeyword function, 'my_id' parameter neither str nor unicode."
+                print("CreateFreeTextKeyword function, 'my_id' parameter neither str nor unicode.")
                 stdlogger.error("CreateFreeTextKeyword function, 'my_id' parameter neither str nor unicode.")
                 return False
         else:
-            print "CreateFreeTextKeyword function, annotation not created or id not returned."
+            print("CreateFreeTextKeyword function, annotation not created or id not returned.")
             stdlogger.error("CreateFreeText function, annotation not created or id not returned.")
             return False
 
     except ValueError:
-        print "CreateFreeTextKeyword function did not complete."
+        print("CreateFreeTextKeyword function did not complete.")
         stdlogger.error("CreateFreeTextKeyword function did not complete.")
         return False
 
-    print "CreateFreeTextKeyword function did not complete successfully."
+    print("CreateFreeTextKeyword function did not complete successfully.")
     stdlogger.error("CreateFreeTextKeyword function did not complete successfully.")
     return False
 
@@ -749,9 +749,9 @@ def CreateFreeTextComment(subject_url=None, subject_pid=None, text=None):
 
         if my_id:
 
-            if isinstance(my_id, (str, unicode)):
+            if isinstance(my_id, str):
 
-                if isinstance(text, (str, unicode)) and len(text) > 0:
+                if isinstance(text, str) and len(text) > 0:
 
                     db_id = None
                     db_id = MakeAnnotationFreeText(my_id, text)
@@ -759,33 +759,33 @@ def CreateFreeTextComment(subject_url=None, subject_pid=None, text=None):
                     db_id = SetAnnotationMotivation(db_id, "commenting")
 
                     if db_id:
-                        print "CreateFreeTextComment function, created free-text comment annotation:", str(db_id)
+                        print("CreateFreeTextComment function, created free-text comment annotation:", str(db_id))
                         stdlogger.info("CreateFreeTextComment function, created free-text comment annotation:", str(db_id))
                         return db_id
                     else:
-                        print "CreateFreeTextComment function, free-text comment annotation created not returned."
+                        print("CreateFreeTextComment function, free-text comment annotation created not returned.")
                         stdlogger.info("CreateFreeTextComment function, free-text comment annotation created not returned.")
                         return False
 
                 else:
-                    print "CreateFreeTextComment function, wrong text codification or empty text."
+                    print("CreateFreeTextComment function, wrong text codification or empty text.")
                     stdlogger.info("CreateFreeTextComment function, wrong text codification or empty text.")
                     return False
             else:
-                print "CreateFreeTextComment function, 'my_id' parameter neither str nor unicode."
+                print("CreateFreeTextComment function, 'my_id' parameter neither str nor unicode.")
                 stdlogger.info("CreateFreeTextComment function, 'my_id' parameter neither str nor unicode.")
                 return False
         else:
-            print "CreateFreeTextComment function, annotation not created or id not returned."
+            print("CreateFreeTextComment function, annotation not created or id not returned.")
             stdlogger.info("CreateFreeTextComment function, annotation not created or id not returned.")
             return False
 
     except ValueError:
-        print "CreateFreeTextComment function did not complete."
+        print("CreateFreeTextComment function did not complete.")
         stdlogger.info("CreateFreeTextComment function did not complete.")
         return False
 
-    print "CreateFreeTextComment function did not complete successfully."
+    print("CreateFreeTextComment function did not complete successfully.")
     stdlogger.info("CreateFreeTextComment function did not complete successfully.")
     return False
 
@@ -807,14 +807,14 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
 
         if db_id:
 
-            if isinstance(db_id, (str, unicode)):
+            if isinstance(db_id, str):
 
                 A = None
                 A = Annotation.objects.get(id=db_id)
 
                 if A:
 
-                    if object_json and isinstance(object_json, (str, unicode)):
+                    if object_json and isinstance(object_json, str):
                         ojl = None
                         ojl = json.loads(object_json)
 
@@ -824,22 +824,22 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
 
                             for o in ojl:
                                 if o and isinstance(o, dict):
-                                    if "uris" in o.keys():
-                                        if o["uris"] and isinstance(o["uris"], (str, unicode)):
+                                    if "uris" in list(o.keys()):
+                                        if o["uris"] and isinstance(o["uris"], str):
                                             object_uri.add( o["uris"] )
                                         else:
-                                            print "MakeAnnotationSemanticTag function, dictionary field at key 'uris' does not resolve in a valid string."
+                                            print("MakeAnnotationSemanticTag function, dictionary field at key 'uris' does not resolve in a valid string.")
                                             stdlogger.error("MakeAnnotationSemanticTag function, dictionary field at key 'uris' does not resolve in a valid string.")
                                     else:
-                                        print "MakeAnnotationSemanticTag function, dictionary does not contain a field with key 'uris'."
+                                        print("MakeAnnotationSemanticTag function, dictionary does not contain a field with key 'uris'.")
                                         stdlogger.error("MakeAnnotationSemanticTag function, dictionary does not contain a field with key 'uris'.")
 
                                     if not object_label:
-                                        if "labels" in o.keys():
-                                            if o["labels"] and isinstance(o["labels"], (str, unicode)):
+                                        if "labels" in list(o.keys()):
+                                            if o["labels"] and isinstance(o["labels"], str):
                                                 object_label = o["labels"]
                                 else:
-                                    print "MakeAnnotationSemanticTag function, provided json list item is not dictionary."
+                                    print("MakeAnnotationSemanticTag function, provided json list item is not dictionary.")
                                     stdlogger.error(
                                         "MakeAnnotationSemanticTag function, provided json list item is not dictionary.")
 
@@ -869,37 +869,37 @@ def MakeAnnotationSemanticTag( db_id=None, object_json=None ):
 
                             db_id = SetAnnotationMotivation( A.id, "tagging" )
 
-                            print "MakeAnnotationSemanticTag function, made annotation semantic tag: ", str(db_id)
+                            print("MakeAnnotationSemanticTag function, made annotation semantic tag: ", str(db_id))
                             stdlogger.info("MakeAnnotationSemanticTag function, made annotation semantic tag: " + str(db_id))
                             return db_id
 
                         else:
-                            print "MakeAnnotationSemanticTag function, provided json does not load as a python list."
+                            print("MakeAnnotationSemanticTag function, provided json does not load as a python list.")
                             stdlogger.error("MakeAnnotationSemanticTag function, provided json does not load as a python list.")
                             return False
                     else:
-                        print "MakeAnnotationSemanticTag function, provided json object is neither string nor unicode."
+                        print("MakeAnnotationSemanticTag function, provided json object is neither string nor unicode.")
                         stdlogger.error("MakeAnnotationSemanticTag function, provided json object is neither string nor unicode.")
                         return False
                 else:
-                    print "MakeAnnotationSemanticTag function, no annotation wit id: ", str(db_id)
+                    print("MakeAnnotationSemanticTag function, no annotation wit id: ", str(db_id))
                     stdlogger.error("MakeAnnotationSemanticTag function, no annotation wit id: " + str(db_id))
                     return False
             else:
-                print "MakeAnnotationSemanticTag function, 'db_id' parameter neither str nor unicode."
+                print("MakeAnnotationSemanticTag function, 'db_id' parameter neither str nor unicode.")
                 stdlogger.error("MakeAnnotationSemanticTag function, 'db_id' parameter neither str nor unicode.")
                 return False
         else:
-            print "MakeAnnotationSemanticTag function, missing parameter called 'db_id'."
+            print("MakeAnnotationSemanticTag function, missing parameter called 'db_id'.")
             stdlogger.error("MakeAnnotationSemanticTag function, missing parameter called 'db_id'.")
             return False
 
     except ValueError:
-        print "MakeAnnotationSemanticTag function did not complete."
+        print("MakeAnnotationSemanticTag function did not complete.")
         stdlogger.error("MakeAnnotationSemanticTag function did not complete.")
         return False
 
-    print "MakeAnnotationSemanticTag function did not complete successfully."
+    print("MakeAnnotationSemanticTag function did not complete successfully.")
     stdlogger.error("MakeAnnotationSemanticTag function did not complete successfully.")
     return False
 
@@ -921,46 +921,46 @@ def MakeAnnotationFreeText( db_id=None, text=None ):
 
         if db_id:
 
-            if isinstance(db_id, (str, unicode)):
+            if isinstance(db_id, str):
 
                 A = None
                 A = Annotation.objects.get(id=db_id)
 
                 if A:
 
-                    if isinstance(text, (str, unicode)) and len(text) > 0:
+                    if isinstance(text, str) and len(text) > 0:
 
                         A.body = [TextualBody(type=["TextualBody"], value=text)]
 
                         A.save()
 
-                        print "MakeAnnotationFreeText function, made free-text annotation: ", str(db_id)
+                        print("MakeAnnotationFreeText function, made free-text annotation: ", str(db_id))
                         stdlogger.info("MakeAnnotationFreeText function, made free-text annotation: " + str(db_id))
                         return db_id
 
                     else:
-                        print "MakeAnnotationFreeText function, wrong text codification or empty text"
+                        print("MakeAnnotationFreeText function, wrong text codification or empty text")
                         stdlogger.error("MakeAnnotationFreeText function, wrong text codification or empty text")
                         return False
                 else:
-                    print "MakeAnnotationFreeText function, no annotation wit id: ", str(db_id)
+                    print("MakeAnnotationFreeText function, no annotation wit id: ", str(db_id))
                     stdlogger.error("MakeAnnotationFreeText function, no annotation wit id: " + str(db_id))
                     return False
             else:
-                print "MakeAnnotationFreeText function, 'db_id' parameter neither str nor unicode."
+                print("MakeAnnotationFreeText function, 'db_id' parameter neither str nor unicode.")
                 stdlogger.error("MakeAnnotationFreeText function, 'db_id' parameter neither str nor unicode.")
                 return False
         else:
-            print "MakeAnnotationFreeText function, missing parameter called 'db_id'."
+            print("MakeAnnotationFreeText function, missing parameter called 'db_id'.")
             stdlogger.error("MakeAnnotationFreeText function, missing parameter called 'db_id'.")
             return False
 
     except ValueError:
-        print "MakeAnnotationFreeText function did not complete."
+        print("MakeAnnotationFreeText function did not complete.")
         stdlogger.error("MakeAnnotationFreeText function did not complete.")
         return False
 
-    print "MakeAnnotationFreeText function did not complete successfully."
+    print("MakeAnnotationFreeText function did not complete successfully.")
     stdlogger.error("MakeAnnotationFreeText function did not complete successfully.")
     return False
 
@@ -988,8 +988,8 @@ def CreateAnnotation(target_url=None, target_pid=None):
 
         if target_url or target_pid:
 
-            if (isinstance(target_pid, (str, unicode)) and len(target_pid) > 0) or \
-                    (isinstance(target_url, (str, unicode)) and len(target_url) > 0):
+            if (isinstance(target_pid, str) and len(target_pid) > 0) or \
+                    (isinstance(target_url, str) and len(target_url) > 0):
 
                 gen_agt = Agent(
                     type        = ["Software"],
@@ -1001,8 +1001,8 @@ def CreateAnnotation(target_url=None, target_pid=None):
                     )
 
                 ext_res = None
-                if isinstance(target_pid, (str, unicode)) and len(target_pid) > 0:
-                    if isinstance(target_url, (str, unicode)) and len(target_url) > 0:
+                if isinstance(target_pid, str) and len(target_pid) > 0:
+                    if isinstance(target_url, str) and len(target_url) > 0:
                         ext_res = ExternalSpecificResource(
                             type        =   "SpecificResource",
                             source      =   target_url,
@@ -1012,7 +1012,7 @@ def CreateAnnotation(target_url=None, target_pid=None):
                         ext_res = ExternalResource(
                             jsonld_id   =   target_pid
                         )
-                elif isinstance(target_url, (str, unicode)) and len(target_url) > 0:
+                elif isinstance(target_url, str) and len(target_url) > 0:
                     ext_res = ExternalSpecificResource(
                         type            =   "SpecificResource",
                         source          =   target_url
@@ -1033,31 +1033,31 @@ def CreateAnnotation(target_url=None, target_pid=None):
                     ann.jsonld_id = global_settings.ROOT_ANNOTATION_ID + ann.id
                     ann.save()
 
-                    print "CreateAnnotation function, created annotation document with id: " + str(ann.id)
+                    print("CreateAnnotation function, created annotation document with id: " + str(ann.id))
                     stdlogger.info("CreateAnnotation function, created annotation document with id: " + str(ann.id))
                     return ann.id
 
                 else:
-                    print "CreateAnnotation function, external resource was not constructed."
+                    print("CreateAnnotation function, external resource was not constructed.")
                     stdlogger.error("CreateAnnotation function, external resource was not constructed.")
                     return False
 
             else:
-                print "CreateAnnotation function, provided 'target' argument not a valid str or unicode."
+                print("CreateAnnotation function, provided 'target' argument not a valid str or unicode.")
                 stdlogger.error("CreateAnnotation function, provided 'target_url' argument not a valid str or unicode.")
                 return False
 
         else:
-            print "CreateAnnotation function, missing file identifier argument."
+            print("CreateAnnotation function, missing file identifier argument.")
             stdlogger.error("CreateAnnotation function, missing file identifier argument.")
             return False
     
     except ValueError:
-        print "CreateAnnotation function, did not complete."
+        print("CreateAnnotation function, did not complete.")
         stdlogger.error("CreateAnnotation function, did not complete.")
         return False
 
-    print "CreateAnnotation function did not complete successfully."
+    print("CreateAnnotation function did not complete successfully.")
     stdlogger.error("CreateAnnotation function did not complete successfully.")
     return False
 
@@ -1074,14 +1074,14 @@ def orderedJSONLDfields(o_in):
             if isinstance(o_in, dict):
                 out = collections.OrderedDict()
                 for k in ["@context", "id", "type", "target", "body", "value", "motivation", "purpose", "creator", "generator"]:
-                    if k in o_in.keys():
+                    if k in list(o_in.keys()):
                         out[k] = orderedJSONLDfields(o_in[k])
-                for k in o_in.keys():
-                    if k not in out.keys():
+                for k in list(o_in.keys()):
+                    if k not in list(out.keys()):
                         out[k] = orderedJSONLDfields(o_in[k])
     except:
         out = None
-        print "orderedJSONLDfields function, Exception."
+        print("orderedJSONLDfields function, Exception.")
         pass
 
     return out
@@ -1101,11 +1101,11 @@ def ridOflistsOfOneItem(o_in):
                         out.append( ridOflistsOfOneItem( item ) )
             if isinstance(o_in, dict):
                 out = {}
-                for k in o_in.keys():
+                for k in list(o_in.keys()):
                     out[k] = ridOflistsOfOneItem( o_in[k] )
     except:
         out = None
-        print "ridOflistsOfOneItem function, Exception."
+        print("ridOflistsOfOneItem function, Exception.")
         pass
     return out
 
@@ -1151,7 +1151,7 @@ def readyQuerySetValuesForDumpAsJSONLD( o_in ):
                         o_out.append( readyQuerySetValuesForDumpAsJSONLD( item ) )
         elif type(o_in) is dict:
             o_out = {}
-            for k in o_in.keys():
+            for k in list(o_in.keys()):
                 if o_in[k] and readyQuerySetValuesForDumpAsJSONLD( o_in[k] ) and k != "id":
                     newkey = k
                     m = re.match(r'^jsonld_(.*)', k)
@@ -1188,10 +1188,10 @@ def CheckDuplicateAnnotation( target_url=None, target_pid=None, annotation_body=
     """
     try:
         if target_url or target_pid:
-            if isinstance(target_url, (str, unicode)) or isinstance(target_pid, (str, unicode)):
+            if isinstance(target_url, str) or isinstance(target_pid, str):
                 if 'body' in annotation_body:
                     A = None
-                    if 'jsonld_id' in annotation_body['body'].keys() and \
+                    if 'jsonld_id' in list(annotation_body['body'].keys()) and \
                             isinstance(annotation_body['body']['jsonld_id'], list) and \
                                     len(annotation_body['body']['jsonld_id']) > 0:
                         if target_pid and target_url:
@@ -1216,7 +1216,7 @@ def CheckDuplicateAnnotation( target_url=None, target_pid=None, annotation_body=
                                  }
                             )
                     else:
-                        if 'value' in annotation_body['body'].keys():
+                        if 'value' in list(annotation_body['body'].keys()):
                             if target_pid and target_url:
                                 A = Annotation.objects.raw_query(
                                     {'$and':[
@@ -1242,7 +1242,7 @@ def CheckDuplicateAnnotation( target_url=None, target_pid=None, annotation_body=
                                          {'body.items.value': annotation_body['body']['value']}
                                      ]})
                         else:
-                            print "CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary."
+                            print("CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary.")
                             stdlogger.error("CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary.")
                             return False
                     if len(A) > 0:
@@ -1250,20 +1250,20 @@ def CheckDuplicateAnnotation( target_url=None, target_pid=None, annotation_body=
                     else:
                         return False
                 else:
-                    print "CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary."
+                    print("CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary.")
                     stdlogger.error("CheckDuplicateAnnotation function, provided 'annotation_body' argument not a valid dictionary.")
                     return False
             else:
-                print "CheckDuplicateAnnotation function, provided 'target_url' argument not a valid str or unicode."
+                print("CheckDuplicateAnnotation function, provided 'target_url' argument not a valid str or unicode.")
                 stdlogger.error("CheckDuplicateAnnotation function, provided 'target_url' argument not a valid str or unicode.")
                 return False
         else:
-            print "CheckDuplicateAnnotation function, missing 'target_url' argument."
+            print("CheckDuplicateAnnotation function, missing 'target_url' argument.")
             stdlogger.error("CheckDuplicateAnnotation function, missing 'target_url' argument.")
             return False
     
     except ValueError:
-        print "CheckDuplicateAnnotation function, did not complete."
+        print("CheckDuplicateAnnotation function, did not complete.")
         stdlogger.error("CheckDuplicateAnnotation function, did not complete.")
         return False
 
@@ -1284,21 +1284,21 @@ def CheckLengthFreeText( body_value=None, length_limit=60 ):
     """
     try:
         if body_value:
-            if isinstance(body_value, (str, unicode)):
+            if isinstance(body_value, str):
                 if len(body_value) <= length_limit:
                     return True
                 else:
                     return False
             else:
-                print "CheckLengthFreeText function, provided 'body_value' argument not a valid str or unicode."
+                print("CheckLengthFreeText function, provided 'body_value' argument not a valid str or unicode.")
                 stdlogger.error("CheckLengthFreeText function, provided 'body_value' argument not a valid str or unicode.")
                 return False
         else:
-            print "CheckLengthFreeText function, missing parameter called 'body_value'."
+            print("CheckLengthFreeText function, missing parameter called 'body_value'.")
             stdlogger.error("CheckLengthFreeText function, missing parameter called 'body_value'.")
             return False
     
     except ValueError:
-        print "CheckLengthFreeText function, did not complete."
+        print("CheckLengthFreeText function, did not complete.")
         stdlogger.error("CheckLengthFreeText function, did not complete.")
         return False

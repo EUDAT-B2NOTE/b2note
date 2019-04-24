@@ -5,7 +5,7 @@ from collections import OrderedDict
 from jsonld_support_functions import readyQuerySetValuesForDumpAsJSONLD, ridOflistsOfOneItem, orderedJSONLDfields
 from jsonld_support_functions import retrieve_annotation_jsonld_from_api, addarobase_totypefieldname, httpPutRdfXmlFileContentToOpenVirtuoso
 from django.conf import settings as global_settings
-import json, os, copy, urllib
+import json, os, copy, urllib.request, urllib.parse, urllib.error
 import logging
 
 import rdflib
@@ -94,14 +94,14 @@ def test_export():
             if annL:
                 for ann in annL:
                     if isinstance(ann, dict):
-                        if "target" in ann.keys():
+                        if "target" in list(ann.keys()):
                             if isinstance(ann["target"], dict):
-                                if "source" in ann["target"].keys():
-                                    if isinstance(ann["target"]["source"],(str, unicode)):
+                                if "source" in list(ann["target"].keys()):
+                                    if isinstance(ann["target"]["source"],str):
                                         if ann["target"]["source"].find(" ")>0:
                                             ann["target"]["source"] = ann["target"]["source"].replace(" ", "%20")
-                                if "id" in ann["target"].keys():
-                                    if isinstance(ann["target"]["id"],(str, unicode)):
+                                if "id" in list(ann["target"].keys()):
+                                    if isinstance(ann["target"]["id"],str):
                                         if ann["target"]["id"].find(" ")>0:
                                             ann["target"]["id"] = ann["target"]["id"].replace(" ", "%20")
             else:
@@ -143,10 +143,10 @@ def test_export():
 
                 if g:
                     # The library adds a trailing slash character to the Software homepage url
-                    for s, p, o in g.triples((None, None, term.URIRef(u"https://b2note.bsc.es/"))):
-                        g.add((s, p, term.URIRef(u"https://b2note.bsc.es")))
-                    for s, p, o in g.triples((None, None, term.URIRef(u"https://b2note.bsc.es/"))):
-                        g.remove((s, p, term.URIRef(u"https://b2note.bsc.es/")))
+                    for s, p, o in g.triples((None, None, term.URIRef("https://b2note.bsc.es/"))):
+                        g.add((s, p, term.URIRef("https://b2note.bsc.es")))
+                    for s, p, o in g.triples((None, None, term.URIRef("https://b2note.bsc.es/"))):
+                        g.remove((s, p, term.URIRef("https://b2note.bsc.es/")))
                 else:
                     print("export_to_triplestore function, no graph parsed from json-ld.")
                     stdlogger.error("export_to_triplestore function, no graph parsed from json-ld.")
@@ -169,7 +169,7 @@ def test_export():
                             f = b + descr[b:].find('''"''')
                             prog = b
                             old_node_id = descr[b:f]
-                            print prog, bnc, b, f, old_node_id
+                            print((prog, bnc, b, f, old_node_id))
                             if old_node_id[:len("B2NOTEBLANKNODE")] != "B2NOTEBLANKNODE":
                                 new_node_id = "B2NOTEBLANKNODE" + str(bnc)
                                 descr = descr.replace(old_node_id, new_node_id)
@@ -267,14 +267,14 @@ def export_to_triplestore():
             # that rdflib refuses to serialize, replace by %20
             for ann in annL:
                 if isinstance(ann, dict):
-                    if "target" in ann.keys():
+                    if "target" in list(ann.keys()):
                         if isinstance(ann["target"], dict):
-                            if "source" in ann["target"].keys():
-                                if isinstance(ann["target"]["source"], (str, unicode)):
+                            if "source" in list(ann["target"].keys()):
+                                if isinstance(ann["target"]["source"], str):
                                     if ann["target"]["source"].find(" ") > 0:
                                         ann["target"]["source"] = ann["target"]["source"].replace(" ", "%20")
-                            if "id" in ann["target"].keys():
-                                if isinstance(ann["target"]["id"],(str, unicode)):
+                            if "id" in list(ann["target"].keys()):
+                                if isinstance(ann["target"]["id"],str):
                                     if ann["target"]["id"].find(" ")>0:
                                         ann["target"]["id"] = ann["target"]["id"].replace(" ", "%20")
         else:
@@ -293,10 +293,10 @@ def export_to_triplestore():
 
         if g:
             # The library adds a trailing slash character to the Software homepage url
-            for s, p, o in g.triples((None, None, term.URIRef(u"https://b2note.bsc.es/"))):
-                g.add((s, p, term.URIRef(u"https://b2note.bsc.es")))
-            for s, p, o in g.triples((None, None, term.URIRef(u"https://b2note.bsc.es/"))):
-                g.remove((s, p, term.URIRef(u"https://b2note.bsc.es/")))
+            for s, p, o in g.triples((None, None, term.URIRef("https://b2note.bsc.es/"))):
+                g.add((s, p, term.URIRef("https://b2note.bsc.es")))
+            for s, p, o in g.triples((None, None, term.URIRef("https://b2note.bsc.es/"))):
+                g.remove((s, p, term.URIRef("https://b2note.bsc.es/")))
         else:
             print("export_to_triplestore function, no graph parsed from json-ld.")
             stdlogger.error("export_to_triplestore function, no graph parsed from json-ld.")
@@ -312,7 +312,7 @@ def export_to_triplestore():
 
         # CLEAR previous graph
         graph_urn = "urn:dav:home:b2note:rdf_sink"
-        q   = urllib.quote_plus('CLEAR GRAPH <' + graph_urn + '>')
+        q   = urllib.parse.quote_plus('CLEAR GRAPH <' + graph_urn + '>')
         url = 'http://opseudat03.bsc.es:8890/sparql?query=' + q
         rc = None
         rc   = requests.get(url, auth=HTTPBasicAuth(
@@ -320,7 +320,7 @@ def export_to_triplestore():
             virtuoso_settings['VIRTUOSO_B2NOTE_PWD']))
 
         R = None
-        if rc and rc.text and isinstance(rc.text, (str, unicode)) and rc.text.find("Clear graph &lt;"+graph_urn+"&gt; -- done")>0:
+        if rc and rc.text and isinstance(rc.text, str) and rc.text.find("Clear graph &lt;"+graph_urn+"&gt; -- done")>0:
             R = httpPutRdfXmlFileContentToOpenVirtuoso('http://opseudat03.bsc.es:8890/DAV/home/b2note/rdf_sink/annotations.rdf',
                                                        virtuoso_settings['VIRTUOSO_B2NOTE_USR'],
                                                        virtuoso_settings['VIRTUOSO_B2NOTE_PWD'],
@@ -331,7 +331,7 @@ def export_to_triplestore():
             return None
 
         if R is not None:
-            print "export_to_triplestore function, completed publishing of B2Note annotations to Open Virtuoso triplestore."
+            print("export_to_triplestore function, completed publishing of B2Note annotations to Open Virtuoso triplestore.")
             return '''
                 <h1>B2NOTE triplestore data update</h1>
                 <p>Completed publishing annotations to B2NOTE Open Virtuoso triplestore.</p>
@@ -357,7 +357,7 @@ WHERE {
 LIMIT 50
 </pre>'''
         else:
-            print "export_to_triplestore function, could not send rdf/xml file content to Open Virtuoso rdf-sink."
+            print("export_to_triplestore function, could not send rdf/xml file content to Open Virtuoso rdf-sink.")
             stdlogger.error(
                 "export_to_triplestore function, could not send rdf/xml file content to Open Virtuoso rdf-sink.")
             return None
@@ -373,12 +373,12 @@ LIMIT 50
 #@mimerender(default = 'txt', json = render_json, jsonld = render_jsonld, txt = render_txt)
 def before_returning_items(response):
     if isinstance(response, dict):
-        if "_items" in response.keys():
+        if "_items" in list(response.keys()):
             if isinstance(response["_items"], list):
                 for doc in response["_items"]:
                     if isinstance(doc, dict):
                         for k2d in ["_created", "_etag", "_id", "_links", "_updated"]:
-                            if k2d in doc.keys():
+                            if k2d in list(doc.keys()):
                                 del( doc[k2d] )
             response["_items"] = readyQuerySetValuesForDumpAsJSONLD(response["_items"])
             response["_items"] = ridOflistsOfOneItem(response["_items"])
@@ -395,7 +395,7 @@ def before_returning_items(response):
             if not isinstance(response["schema:itemListElement"], list):
                 response["schema:itemListElement"] = [ response["schema:itemListElement"] ]
             #del(response["_items"])
-            for k2d in response.keys():
+            for k2d in list(response.keys()):
                 if k2d not in ["@type", "schema:itemListElement", "@context", "_etag", "_meta"]:
                     del (response[k2d])
     return response
@@ -405,7 +405,7 @@ def before_returning_item(response):
     if isinstance(response, dict):
         resp = copy.deepcopy( response )
         for k2d in ["_created", "_etag", "_id", "_links", "_updated"]:
-            if k2d in resp.keys():
+            if k2d in list(resp.keys()):
                 del( resp[k2d] )
         #response["@graph"] = [ readyQuerySetValuesForDumpAsJSONLD( resp ) ]
         #response["@context"] = "jsonld_context_url"#global_settings.JSONLD_CONTEXT_URL
@@ -420,7 +420,7 @@ def before_returning_item(response):
 
         if not isinstance(response["schema:itemListElement"], list):
             response["schema:itemListElement"] = [response["schema:itemListElement"]]
-        for k2d in response.keys():
+        for k2d in list(response.keys()):
             if k2d not in ["@type", "schema:itemListElement", "@context", "_etag", "_meta"]:
                 del(response[k2d])
     return response

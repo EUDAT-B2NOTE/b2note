@@ -43,7 +43,7 @@ class OldRegistrationForm(forms.ModelForm):
 
 
     def save(self, commit=True):
-        print type(self)
+        print(type(self))
         user = super(OldRegistrationForm, self).save(commit=False)
         user.set_password(self.cleaned_data['password1'])
         if commit:

@@ -16,8 +16,8 @@ from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from b2note_devel.settings import DEFAULT_FROM_EMAIL, SUPPORT_DEST_EMAIL
 from django.views.generic import *
-from forms.reset_password import PasswordResetRequestForm, SetPasswordForm, AccountRetrieveForm
-from forms.user_feebacks import FeedbackForm, FeatureForm, BugReportForm
+from .forms.reset_password import PasswordResetRequestForm, SetPasswordForm, AccountRetrieveForm
+from .forms.user_feebacks import FeedbackForm, FeatureForm, BugReportForm
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
@@ -89,7 +89,7 @@ def feedbackpage(request):
 
                         fdbck.save()
 
-                        c = {'form': feedback_f, 'names_t': names_t, 'nl': names_t.keys(),
+                        c = {'form': feedback_f, 'names_t': names_t, 'nl': list(names_t.keys()),
                              'user_contact': userprofile.email, 'user_experience': userprofile.annotator_exp}
                         email_template_name = 'accounts/userfeedback_email.html'
                         # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
@@ -152,7 +152,7 @@ def feedbackpage(request):
                                 if request.POST[fname]:
                                     if str(request.POST[fname]) in [str(x) for x in range(5)]:
                                         names_t[fname] = int(str(request.POST[fname]))
-                                    elif isinstance(str(request.POST[fname]), (str, unicode)):
+                                    elif isinstance(str(request.POST[fname]), str):
                                         names_t[fname] = str(request.POST[fname])
 
                         bugrep = BugReport( email               = userprofile,
@@ -166,7 +166,7 @@ def feedbackpage(request):
 
                         bugrep.save()
 
-                        c = {'form': bugreport_f, 'names_t': names_t, 'nl': names_t.keys(),
+                        c = {'form': bugreport_f, 'names_t': names_t, 'nl': list(names_t.keys()),
                              'user_contact': userprofile.email, 'user_experience': userprofile.annotator_exp}
                         email_template_name = 'accounts/userfeedback_email.html'
                         # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
@@ -200,7 +200,7 @@ def feedbackpage(request):
         else:
             return redirect('/logout')
     except Exception:
-        print "Could not load or redirect from fedebackpage view."
+        print("Could not load or redirect from fedebackpage view.")
         stdlogger.error("Could not load or redirect from fedebackpage view.")
         return False
 
@@ -257,7 +257,7 @@ class PasswordResetConfirmView(FormView):
         form = self.form_class(request.POST)
         assert uidb64 is not None and token is not None  # checked by URLconf
         try:
-            if isinstance(uidb64, unicode): uidb64 = str(uidb64)
+            if isinstance(uidb64, str): uidb64 = str(uidb64)
             uid = urlsafe_base64_decode(uidb64)
             user = UserCred.objects.using('users').get(pk=uid)
 
@@ -319,7 +319,7 @@ class ResetPasswordRequestView(FormView):
             if associated_users.exists():
                 for user in associated_users:
                     domain_root = request.META['HTTP_HOST']
-                    if domain_root and isinstance(domain_root, (unicode, str)) and domain_root[:len("http://b2note")]=="http://b2note":
+                    if domain_root and isinstance(domain_root, str) and domain_root[:len("http://b2note")]=="http://b2note":
                         domain_root = "https://b2note"+domain_root[len("http://b2note"):]
                     c = {
                         'email': user.username,
@@ -375,7 +375,7 @@ def profilepage(request):
         else:
             return redirect('/logout')
     except Exception:
-        print "Could not load or redirect from profilepage view."
+        print("Could not load or redirect from profilepage view.")
         stdlogger.error("Could not load or redirect from profilepage view.")
         return False
 
@@ -408,7 +408,7 @@ def prepare_client():
         token_endpoint = provider_endpoints['token_endpoint']
         userinfo_endpoint = provider_endpoints['userinfo_endpoint']
     except:
-        print "Error when reading provider_endpoints.json"
+        print("Error when reading provider_endpoints.json")
         stdlogger.error("Error when reading provider_endpoints.json")
         issuer = "error"
         authorization_endpoint = "error"
@@ -426,7 +426,7 @@ def prepare_client():
         secret = client_credentials['client_secret']
         uri = client_credentials['client_redirect_uri']
     except:
-        print "Error when reading client_credential.json"
+        print("Error when reading client_credential.json")
         stdlogger.error("Error when reading client_credential.json")
         id = "error"
         secret = "error"
@@ -491,7 +491,7 @@ def auth_redirected(request):
     except:
         request.session["connecting"] = 0
         request.session["popup_state"]="canceled"
-        print "Incorrect authentication state"
+        print("Incorrect authentication state")
         stdlogger.error("Incorrect authentication state")
         return HttpResponse('Authentication canceled, incorrect state <script type="text/javascript"> setTimeout(function(){window.close()}, 1000); </script>')
 
@@ -517,7 +517,7 @@ def auth_redirected(request):
     if "email" in user_info:
         request.session["auth_email"] = user_info["email"]
     else:
-        print "Error when reading user email from B2Access"
+        print("Error when reading user email from B2Access")
         stdlogger.error("Error when reading user email from B2Access")
     if "name" in user_info:
         # this is for the dev version of b2access
@@ -528,7 +528,7 @@ def auth_redirected(request):
         request.session["auth_dn"] = user_info["distinguishedName"]
         request.session["auth_name"] = request.session["auth_dn"].split("/")[-1][3:]
     else:
-        print "Error when reading user name from B2Access"
+        print("Error when reading user name from B2Access")
         stdlogger.error("Error when reading user name from B2Access")
     #request.session["auth_cn"] = user_info["cn"]
     #request.session["auth_id"] = user_info["unity:persistent"]
@@ -726,7 +726,7 @@ def register(request):
 
             return redirect('/interface_main')
         else:
-            print form.errors
+            print(form.errors)
     else:
         form = RegistrationForm(data=auth_data)
     return render_to_response('accounts/register.html', {
@@ -761,7 +761,7 @@ def old_register(request):
                 )
             return redirect('/login')
         else:
-            print form.errors
+            print(form.errors)
     else:
         form = OldRegistrationForm()
     return render_to_response('accounts/old_register.html', {

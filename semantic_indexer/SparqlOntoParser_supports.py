@@ -5,7 +5,7 @@
 
 
 from SPARQLWrapper import SPARQLWrapper, JSON
-import urllib, urllib2, json
+import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, json
 
 
 #http://stackoverflow.com/questions/17388213/python-string-similarity-with-probability
@@ -20,13 +20,13 @@ def get_json(url=None, apikey=None):
     try:
         if url:
             if inputStringCheck(url):
-                opener = urllib2.build_opener()
+                opener = urllib.request.build_opener()
                 if apikey:
                     if inputStringCheck(apikey):
                         opener.addheaders = [('Authorization', 'apikey token=' + apikey)]
                 out = json.loads(opener.open(url).read())
     except:
-        print "Could not perform get_json with:", url, apikey
+        print("Could not perform get_json with:", url, apikey)
     return out
 
 
@@ -56,7 +56,7 @@ def inputStringCheck( string, contains=None ):
 
     except:
 
-        print "Could not check provided string."
+        print("Could not check provided string.")
         pass
 
     return out
@@ -70,11 +70,11 @@ def displayQueryResults( res ):
 
             if type(res) is dict:
 
-                if "head" in res.keys():
+                if "head" in list(res.keys()):
 
                     if type(res["head"]) is dict:
 
-                        if "vars" in res["head"].keys():
+                        if "vars" in list(res["head"].keys()):
 
                             # info_string = ""
                             #
@@ -84,15 +84,15 @@ def displayQueryResults( res ):
                             #
                             # if info_string != "": print info_string
 
-                            if "results" in res.keys():
+                            if "results" in list(res.keys()):
 
                                 if type(res["results"]) is dict:
 
-                                    if "bindings" in res["results"].keys():
+                                    if "bindings" in list(res["results"].keys()):
 
                                         if type(res["results"]["bindings"]) is list:
 
-                                            print "\n\n" + "#"*30 + "\n"
+                                            print("\n\n" + "#"*30 + "\n")
 
                                             for content in res["results"]["bindings"]:
 
@@ -100,21 +100,21 @@ def displayQueryResults( res ):
 
                                                 for item in res["head"]["vars"]:
 
-                                                    if item in content.keys():
+                                                    if item in list(content.keys()):
 
-                                                        if 'value' in content[item].keys():
+                                                        if 'value' in list(content[item].keys()):
 
                                                             info_string += content[item]['value'] + "\t"
 
-                                                if info_string != "": print info_string
+                                                if info_string != "": print(info_string)
 
-                                            print "\n===>", len(res["results"]["bindings"]), "results retrieved."
+                                            print("\n===>", len(res["results"]["bindings"]), "results retrieved.")
 
-                                            print "\n" + "#"*30 + "\n\n"
+                                            print("\n" + "#"*30 + "\n\n")
 
     except:
 
-        print "SPARQL query on file was not successful."
+        print("SPARQL query on file was not successful.")
         pass
 
 
@@ -128,11 +128,11 @@ def mergeQueryResults( res1, res2 ):
 
             if type(res1) and type(res2) is dict:
 
-                if "head" in res1.keys() and "head" in res2.keys():
+                if "head" in list(res1.keys()) and "head" in list(res2.keys()):
 
                     if type(res1["head"]) and type(res2["head"]) is dict:
 
-                        if "vars" in res1["head"].keys() and "vars" in res2["head"].keys():
+                        if "vars" in list(res1["head"].keys()) and "vars" in list(res2["head"].keys()):
 
                             if type(res1["head"]["vars"]) and type(res2["head"]["vars"]) is list:
 
@@ -146,11 +146,11 @@ def mergeQueryResults( res1, res2 ):
 
                                 if res:
 
-                                    if "results" in res.keys() and "results" in res2.keys():
+                                    if "results" in list(res.keys()) and "results" in list(res2.keys()):
 
                                         if type(res["results"]) and type(res2["results"]) is dict:
 
-                                            if "bindings" in res["results"].keys() and "bindings" in res2["results"].keys():
+                                            if "bindings" in list(res["results"].keys()) and "bindings" in list(res2["results"].keys()):
 
                                                 if type(res["results"]["bindings"]) and type(res2["results"]["bindings"]) is list:
 
@@ -162,7 +162,7 @@ def mergeQueryResults( res1, res2 ):
 
     except:
 
-        print "Could not merge query results."
+        print("Could not merge query results.")
 
     return out
 
@@ -199,7 +199,7 @@ def checkEndpointResponds( endpoint=None, from_uri=None, apikey=None ):
 
                     if type(res) is dict:
 
-                        if "boolean" in res.keys():
+                        if "boolean" in list(res.keys()):
 
                             if type(res["boolean"]) is bool:
 
@@ -209,7 +209,7 @@ def checkEndpointResponds( endpoint=None, from_uri=None, apikey=None ):
 
     except:
 
-        print "Could not check whether sparql endpoint responds."
+        print("Could not check whether sparql endpoint responds.")
 
     return out
 
@@ -230,7 +230,7 @@ def obtainPredicateCount( endpoint=None, from_uri=None, apikey=None, endpoint_ty
 
                 if endpoint_type:
 
-                    if isinstance(endpoint_type, (str, unicode)):
+                    if isinstance(endpoint_type, str):
 
                         if endpoint_type=="endpoint_nwsw":
 
@@ -252,7 +252,7 @@ def obtainPredicateCount( endpoint=None, from_uri=None, apikey=None, endpoint_ty
 
                     if isinstance(res, dict):
 
-                        if "results" in res.keys() and "bindings" in res["results"].keys():
+                        if "results" in list(res.keys()) and "bindings" in list(res["results"].keys()):
 
                             if isinstance(res["results"]["bindings"], list):
 
@@ -260,17 +260,17 @@ def obtainPredicateCount( endpoint=None, from_uri=None, apikey=None, endpoint_ty
 
                                     if isinstance(res["results"]["bindings"][0], dict):
 
-                                        if "np" in res["results"]["bindings"][0].keys():
+                                        if "np" in list(res["results"]["bindings"][0].keys()):
 
                                             if isinstance(res["results"]["bindings"][0]["np"], dict):
 
-                                                if "value" in res["results"]["bindings"][0]["np"].keys():
+                                                if "value" in list(res["results"]["bindings"][0]["np"].keys()):
 
                                                     out = int( res["results"]["bindings"][0]["np"]["value"] )
 
     except:
 
-        print "Could not obtain number of different predicates in use."
+        print("Could not obtain number of different predicates in use.")
 
     return out
 
@@ -303,11 +303,11 @@ def obtainClassCount( endpoint=None, from_uri=None, apikey=None ):
 
                     if type(res) is dict:
 
-                        if "results" in res.keys():
+                        if "results" in list(res.keys()):
 
                             if type(res["results"]) is dict:
 
-                                if "bindings" in res["results"].keys():
+                                if "bindings" in list(res["results"].keys()):
 
                                     if type(res["results"]["bindings"]) is list:
 
@@ -315,7 +315,7 @@ def obtainClassCount( endpoint=None, from_uri=None, apikey=None ):
 
     except:
 
-        print "Could not obtain number of different classes in use."
+        print("Could not obtain number of different classes in use.")
 
     return out
 
@@ -346,7 +346,7 @@ def modifyQueryAddLimitAndOffset( query=None, limit=None, offset=None ):
 
     except:
 
-        print "Could not add limit and ofset to query."
+        print("Could not add limit and ofset to query.")
 
     return out
 
@@ -367,7 +367,7 @@ def modifyQueryForSubgraph( query=None, subgraph_uri=None ):
 
     except:
 
-        print "Could not modify query by inserting subgraph URI to FROM statement."
+        print("Could not modify query by inserting subgraph URI to FROM statement.")
 
     return out
 
@@ -380,19 +380,19 @@ def encodeQueryAsURL( endpoint=None, query=None, from_uri=None):
 
         if endpoint and query:
 
-            if isinstance(endpoint, (str, unicode)) and isinstance(query, (str, unicode)):
+            if isinstance(endpoint, str) and isinstance(query, str):
 
-                out = endpoint + "?" + urllib.urlencode({"query": query, "format": "json"})
+                out = endpoint + "?" + urllib.parse.urlencode({"query": query, "format": "json"})
 
                 if from_uri:
 
-                    if isinstance(from_uri, (str, unicode)):
+                    if isinstance(from_uri, str):
 
-                        out = endpoint + "?" + urllib.urlencode({"default-graph-uri": from_uri, "query": query, "format": "json"})
+                        out = endpoint + "?" + urllib.parse.urlencode({"default-graph-uri": from_uri, "query": query, "format": "json"})
 
     except:
 
-        print "Could not encode query as url."
+        print("Could not encode query as url.")
 
     return out
 
@@ -405,7 +405,7 @@ def urllibOneEndpoint( endpoint=None, query=None, from_uri=None, apikey=None ):
 
         if endpoint and query:
 
-            if isinstance(endpoint, (str, unicode)) and isinstance(query, (str, unicode)):
+            if isinstance(endpoint, str) and isinstance(query, str):
 
                 q = encodeQueryAsURL( endpoint, query, from_uri )
 
@@ -419,7 +419,7 @@ def urllibOneEndpoint( endpoint=None, query=None, from_uri=None, apikey=None ):
 
     except:
 
-        print "Could not process get_json as sparql query."
+        print("Could not process get_json as sparql query.")
         pass
 
     return out
@@ -447,7 +447,7 @@ def sparqlOneEndpoint( endpoint, query, apikey=None ):
 
     except:
 
-        print "Could not process formulated query on indicated endpoint."
+        print("Could not process formulated query on indicated endpoint.")
         pass
 
     return out
