@@ -682,7 +682,6 @@ def abort(request):
     #request.session["auth_urn"] = None
     request.session["auth_firstname"] = None
     request.session["auth_surname"] = None
-
     request.session["popup"] = 0
 
     return redirect('/interface_main')
