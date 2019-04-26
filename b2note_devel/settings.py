@@ -4,12 +4,9 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 STATIC_PATH = os.path.join(BASE_DIR,'static')
 
-
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -48,7 +45,7 @@ AUTHENTICATION_BACKENDS = ['accounts.backends.EmailAuthBackend', ]
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = [ 'b2note.bsc.es' ]
+ALLOWED_HOSTS = [ 'b2note.bsc.es','localhost' ]
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -111,12 +108,6 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = os.environ['B2NOTE_SECRET_KEY']
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -133,26 +124,30 @@ ROOT_URLCONF = 'b2note_devel.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'b2note_devel.wsgi.application'
 
-TEMPLATE_DIRS = (
-    TEMPLATE_PATH,
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.core.context_processors.tz',
+# List of callables that know how to import templates from various sources.
+# upgrade to TEMPLATES from Django 1.8
+TEMPLATES = [{
+    'BACKEND':'django.template.backends.django.DjangoTemplates',
+    'DIRS':[os.path.join(BASE_DIR, 'templates')],
+    'OPTIONS': {
+        'context_processors': [    'django.contrib.auth.context_processors.auth',
+    'django.template.context_processors.i18n',
+    'django.template.context_processors.media',
+    'django.template.context_processors.static',
+    'django.template.context_processors.tz',
     'django.contrib.messages.context_processors.messages',
     # abremaud@esciencefactory.com, 20160927
     # http://stackoverflow.com/questions/12096440/using-django-session-inside-templates
-    'django.core.context_processors.request',
-)
-
+    'django.template.context_processors.request',
+    'django.template.context_processors.debug',
+                                   ],
+        'loaders':[    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+]
+    }
+}]
+#TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
+#TEMPLATE_DEBUG = DEBUG
 
 
 INSTALLED_APPS = (
