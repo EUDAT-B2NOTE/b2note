@@ -1,4 +1,4 @@
-from django.shortcuts import render, render_to_response, redirect
+from django.shortcuts import render, redirect
 from django.template import RequestContext
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 from django.forms.models import model_to_dict
@@ -105,7 +105,7 @@ def feedbackpage(request):
                                      "shortcutlinks": shortcutlinks,
                                      "msg": msg}
 
-                        return render_to_response('accounts/feedback_page.html', data_dict, context_instance=RequestContext(request))
+                        return render('accounts/feedback_page.html', data_dict)#, context_instance=RequestContext(request))
 
                 if request.POST.get("feature_submit") != None:
 
@@ -137,7 +137,7 @@ def feedbackpage(request):
                                      "shortcutlinks": shortcutlinks,
                                      "msg": msg}
 
-                        return render_to_response('accounts/feedback_page.html', data_dict, context_instance=RequestContext(request))
+                        return render('accounts/feedback_page.html', data_dict)#, context_instance=RequestContext(request))
 
                 if request.POST.get("bug_submit") != None:
 
@@ -182,7 +182,7 @@ def feedbackpage(request):
                                      "shortcutlinks": shortcutlinks,
                                      "msg": msg}
 
-                        return render_to_response('accounts/feedback_page.html', data_dict, context_instance=RequestContext(request))
+                        return render('accounts/feedback_page.html', data_dict)#, context_instance=RequestContext(request))
 
 
             feedback_f  = FeedbackForm()
@@ -195,7 +195,7 @@ def feedbackpage(request):
                          "feature_f": feature_f,
                          "bugreport_f": bugreport_f }
 
-            return render_to_response('accounts/feedback_page.html', data_dict, context_instance=RequestContext(request))
+            return render('accounts/feedback_page.html', data_dict)#, context_instance=RequestContext(request))
 
         else:
             return redirect('/logout')
@@ -236,10 +236,10 @@ def request_account_retrieval(request):
             messages.error(request, "Information does not qualify.")
     else:
         form = AccountRetrieveForm()
-    return render_to_response('accounts/request_account_retrieval.html', {
+    return render('accounts/request_account_retrieval.html', {
         'shortcutlinks': shortcutlinks,
         'navbarlinks': navbarlinks,
-        'form': form,}, context_instance=RequestContext(request))
+        'form': form,})#, context_instance=RequestContext(request))
 
 
 # http://ruddra.com/2015/09/18/implementation-of-forgot-reset-password-feature-in-django/
@@ -367,11 +367,11 @@ def profilepage(request):
         if request.session.get("user"):
             userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
             form = ProfileForm(initial = model_to_dict(userprofile) )
-            return render_to_response('accounts/profilepage.html', {
+            return render('accounts/profilepage.html', {
                 'user_nickname': userprofile.nickname,
                 'navbarlinks': navbarlinks,
                 'shortcutlinks': shortcutlinks,
-                'form': form}, context_instance=RequestContext(request))
+                'form': form})#, context_instance=RequestContext(request))
         else:
             return redirect('/logout')
     except Exception:
@@ -583,8 +583,8 @@ def login(request):
     shortcutlinks = []
 
     login_failed_msg = False
-
-    request.session["connecting"] = 0
+    if hasattr(request,'session'):
+        request.session["connecting"] = 0
 
     if request.method == 'POST':
         login_failed_msg = True
@@ -607,16 +607,18 @@ def login(request):
     if request.session.get("popup")==0:
         popup = 0
         request.session["popup"] = 1
-
-    return render_to_response('accounts/login.html',{'form': form},
-                              context_instance=RequestContext(request, {
-                                  'login_failed_msg': login_failed_msg,
-                                  'navbarlinks': navbarlinks,
-                                  'shortcutlinks': shortcutlinks,
-                                  "pid_tofeed": request.session.get("pid_tofeed"),
-                                  "subject_tofeed": request.session.get("subject_tofeed"),
-                                  "popup": popup,
-                              }))
+    #upgrade https://stackoverflow.com/questions/38739422/django-error-render-to-response-got-an-unexpected-keyword-argument-context-i
+    c = {
+        'login_failed_msg': login_failed_msg,
+        'navbarlinks': navbarlinks,
+        'shortcutlinks': shortcutlinks,
+        "pid_tofeed": request.session.get("pid_tofeed"),
+        "subject_tofeed": request.session.get("subject_tofeed"),
+        "popup": popup,
+        'form': form
+    }
+    #context = {'form': form}
+    return render(request,'accounts/login.html',c)
 
 
 def polling(request):
@@ -655,18 +657,26 @@ def old_login(request):
                     return redirect('/interface_main')
     else:
         if request.session.get("user"):
-            return redirect('/interface_main', context=RequestContext(request))
+            return redirect('/interface_main')#, context=RequestContext(request))
         else:
             form = AuthenticationForm()
+    RequestContext(request, {
+        'login_failed_msg': login_failed_msg,
+        'navbarlinks': navbarlinks,
+        'shortcutlinks': shortcutlinks,
+        "pid_tofeed": request.session.get("pid_tofeed"),
+        "subject_tofeed": request.session.get("subject_tofeed")
+    })
+    return render(request,'accounts/old_login.html',{'form': form})
 
-    return render_to_response('accounts/old_login.html',{'form': form},
-                              context_instance=RequestContext(request, {
+    '''context_instance=RequestContext(request, {
                                   'login_failed_msg': login_failed_msg,
                                   'navbarlinks': navbarlinks,
                                   'shortcutlinks': shortcutlinks,
                                   "pid_tofeed": request.session.get("pid_tofeed"),
                                   "subject_tofeed": request.session.get("subject_tofeed")
                               }))
+    '''
 
 def abort(request):
     request.session['user'] = None
@@ -717,10 +727,9 @@ def register(request):
             except IntegrityError:
                 # catch "UNIQUE constraint failed" error
                 # May catch other errors in which case the error message displayed in the UI would not be accurate
-                return render_to_response(
+                return render(request,
                     'accounts/register.html',
-                    {'navbarlinks': navbarlinks, 'shortcutlinks': shortcutlinks, 'form': form, 'alreadytaken': True},
-                    context_instance=RequestContext(request)
+                    {'navbarlinks': navbarlinks, 'shortcutlinks': shortcutlinks, 'form': form, 'alreadytaken': True}
                 )
 
             return redirect('/interface_main')
@@ -728,13 +737,13 @@ def register(request):
             print(form.errors)
     else:
         form = RegistrationForm(data=auth_data)
-    return render_to_response('accounts/register.html', {
+    return render(request,'accounts/register.html', {
         'navbarlinks': navbarlinks,
         'shortcutlinks': shortcutlinks,
         'auth_email': auth_email,
         'auth_firstname': auth_firstname,
         'auth_lastname': auth_surname,
-        'form': form,}, context_instance=RequestContext(request))
+        'form': form,})
 
 def old_register(request):
     """
@@ -753,20 +762,19 @@ def old_register(request):
             except IntegrityError:
                 # catch "UNIQUE constraint failed" error
                 # May catch other errors in which case the error message displayed in the UI would not be accurate
-                return render_to_response(
+                return render(request,
                     'accounts/old_register.html',
-                    {'navbarlinks': navbarlinks, 'shortcutlinks': shortcutlinks, 'form': form, 'alreadytaken': True},
-                    context_instance=RequestContext(request)
+                    {'navbarlinks': navbarlinks, 'shortcutlinks': shortcutlinks, 'form': form, 'alreadytaken': True}
                 )
             return redirect('/login')
         else:
             print(form.errors)
     else:
         form = OldRegistrationForm()
-    return render_to_response('accounts/old_register.html', {
+    return render(request,'accounts/old_register.html', {
         'navbarlinks': navbarlinks,
         'shortcutlinks': shortcutlinks,
-        'form': form,}, context_instance=RequestContext(request))
+        'form': form,})
 
 
 def logout(request):

@@ -1,9 +1,8 @@
-
-
+#TODO remove dependency on session
 
 def list_navbarlinks(request=None, links_out=[]):
     lnks = []
-    if request and request.session.get('user')!=None:
+    if request and hasattr(request, 'session') and request.session.get('user')!=None:
         lnks = [
             {"url": "/accounts/profilepage", "title": "Account", "icon": "user"},
             {"url": "/search", "title": "Search", "icon": "search"},
@@ -23,7 +22,7 @@ def list_navbarlinks(request=None, links_out=[]):
 def list_shortcutlinks(request=None, links_out=[]):
     lnks = []
     lnks = [{"url": "", "title": "Previous page", "icon": "circle-arrow-left"}]
-    if request and request.session.get('user')!=None:
+    if request and hasattr(request, 'session') and request.session.get('user')!=None:
         lnks.append({"url": "/interface_main", "title": "Main page", "icon": "home"})
     else:
         lnks.append({"url": "/accounts/login", "title": "Main page", "icon": "home"})

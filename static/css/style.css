@@ -161,7 +161,8 @@
 }
 
 #consolepagebody {
-    height: 500px !important;
+    /* tomas refinement
+    height: 500px !important;*/
     /*overflow-y: auto;*/
     padding-top: 0px;
 }
@@ -179,6 +180,10 @@
     padding-top: 2px; /*17px;*/
     padding-left: 0px; /*10px;*/
     padding-bottom: 3px;
+}
+    /* tomas refinement */
+.navbar-left img {
+     width:300px
 }
 
 #icon-nav-bar {
@@ -200,8 +205,11 @@
 
 #main {
     margin-top:15px;
+        /* tomas refinement
+
     height: 441px;
     overflow-y: scroll;
+    */
 }
 
 #main_container {
@@ -704,8 +712,6 @@
 #related_match_export_select_table td {
     border: 0px;
 }
-
-#
 
 #feedbackpage_content {
     padding-left: 10px;

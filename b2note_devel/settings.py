@@ -45,7 +45,8 @@ AUTHENTICATION_BACKENDS = ['accounts.backends.EmailAuthBackend', ]
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = [ 'b2note.bsc.es','localhost' ]
+# TODO move to environment variables
+ALLOWED_HOSTS = [ 'b2note.bsc.es','localhost','127.0.0.1']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -57,6 +58,8 @@ TIME_ZONE = 'Europe/Madrid'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
+# WHAT? TODO generate site id during installation and distribute
+# as environment variable e.g. based on date time
 SITE_ID = '566ed4d6af03426177ca1663'
 
 # If you set this to False, Django will make some optimizations so as not
@@ -109,7 +112,7 @@ STATICFILES_FINDERS = (
 SECRET_KEY = os.environ['B2NOTE_SECRET_KEY']
 
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
