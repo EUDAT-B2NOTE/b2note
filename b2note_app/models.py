@@ -1,6 +1,9 @@
 from django.db import models
-from djangotoolbox.fields import ListField, SetField, DictField, EmbeddedModelField
-from django_mongodb_engine.contrib import MongoDBManager
+from djongo.models import ListField,DictField,EmbeddedModelField
+
+
+#from djangotoolbox.fields import ListField, SetField, DictField, EmbeddedModelField
+#from django_mongodb_engine.contrib import MongoDBManager
 
 
 # 20161115, abremaud@esciencefacory.com: reduce data model to fields curently in use by B2Note app.
@@ -174,7 +177,9 @@ class SemanticTagBodySet(models.Model):
 										   ("Ordered list of resources", "List"),
 										   ("Set of independent resources", "Independents"),
 									   ))
-	items		= ListField( EmbeddedModelField() ) # oa:item
+	#upgraded to djongo fields
+	items		= ListField( EmbeddedModelField(models.Model) ) # oa:item
+
 	ASSESSING = "assessing"
 	BOOKMARKING = "bookmarking"
 	CLASSIFYING = "classifying"
@@ -330,8 +335,9 @@ class Annotation(models.Model):
 																		# declaration with specification can be obtained is unclear at this point.
 	jsonld_id	= models.CharField( max_length = 4096 )
 	type        = ListField( models.CharField( max_length = 256 ) )		# (rdf:type) oa:Annotation and others
-	body        = ListField( EmbeddedModelField(), null=True )          # CharField( max_length = 4096, null = True )
-	target      = ListField( EmbeddedModelField() )                     # models.CharField( max_length = 4096 )
+	# TODO upgraded djongo fields
+	body        = ListField( EmbeddedModelField(models.Model), null=True )          # CharField( max_length = 4096, null = True )
+	target      = ListField( EmbeddedModelField(models.Model) )                     # models.CharField( max_length = 4096 )
 	creator 	= ListField( EmbeddedModelField("Agent"), null=True )   # dcterms:creator
 	created 	= models.DateTimeField( auto_now_add=True, null=True )  # dcterms:created MUST xsd:dateTime with the UTC timezone expressed as "Z".
 	generator 	= ListField( EmbeddedModelField("Agent"), null=True )   # prov:wasGeneratedBy
@@ -372,7 +378,8 @@ class Annotation(models.Model):
     )
 	motivation	= ListField( models.CharField( max_length = 256, choices=MOTIVATION_CHOICES ), null=True )	# oa:motivatedBy = [oa:Motivation]
 	#stylesheet	= EmbeddedModelField( "CssStyleSheet", null=True ) #oa:styledBy
-	objects     = MongoDBManager()	# http://stackoverflow.com/questions/23546480/no-raw-query-method-in-my-django-object
+#TODO check objects in djongo - if raw query possible
+#	objects     = MongoDBManager()	# http://stackoverflow.com/questions/23546480/no-raw-query-method-in-my-django-object
 
 
 # class AnnotationPage(models.Model):

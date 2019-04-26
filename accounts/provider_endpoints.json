@@ -1,6 +1,0 @@
-{
-  "issuer":   "https://b2access.eudat.eu:443",
-  "authorization_endpoint": "https://b2access.eudat.eu:443/oauth2-as/oauth2-authz",
-  "token_endpoint":  "https://b2access.eudat.eu:443/oauth2/token",
-  "userinfo_endpoint":   "https://b2access.eudat.eu:443/oauth2/userinfo"
-}

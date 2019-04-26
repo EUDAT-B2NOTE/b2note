@@ -24,7 +24,7 @@ Development | [![Build Status](https://travis-ci.org/EUDAT-B2NOTE/b2note.svg?bra
 Dr. Yann Le Franc   | e-Science Data Factory | ylefranc@esciencefactory.com
 Dr. Antoine Brémaud | e-Science Data Factory | [abremaud@esciencefactory.com](mailto:abremaud@esciencefactory.com)
 Mr. Pablo Ródenas Barquero | Barcelona Supercomputing Center | pablo.rodenas@bsc.es
-
+Dr. Tomas Kulhanek | e-Science Data Factory | tkulhanek at esciencefactory.com
 
 ##Instructions for contributing
 
@@ -65,3 +65,8 @@ This software is distributed WITHOUT ANY WARRANTY, express or implied relating t
 >     Created for Project:    EUDAT2020
 
 EUDAT receives funding from the European Union's Horizon 2020 programme - DG CONNECT e-Infrastructures. Contract No. 654065
+
+## Release notes
+- upgraded to python 3.6, django 2.2, migrated from mongoengine to djongo 
+- sqlite version 3.8 and above is required
+- mongodb version 4.x is required

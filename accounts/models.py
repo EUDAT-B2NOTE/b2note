@@ -21,7 +21,8 @@ class UserCred(AbstractBaseUser):
     username = models.EmailField(unique=True, db_index=True)
 
     pawd = models.CharField(('password'), max_length=256)
-    annotator_id = models.ForeignKey('AnnotatorProfile', db_column='annotator_id')
+    # upgrade to djongo default on_delete
+    annotator_id = models.ForeignKey('AnnotatorProfile', db_column='annotator_id',on_delete=models.CASCADE)
 
     USERNAME_FIELD = 'user_id'
     REQUIRED_FIELDS = []
@@ -47,7 +48,8 @@ class AnnotatorProfile(models.Model):
 
 class UserFeedback(models.Model):
     feedback_id     = models.AutoField( primary_key=True )
-    email           = models.ForeignKey( AnnotatorProfile, to_field="email" )
+    #upgrade to djongo default on_delete
+    email           = models.ForeignKey( AnnotatorProfile, to_field="email",on_delete=models.CASCADE)
     date_created    = models.DateTimeField( auto_now_add=True, null=True )
     eval_overall    = models.PositiveSmallIntegerField()
     eval_usefull    = models.PositiveSmallIntegerField()
@@ -59,7 +61,8 @@ class UserFeedback(models.Model):
 
 class FeatureRequest(models.Model):
     feature_id  = models.AutoField( primary_key=True )
-    email       = models.ForeignKey(AnnotatorProfile, to_field="email")
+    # upgrade to djongo default on_delete
+    email       = models.ForeignKey(AnnotatorProfile, to_field="email", on_delete=models.CASCADE)
     title       = models.CharField( max_length=100, null=True )
     short_description   = models.CharField( max_length=5000, null=True )
     extra_description   = models.TextField( null=True )
@@ -69,7 +72,8 @@ class FeatureRequest(models.Model):
 
 class BugReport(models.Model):
     bugreport_id    = models.AutoField( primary_key=True )
-    email           = models.ForeignKey(AnnotatorProfile, to_field="email")
+    # upgrade to djongo default on_delete
+    email           = models.ForeignKey(AnnotatorProfile, to_field="email",on_delete=models.CASCADE)
     affected_function   = models.CharField( max_length=100, null=True )
     short_description   = models.CharField( max_length=5000, null=True )
     extra_description   = models.TextField( null=True )

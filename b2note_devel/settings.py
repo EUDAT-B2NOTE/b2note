@@ -21,13 +21,15 @@ MONGO_DATABASE_NAME = os.environ['MONGODB_NAME']
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django_mongodb_engine', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'djongo', # Add 'django_mongodb_engine','postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': os.environ['MONGODB_NAME'],                      # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
         'USER': os.environ['MONGODB_USR'],
         'PASSWORD': os.environ['MONGODB_PWD'],
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '',                      # Set to empty string for default.
+        'PORT': '',                     # Set to empty string for default.
+        'AUTH_SOURCE': 'b2notedb',
+        #'AUTH_MECHANISM': 'SCRAM-SHA-1'
+
     },
     'users' : {
         'ENGINE' : 'django.db.backends.sqlite3',
@@ -164,8 +166,9 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'django_mongodb_engine',
-    'djangotoolbox',
+    #'django_mongodb_engine',
+    'djongo',
+    #'djangotoolbox',
     'b2note_app',
     'accounts',
     'django_countries',

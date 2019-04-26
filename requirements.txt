@@ -1,5 +1,6 @@
-django>=2.2
-mongoengine>=0.17.0
+djongo>=1.2.32
+#django>=2.2
+#mongoengine>=0.17.0
 pymongo>=3.8.0
 pysolr>=3.8.1
 requests>=2.20.0
@@ -9,3 +10,4 @@ django-simple-captcha>=0.5.11
 beautifulsoup4>=4.7.1
 rdflib>=4.2.2
 rdflib-jsonld>=0.4.0
+oic>=0.15.1
