@@ -156,7 +156,7 @@ class B2noteappTest(TestCase):
         #disconnect()
         import urllib.request, urllib.parse, urllib.error, os
         pwd = urllib.parse.quote_plus(os.environ['MONGODB_PWD'])
-        uri = "mongodb://" + os.environ['MONGODB_USR'] + ":" + pwd + "@127.0.0.1/?authMechanism=SCRAM-SHA-1"
+        uri = "mongodb://" + os.environ['MONGODB_USR'] + ":" + pwd + "@127.0.0.1/" #?authMechanism=SCRAM-SHA-1
         
         #connect(self.mongodb_name, host=uri)
         from pymongo import MongoClient
