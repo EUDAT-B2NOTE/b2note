@@ -7,14 +7,14 @@ Replace this with more appropriate tests for your application.
 
 from django.test import TestCase, Client
 from b2note_app.models import Annotation
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.conf import settings
 from django.db import connections
 from b2note_app.mongo_support_functions import *
 from b2note_devel.urls import urlpatterns
 from accounts.models import UserCred
 from django.contrib.auth import authenticate
-from django.utils.importlib import import_module
+from importlib import import_module
 import json, os
 
 #class B2noteappFailTest(TestCase):
@@ -27,7 +27,7 @@ import json, os
         #import urllib, os
         #pwd = urllib.quote_plus(os.environ['MONGODB_PWD'])
         #uri = "mongodb://" + os.environ['MONGODB_USR'] + ":" + pwd + "@127.0.0.1/" + self.mongodb_name + "?authMechanism=SCRAM-SHA-1"
-        
+
         #connect(self.mongodb_name, host=uri)
         #super(B2noteappTest, self)._pre_setup()
 
@@ -152,13 +152,16 @@ class B2noteappTest(TestCase):
             --------------------
             Automatically called before any test for connecting to MongoDB.
         """
-        from mongoengine.connection import connect, disconnect
-        disconnect()
+        #from mongoengine.connection import connect, disconnect
+        #disconnect()
         import urllib.request, urllib.parse, urllib.error, os
         pwd = urllib.parse.quote_plus(os.environ['MONGODB_PWD'])
-        uri = "mongodb://" + os.environ['MONGODB_USR'] + ":" + pwd + "@127.0.0.1/" + self.mongodb_name + "?authMechanism=SCRAM-SHA-1"
+        uri = "mongodb://" + os.environ['MONGODB_USR'] + ":" + pwd + "@127.0.0.1/?authMechanism=SCRAM-SHA-1"
         
-        connect(self.mongodb_name, host=uri)
+        #connect(self.mongodb_name, host=uri)
+        from pymongo import MongoClient
+        self.mclient = MongoClient(uri)
+        self.mdb = self.mclient[self.mongodb_name]
         super(B2noteappTest, self)._pre_setup()
 
     def _post_teardown(self):
@@ -167,10 +170,11 @@ class B2noteappTest(TestCase):
             --------------------
             Automatically called after any test for dropping the DB and disconnecting from MongoDB.
         """
-        from mongoengine.connection import get_connection, disconnect
-        connection = get_connection()
-        connection.drop_database(self.mongodb_name)
-        disconnect()
+        #from mongoengine.connection import get_connection, disconnect
+        #connection = get_connection()
+        #connection.drop_database(self.mongodb_name)
+        #disconnect()
+        #self.mclient.drop_database(self.mongodb_name)
         super(B2noteappTest, self)._post_teardown()
         
     def setUp(self):
@@ -212,6 +216,7 @@ class B2noteappTest(TestCase):
             --------------------
             Creates a new entry in the DB of Annotations
         """
+
         return Annotation.objects.create(jsonld_id=jsonld_id, type=type)
     
     def test_create_annotation_db(self):
@@ -378,7 +383,8 @@ class B2noteappTest(TestCase):
             --------------------
             Tests the view function create_annotation
         """
-        url = reverse("b2note_app.views.create_annotation")
+        #TODO fix reversematch error - updated in django >1.10
+        url = reverse("b2note_app_views.create_annotation")
         json_dict = {}
         json_dict['pid_tofeed'] = 'http://hdl.handle.net/11304/test'
         json_dict['subject_tofeed'] = 'https://b2share.eudat.eu/record/30'
