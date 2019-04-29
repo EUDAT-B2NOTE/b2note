@@ -1,17 +1,18 @@
 {% extends "b2note_app/__base.html" %}
 
 {% block content %}
-
-    {% if subject_tofeed|length = 0 %}
+<!-- tomas comment as TemplateSyntaxError at /interface_main Could not parse the remainder: = -->
+{% comment %}
+    {% #if subject_tofeed|length = 0 %}
 
     <script>hide_iframe();</script>
 
-    {% else %}
+    {% #else %}
 
     <script>show_iframe();</script>
 
-    {% endif %}
-
+    {% #endif %}
+{% endcomment %}
     <div class="container" id="section_create">
 
         <div class="container" id="user_area">

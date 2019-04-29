@@ -58,12 +58,12 @@ def index(request):
 
 
 
-@login_required
+#@login_required
 def typeahead_testbench(request):
     return render(request, "b2note_app/typeahead_testbench.html")
 
 
-@login_required
+#@login_required
 def json_sample(request):
     print(os.getcwd())
     nf = open("static/files/sample.json", "r")
@@ -75,7 +75,7 @@ def json_sample(request):
 
 
 
-@login_required
+#@login_required
 def export_annotations(request):
     """
       Function: export_annotations
@@ -171,7 +171,7 @@ def export_annotations(request):
         return redirect('/export')
 
 
-@login_required
+#@login_required
 def download_json(request):
     """
       Function: download_json
@@ -197,7 +197,7 @@ def download_json(request):
     #return download_json.file_data
 
 
-@login_required
+#@login_required
 def download_rdfxml(request):
     """
       Function: download_rdfxml
@@ -232,7 +232,7 @@ def download_rdfxml(request):
     return rdfxml_data
 
 
-@login_required
+#@login_required
 def publish_annotations(request):
     """
       Function: publish_annotations
@@ -260,7 +260,7 @@ def publish_annotations(request):
     return render(request, 'b2note_app/default.html', {'text': text,"subject_tofeed":subject_tofeed ,"pid_tofeed":pid_tofeed })
 
 
-@login_required
+#@login_required
 def settings(request):
     """
       Function: settings
@@ -369,7 +369,7 @@ Influence of smoking and obesity in sperm quality
     return render(request, 'b2note_app/hostpage.html', {'iframe_on': 350, 'buttons_info':buttons_info, 'src': url, 'version': version})
 
 
-@login_required
+#@login_required
 def edit_annotation(request):
     """
       Function: edit_annotation
@@ -608,7 +608,7 @@ def edit_annotation(request):
     return render(request, "b2note_app/edit_annotation.html", data_dict)
 
 
-@login_required
+#@login_required
 def delete_annotation(request):
     """
       Function: delete_annotation
@@ -679,7 +679,7 @@ def delete_annotation(request):
     return redirect('/interface_main')
 
 
-@login_required
+#@login_required
 def create_annotation(request):
     """
       Function: create_annotation
@@ -856,7 +856,7 @@ def create_annotation(request):
     return redirect("/interface_main")
 
 
-@login_required
+#@login_required
 def annotation_summary(request):
     """
       Function: annotation_summary
@@ -1045,7 +1045,7 @@ def annotation_summary(request):
     return render(request, 'b2note_app/annotation_summary.html', data_dict)
 
 
-@login_required
+#@login_required
 def myannotations(request):
     """
       Function: myannotations
@@ -1215,8 +1215,8 @@ def myannotations(request):
 
     return render(request, 'b2note_app/myannotations.html', data_dict)
 
-
-@login_required
+# tomas TODO test anonymous user, commenting redirect
+#@login_required
 def allannotations(request):
     """
       Function: allannotations
@@ -1247,14 +1247,18 @@ def allannotations(request):
         subject_tofeed = request.session.get('subject_tofeed')
         if b2share_correct_url(subject_tofeed): subject_tofeed = b2share_correct_url(subject_tofeed)
 
-    user_nickname = None
+    # tomas default user nickname = anonymous
+    user_nickname = "anonymous"
     if not request.session.get('user'):
         context = RequestContext(request, {"subject_tofeed": subject_tofeed, "pid_tofeed":pid_tofeed})
-        return redirect('accounts/login', context=context)
+        # tomas TODO test anonymous user, commenting redirect
+        #  return redirect('accounts/login', context=context)
     elif request.session.get('user')!=None:
         userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
         user_nickname = userprofile.nickname
 
+    # tomas default list
+    allannotations_list = []
     try:
         if subject_tofeed and pid_tofeed:
             allannotations_list = Annotation.objects.raw_query({'target.source': subject_tofeed, 'target.jsonld_id': pid_tofeed})
@@ -1264,6 +1268,7 @@ def allannotations(request):
             allannotations_list = Annotation.objects.raw_query({'target.jsonld_id': pid_tofeed})
     except Annotation.DoesNotExist:
         allannotations_list = []
+
 
     allannotations_list = sorted(allannotations_list, key=lambda Annotation: Annotation.created, reverse=True)
 
@@ -1496,7 +1501,8 @@ def interface_main(request):
         return redirect('accounts/register', context=context)
     if not request.session.get('user'):
         context = RequestContext(request, {"subject_tofeed": subject_tofeed, "pid_tofeed":pid_tofeed})
-        return redirect('accounts/login', context=context)
+        # tomas TODO test anonymous user, commenting redirect
+        # return redirect('accounts/login', context=context)
     elif request.session.get('user')!=None:
         userprofile = AnnotatorProfile.objects.using('users').get(pk=request.session.get("user"))
         user_nickname = userprofile.nickname
@@ -2031,7 +2037,7 @@ def process_search_query( form ):
     return exact, related, search_str
 
 
-@login_required
+#@login_required
 def search_annotations(request):
     user_nickname = None
     if request.session.get('user')!=None:
@@ -2154,7 +2160,7 @@ def search_annotations(request):
     return render(request, "b2note_app/searchpage.html", data_dict)
 
 
-@login_required
+#@login_required
 def select_search_results(request):
     pid_tofeed = ""
     if request.POST.get('pid_tofeed')!=None:
@@ -2375,7 +2381,7 @@ def helppage(request):
 
 
 @csrf_exempt
-@login_required
+#@login_required
 def retrieve_annotations(request):
     """
       Function: retrieve_annotations
