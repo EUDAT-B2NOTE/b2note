@@ -1,4 +1,7 @@
+# for sqlite > 3.8.3
+dist: xenial
 language: python
+# upgrade to Python 3
 python:
   - "3.6"
 sudo: false
@@ -11,7 +14,7 @@ addons:
     packages:
     - mongodb-org-server
     - mongodb-org-shell
-# command to install dependencies
+# install dependencies - all in requirements.txt only now
 install:
   - pip install -r requirements.txt
 #  - pip install git+https://github.com/AymRod/pyoidc
