@@ -9,9 +9,9 @@ from django.test import TestCase, Client
 from b2note_app.models import Annotation
 from django.urls import reverse
 from django.conf import settings
-from django.db import connections
+#from django.db import connections
 from b2note_app.mongo_support_functions import *
-from b2note_devel.urls import urlpatterns
+#from b2note_devel.urls import urlpatterns
 from accounts.models import UserCred
 from django.contrib.auth import authenticate
 from importlib import import_module
@@ -218,7 +218,27 @@ class B2noteappTest(TestCase):
         """
 
         return Annotation.objects.create(jsonld_id=jsonld_id, type=type)
-    
+
+    #test creating annotation, testing whether it contains specified fields, creating another annotation will incriese number of annotations
+    def test_instantialtests1(self):
+        # objects can be retrieved
+        self.assertTrue(Annotation.objects != None)
+        self.assertTrue(Annotation.objects.count()>=0)
+        # body and target are defined
+        self.assertTrue(Annotation.body != None)
+        self.assertTrue(Annotation.target != None)
+        a1 = Annotation.objects.create(type=["Annotation"],body=["free text"],target=["http://localhost"],jsonld_context=["jsonld"],creator=[],generator=[],motivation=[])
+        self.assertEqual(len(a1.body),1)
+        self.assertEqual(a1.body[0],"free text")
+        self.assertEquals(len(a1.target),1)
+        self.assertEquals(a1.target[0],"http://localhost")
+        a2 = Annotation.objects.all()
+        self.assertEqual(len(a2),1)
+        a3 = Annotation.objects.create(type=["Annotation"], body=["free text 2"], target=["http://localhost"],
+                                       jsonld_context=["jsonld"], creator=[], generator=[], motivation=[])
+        a2 = Annotation.objects.all()
+        self.assertEqual(len(a2),2)
+
     def test_create_annotation_db(self):
         """
             Function: test_create_annotation_db

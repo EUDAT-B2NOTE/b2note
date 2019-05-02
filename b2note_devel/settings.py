@@ -158,8 +158,8 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     #'django.contrib.sites',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    #'django.contrib.messages',
+    #'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -169,7 +169,7 @@ INSTALLED_APPS = (
     #'djangotoolbox',
     'b2note_app',
     'accounts',
-    'django_countries',
+    #'django_countries',
     'captcha',
 )
 

@@ -1,6 +1,5 @@
 import os
 
-
 agent = {
         'jsonld_id' : { 'type' : 'string' },
         'type' : {
