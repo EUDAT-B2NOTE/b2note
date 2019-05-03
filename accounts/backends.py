@@ -1,5 +1,6 @@
+# TODO why it is imported when not used?
 from django.conf import settings
-from django.contrib.auth.models import check_password
+from django.contrib.auth.hashers import check_password
 from accounts.models import UserCred
 
 class EmailAuthBackend(object):

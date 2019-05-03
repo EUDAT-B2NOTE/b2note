@@ -1015,7 +1015,7 @@ def CreateAnnotation(target_url=None, target_pid=None):
                 elif isinstance(target_url, str) and len(target_url) > 0:
                     ext_res = ExternalSpecificResource(
                         type            =   "SpecificResource",
-                        source          =   target_url
+                        source          =   target_url,
                     )
 
                 if ext_res:
@@ -1023,14 +1023,18 @@ def CreateAnnotation(target_url=None, target_pid=None):
                     ann = Annotation(
                         jsonld_context  = [global_settings.JSONLD_CONTEXT_URL],
                         type            = ["Annotation"],
-                        target          = [ ext_res ],
+                        target          = [ {"type":"SpecitifResource","source":target_url} ], # [ ext_res ] #tomas workaround value error
                         #target          = [ExternalResource( jsonld_id = target )],
-                        generator       = [ gen_agt ]
+                        generator       = [{"type":"software","name":"B2Note","homepage":"https://b2note.bsc.es"}],#[ gen_agt ], # tomas workaround ValueError
+                        # tomas fix - body,creator,motivation ValueError if null
+                        body = ["free text"],
+                        creator = [],
+                        motivation = []
                         )
                     ann.save()
 
                     ann = Annotation.objects.get(id=ann.id)
-                    ann.jsonld_id = global_settings.ROOT_ANNOTATION_ID + ann.id
+                    ann.jsonld_id = global_settings.ROOT_ANNOTATION_ID + str(ann.id)
                     ann.save()
 
                     print("CreateAnnotation function, created annotation document with id: " + str(ann.id))

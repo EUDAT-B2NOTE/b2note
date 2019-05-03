@@ -169,16 +169,7 @@ class SemanticTagTextualBody(models.Model):
 	type		= models.CharField( max_length = 64 )				# rdf:type; oa:TextualBody
 	value       = models.TextField() 								# oa:text
 
-
-class SemanticTagBodySet(models.Model):
-	type		= models.CharField( max_length = 32,
-									   choices = (
-										   ("Holistic set of resources", "Composite"),
-										   ("Ordered list of resources", "List"),
-										   ("Set of independent resources", "Independents"),
-									   ))
-	#upgraded to djongo fields
-	items		= ListField( EmbeddedModelField(models.Model) ) # oa:item
+class STBSConstants:
 
 	ASSESSING = "assessing"
 	BOOKMARKING = "bookmarking"
@@ -208,7 +199,18 @@ class SemanticTagBodySet(models.Model):
 		(REPLYING, "replying"),  # oa:replying
 		(TAGGING, "tagging"),  # oa:tagging
 	)
-	purpose		= models.CharField(max_length=256, choices=MOTIVATION_CHOICES, null=True)
+stbsconstants = STBSConstants()
+
+class SemanticTagBodySet(models.Model):
+	type		= models.CharField( max_length = 32,
+									   choices = (
+										   ("Holistic set of resources", "Composite"),
+										   ("Ordered list of resources", "List"),
+										   ("Set of independent resources", "Independents"),
+									   ))
+	#upgraded to djongo fields
+	items		= ListField( EmbeddedModelField(models.Model) ) # oa:item
+	purpose		= models.CharField(max_length=256, choices=stbsconstants.MOTIVATION_CHOICES, null=True)
 	#created		= models.DateTimeField( auto_now_add=True, null=True )  # dcterms:created MUST xsd:dateTime SHOULD timezone.
 	#modified 	= models.DateTimeField( null=True )  	# MUST xsd:dateTime with the UTC timezone expressed as "Z".
 
@@ -230,23 +232,7 @@ class SemanticTagBodySet(models.Model):
 # 									   choices = (("Ordered list to pick one from", "Choice"),) )	# oa:Choice
 # 	items		= ListField( EmbeddedModelField() ) # oa:memberList
 
-
-class TextualBody(models.Model):
-	jsonld_id  	= models.CharField( max_length = 4096, null=True )				#"https://b2note.bsc.es/textualbody/" + mongo_uid
-	type		= ListField( models.CharField( max_length = 64 ),  null=True )	# rdf:type; oa:TextualBody
-	value       = models.TextField() 											# oa:text
-	#language 	= ListField( models.CharField( max_length = 256 ), null=True )	# dc:language, [rfc5646]
-	#format		= ListField( models.CharField( max_length = 256 ), null=True )	# dc:format, [rfc6838]
-	#processingLanguage = models.CharField( max_length = 256, null=True )		#
-	#LTR 	= "ltr"
-	#RTL 	= "rtl"
-	#AUTO	= "auto"
-	#TEXT_DIRECTION_CHOICES = (
-	#	(LTR,	"ltr" ),
-	#	(RTL,	"rtl" ),
-	#	(AUTO,	"auto"),
-	#)
-	#textDirection	= models.CharField( max_length = 32, choices=TEXT_DIRECTION_CHOICES, null=True )
+class TBConstants:
 	ASSESSING		= "assessing"
 	BOOKMARKING		= "bookmarking"
 	CLASSIFYING		= "classifying"
@@ -275,7 +261,26 @@ class TextualBody(models.Model):
 		(REPLYING,		"replying"),		# oa:replying
 		(TAGGING,		"tagging"),			# oa:tagging
 	)
-	purpose		= models.CharField( max_length = 256, choices=MOTIVATION_CHOICES, null=True )
+
+tbconstants = TBConstants()
+
+class TextualBody(models.Model):
+	jsonld_id  	= models.CharField( max_length = 4096, null=True )				#"https://b2note.bsc.es/textualbody/" + mongo_uid
+	type		= ListField( models.CharField( max_length = 64 ),  null=True )	# rdf:type; oa:TextualBody
+	value       = models.TextField() 											# oa:text
+	#language 	= ListField( models.CharField( max_length = 256 ), null=True )	# dc:language, [rfc5646]
+	#format		= ListField( models.CharField( max_length = 256 ), null=True )	# dc:format, [rfc6838]
+	#processingLanguage = models.CharField( max_length = 256, null=True )		#
+	#LTR 	= "ltr"
+	#RTL 	= "rtl"
+	#AUTO	= "auto"
+	#TEXT_DIRECTION_CHOICES = (
+	#	(LTR,	"ltr" ),
+	#	(RTL,	"rtl" ),
+	#	(AUTO,	"auto"),
+	#)
+	#textDirection	= models.CharField( max_length = 32, choices=TEXT_DIRECTION_CHOICES, null=True )
+	purpose		= models.CharField( max_length = 256, choices=tbconstants.MOTIVATION_CHOICES, null=True )
 	#creator		= ListField( EmbeddedModelField("Agent"), null=True )   # dcterms:creator
 	#created		= models.DateTimeField( auto_now_add=True, null=True )  # dcterms:created MUST xsd:dateTime SHOULD timezone.
 	#modified 	= models.DateTimeField( null=True )  	# MUST xsd:dateTime with the UTC timezone expressed as "Z".
@@ -289,22 +294,24 @@ class ExternalSpecificResource(models.Model):
 	source		= models.CharField( max_length = 4096 )				# file URL (required)
 
 
+class ExternalResourceConstant:
+	DATASET = "dataset"
+	IMAGE = "image"
+	VIDEO = "video"
+	SOUND = "sound"
+	TEXT = "text"
+	RESOURCE_TYPE_CHOICES = (
+		(DATASET, "Dataset"),  # dctypes:Dataset
+		(IMAGE, "Image"),  # dctypes:StillImage
+		(VIDEO, "Video"),  # dctypes:MovingImage
+		(SOUND, "Audio"),  # dctypes:Sound
+		(TEXT, "Text"),  # dctypes:Text
+	)
+externalResourceConstant = ExternalResourceConstant()
 
 class ExternalResource(models.Model):
 	jsonld_id	= models.CharField( max_length = 4096 )		# can be IRI with fragment component
-	DATASET 	= "dataset"
-	IMAGE   	= "image"
-	VIDEO   	= "video"
-	SOUND   	= "sound"
-	TEXT    	= "text"
-	RESOURCE_TYPE_CHOICES = (
-        (DATASET,   "Dataset"),	# dctypes:Dataset
-        (IMAGE,     "Image"),	# dctypes:StillImage
-        (VIDEO,     "Video"),	# dctypes:MovingImage
-        (SOUND,     "Audio"),	# dctypes:Sound
-        (TEXT,      "Text"),	# dctypes:Text
-    )
-	type	    = ListField( models.CharField( max_length = 64, choices=RESOURCE_TYPE_CHOICES), null=True ) #rdf:class
+	type	    = ListField( models.CharField( max_length = 64, choices=externalResourceConstant.RESOURCE_TYPE_CHOICES), null=True ) #rdf:class
 	#format		= ListField( models.CharField( max_length = 256 ), null=True )  # dc:format, [rfc6838]
 	#language 	= ListField( models.CharField( max_length = 256 ), null=True )  # dc:language, [bcp47]
 	#processingLanguage = models.CharField( max_length = 256, null=True )		#
@@ -326,9 +333,40 @@ class ExternalResource(models.Model):
 	#canonical 		= models.CharField( max_length=4096, null=True )  				# IRI
 	#via 			= ListField( models.CharField( max_length=4096, null=True ) )  	# IRIs
 
+class AnnotationConstants:
+	ASSESSING = "assessing"
+	BOOKMARKING = "bookmarking"
+	CLASSIFYING = "classifying"
+	COMMENTING = "commenting"
+	DESCRIBING = "describing"
+	EDITING = "editing"
+	HIGHLIGHTING = "highlighting"
+	IDENTIFYING = "identifying"
+	LINKING = "linking"
+	MODERATING = "moderating"
+	QUESTIONING = "questioning"
+	REPLYING = "replying"
+	TAGGING = "tagging"
+	MOTIVATION_CHOICES = (
+		(ASSESSING, "assessing"),  # oa:assessing
+		(BOOKMARKING, "bookmarking"),  # oa:bookmarking
+		(CLASSIFYING, "classifying"),  # oa:classifying
+		(COMMENTING, "commenting"),  # oa:commenting
+		(DESCRIBING, "describing"),  # oa:describing
+		(EDITING, "editing"),  # oa:editing
+		(HIGHLIGHTING, "highlighting"),  # oa:highlighting
+		(IDENTIFYING, "identifying"),  # oa:identifying
+		(LINKING, "linking"),  # oa:linking
+		(MODERATING, "moderating"),  # oa:moderating
+		(QUESTIONING, "questioning"),  # oa:questioning
+		(REPLYING, "replying"),  # oa:replying
+		(TAGGING, "tagging"),  # oa:tagging
+	)
+
+annotationConstants = AnnotationConstants();
 
 class Annotation(models.Model):
-	jsonld_context = ListField( models.CharField( max_length = 4096 ) )	# ["http://www.w3.org/ns/anno.jsonld"]
+	jsonld_context = ListField( models.CharField( max_length = 4096 ), null=True )	# ["http://www.w3.org/ns/anno.jsonld"]
 																		# 20160706, abremaud@esciencefactory.com
 																		# Should allow list of which link string would be one item, however needs
 																		# to be string when alone. How compatibility of Django data model
@@ -348,35 +386,7 @@ class Annotation(models.Model):
 	#rights		= ListField( models.CharField( max_length = 4096 ), null=True )	# MAY be then MUST be an IRI
 	#canonical	= models.CharField( max_length = 4096, null=True )				# IRI
 	#via			= ListField( models.CharField( max_length = 4096, null=True ) )	# IRIs
-	ASSESSING		= "assessing"
-	BOOKMARKING     = "bookmarking"
-	CLASSIFYING     = "classifying"
-	COMMENTING      = "commenting"
-	DESCRIBING      = "describing"
-	EDITING         = "editing"
-	HIGHLIGHTING    = "highlighting"
-	IDENTIFYING     = "identifying"
-	LINKING         = "linking"
-	MODERATING      = "moderating"
-	QUESTIONING     = "questioning"
-	REPLYING        = "replying"
-	TAGGING         = "tagging"
-	MOTIVATION_CHOICES = (
-		(ASSESSING, 	"assessing"),  		# oa:assessing
-        (BOOKMARKING,   "bookmarking"),		# oa:bookmarking
-        (CLASSIFYING,   "classifying"),		# oa:classifying
-        (COMMENTING,    "commenting"),		# oa:commenting
-        (DESCRIBING,    "describing"),		# oa:describing
-        (EDITING,       "editing"),			# oa:editing
-        (HIGHLIGHTING,  "highlighting"),	# oa:highlighting
-        (IDENTIFYING,   "identifying"),		# oa:identifying
-        (LINKING,       "linking"),			# oa:linking
-        (MODERATING,    "moderating"),		# oa:moderating
-        (QUESTIONING,   "questioning"),		# oa:questioning
-        (REPLYING,      "replying"),		# oa:replying
-        (TAGGING,       "tagging"),			# oa:tagging
-    )
-	motivation	= ListField( models.CharField( max_length = 256, choices=MOTIVATION_CHOICES ), null=True )	# oa:motivatedBy = [oa:Motivation]
+	motivation	= ListField( models.CharField( max_length = 256, choices=annotationConstants.MOTIVATION_CHOICES ), null=True )	# oa:motivatedBy = [oa:Motivation]
 	#stylesheet	= EmbeddedModelField( "CssStyleSheet", null=True ) #oa:styledBy
 #TODO check objects in djongo - if raw query possible
 #	objects     = MongoDBManager()	# http://stackoverflow.com/questions/23546480/no-raw-query-method-in-my-django-object

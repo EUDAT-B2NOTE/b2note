@@ -217,27 +217,8 @@ class B2noteappTest(TestCase):
             Creates a new entry in the DB of Annotations
         """
 
-        return Annotation.objects.create(jsonld_id=jsonld_id, type=type)
+        return Annotation.objects.create(jsonld_id=jsonld_id, type=type,jsonld_context=[],creator=[],generator=[],motivation=[],body=[],target=[])
 
-    #test creating annotation, testing whether it contains specified fields, creating another annotation will incriese number of annotations
-    def test_instantialtests1(self):
-        # objects can be retrieved
-        self.assertTrue(Annotation.objects != None)
-        self.assertTrue(Annotation.objects.count()>=0)
-        # body and target are defined
-        self.assertTrue(Annotation.body != None)
-        self.assertTrue(Annotation.target != None)
-        a1 = Annotation.objects.create(type=["Annotation"],body=["free text"],target=["http://localhost"],jsonld_context=["jsonld"],creator=[],generator=[],motivation=[])
-        self.assertEqual(len(a1.body),1)
-        self.assertEqual(a1.body[0],"free text")
-        self.assertEquals(len(a1.target),1)
-        self.assertEquals(a1.target[0],"http://localhost")
-        a2 = Annotation.objects.all()
-        self.assertEqual(len(a2),1)
-        a3 = Annotation.objects.create(type=["Annotation"], body=["free text 2"], target=["http://localhost"],
-                                       jsonld_context=["jsonld"], creator=[], generator=[], motivation=[])
-        a2 = Annotation.objects.all()
-        self.assertEqual(len(a2),2)
 
     def test_create_annotation_db(self):
         """
@@ -259,7 +240,8 @@ class B2noteappTest(TestCase):
         before = Annotation.objects.filter().count()
         self.assertEqual(before, 0)
         a = CreateAnnotation("test_target")
-        self.assertTrue(type(a) is str and len(a)>0)
+
+        #self.assertTrue(type(a) is str and len(a)>0)
         # DB with 1 annotations created
         after = Annotation.objects.filter().count()
         self.assertEqual(after, 1)
@@ -404,7 +386,8 @@ class B2noteappTest(TestCase):
             Tests the view function create_annotation
         """
         #TODO fix reversematch error - updated in django >1.10
-        url = reverse("b2note_app_views.create_annotation")
+        from b2note_app import views as b2note_app_views
+        url = reverse(b2note_app_views.create_annotation)
         json_dict = {}
         json_dict['pid_tofeed'] = 'http://hdl.handle.net/11304/test'
         json_dict['subject_tofeed'] = 'https://b2share.eudat.eu/record/30'
@@ -498,4 +481,33 @@ class B2noteappTest(TestCase):
                     path = settings.TEMPLATE_PATH + "/" + d + "/" + f
                     self.assertTrue(check_internal_urls(path, d))
 
+### Tomas tests - proper unit test covering basic structures - limit dependencies
+    #test creating annotation, testing whether it contains specified fields, creating another annotation will incriese number of annotations
+    def test_a1_create_annotation_check_body_and_target(self):
+        # objects can be retrieved
+        self.assertTrue(Annotation.objects != None)
+        self.assertTrue(Annotation.objects.count()>=0)
+        # body and target are defined
+        self.assertTrue(Annotation.body != None)
+        self.assertTrue(Annotation.target != None)
+        a1 = Annotation.objects.create(type=["Annotation"],body=["free text"],target=["http://localhost"],jsonld_context=["jsonld"],creator=[],generator=[],motivation=[])
+        self.assertEqual(len(a1.body),1)
+        self.assertEqual(a1.body[0],"free text")
+        self.assertEquals(len(a1.target),1)
+        self.assertEquals(a1.target[0],"http://localhost")
+
+    def test_a2_create_2_annotation_check_number_of_all_increased(self):
+        # objects can be retrieved
+        self.assertTrue(Annotation.objects != None)
+        self.assertTrue(Annotation.objects.count()>=0)
+        # body and target are defined
+        self.assertTrue(Annotation.body != None)
+        self.assertTrue(Annotation.target != None)
+        a1 = Annotation.objects.create(type=["Annotation"],body=["free text"],target=["http://localhost"],jsonld_context=["jsonld"],creator=[],generator=[],motivation=[])
+        a2 = Annotation.objects.all()
+        self.assertEqual(len(a2),1)
+        a3 = Annotation.objects.create(type=["Annotation"], body=["free text 2"], target=["http://localhost"],
+                                       jsonld_context=["jsonld"], creator=[], generator=[], motivation=[])
+        a4 = Annotation.objects.all()
+        self.assertEqual(len(a4),2)
 
