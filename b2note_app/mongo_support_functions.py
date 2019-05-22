@@ -1199,14 +1199,15 @@ def CheckDuplicateAnnotation( target_url=None, target_pid=None, annotation_body=
                             isinstance(annotation_body['body']['jsonld_id'], list) and \
                                     len(annotation_body['body']['jsonld_id']) > 0:
                         if target_pid and target_url:
-                            A = Annotation.objects.raw_query(
-                                {'$and':[
-                                    {'target.source': target_url},
-                                    {'target.jsonld_id': target_pid}
-                                    ],
-                                 'body.items.source':{'$in':annotation_body['body']['jsonld_id']}
-                                 }
-                            )
+                            A = Annotation.objects.filter(target=[{'source':target_url,'jsonld_id':target_pid}],body={'items.source.$in':annotation_body['body']['jsonld_id']})
+                            # A = Annotation.objects.raw_query(
+                            #     {'$and':[
+                            #         {'target.source': target_url},
+                            #         {'target.jsonld_id': target_pid}
+                            #         ],
+                            #      'body.items.source':{'$in':annotation_body['body']['jsonld_id']}
+                            #      }
+                            # )
                         elif target_url:
                             A = Annotation.objects.raw_query(
                                 {'target.source': target_url,

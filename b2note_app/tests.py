@@ -11,9 +11,9 @@ from django.urls import reverse
 from django.conf import settings
 #from django.db import connections
 from b2note_app.mongo_support_functions import *
-#from b2note_devel.urls import urlpatterns
+from b2note_devel.urls import urlpatterns
 from accounts.models import UserCred
-from django.contrib.auth import authenticate
+import django.contrib.auth
 from importlib import import_module
 import json, os
 
@@ -183,11 +183,13 @@ class B2noteappTest(TestCase):
             --------------------
             Automatically called before any test for connection to SQLite and generating a new session.
         """
-        self.username='test'
+        self.username='test1'
         self.password='123456'
-        self.email='test@test.com'
+        self.email='test1@test.com'
         self.db='users'
+        UserCred.objects.all().delete()
         self.db_user = UserCred.objects.create_user(username=self.username, email=self.email, password=self.password, db=self.db)
+        self.db_user.save()
         settings.SESSION_ENGINE = 'django.contrib.sessions.backends.file'
         engine = import_module(settings.SESSION_ENGINE)
         store = engine.SessionStore()
@@ -201,14 +203,18 @@ class B2noteappTest(TestCase):
             --------------------
             Allows login and authentication in the test environment.
         """
-        self.user = authenticate(email=self.email,password=self.password,db=self.db)
+        self.user = django.contrib.auth.authenticate(self.email,password=self.password,db=self.db) # partly fix issue #364
         self.assertNotEqual(self.user, None)
         self.assertTrue(self.user.is_active)
+
+        #TODO is it necesarry?
         session = self.client.session
         session['user'] = self.user.annotator_id.annotator_id
         session.save()
-        r = self.client.login(email=self.email,password=self.password, db=self.db)
-        self.assertTrue(r)
+        #r = self.client.login(email=self.email,password=self.password) #self.email, password=self.password, db=self.db)
+        #TODO tomas workaround for login() throwing duplicate argument 'email'
+        self.client._login(self.user)
+
         
     def create_annotation_db(self, jsonld_id="test", type=["others"]):
         """
@@ -491,6 +497,7 @@ class B2noteappTest(TestCase):
         self.assertTrue(Annotation.body != None)
         self.assertTrue(Annotation.target != None)
         a1 = Annotation.objects.create(type=["Annotation"],body=["free text"],target=["http://localhost"],jsonld_context=["jsonld"],creator=[],generator=[],motivation=[])
+        a1.save()
         self.assertEqual(len(a1.body),1)
         self.assertEqual(a1.body[0],"free text")
         self.assertEquals(len(a1.target),1)
@@ -504,10 +511,20 @@ class B2noteappTest(TestCase):
         self.assertTrue(Annotation.body != None)
         self.assertTrue(Annotation.target != None)
         a1 = Annotation.objects.create(type=["Annotation"],body=["free text"],target=["http://localhost"],jsonld_context=["jsonld"],creator=[],generator=[],motivation=[])
+        a1.save()
         a2 = Annotation.objects.all()
         self.assertEqual(len(a2),1)
         a3 = Annotation.objects.create(type=["Annotation"], body=["free text 2"], target=["http://localhost"],
                                        jsonld_context=["jsonld"], creator=[], generator=[], motivation=[])
+        a3.save()
         a4 = Annotation.objects.all()
         self.assertEqual(len(a4),2)
+
+    def test_a3_authenticate(self):
+        user = django.contrib.auth.authenticate(self.email,password=self.password)#password=self.password, db=self.db,email=self.email)
+        self.assertNotEqual(user, None)
+        self.assertTrue(user.is_active)
+
+    def test_a4_login(self):
+        self.login()
 

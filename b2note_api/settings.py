@@ -136,6 +136,7 @@ annotations = {
                     'target.type',
                     'target.jsonld_id',
                     'target.source',
+                    'target.id',
                     'body.type',
                     'body.value',
                     'body.purpose',
