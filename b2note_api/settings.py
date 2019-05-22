@@ -137,6 +137,7 @@ annotations = {
                     'target.type',
                     'target.jsonld_id',
                     'target.source',
+                    'target.id',
                     'body.type',
                     'body.value',
                     'body.purpose',
@@ -259,6 +260,7 @@ mongo_settings = {
         #'API_VERSION' : '1',
 
         'ALLOWED_FILTERS' : [],
+        'MONGO_QUERY_BLACKLIST': ['$where'],
 
         'XML' : False,
 }
