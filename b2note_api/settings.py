@@ -257,7 +257,7 @@ mongo_settings = {
         'INFO'  : True,
 
         #'API_VERSION' : '1',
-
+        'MONGO_QUERY_BLACKLIST': ['$where'],
         'ALLOWED_FILTERS' : [],
 
         'XML' : False,
