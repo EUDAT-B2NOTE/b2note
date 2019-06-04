@@ -21,9 +21,10 @@ Development | [![Build Status](https://travis-ci.org/EUDAT-B2NOTE/b2note.svg?bra
 
  Name  |  Affiliation | Contact
 -------|-------|-------
-Dr. Yann Le Franc   | e-Science Data Factory | ylefranc@esciencefactory.com
-Dr. Antoine Brémaud | e-Science Data Factory | [abremaud@esciencefactory.com](mailto:abremaud@esciencefactory.com)
-Mr. Pablo Ródenas Barquero | Barcelona Supercomputing Center | pablo.rodenas@bsc.es
+Dr. Yann Le Franc   | e-Science Data Factory | ylefranc at esciencefactory.com
+Dr. Antoine Brémaud | e-Science Data Factory | abremaud at esciencefactory.com
+Mr. Pablo Ródenas Barquero | Barcelona Supercomputing Center | pablo.rodenas at bsc.es
+Dr. Tomas Kulhanek | e-Science Data Factory | tkulhanek at esciencefactory.com
 
 
 ##Instructions for contributing

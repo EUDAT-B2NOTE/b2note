@@ -1,3 +1,4 @@
+# 04/06/2019 TODO refactor
 from b2note_api import app as application
 import os
 

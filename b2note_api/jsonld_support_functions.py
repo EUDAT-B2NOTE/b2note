@@ -1,3 +1,4 @@
+# 04/06/2019 TODO refactor
 import os, re, datetime, collections
 import requests
 import logging
