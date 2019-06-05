@@ -11,16 +11,24 @@ addons:
     packages:
     - mongodb-org-server
     - mongodb-org-shell
+    - node-js
 # command to install dependencies
 install:
   - pip install -r b2note_api/requirements.txt
+  - npm install aurelia-cli
 # command to run tests
 before_script:
   - sleep 15
   - echo preparing
   - mongo ${MONGODB_NAME} --eval 'db.createUser({"user":"'${MONGODB_USR}'","pwd":"'${MONGODB_PWD}'", roles:["readWrite"]});'
+  - cd b2note_app
+  - npm install
+  - cd ..
 script:
   - echo testing
   - cd b2note_api
   - python -m unittest
+  - cd ..
+  - cd b2note_app
+  - au test
 

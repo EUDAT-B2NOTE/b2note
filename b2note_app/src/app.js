@@ -3,6 +3,10 @@ import 'font-awesome/css/font-awesome.css';
 
 export class App {
 
+  constructor() {
+
+  }
+
  configureRouter(config, router) {
     config.title = 'B2Note';
     config.map([

@@ -18,7 +18,7 @@ const title = 'Aurelia Navigation Skeleton';
 const outDir = path.resolve(__dirname, project.platform.output);
 const srcDir = path.resolve(__dirname, 'src');
 const nodeModulesDir = path.resolve(__dirname, 'node_modules');
-const baseUrl = '';
+const baseUrl = '/';
 
 const cssRules = [
   { loader: 'css-loader' },
@@ -54,7 +54,7 @@ module.exports = ({ production, server, extractCss, coverage, analyze, karma } =
       hidePathInfo: true, // prevents the path from being used in the filename when using maxSize
       chunks: "initial",
       // sizes are compared against source before minification
-      maxSize: 2000000, // splits chunks if bigger than 200k, adjust as required (maxSize added in webpack v4.15)
+      maxSize: 200000, // splits chunks if bigger than 200k, adjust as required (maxSize added in webpack v4.15)
       cacheGroups: {
         default: false, // Disable the built-in groups default & vendors (vendors is redefined below)
         // You can insert additional cacheGroup entries here if you want to split out specific modules
@@ -99,6 +99,7 @@ module.exports = ({ production, server, extractCss, coverage, analyze, karma } =
         }
       }
     }
+    
   },*/
   performance: { hints: false },
   devServer: {
@@ -144,18 +145,12 @@ module.exports = ({ production, server, extractCss, coverage, analyze, karma } =
     ...when(!karma, new DuplicatePackageCheckerPlugin()),
     new AureliaPlugin(),
     new ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
     }),
     new ModuleDependenciesPlugin({
       'aurelia-testing': ['./compile-spy', './view-spy']
     }),
     new HtmlWebpackPlugin({
       template: 'index.ejs',
-      minify: production ? {
-        removeComments: true,
-        collapseWhitespace: true
-      } : undefined,
       metadata: {
         // available in index.ejs //
         title, server, baseUrl
