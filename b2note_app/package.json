@@ -11,6 +11,7 @@
     "au-cli": "0.0.5",
     "aurelia-animator-css": "^1.0.4",
     "aurelia-bootstrapper": "^2.3.2",
+    "aurelia-plugins-tabs": "^2.6.2",
     "font-awesome": "^4.7.0"
   },
   "devDependencies": {
