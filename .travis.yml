@@ -17,7 +17,9 @@ install:
 # command to run tests
 before_script:
   - sleep 15
-  - mongo $MONGODB_NAME --eval 'db.createUser({"user":"$MONGODB_USR","pwd":"$MONGODB_PWD", roles:["readWrite"]});'
+  - echo dbname: $MONGODB_NAME
+  - echo dbuser: ${MONGODB_USR}
+  - mongo ${MONGODB_NAME} --eval 'db.createUser({"user":"${MONGODB_USR}","pwd":"${MONGODB_PWD}", roles:["readWrite"]});'
 script:
   - cd b2note_api
   - python -m unittest
