@@ -19,5 +19,6 @@ before_script:
   - sleep 15
   - mongo test_database --eval 'db.createUser({"user":"tester","pwd":"abc123", roles:["readWrite"]});'
 script:
-  - cd b2note_api;python -m unittest;cd ..
+  - cd b2note_api
+  - python -m unittest
 
