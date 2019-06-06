@@ -16,9 +16,8 @@ describe('Stage Home Component', () => {
 
   it('should render Home', done => {
     component.create(bootstrap).then(() => {
-        const nameElement = document.getElementsByTagName('h1')[0];
-        console.log('document:',document.getElementsByTagName('body')[0].innerHTML);
-        expect(nameElement.innerHTML).toBe('Home')
+        const nameElement = document.getElementsByTagName('a')[0];
+        expect(nameElement.innerHTML).toBe('Semantic tag');
         done();
     }).catch(e => {
       fail(e);
