@@ -10,19 +10,19 @@
     <br/>
     <div id="tabcontent">
       <div id="tab1" show.bind="active==='tab1'">
-        <input placeholder="Type-in to select a tag."/>
+        <input placeholder="Type-in to select a tag." value.bind="annotationsemantic"/>
         <button class="w3-button" click.delegate="createSemantic()">Create</button>
 
       </div>
       <div show.bind="active==='tab2'">
-        <input placeholder="Type-in a keyword."/>
+        <input placeholder="Type-in a keyword." value.bind="annotationkeyword"/>
         <button class="w3-button" click.delegate="createKeyword()">Create</button>
       </div>
 
       <div show.bind="active==='tab3'">
-        <textarea placeholder="Type your comment.">
+        <textarea placeholder="Type your comment." value.bind="annotationcomment">
         </textarea>
-        <button class="w3-button" click.delegate="createKeyword()">Create</button>
+        <button class="w3-button" click.delegate="createComment()">Create</button>
       </div>
 
     </div>
