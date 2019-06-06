@@ -1,0 +1,14 @@
+<template>
+    <nav class="w3-padding-0 w3-margin-0 w3-dark-blue w3-bar">
+
+<img alt="Brand" src="images/B2Note_Logo_201611_safe.png" style="width:300px;">
+        <ul class="w3-margin-0 w3-padding-0 ">
+          <!-- list of icons-->
+          <li repeat.for="row of router.navigation" class="w3-bar-item w3-padding-0 w3-navitem ${row.isActive ? 'w3-blue' : ''}" >
+            <!-- <b> shows username in it-->
+            <a href.bind="row.href" class="w3-padding" style="text-decoration: none;"><i class="${row.settings.icon}"></i><b if.bind="row.href=='#/account'" class="w3-tiny"> ${username}</b></a>
+          </li>
+        </ul>
+
+    </nav>
+  </template>

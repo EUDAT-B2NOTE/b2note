@@ -1,10 +1,14 @@
 import {PLATFORM} from 'aurelia-pal';
 import 'font-awesome/css/font-awesome.css';
+import {AnnotationApi} from './components/annotationapi';
+import {inject} from 'aurelia-framework';
+
+@inject(AnnotationApi)
 
 export class App {
 
-  constructor() {
-
+  constructor(api) {
+    this.api = api;
   }
 
  configureRouter(config, router) {
@@ -16,7 +20,7 @@ export class App {
         moduleId: PLATFORM.moduleName('./pages/home'),
         nav: true,
         title: 'Home',
-        settings: 'fa fa-home'
+        settings: { icon: 'fa fa-home'}
       },
       {
         route: 'account',
@@ -24,7 +28,7 @@ export class App {
         moduleId: PLATFORM.moduleName('./pages/account'),
         nav: true,
         title: 'Account Settings',
-        settings: 'fa fa-user'
+        settings: { icon: 'fa fa-user' }
       },
       {
         route: 'search',
@@ -32,7 +36,7 @@ export class App {
         moduleId: PLATFORM.moduleName('./pages/search'),
         nav: true,
         title: 'Search',
-        settings: 'fa fa-search'
+        settings: { icon: 'fa fa-search'}
       },
       {
         route: 'download',
@@ -40,7 +44,7 @@ export class App {
         moduleId: PLATFORM.moduleName('./pages/download'),
         nav: true,
         title: 'Download',
-        settings: 'fa fa-download'
+        settings: { icon: 'fa fa-download'}
       },
       {
         route: 'help',
@@ -48,7 +52,7 @@ export class App {
         moduleId: PLATFORM.moduleName('./pages/help'),
         nav: true,
         title: 'Help',
-        settings: 'fa fa-question-circle'
+        settings: { icon: 'fa fa-question-circle'}
       },
       {
         route: 'logout',
@@ -56,10 +60,9 @@ export class App {
         moduleId: PLATFORM.moduleName('./pages/logout'),
         nav: true,
         title: 'Logout',
-        settings: 'fa fa-sign-out'
+        settings: { icon: 'fa fa-sign-out'}
       }
     ]);
-
     this.router = router;
   }
 }

@@ -11,7 +11,9 @@
     "au-cli": "0.0.5",
     "aurelia-animator-css": "^1.0.4",
     "aurelia-bootstrapper": "^2.3.2",
-    "font-awesome": "^4.7.0"
+    "aurelia-fetch-client": "^1.8.2",
+    "font-awesome": "^4.7.0",
+    "isomorphic-fetch": "^2.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",

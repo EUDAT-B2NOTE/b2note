@@ -173,3 +173,8 @@ div.au-stagger {
     opacity: 1;
   }
 }
+
+#link_to_top {
+    font-size: 10px;
+    opacity: 0.3;
+}

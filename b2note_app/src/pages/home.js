@@ -1,5 +1,9 @@
+import {AnnotationApi} from '../components/annotationapi';
+import {inject} from 'aurelia-framework';
+
+@inject(AnnotationApi)
 export class Home {
-constructor(){
+constructor(api){
   this.tabs = [
       { id: 'tab1', label: 'Semantic annotation'},
       { id: 'tab2', label: 'Free-text keywords'},
@@ -9,6 +13,7 @@ constructor(){
   this.annotationsemantic='';
   this.annotationkeyword='';
   this.annotationcomment='';
+  this.api=api;
 }
 
 switchtab(tabid){
