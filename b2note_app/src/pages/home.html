@@ -1,11 +1,32 @@
 <template>
-<aup-tabs class="nav-tabs" tabs.bind="myTabs" translate="true"></aup-tabs>
-<aup-tab-content>
-  <aup-tab-pane tab="tab1">
-    <a>Semantic tag</a>
-    <p>Lorem ipsum...</p>
-  </aup-tab-pane>
-  <aup-tab-pane tab="tab2"><a>Free text keyword</a></aup-tab-pane>
-  <aup-tab-pane tab="tab3"><a>Comment</a></aup-tab-pane>
-</aup-tab-content>
+  <require from="../components/annotations"></require>
+  <div class="w3-container">
+    <div class="w3-bar w3-padding-top">
+      <a class="w3-bar-item w3-hover-blue"
+         class.bind="(active==tab.id) ? 'w3-white w3-border-top w3-border-left w3-border-right':'w3-border-bottom w3-light-gray'  "
+         style="width:9em; white-space: normal;" repeat.for="tab of tabs" click.delegate="switchtab(tab.id)">${tab.label}
+        <span if.bind="tab.id=='tab3'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></a>
+    </div>
+    <br/>
+    <div id="tabcontent">
+      <div id="tab1" show.bind="active==='tab1'">
+        <input placeholder="Type-in to select a tag."/>
+        <button class="w3-button" click.delegate="createSemantic()">Create</button>
+
+      </div>
+      <div show.bind="active==='tab2'">
+        <input placeholder="Type-in a keyword."/>
+        <button class="w3-button" click.delegate="createKeyword()">Create</button>
+      </div>
+
+      <div show.bind="active==='tab3'">
+        <textarea placeholder="Type your comment.">
+        </textarea>
+        <button class="w3-button" click.delegate="createKeyword()">Create</button>
+      </div>
+
+    </div>
+  </div>
+  <annotations></annotations>
+
 </template>

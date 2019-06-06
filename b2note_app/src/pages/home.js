@@ -1,9 +1,15 @@
 export class Home {
 constructor(){
-  this.myTabs = [
-      { id: 'tab1', label: 'tabs.tab1', active: true },
-      { id: 'tab2', label: 'tabs.tab2', disabled: true, tooltip: 'An explanation why it\'s disabled!' },
-      { id: 'tab3', label: 'tabs.tab3' }
+  this.tabs = [
+      { id: 'tab1', label: 'Semantic annotation'},
+      { id: 'tab2', label: 'Free-text keywords'},
+      { id: 'tab3', label: 'Comment           ' }
     ];
+  this.active = 'tab1';
+}
+
+switchtab(tabid){
+  this.active = tabid;
+  return true;
 }
 }

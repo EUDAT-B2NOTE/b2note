@@ -8,8 +8,6 @@ export function configure(aurelia) {
     .standardConfiguration()
     .feature(PLATFORM.moduleName('resources/index'));
 
-  aurelia.use.plugin(PLATFORM.moduleName('aurelia-plugins-tabs'));
-
   aurelia.use.developmentLogging(environment.debug ? 'debug' : 'warn');
 
 
