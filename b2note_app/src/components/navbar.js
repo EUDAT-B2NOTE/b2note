@@ -1,5 +1,5 @@
 import {EventAggregator} from 'aurelia-event-aggregator';
-import {Userinfo} from './components/messages'
+import {Userinfo} from './messages'
 import {bindable,inject} from 'aurelia-framework';
 
 @inject(EventAggregator)

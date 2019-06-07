@@ -1,23 +1,24 @@
 import {PLATFORM} from 'aurelia-pal';
 import 'font-awesome/css/font-awesome.css';
-import {AnnotationApi} from './components/annotationapi';
+import {AnnotationApi} from './annotationapi';
 import {inject} from 'aurelia-framework';
 
 @inject(AnnotationApi)
 
-export class App {
+export class B2note {
 
   constructor(api) {
     this.api = api;
   }
 
  configureRouter(config, router) {
+    console.log('configurerouter()',config,router);
     config.title = 'B2Note';
     config.map([
       {
         route: ['', 'home'],
         name: 'home',
-        moduleId: PLATFORM.moduleName('./pages/home'),
+        moduleId: PLATFORM.moduleName('../pages/home'),
         nav: true,
         title: 'Home',
         settings: { icon: 'fa fa-home'}
@@ -25,7 +26,7 @@ export class App {
       {
         route: 'account',
         name: 'account',
-        moduleId: PLATFORM.moduleName('./pages/account'),
+        moduleId: PLATFORM.moduleName('../pages/account'),
         nav: true,
         title: 'Account Settings',
         settings: { icon: 'fa fa-user' }
@@ -33,7 +34,7 @@ export class App {
       {
         route: 'search',
         name: 'search',
-        moduleId: PLATFORM.moduleName('./pages/search'),
+        moduleId: PLATFORM.moduleName('../pages/search'),
         nav: true,
         title: 'Search',
         settings: { icon: 'fa fa-search'}
@@ -41,7 +42,7 @@ export class App {
       {
         route: 'search2',
         name: 'search2',
-        moduleId: PLATFORM.moduleName('./pages/search2'),
+        moduleId: PLATFORM.moduleName('../pages/search2'),
         nav: true,
         title: 'Search',
         settings: { icon: 'fa fa-search-plus'}
@@ -49,7 +50,7 @@ export class App {
       {
         route: 'download',
         name: 'download',
-        moduleId: PLATFORM.moduleName('./pages/download'),
+        moduleId: PLATFORM.moduleName('../pages/download'),
         nav: true,
         title: 'Download',
         settings: { icon: 'fa fa-download'}
@@ -57,7 +58,7 @@ export class App {
       {
         route: 'help',
         name: 'help',
-        moduleId: PLATFORM.moduleName('./pages/help'),
+        moduleId: PLATFORM.moduleName('../pages/help'),
         nav: true,
         title: 'Help',
         settings: { icon: 'fa fa-question-circle'}
@@ -65,7 +66,7 @@ export class App {
       {
         route: 'logout',
         name: 'logout',
-        moduleId: PLATFORM.moduleName('./pages/logout'),
+        moduleId: PLATFORM.moduleName('../pages/logout'),
         nav: true,
         title: 'Logout',
         settings: { icon: 'fa fa-sign-out'}
