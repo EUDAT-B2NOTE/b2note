@@ -16,7 +16,7 @@ describe('Stage Search Component', () => {
 
   it('should render Search', done => {
     component.create(bootstrap).then(() => {
-        const nameElement = document.getElementsByTagName('h1')[0];
+        const nameElement = document.getElementsByTagName('h3')[0];
         expect(nameElement.innerHTML).toBe('Search')
         done();
     }).catch(e => {

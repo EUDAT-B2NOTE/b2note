@@ -39,6 +39,14 @@ export class App {
         settings: { icon: 'fa fa-search'}
       },
       {
+        route: 'search2',
+        name: 'search2',
+        moduleId: PLATFORM.moduleName('./pages/search2'),
+        nav: true,
+        title: 'Search',
+        settings: { icon: 'fa fa-search-plus'}
+      },
+      {
         route: 'download',
         name: 'download',
         moduleId: PLATFORM.moduleName('./pages/download'),
