@@ -34,7 +34,7 @@
 
       <button show.bind="child" class="w3-button" click.delegate="deleteChild()" title="Remove search parameters bellow"><i class="fa fa-minus"></i></button>
   <!-- TODO fix bug with logic button value - in child not in parent - modified value -->
-      <select show.bind="index>0" class="w3-button" value.bind="logic">
+      <select show.bind="child" class="w3-button" value.bind="logic">
         <option value="AND">AND</option>
         <option value="OR">OR</option>
         <option value="AND NOT">AND NOT</option>
