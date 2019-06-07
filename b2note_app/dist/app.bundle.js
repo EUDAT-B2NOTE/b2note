@@ -5550,7 +5550,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("module.exports = \"<template>\\n<h1>Logout</h1>\\n</template>\\n\";//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicGFnZXMvbG9nb3V0Lmh0bWwuanMiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vLi9zcmMvcGFnZXMvbG9nb3V0Lmh0bWw/NmZkMCJdLCJzb3VyY2VzQ29udGVudCI6WyJtb2R1bGUuZXhwb3J0cyA9IFwiPHRlbXBsYXRlPlxcbjxoMT5Mb2dvdXQ8L2gxPlxcbjwvdGVtcGxhdGU+XFxuXCI7Il0sIm1hcHBpbmdzIjoiQUFBQSIsInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///pages/logout.html\n");
+eval("module.exports = \"<template>\\n  <div class=\\\"w3-container\\\">\\n<h3>Logout</h3>\\n    <button class=\\\"w3-button\\\">click to logout</button>\\n    <p>This will close this widget.</p>\\n    </div>\\n</template>\\n\";//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicGFnZXMvbG9nb3V0Lmh0bWwuanMiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vLi9zcmMvcGFnZXMvbG9nb3V0Lmh0bWw/NmZkMCJdLCJzb3VyY2VzQ29udGVudCI6WyJtb2R1bGUuZXhwb3J0cyA9IFwiPHRlbXBsYXRlPlxcbiAgPGRpdiBjbGFzcz1cXFwidzMtY29udGFpbmVyXFxcIj5cXG48aDM+TG9nb3V0PC9oMz5cXG4gICAgPGJ1dHRvbiBjbGFzcz1cXFwidzMtYnV0dG9uXFxcIj5jbGljayB0byBsb2dvdXQ8L2J1dHRvbj5cXG4gICAgPHA+VGhpcyB3aWxsIGNsb3NlIHRoaXMgd2lkZ2V0LjwvcD5cXG4gICAgPC9kaXY+XFxuPC90ZW1wbGF0ZT5cXG5cIjsiXSwibWFwcGluZ3MiOiJBQUFBIiwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///pages/logout.html\n");
 
 /***/ }),
 
