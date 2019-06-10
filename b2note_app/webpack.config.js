@@ -143,7 +143,9 @@ module.exports = ({ production, server, extractCss, coverage, analyze, karma } =
   },
   plugins: [
     ...when(!karma, new DuplicatePackageCheckerPlugin()),
-    new AureliaPlugin(),
+    new AureliaPlugin({
+      dist: 'es2015'
+    }),
     new ProvidePlugin({
     }),
     new ModuleDependenciesPlugin({
