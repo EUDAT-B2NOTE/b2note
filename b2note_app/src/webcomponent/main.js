@@ -1,6 +1,6 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import environment from './environment';
+import environment from '../environment';
 import {PLATFORM} from 'aurelia-pal';
 
 export function configure(aurelia) {
@@ -15,7 +15,5 @@ export function configure(aurelia) {
     aurelia.use.plugin(PLATFORM.moduleName('aurelia-testing'));
   }
 
-  aurelia.start().then(() => aurelia.setRoot(PLATFORM.moduleName('mainapps/singleapp')));
-  //to include other main modules - reference them bellow
-  PLATFORM.moduleName('webcomponent/main');
+  aurelia.start().then(() => aurelia.setRoot(PLATFORM.moduleName('webcomponent/b2note')));
 }
