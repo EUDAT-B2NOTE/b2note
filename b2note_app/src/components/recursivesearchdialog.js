@@ -2,7 +2,7 @@ import {AnnotationApi} from '../components/annotationapi';
 import {inject} from 'aurelia-framework';
 
 @inject(AnnotationApi)
-export class Atypedialog {
+export class Recursivesearchdialog {
   constructor(api) {
     this.tabs = [
       {id: 'semantic', label: 'Semantic annotation'},

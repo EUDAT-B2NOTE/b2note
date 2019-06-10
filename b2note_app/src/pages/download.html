@@ -1,3 +1,21 @@
 <template>
-<h1>Download</h1>
+  <div class="w3-container">
+<h3>Download</h3>
+  <button class="w3-button" click.delegate="downloadAllMyAnnotations()">All my<br/>annotations</button>
+  <button class="w3-button" click.delegate="downloadAnnotationsAboutFile()">All annotations <br/>about this file</button>
+    <div class="w3-panel" show.bind="showcontent">
+      <table>
+      <tr><td>
+        ${contenttype}
+      </td><td>
+        <a href.bind="jsonurl" class="w3-button" download="annotations.json">Download this<br/>JSON-LD</a>
+      </td><td>
+      <a href.bind="rdfurl" class="w3-button" download="annotations.rdf">Download as <br/>RDF/XML</a>
+        </td></tr>
+    </table>
+      <div class="w3-card-2" style="overflow:auto">
+        <pre>${content}</pre>
+      </div>
+    </div>
+  </div>
 </template>
