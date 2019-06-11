@@ -3,6 +3,7 @@
   <tr><th>logic</th><th>type</th><th class="w3-tiny">search query</th></tr>
   <tr repeat.for="item of query"><td>${item.logic}</td><td>${item.type}</td><td>${item.value}</td></tr>
 </table>
+     <require from="../w3.css"></require>
      <button show.bind="child" class="w3-button" click.delegate="deleteChild()" title="Remove search parameters bellow"><i class="fa fa-minus"></i></button>
      <select show.bind="child" class="w3-button" value.bind="logic">
         <option value="AND">AND</option>
@@ -43,7 +44,5 @@
 
       <button class="w3-button" click.delegate="createChild()" title="Add Search Parameter"><i class="fa fa-plus"></i></button>
       <button class="w3-button" click.delegate="search()">Search</button>
-
-
 
 </template>

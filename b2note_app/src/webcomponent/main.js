@@ -17,5 +17,5 @@ export function configure(aurelia) {
 
   aurelia.start().then(() => aurelia.setRoot(PLATFORM.moduleName('webcomponent/b2note')));
   //to include other main modules - reference them bellow
-  PLATFORM.moduleName('webcomponent/main');
+
 }

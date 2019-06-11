@@ -48,6 +48,14 @@ export class B2note {
         settings: { icon: 'fa fa-search-plus'}
       },
       {
+        route: 'b2note_search3',
+        name: 'b2note_search3',
+        moduleId: PLATFORM.moduleName('../pages/search3'),
+        nav: true,
+        title: 'Search',
+        settings: { icon: 'fa fa-search-minus'}
+      },
+      {
         route: 'b2note_download',
         name: 'b2note_download',
         moduleId: PLATFORM.moduleName('../pages/download'),
