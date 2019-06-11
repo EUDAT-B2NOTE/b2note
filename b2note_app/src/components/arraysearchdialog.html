@@ -1,16 +1,14 @@
 <template>
+     <require from="../w3.css"></require>
 <table class="w3-small w3-striped">
   <tr><th>logic</th><th>type</th><th class="w3-tiny">search query</th></tr>
-  <tr repeat.for="item of query"><td>${item.logic}</td><td>${item.type}</td><td>${item.value}</td></tr>
-</table>
-     <require from="../w3.css"></require>
-     <button show.bind="child" class="w3-button" click.delegate="deleteChild()" title="Remove search parameters bellow"><i class="fa fa-minus"></i></button>
-     <select show.bind="child" class="w3-button" value.bind="logic">
+  <tr repeat.for="item of query"><td><select show.bind="child" class="w3-button" value.bind="item.logic">
         <option value="AND">AND</option>
         <option value="OR">OR</option>
         <option value="AND NOT">AND NOT</option>
         <option value="XOR">XOR</option>
-      </select>
+      </select></td><td>${item.type}</td><td>${item.value}</td><td>     <button show.bind="child" class="w3-button" click.delegate="deleteItem(item)" title="Remove search parameter"><i class="fa fa-minus"></i></button></td></tr>
+</table>
 
     <div class="w3-bar w3-padding-top">
       <a class="w3-bar-item w3-hover-blue"
@@ -19,6 +17,7 @@
         <span if.bind="tab.id=='comment'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></a>
     </div>
     <br/>
+
     <div id="tabcontent">
       <div id="tab1" show.bind="active==='semantic'">
         <input placeholder="Type-in to select a tag." value.bind="annotationsemantic"/>
