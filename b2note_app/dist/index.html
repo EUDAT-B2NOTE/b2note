@@ -1,46 +1,12 @@
-Html Webpack Plugin:
-<pre>
-  Error: Child compilation failed:
-  Module build failed (from ./node_modules/html-webpack-plugin/lib/loader.js):
-  Error: ENOENT: no such file or directory, open '/home/vagrant/b2note/b2note_ap  p/index.ejs':
-  Error: ENOENT: no such file or directory, open '/home/vagrant/b2note/b2note_ap  p/index.ejs'
-  
-  - compiler.js:79 childCompiler.runAsChild
-    [b2note_app]/[html-webpack-plugin]/lib/compiler.js:79:16
-  
-  - Compiler.js:306 compile
-    [b2note_app]/[webpack]/lib/Compiler.js:306:11
-  
-  - Compiler.js:631 hooks.afterCompile.callAsync.err
-    [b2note_app]/[webpack]/lib/Compiler.js:631:15
-  
-  
-  - Hook.js:154 AsyncSeriesHook.lazyCompileHook
-    [b2note_app]/[tapable]/lib/Hook.js:154:20
-  
-  - Compiler.js:628 compilation.seal.err
-    [b2note_app]/[webpack]/lib/Compiler.js:628:31
-  
-  
-  - Hook.js:154 AsyncSeriesHook.lazyCompileHook
-    [b2note_app]/[tapable]/lib/Hook.js:154:20
-  
-  - Compilation.js:1329 hooks.optimizeAssets.callAsync.err
-    [b2note_app]/[webpack]/lib/Compilation.js:1329:35
-  
-  
-  - Hook.js:154 AsyncSeriesHook.lazyCompileHook
-    [b2note_app]/[tapable]/lib/Hook.js:154:20
-  
-  - Compilation.js:1320 hooks.optimizeChunkAssets.callAsync.err
-    [b2note_app]/[webpack]/lib/Compilation.js:1320:32
-  
-  
-  - Hook.js:154 AsyncSeriesHook.lazyCompileHook
-    [b2note_app]/[tapable]/lib/Hook.js:154:20
-  
-  - Compilation.js:1315 hooks.additionalAssets.callAsync.err
-    [b2note_app]/[webpack]/lib/Compilation.js:1315:36
-  
-  
-</pre><script type="text/javascript" src="app.bundle.js"></script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>B2Note</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="">
+    <!-- imported CSS are concatenated and added automatically -->
+  </head>
+  <body aurelia-app="main">
+  <script type="text/javascript" src="app.bundle.js"></script></body>
+</html>
