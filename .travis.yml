@@ -15,6 +15,8 @@ addons:
 install:
   - pip install -r b2note_api/requirements.txt
   - npm install aurelia-cli -g
+  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  - dpkg -i google-chrome-stable_current_amd64.deb
 # command to run tests
 before_script:
   - sleep 15
@@ -24,10 +26,12 @@ before_script:
   - npm install
   - cd ..
 script:
-  - echo testing
+  - echo Backend API unit tests
   - cd b2note_api
   - python -m unittest
+  - echo Frontend APP UI unit tests
   - cd ..
   - cd b2note_app
   - au test
-
+  - echo Frontend APP UI e2e tests
+  - au run & sleep 10; au protractor

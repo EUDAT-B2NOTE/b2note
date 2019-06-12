@@ -13,10 +13,13 @@
     "aurelia-animator-css": "^1.0.4",
     "aurelia-bootstrapper": "^2.3.2",
     "aurelia-fetch-client": "^1.8.2",
+    "aurelia-protractor-plugin": "^1.0.6",
     "aurelia-web-components": "^1.0.0-beta.3",
     "font-awesome": "^4.7.0",
+    "gulp-protractor": "^4.1.1",
     "isomorphic-fetch": "^2.2.1",
     "jsonld": "^1.6.2",
+    "protractor": "^5.4.2",
     "stream": "0.0.2"
   },
   "devDependencies": {
