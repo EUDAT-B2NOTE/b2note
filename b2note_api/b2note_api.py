@@ -8,13 +8,14 @@ string_or_list_of_strings = {'anyof':[
 
 body_type = {
     'id': {'type':'string'},
-    'type':{'type':'string','allowed':['Dataset','Image','Video','Sound','Text',  'TextualBody','Choice']}, #W3C list Dataset..Text for external resources, TextualBody,Choicethese values - but may contain other values from vocabularies
+    'type':{'type':'string','allowed':['Dataset','Image','Video','Sound','Text', 'TextualBody','Choice','SpecificResource']}, #W3C list Dataset..Text for external resources, TextualBody,Choicethese values - but may contain other values from vocabularies
     'format':string_or_list_of_strings,
     'language':string_or_list_of_strings,
     'processingLanguage':{'type':'string'},
     'textDirection': {'type':'string','allowed':['ltr','ptr','auto']},
     'value':{'type':'string'}, # in case of type==TextualBody
-    'items':{'type':'list','schema':{'type':'string'}} # in case of type==Choice
+    'items':{'type':'list','schema':{'type':'string'}}, # in case of type==Choice
+    'source':{'type':'string'}
   }
 
 body_type_or_string = {'anyof': [
@@ -22,6 +23,12 @@ body_type_or_string = {'anyof': [
       {'type': 'dict', 'schema': body_type}, #single struct
   ]}
 
+target_schema = {'required': True,
+                 'anyof': [
+    {'type': 'string'},  # single string
+    {'type': 'dict', 'schema': body_type},  # single_struct
+    {'type': 'list', 'schema': body_type_or_string}  # list of struct
+  ]}
 body_schema = {'anyof': [
     {'type': 'string'},  # single string
     {'type': 'dict', 'schema': body_type},  # single_struct
@@ -76,10 +83,7 @@ annotation_schema = {
     ]},
     'body': body_schema,
     'bodyValue': {'type': 'string'},
-    'target': {'required': True, 'anyof': [
-      {'type': 'string'},
-      {'type': 'list', 'schema': {'type': 'string'}}
-    ]}
+    'target': target_schema
   }
 
 my_settings = {

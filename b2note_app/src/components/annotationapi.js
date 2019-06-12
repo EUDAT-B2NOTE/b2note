@@ -1,7 +1,7 @@
 import {Userinfo} from './messages';
 
 import {EventAggregator} from 'aurelia-event-aggregator';
-import {HttpClient} from 'aurelia-fetch-client';
+import {HttpClient,json} from 'aurelia-fetch-client';
 import {inject} from 'aurelia-framework';
 
 @inject(EventAggregator, HttpClient)
@@ -75,5 +75,23 @@ export class AnnotationApi {
   getManualTarget(){
     console.log('AnnotationApi.getmanualtarget()',this.manualtarget)
     return this.manualtarget;
+  }
+
+  postAnnotation(an){
+    return this.client.fetch(
+      this.apiurl+'/annotations',
+      {
+        method:"POST",
+        body:json(an)
+      })
+      .then(response => response.json())
+      .then(data =>{
+        console.log('postAnnotation() data',data);
+        return data
+      })
+      .catch(error =>{
+        console.log('postAnnotation() error',error);
+        throw error;
+      })
   }
 }

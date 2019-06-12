@@ -158,6 +158,12 @@ class B2noteRestApiTestCase(unittest.TestCase):
       self.assertIn(b'must be of list type',response.content)
       #self.assertIn(b'"_status": "OK"' in response.content
 
+    def test_annotationfromui(self):
+      body ='{"@context":"http://www.w3/org/ns/anno/jsonld","id":"","type":"Annotation","body":{"type":"SpecificResource","source":"protein"},"target":{"id":"http://hdl.handle.net/11304/3e69a758-dbea-46cb-b9a1-2b2974531c19","type":"SpecificResource","source":"https://b2share.eudat.eu/api/files/b381828e-59de-4323-b636-7600a6b04bf2/acqu3s"},"motivation":"tagging","creator":{"type":"Person","nickname":"Guest"},"generator":{"type":"Software","homepage":{"href":"http://localhost/b2note/#/","origin":"http://localhost","protocol":"http:","host":"localhost","hostname":"localhost","port":"","pathname":"/b2note/","search":"","hash":"#/"},"name":"B2Note v2.0"},"created":"2019-06-12T11:01:25.654Z","generated":"2019-06-12T11:01:25.654Z"}'
+      response = self.post(body)
+      self.assertIn(b'"_status": "OK"',response.content)
+
+
 if __name__ == '__main__':
     unittest.main()
 
