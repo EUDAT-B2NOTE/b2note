@@ -1,3 +1,4 @@
+import "isomorphic-fetch";  //required if tested component use fetch api
 import {bootstrap} from 'aurelia-bootstrapper';
 import {StageComponent} from 'aurelia-testing';
 import {PLATFORM} from 'aurelia-pal';

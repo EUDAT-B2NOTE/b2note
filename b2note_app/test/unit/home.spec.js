@@ -33,9 +33,14 @@ describe('Stage Home Component', () => {
   it('should render inputs and text area', done => {
     component.create(bootstrap).then(() => {
         let nameElement = document.getElementsByTagName('input')[0];
-        expect(nameElement.getAttribute('placeholder')).toContain('tag')
+        expect(nameElement.getAttribute('placeholder')).toContain('handle')
 
         nameElement = document.getElementsByTagName('input')[1];
+        expect(nameElement.getAttribute('placeholder')).toContain('https')
+        nameElement = document.getElementsByTagName('input')[2];
+        expect(nameElement.getAttribute('placeholder')).toContain('tag')
+
+        nameElement = document.getElementsByTagName('input')[3];
         expect(nameElement.getAttribute('placeholder')).toContain('keyword')
 
         nameElement = document.getElementsByTagName('textarea')[0];
