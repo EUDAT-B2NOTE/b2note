@@ -1,6 +1,12 @@
 <template>
   <require from="../components/annotations"></require>
   <div class="w3-container">
+  <div show.bind="manualtarget">
+    <label>id <span class="w3-small"> e.g. handle - redirecting to landing page URL</span></label><input title="(id) e.g. handle - redirecting to landing page URL" placeholder="http://hdl.handle.net/11304/3e69a758-dbea-46cb-b9a1-2b2974531c19" value.bind="anid"/>
+    <br/>
+    <label>source <span class="w3-small"> e.g. direct download URL</span></label><input title="(source) e.g. direct download URL" placeholder="https://b2share.eudat.eu/api/files/b381828e-59de-4323-b636-7600a6b04bf2/acqu3s" value.bind="ansource"/>
+  </div>
+
     <div class="w3-bar w3-padding-top">
       <a class="w3-bar-item w3-hover-blue"
          class.bind="(active==tab.id) ? 'w3-white w3-border-top w3-border-left w3-border-right':'w3-border-bottom w3-light-gray'  "

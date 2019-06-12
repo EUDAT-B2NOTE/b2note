@@ -11,6 +11,8 @@ export class AnnotationApi {
     this.client=client;
     this.ea=ea;
     this.query = []
+    this.manualtarget=false;
+    this.apiurl='/api';
 }
   getUserName() {
     //TODO fake username
@@ -18,6 +20,19 @@ export class AnnotationApi {
     let userinfo = {username:this.username, userid:Math.random().toString(36).substring(7)}
     this.ea.publish(new Userinfo(userinfo))
     return this.username;
+  }
+
+  getUserInfo(){
+    return {
+      pseudo: "Guest",
+      email: "N/A",
+      firstname: "Guest",
+      lastname: "",
+      experience: "beginner",
+      jobtitle: "Annotator",
+      org: "Academia",
+      country: "International"
+    }
   }
 
   //push = add new item
@@ -44,5 +59,21 @@ export class AnnotationApi {
     for (let i=0;i<this.query.length;i++){
       console.log(this.query[i].logic+' '+this.query[i].type+' '+this.query[i].value);
     }
+  }
+
+  setApiUrl(url){
+    this.apiurl=url;
+  }
+  getApiUrl(){
+    return this.apiurl;
+  }
+
+  setManualTarget(mt){
+    console.log('AnnotationApi.setmanualtarget()',mt)
+    this.manualtarget=mt;
+  }
+  getManualTarget(){
+    console.log('AnnotationApi.getmanualtarget()',this.manualtarget)
+    return this.manualtarget;
   }
 }

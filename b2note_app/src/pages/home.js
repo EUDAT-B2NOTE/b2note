@@ -13,7 +13,14 @@ constructor(api){
   this.annotationsemantic='';
   this.annotationkeyword='';
   this.annotationcomment='';
+  this.anid='';
+  this.ansource='';
   this.api=api;
+}
+
+attached(){
+//  console.log('Home.attached()',this.manualtarget);
+  this.manualtarget=this.api.getManualTarget();
 }
 
 switchtab(tabid){

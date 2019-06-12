@@ -1,19 +1,25 @@
+import {AnnotationApi} from '../components/annotationapi';
+import {inject} from 'aurelia-framework';
+
+@inject(AnnotationApi)
 export class Account {
-  constructor(){
-
+  constructor(api) {
+    this.api = api;
   }
 
-  attached(){
-    this.userinfo = {pseudo:"Guest",email:"N/A",firstname:"Guest",lastname:"",experience:"beginner",jobtitle:"Annotator",org:"Academia",country:"International"}
-    this.b2noteapiurl="/api";
-    this.manualtarget = false;
+  attached() {
+    this.userinfo = this.api.getUserInfo();
+    this.b2noteapiurl = this.api.getApiUrl();
+    this.manualtarget = this.api.getManualTarget();
   }
 
-  submitB2noteapiurl(){
-
+  submitB2noteapiurl() {
+    this.api.setApiUrl(this.b2noteapiurl);
   }
-  submitManualtarget(){
 
+  submitManualtarget() {
+    console.log('submitmanualtarget()',this.manualtarget)
+    this.api.setManualTarget(this.manualtarget);
   }
 
 }
