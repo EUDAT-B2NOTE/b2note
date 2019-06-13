@@ -5,13 +5,13 @@ sudo: false
 services:
   - mongodb
 addons:
+  chrome: stable
   apt:
     sources:
     - mongodb-3.2-precise
     packages:
     - mongodb-org-server
     - mongodb-org-shell
-    - google-chrome-stable
 # command to install dependencies
 install:
   - pip install -r b2note_api/requirements.txt

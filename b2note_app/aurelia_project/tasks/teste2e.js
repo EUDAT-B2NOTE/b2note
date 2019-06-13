@@ -18,7 +18,7 @@ function getProtractorBinary(binaryName){
 //defining own webdriver-manager update - with params to disable gecko --gecko=false
 
 gulp.task('protractor-install', function(done){
-    child_process.spawn(getProtractorBinary('webdriver-manager'), ['update','--gecko=false'], {
+    child_process.spawn(getProtractorBinary('webdriver-manager'), ['update','--gecko=false','--versions.chrome=73.0.3683.68'], {
         stdio: 'inherit'
     }).once('close', done);
 });
