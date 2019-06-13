@@ -1,0 +1,4 @@
+{
+  "name": "teste2e",
+  "description": "Runs Protractor without gecko and reports the results. Start the application before running this task."
+}

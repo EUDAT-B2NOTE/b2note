@@ -33,4 +33,4 @@ script:
   - cd b2note_app
   - au test
   - echo Frontend APP UI e2e tests
-  - au run & sleep 10; au protractor
+  - au run & sleep 10; au teste2e
