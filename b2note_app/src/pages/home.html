@@ -1,16 +1,23 @@
 <template>
   <require from="../components/annotations"></require>
-  <div class="w3-container">
+  <div show.bind="showform" class="w3-container">
     <h3>Create annotation</h3>
+
     <div show.bind="manualtarget">
-      <label>id <span class="w3-small"> e.g. handle - redirecting to landing page URL</span></label>
-      <input title="(id) e.g. handle - redirecting to landing page URL"
-             placeholder="http://hdl.handle.net/11304/3e69a758-dbea-46cb-b9a1-2b2974531c19" value.bind="target.id"/>
-      <br/>
-      <label>source <span class="w3-small"> e.g. direct download URL</span></label>
-      <input title="(source) e.g. direct download URL"
-             placeholder="https://b2share.eudat.eu/api/files/b381828e-59de-4323-b636-7600a6b04bf2/acqu3s"
-             value.bind="target.source"/>
+      <table style="min-width:400px" class="w3-tiny">
+        <tr>
+          <td><label title="e.g. handle - redirecting to landing page URL">id:</label></td>
+          <td><input class="w3-input  w3-padding-0"
+                     placeholder="http://hdl.handle.net/11304/3e69a758-dbea-46cb-b9a1-2b2974531c19"
+                     value.bind="target.id"/></td>
+        </tr>
+        <tr>
+          <td><label title="(source) e.g. direct download URL">source</label></td>
+          <td><input class="w3-input w3-padding-0"
+                     placeholder="https://b2share.eudat.eu/api/files/b381828e-59de-4323-b636-7600a6b04bf2/acqu3s"
+                     value.bind="target.source"/></td>
+        </tr>
+      </table>
     </div>
 
     <div class="w3-bar w3-padding-top">
@@ -38,7 +45,13 @@
       </div>
 
     </div>
+
+  </div>
+  <div show.bind="!showform" class="w3-container">
+    <h3>Annotation was created</h3>
+    <button class="w3-button" click.delegate="closeackn()">OK</button>
     <div class="w3-small">Annotation ID:<b>${anid}</b></div>
+    <div class="w3-tiny"><pre>${annotationtext}</pre></div>
   </div>
   <annotations></annotations>
 

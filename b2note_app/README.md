@@ -1,4 +1,4 @@
-# `b-2-note-app`
+# B2NOTE APP
 
 This project is bootstrapped by [aurelia-cli](https://github.com/aurelia/cli).
 

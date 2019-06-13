@@ -11,7 +11,7 @@ export class AnnotationApi {
     this.client=client;
     this.ea=ea;
     this.query = []
-    this.manualtarget=false;
+    this.manualtarget=true;
     this.apiurl='/api';
 }
   getUserName() {
@@ -84,7 +84,11 @@ export class AnnotationApi {
         method:"POST",
         body:json(an)
       })
-      .then(response => response.json())
+      .then(response => {
+        //console.log(response);
+        if (response.ok) return response.json()
+        else throw response
+      })
       .then(data =>{
         console.log('postAnnotation() data',data);
         return data

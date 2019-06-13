@@ -18,7 +18,18 @@ describe('aurelia skeleton app', function() {
     await expect(await poSkeleton.getCurrentPageTitle()).toContain('B2Note');
   });
 
-  it('should display greeting', async () => {
+  it('should display Create annotaiton on first screen', async () => {
     await expect(await poWelcome.getGreeting()).toBe('Create annotation');
   });
+
+  it('should display 8 navigation tabs with hrefs', async () => {
+    let items = await poSkeleton.getPageTabs();//.then(function(items){
+      //console.log('items lenght',items.length);
+      expect(items.length).toBe(8);
+      expect(await items[0].getAttribute('href')).toMatch(/.*#\/$/);
+      expect(await items[1].getAttribute('href')).toMatch(/.*#\/b2note_account$/);
+      expect(await items[7].getAttribute('href')).toMatch(/.*#\/b2note_logout$/);
+      expect(await items[6].getAttribute('href')).toMatch(/.*#\/b2note_help$/);
+    });
+
 });

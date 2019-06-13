@@ -19,6 +19,7 @@ export class Home {
     this.target.source = 'https://b2share.eudat.eu/api/files/b381828e-59de-4323-b636-7600a6b04bf2/acqu3s';
     this.target.type = 'SpecificResource';
     this.anid='';
+    this.showform=true;
   }
 
   attached() {
@@ -43,6 +44,7 @@ export class Home {
       'body': {
         'type': 'SpecificResource',
         'source': anvalue,
+        'purpose':'tagging'
       },
       'target':{
         'id':this.target.id,
@@ -61,20 +63,94 @@ export class Home {
       },
       'created': datetime.toISOString(),
       'generated':datetime.toISOString()
-    }
+    };
+    this.postAnnotation(annotation);
+  }
+
+  postAnnotation(annotation) {
     this.api.postAnnotation(annotation)
-      .then(data =>{
+      .then(data => {
         this.anid = data._id;
+        this.showform = false;
+        this.annotation = data;
+        this.annotationtext = JSON.stringify(data, null, 2);
+      })
+      .catch(error => {
+        alert('Error while creating annotation. It was not created\n\nHTTP status:' + error.status + '\nHTTP status text:' + error.statusText);
       })
   }
 
+  closeackn(){
+    this.showform=true;
+  }
   createKeyword() {
     console.log('create keyword:', this.annotationkeyword)
+    let anvalue= this.annotationkeyword;
+    let userinfo = this.api.getUserInfo();
+    let datetime = new Date();
+    let annotation = {
+      '@context': 'http://www.w3/org/ns/anno/jsonld',
+      'id': '',
+      'type': 'Annotation',
+      'body': {
+        'type': 'TextualBody',
+        'value': anvalue,
+        'purpose':"tagging"
+      },
+      'target':{
+        'id':this.target.id,
+        'type':this.target.type,
+        'source':this.target.source
+      },
+      'motivation':'tagging',
+      'creator':{
+        'type':'Person',
+        'nickname':userinfo.pseudo
+      },
+      'generator':{
+        'type':'Software',
+        'homepage':window.location,
+        'name':'B2Note v2.0'
+      },
+      'created': datetime.toISOString(),
+      'generated':datetime.toISOString()
+    };
+    this.postAnnotation(annotation);
 
   }
 
   createComment() {
     console.log('create semantic:', this.annotationcomment)
-
+    let anvalue= this.annotationkeyword;
+    let userinfo = this.api.getUserInfo();
+    let datetime = new Date();
+    let annotation = {
+      '@context': 'http://www.w3/org/ns/anno/jsonld',
+      'id': '',
+      'type': 'Annotation',
+      'body': {
+        'type': 'TextualBody',
+        'value': anvalue,
+        'purpose':"commenting"
+      },
+      'target':{
+        'id':this.target.id,
+        'type':this.target.type,
+        'source':this.target.source
+      },
+      'motivation':'commenting',
+      'creator':{
+        'type':'Person',
+        'nickname':userinfo.pseudo
+      },
+      'generator':{
+        'type':'Software',
+        'homepage':window.location,
+        'name':'B2Note v2.0'
+      },
+      'created': datetime.toISOString(),
+      'generated':datetime.toISOString()
+    };
+    this.postAnnotation(annotation);
   }
 }
