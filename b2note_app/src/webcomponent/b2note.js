@@ -7,6 +7,8 @@ export function configure(aurelia) {
       .basicConfiguration()
       .globalResources(PLATFORM.moduleName('components/arraysearchdialog'))
       .globalResources(PLATFORM.moduleName('pages/search2'))
+      .globalResources(PLATFORM.moduleName('pages/home'))
+      .globalResources(PLATFORM.moduleName('pages/help'))
       .globalResources(PLATFORM.moduleName('widget/b2note'))
 
   aurelia.use.developmentLogging(environment.debug ? 'debug' : 'warn');

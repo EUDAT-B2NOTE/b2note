@@ -40,13 +40,13 @@ export class Arraysearchdialog {
 
   //TODO refactor to use api.query instead of this.query
   search() {
-    console.log('search', this.active);
     //based on active tab show return appropriate value
     this.searchvalue = this.active === 'semantic' ? this.annotationsemantic :
       (this.active === 'keyword' ? this.annotationkeyword : '');
     this.searchtype = this.active;
     let queryitem = {first:this.query.length==0,logic: this.query.length === 0 ? '' : this.logic, type: this.searchtype, value: this.searchvalue}
     if (queryitem.value !== '') this.query.push(queryitem);
+    console.log('search query:',JSON.stringify(this.query));
     this.api.searchQuery(this.query)
       .then(data =>{
         this.result=JSON.stringify(data._items,null,2);
@@ -59,7 +59,7 @@ export class Arraysearchdialog {
       (this.active === 'keyword' ? this.annotationkeyword : '');
     this.searchtype = this.active;
     //create queryitem record with logic operator, type and value from dialog
-    let queryitem = {first:this.query.length==0,logic: this.query.length === 0 ? '' : this.logic, type: this.searchtype, value: this.searchvalue}
+    let queryitem = {first:this.query.length==0,logic: this.logic, type: this.searchtype, value: this.searchvalue}
     this.query.push(queryitem);
     //reset dialog values
     this.active = 'semantic';
