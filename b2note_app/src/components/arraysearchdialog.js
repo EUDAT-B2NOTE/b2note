@@ -47,8 +47,10 @@ export class Arraysearchdialog {
     this.searchtype = this.active;
     let queryitem = {first:this.query.length==0,logic: this.query.length === 0 ? '' : this.logic, type: this.searchtype, value: this.searchvalue}
     if (queryitem.value !== '') this.query.push(queryitem);
-
-    this.api.searchQuery(this.query);
+    this.api.searchQuery(this.query)
+      .then(data =>{
+        this.result=JSON.stringify(data._items,null,2);
+      })
   }
 
   createChild() {

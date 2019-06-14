@@ -35,41 +35,42 @@ export class Recursivesearchdialog {
   createComment() {
     console.log('create semantic:', this.annotationcomment)
   }
-  
-  search(){
-    console.log('search',this.active);
+
+  search() {
+    console.log('search', this.active);
     let queryitem = this.getQueryitem();
-    if ((queryitem.value !=='') || (queryitem.type == 'comment'))
+    //if the last item is not empty or is explicitly set to 'comment' type then add it to query items
+    if ((queryitem.value !== '') || (queryitem.type == 'comment'))
       this.api.pushQueryitem(queryitem);
     this.api.searchQuery();
   }
 
-  getQueryitem(){
-        this.searchvalue = this.active === 'semantic'? this.annotationsemantic:
-    (this.active === 'keyword'? this.annotationkeyword: '');
+  getQueryitem() {
+    this.searchvalue = this.active === 'semantic' ? this.annotationsemantic :
+      (this.active === 'keyword' ? this.annotationkeyword : '');
     this.searchtype = this.active;
     //create queryitem record with logic operator, type and value from dialog
-    return {logic:this.logic, type:this.searchtype,value:this.searchvalue}
+    return {logic: this.logic, type: this.searchtype, value: this.searchvalue}
 
   }
 
-  modify(){
+  modify() {
     let queryitem = this.getQueryitem();
-    this.api.modifyQueryitem(this.index,queryitem);
+    this.api.modifyQueryitem(this.index, queryitem);
   }
 
-  createChild(){
+  createChild() {
     console.log('creating child');
 
 
     let queryitem = this.getQueryitem();
 
-    this.index = this.api.pushQueryitem(queryitem);
+    this.index = this.api.pushQueryitem(queryitem) ;
 
     this.child = true;
   }
 
-  deleteChild(){
+  deleteChild() {
     console.log('deleting child');
     this.api.deleteQueryitem(this.index);
     this.child = false;
