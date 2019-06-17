@@ -172,7 +172,6 @@ class B2noteRestApiTestCase(unittest.TestCase):
       response=self.getapidocs()
       self.assertIn(b"\"swagger\":\"2.0\"",response.content)
 
-
 if __name__ == '__main__':
     unittest.main()
 
