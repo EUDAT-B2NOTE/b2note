@@ -2,6 +2,8 @@ import {PLATFORM} from 'aurelia-pal';
 import 'font-awesome/css/font-awesome.css';
 import {AnnotationApi} from '../components/annotationapi';
 import {inject} from 'aurelia-framework';
+import {Router, RouterConfiguration} from 'aurelia-router'
+
 
 @inject(AnnotationApi)
 

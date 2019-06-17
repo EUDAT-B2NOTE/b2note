@@ -21,5 +21,11 @@ Run `python b2note_api.py` then open `http://localhost:5000`
 
 This will start Eve providing REST Api to interact with b2note schema in mongodb database.
 
+# run unittests
+
+Run `python -m unittest`
+
+This will first detect whether API is running on port 5000. If not,
+the development server is started. Tests are executed.
 
 
