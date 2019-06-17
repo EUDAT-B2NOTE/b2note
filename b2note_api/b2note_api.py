@@ -2,6 +2,7 @@
 from eve import Eve
 from bson import objectid
 import os
+from eve_swagger import swagger, add_documentation
 
 # configures endpoint stored in annotation id's
 prefix = '/annotations';
@@ -70,6 +71,22 @@ my_settings = {
     'XML': False
   }
 
+swaggerconfig= {
+    'title': 'B2NOTE Api',
+    'version': '2.0',
+    'description': 'B2NOTE API gives access to collection of digital annotation stored in form of W3C data annotation model',
+    'termsOfService': 'terms of service',
+    'contact': {
+        'name': 'B2NOTE',
+        'url': 'https://b2note.eudat.eu'
+    },
+    'license': {
+        'name': 'MIT',
+        'url': 'https://github.com/EUDAT-B2NOTE/b2note/blob/master/LICENSE.txt',
+    },
+    'schemes': ['http', 'https'],
+}
+
 
 # this is custom generation of _id field and duplicates
 # the value into id field with url
@@ -84,6 +101,22 @@ def addAnnotationId(items):
 
 
 app = Eve(settings=my_settings)
+app.register_blueprint(swagger)
+app.config['SWAGGER_INFO'] = swaggerconfig
+
+# optional. Will use flask.request.host if missing.
+#app.config['SWAGGER_HOST'] = 'https://myhost.com'
+
+# optional. Add/Update elements in the documentation at run-time without deleting subtrees.
+#add_documentation({'paths': {'/status': {'get': {'parameters': [
+#    {
+#        'in': 'query',
+#        'name': 'foobar',
+#        'required': False,
+#       'description': 'special query parameter',
+#        'type': 'string'
+#    }]
+#}}}})
 
 # register the addAnnotationId as insert hook
 

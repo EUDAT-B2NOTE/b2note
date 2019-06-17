@@ -15,4 +15,8 @@ export class PageObjectSkeleton {
 
     return hrefs;
   }
+
+  getjsoncontent(){
+
+  }
 }
