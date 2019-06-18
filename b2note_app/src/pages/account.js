@@ -7,7 +7,7 @@ export class Account {
     this.api = api;
   }
 
-  attached() {
+  activate() {
     this.api.getUserInfo()
       .then(data =>{this.userinfo = data});
     this.b2noteapiurl = this.api.getApiUrl();

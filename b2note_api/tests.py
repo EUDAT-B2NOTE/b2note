@@ -37,6 +37,7 @@ class B2noteRestApiTestCase(unittest.TestCase):
     @classmethod
     def tearDownClass(self):
       self.headers = {}
+
       # if the eve was started - then it will be stopped when the test process will terminate
       if self.evethread:
         self.evethread.terminate()
@@ -49,12 +50,21 @@ class B2noteRestApiTestCase(unittest.TestCase):
     def get(self,resource):
       return requests.get(LOCALHOST_ANNOTATIONS + '/' + resource, headers=self.headers)
 
+    def delete(self,resource,etag):
+      return requests.delete(LOCALHOST_ANNOTATIONS+'/'+resource,headers={'Content-Type':'application/json','Authorization': 'Basic YWRtaW46c2VjcmV0','If-Match':etag})
+
+    def get(self,resource):
+      return requests.get(LOCALHOST_ANNOTATIONS + '/' + resource, headers=self.headers)
+
     def getapidocs(self,resource=""):
       return requests.get(LOCALHOST_APIDOCS + '/' + resource, headers=self.headers)
 
     def post(self,data):
-      return requests.post(LOCALHOST_ANNOTATIONS, headers=self.headers, data=data)
+      return requests.post(LOCALHOST_ANNOTATIONS, headers={'Content-Type':'application/json','Authorization': 'Basic YWRtaW46c2VjcmV0'}, data=data)
 
+    def test_getAnnotation(self):
+      response = self.get('')
+      self.assertIn(b'"_meta":', response.content)
 
     def test_create_annotation(self):
       data = '{"id":"http://example.org/anno1","body":"http://example.com/post1","target":"http://example.com/page1"}'
@@ -166,6 +176,26 @@ class B2noteRestApiTestCase(unittest.TestCase):
       body ='{"@context":"http://www.w3/org/ns/anno/jsonld","id":"","type":"Annotation","body":{"type":"SpecificResource","source":"protein"},"target":{"id":"http://hdl.handle.net/11304/3e69a758-dbea-46cb-b9a1-2b2974531c19","type":"SpecificResource","source":"https://b2share.eudat.eu/api/files/b381828e-59de-4323-b636-7600a6b04bf2/acqu3s"},"motivation":"tagging","creator":{"type":"Person","nickname":"Guest"},"generator":{"type":"Software","homepage":{"href":"http://localhost/b2note/#/","origin":"http://localhost","protocol":"http:","host":"localhost","hostname":"localhost","port":"","pathname":"/b2note/","search":"","hash":"#/"},"name":"B2Note v2.0"},"created":"2019-06-12T11:01:25.654Z","generated":"2019-06-12T11:01:25.654Z"}'
       response = self.post(body)
       self.assertIn(b'"_status": "OK"',response.content)
+
+    def test_deleteannotations(self):
+      response = self.get("")
+      data = json.loads(response.content)
+      for item in data["_items"]:
+        print('deleting item',item["_id"])
+        response2 = self.delete(item["_id"],item["_etag"])
+        self.assertIn(b'',response2.content)
+
+    # def test_deleteallannotations(self):
+    #   deleteannotations = True
+    #   # delete all annotations
+    #   while deleteannotations:
+    #     response = self.get('')
+    #     data = json.loads(response.content)
+    #     deleteannotations = len(data["_items"])>0
+    #     for item in data["_items"]:
+    #       self.delete( item["_id"],item["_etag"])
+
+
 
     def test_apidocs(self):
 

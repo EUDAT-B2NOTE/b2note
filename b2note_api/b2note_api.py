@@ -2,17 +2,15 @@
 from eve import Eve
 from bson import objectid
 from eve_swagger import swagger, add_documentation
-#from b2note_auth import *
+from b2note_auth import B2NoteAuth
 
-#from b2note_gauth import *
 from b2note_settings import *
 import os
-
 import google_auth
 
 # configures endpoint stored in annotation id's
-prefix = '/annotations';
-apiurl = 'http://localhost/api';
+prefix = '/annotations'
+apiurl = 'http://localhost/api'
 
 # if B2NOTE_API_URL is defined then it's used instead of default localhost
 if os.environ.get('B2NOTE_API_URL') is not None:
@@ -20,7 +18,6 @@ if os.environ.get('B2NOTE_API_URL') is not None:
 
 # this is custom generation of _id field and duplicates
 # the value into id field with url
-
 def addAnnotationId(items):
     print('Adding annotation, adding id')
     for item in items:
@@ -31,15 +28,21 @@ def addAnnotationId(items):
 #preparation for oauth - uncomment if enabled
 #app = Eve(settings=b2note_eve_settings,auth=MyBasicAuth)
 
-#unauthenticated instance
-app = Eve(settings=b2note_eve_settings)
-app.secret_key=os.environ.get("GAUTH_B2NOTE_SECRET_KEY", default=False)
-app.register_blueprint(swagger)
-app.register_blueprint(google_auth.app)
+
+#app = Eve(auth=MyBasicAuth)
+app = Eve(settings=b2note_eve_settings,auth=B2NoteAuth)
+
+# register swagger -openapi
 app.config['SWAGGER_INFO'] = b2note_swagger_settings
+app.register_blueprint(swagger)
+
+#register google auth
+app.secret_key=os.environ.get("GAUTH_B2NOTE_SECRET_KEY", default=False)
+app.register_blueprint(google_auth.app)
 app.on_insert_annotations += addAnnotationId
 
-from b2note_gauth import *
+# register other FLASK (non-EVE) API services
+from b2note_api_services import *
 
 if __name__== "__main__":
   print('Instantiating standalone server.')

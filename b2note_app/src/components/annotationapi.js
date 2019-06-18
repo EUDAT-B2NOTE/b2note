@@ -1,14 +1,14 @@
 import {Userinfo} from './messages';
 
 import {EventAggregator} from 'aurelia-event-aggregator';
-import {HttpClient,json} from 'aurelia-fetch-client';
+import {HttpClient, json} from 'aurelia-fetch-client';
 import {inject} from 'aurelia-framework';
 
 @inject(EventAggregator, HttpClient)
 export class AnnotationApi {
-  constructor(ea,client){
+  constructor(ea, client) {
     this.username = "Guest";
-    this.client=client;
+    this.client = client;
     this.client.configure(config => {
       config
         .rejectErrorResponses()
@@ -21,128 +21,118 @@ export class AnnotationApi {
           }
         })
     });
-    this.ea=ea;
-    this.query = []
-    this.manualtarget=true;
-    this.apiurl='/api';
-}
-  getUserName() {
-    //TODO fake username
-    this.username = "Tomas Kulhanek "+ Math.random().toString(36).substring(7);
-    let userinfo = {username:this.username, userid:Math.random().toString(36).substring(7)}
-    this.ea.publish(new Userinfo(userinfo))
-    return this.username;
+    this.ea = ea;
+    this.query = [];
+    this.manualtarget = true;
+    this.apiurl = '/api';
+    this.annotationsurl = this.apiurl + '/annotations';
+    this.userinfourl = this.apiurl + '/userinfo';
+    //enhance the pagination up to EVE limit - see b2note_settings.py for pagination limit to make it bigger
+    this.maxresult="max_result=8192";
   }
 
-  getUserInfo(){
-    return this.client.fetch(this.apiurl+'/userinfo')
+  getUserInfo() {
+    return this.client.fetch(this.userinfourl)
       .then(response => {
         //console.log(response);
-        if (response.ok) return response.json()
+        if (response.ok) return response.json();
         else throw response
       })
-      .then(data =>{
-        data.pseudo=data.name
-        data.firstname=data.given_name
-        data.lastname=data.family_name
+      .then(data => {
+        if (!data.pseudo) data.pseudo = data.name;
+        data.firstname = data.given_name;
+        data.lastname = data.family_name;
         /*TODO fill experience,jobtitle,org and country
         data.experience= "beginner",
         data.jobtitle="Annotator",
         data.org="Academia",
         data.country="International"*/
-        console.log('userinfo',data);
+        console.log('userinfo', data);
+        this.ea.publish(new Userinfo(data));
         return data
       })
-      .catch(error =>{
-        console.log('userinfo error:',error);
+      .catch(error => {
+        console.log('userinfo error:', error);
         throw error;
       })
-      /*{"id":"101486217992397526303",
-      "email":"tmkulhanek@gmail.com",
-      "verified_email":true,
-      "name":      "Tomas Kulhanek",
-      "given_name":"Tomas",
-      "family_name":"Kulhanek","picture":"https://lh6.googleusercontent.com/-TxFomtJl7d0/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reEWif0mbxIXUPgZAG32waifi03fQ/mo/photo.jpg","locale":"en"}
+    /*{"id":"101486217992397526303",
+    "email":"tmkulhanek@gmail.com",
+    "verified_email":true,
+    "name":      "Tomas Kulhanek",
+    "given_name":"Tomas",
+    "family_name":"Kulhanek","picture":"https://lh6.googleusercontent.com/-TxFomtJl7d0/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reEWif0mbxIXUPgZAG32waifi03fQ/mo/photo.jpg","locale":"en"}
 
-      {
-      pseudo: "Guest",
-      email: "N/A",
-      firstname: "Guest",
-      lastname: "",
-      experience: "beginner",
-      jobtitle: "Annotator",
-      org: "Academia",
-      country: "International"
-    }*/
+    {
+    pseudo: "Guest",
+    email: "N/A",
+    firstname: "Guest",
+    lastname: "",
+    experience: "beginner",
+    jobtitle: "Annotator",
+    org: "Academia",
+    country: "International"
+  }*/
   }
 
   //push = add new item
   //returns the index in list where it was pushed.
-  pushQueryitem(item){
+  pushQueryitem(item) {
     // remove binary,leave unary NOT logic operator from first item
-    if ((this.query.length===0) && (item.logic!=='NOT')) item.logic='';
-    return this.query.push(item)-1;
+    if ((this.query.length === 0) && (item.logic !== 'NOT')) item.logic = '';
+    return this.query.push(item) - 1;
   }
 
   //modify item at index
-  modifyQueryitem(index,item){
+  modifyQueryitem(index, item) {
     this.query[index] = item;
   }
+
   //delete all from index
-  deleteQueryitem(index){
-    while (index<this.query.length) {
+  deleteQueryitem(index) {
+    while (index < this.query.length) {
       this.query.pop()
     }
   }
 
-  searchQuery(query){
+  searchQuery(query) {
     //query is defined - then use it, otherwise use the query constructed from push.. modify... delete.. methods above
     //console.log('searchQuery',query,this.query);
-    if (query) this.query=query;
+    if (query) this.query = query;
     let apiquery = this.createApiQuery();
-    return this.client.fetch(this.apiurl+'/annotations?where='+JSON.stringify(apiquery))
+    return this.client.fetch(this.apiurl + '/annotations?where=' + JSON.stringify(apiquery))
       .then(response => {
         //console.log(response);
-        if (response.ok) return response.json()
+        if (response.ok) return response.json();
         else throw response
       })
-      .then(data =>{
-        console.log('searchAnnotation() data',data);
+      .then(data => {
+        console.log('searchAnnotation() data', data);
         return data
       })
-      .catch(error =>{
-        console.log('searchAnnotation() error',error);
+      .catch(error => {
+        console.log('searchAnnotation() error', error);
         throw error;
       })
   }
 
 
-  createApiQuery(){
+  createApiQuery() {
     return this.createQueryRecord(this.query)
   }
 
-  createQueryRecord(myquery){
-    if (myquery.length>0){
-      let query=myquery.slice();
-      if (query.length==1) return this.createQueryitem(query[0])
+  createQueryRecord(myquery) {
+    if (myquery.length > 0) {
+      let query = myquery.slice();
+      if (query.length == 1) return this.createQueryitem(query[0])
       //console.log('createQueryRecord ',query)
       let first = query.shift();
       //console.log('createQueryRecord shift',first);
       //console.log('createQueryRecord query',query)
       let q;
-      if (query[0].logic.match(/AND*/)) q={'$and':[this.createQueryitem(first),this.createQueryRecord(query)]};
-      if (query[0].logic.match(/OR*/)) q={'$or':[this.createQueryitem(first),this.createQueryRecord(query)]};
+      if (query[0].logic.match(/AND*/)) q = {'$and': [this.createQueryitem(first), this.createQueryRecord(query)]};
+      if (query[0].logic.match(/OR*/)) q = {'$or': [this.createQueryitem(first), this.createQueryRecord(query)]};
       return q;
-    }
-    else return {};
-    /*this.anquery={}
-    if (query.length>0) {
-      this.anquery = createQueryitem(query[0])
-      for (let i = 1; i < query.length; i++) {
-        //console.log(this.query[i].logic+' '+this.query[i].type+' '+this.query[i].value);
-        addQueryitem(query.logic, createQueryitem(query))
-      }
-    }*/
+    } else return {};
   }
 
   /*
@@ -153,18 +143,16 @@ export class AnnotationApi {
    */
 
 
-
-  createQueryitem(qi){
-    if (qi.type ==='comment')
-      return {'body.purpose':'commenting'};
+  createQueryitem(qi) {
+    if (qi.type === 'comment')
+      return {'body.purpose': 'commenting'};
     else if (qi.type === 'semantic')
-      //TODO check if synonyms - then add keyword with the same value???
+    //TODO check if synonyms - then add keyword with the same value???
     {
       //console.log('createQueryitem()',qi)
       if (qi.logic.match(/.*NOT/)) return {'body.type': 'SpecificResource', 'body.source': {'$ne': qi.value}};
       else return {'body.type': 'SpecificResource', 'body.source': qi.value}
-    }
-    else //keyword
+    } else //keyword
     {
       //console.log('createQueryitem()',qi)
       //console.log('createQueryitem logic ()',qi.logic)
@@ -175,41 +163,84 @@ export class AnnotationApi {
     //{"body.value":"protein2"}
   }
 
-  setApiUrl(url){
-    this.apiurl=url;
+  setApiUrl(url) {
+    this.apiurl = url;
   }
-  getApiUrl(){
+
+  getApiUrl() {
     return this.apiurl;
   }
 
-  setManualTarget(mt){
-  //  console.log('AnnotationApi.setmanualtarget()',mt)
-    this.manualtarget=mt;
+  setManualTarget(mt) {
+    //  console.log('AnnotationApi.setmanualtarget()',mt)
+    this.manualtarget = mt;
   }
-  getManualTarget(){
-  //  console.log('AnnotationApi.getmanualtarget()',this.manualtarget)
+
+  getManualTarget() {
+    //  console.log('AnnotationApi.getmanualtarget()',this.manualtarget)
     return this.manualtarget;
   }
 
-  postAnnotation(an){
+  postAnnotation(an) {
     return this.client.fetch(
-      this.apiurl+'/annotations',
+      this.annotationsurl,
       {
-        method:"POST",
-        body:json(an)
+        method: "POST",
+        body: json(an)
       })
       .then(response => {
         //console.log(response);
         if (response.ok) return response.json()
         else throw response
       })
-      .then(data =>{
-        console.log('postAnnotation() data',data);
+      .then(data => {
+        //console.log('postAnnotation() data', data);
         return data
       })
-      .catch(error =>{
-        console.log('postAnnotation() error',error);
+      .catch(error => {
+        console.log('postAnnotation() error', error);
         throw error;
       })
+  }
+
+  getAllAnnotations() {
+    return this.client.fetch(this.annotationsurl+"?"+this.maxresult)
+      .then(response => {
+        //console.log(response);
+        if (response.ok) return response.json()
+        else throw response
+      })
+      .then(data => {
+        //console.log('postAnnotation() data', data);
+        return data
+      })
+      .catch(error => {
+        console.log('getAnnotation() error', error);
+        throw error;
+      })
+
+  }
+
+  getAllMyAnnotations() {
+    return this.getUserInfo()
+      .then(ui => {
+        let userinfo = ui;
+        return this.client.fetch(this.annotationsurl+'?where={"creator.id":"'+ui.id+'"}&"'+this.maxresult)
+          .then(response => {
+            //console.log(response);
+            if (response.ok) return response.json()
+            else throw response
+          })
+          .then(data => {
+            //console.log('postAnnotation() data', data);
+            return data
+          })
+          .catch(error => {
+            console.log('getAnnotation() error', error);
+            throw error;
+          })
+
+      });
+
   }
 }

@@ -1,3 +1,4 @@
+# implementation of google auth oauth2 client part for python / flask
 import functools
 import os
 
@@ -66,7 +67,6 @@ def no_cache(view):
 @app.route('/google/login')
 @no_cache
 def login():
-    print('login() redirect uri:', AUTH_REDIRECT_URI)
     session = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
                             scope=AUTHORIZATION_SCOPE,
                             redirect_uri=AUTH_REDIRECT_URI)
@@ -109,3 +109,4 @@ def logout():
     flask.session.pop(AUTH_STATE_KEY, None)
 
     return flask.redirect(BASE_URI, code=302)
+

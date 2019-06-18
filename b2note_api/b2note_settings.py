@@ -1,6 +1,7 @@
+# Setting for Eve framework and mongodb connection
+
 from b2note_schema import *
 import os
-# setting for Eve framework and mongodb connection
 b2note_eve_settings = {
     'MONGO_HOST': 'localhost',
     'MONGO_PORT': 27017,
@@ -12,7 +13,8 @@ b2note_eve_settings = {
     'ITEM_METHODS': ['GET', 'PATCH', 'PUT', 'DELETE'],
     'PUBLIC_METHODS': ['GET'],
     'PUBLIC_ITEM_METHODS': ['GET'],
-    'XML': False
+    'XML': False,
+    'PAGINATION_LIMIT':8192
   }
 
 b2note_swagger_settings= {
