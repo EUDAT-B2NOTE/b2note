@@ -26,7 +26,11 @@ export class Home {
   attached() {
 //  console.log('Home.attached()',this.manualtarget);
     this.manualtarget = this.api.getManualTarget();
-    this.api.getUserInfo().then(data => this.userinfo = data);
+    this.api.getUserInfo()
+      .then(data => this.userinfo = data)
+      .catch(error => { //do nothing or alert
+        })
+    ;
   }
 
   switchtab(tabid) {

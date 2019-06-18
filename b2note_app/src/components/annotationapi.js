@@ -9,22 +9,24 @@ export class AnnotationApi {
   constructor(ea, client) {
     this.username = "Guest";
     this.client = client;
-    this.client.configure(config => {
-      config
-        .rejectErrorResponses()
-        .withDefaults({
-          credentials: 'same-origin',
-          headers: {
+    if (this.client.configure) {
+      this.client.configure(config => {
+        config
+          .rejectErrorResponses()
+          .withDefaults({
+            credentials: 'same-origin',
+            headers: {
 
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          }
-        })
-    });
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            }
+          })
+      });
+    }
     this.ea = ea;
     this.query = [];
     this.manualtarget = true;
-    this.apiurl = '/api';
+    this.apiurl = window.location.protocol+'//'+window.location.host+'/api';
     this.annotationsurl = this.apiurl + '/annotations';
     this.userinfourl = this.apiurl + '/userinfo';
     //enhance the pagination up to EVE limit - see b2note_settings.py for pagination limit to make it bigger
@@ -52,7 +54,7 @@ export class AnnotationApi {
         return data
       })
       .catch(error => {
-        console.log('userinfo error:', error);
+        console.log('userinfo error:', this.userinfourl,error);
         throw error;
       })
     /*{"id":"101486217992397526303",

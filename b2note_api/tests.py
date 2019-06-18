@@ -51,7 +51,7 @@ class B2noteRestApiTestCase(unittest.TestCase):
       return requests.get(LOCALHOST_ANNOTATIONS + '/' + resource, headers=self.headers)
 
     def delete(self,resource,etag):
-      return requests.delete(LOCALHOST_ANNOTATIONS+'/'+resource,headers={'Content-Type':'application/json','Authorization': 'Basic YWRtaW46c2VjcmV0','If-Match':etag})
+      return requests.delete(LOCALHOST_ANNOTATIONS+'/'+resource,headers={'Content-Type':'application/json','Authorization': 'Basic dGVzdDp0ZXN0','If-Match':etag})
 
     def get(self,resource):
       return requests.get(LOCALHOST_ANNOTATIONS + '/' + resource, headers=self.headers)
@@ -60,7 +60,7 @@ class B2noteRestApiTestCase(unittest.TestCase):
       return requests.get(LOCALHOST_APIDOCS + '/' + resource, headers=self.headers)
 
     def post(self,data):
-      return requests.post(LOCALHOST_ANNOTATIONS, headers={'Content-Type':'application/json','Authorization': 'Basic YWRtaW46c2VjcmV0'}, data=data)
+      return requests.post(LOCALHOST_ANNOTATIONS, headers={'Content-Type':'application/json','Authorization': 'Basic dGVzdDp0ZXN0'}, data=data)
 
     def test_getAnnotation(self):
       response = self.get('')

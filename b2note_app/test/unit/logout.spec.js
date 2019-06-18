@@ -16,8 +16,8 @@ describe('Stage Logout Component', () => {
 
   it('should render logout button', done => {
     component.create(bootstrap).then(() => {
-        let nameElement = document.getElementsByTagName('button')[0];
-        expect(nameElement.innerHTML).toContain('logout')
+        let nameElement = document.getElementsByTagName('a')[0];
+        expect(nameElement.innerHTML).toContain('Logout')
         done();
     }).catch(e => {
       fail(e);

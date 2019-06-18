@@ -20,10 +20,6 @@ describe('Annotation Component', () => {
   test('constructor is defined', () => {
     expect(api.constructor).toBeDefined();
   });
-  test('get username fires event', () => {
-    api.getUserName();
-    expect(EventAggregator.publish).toHaveBeenCalledTimes(1);
-  });
   test('push modify delete query record', () =>{
     expect(api.pushQueryitem({logic:'',type:'semantic',value:'alkaloid'})).toBe(0);
     expect(api.pushQueryitem({logic:'AND',type:'keyword',value:'strychnine'})).toBe(1);
