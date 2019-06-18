@@ -8,7 +8,8 @@ export class Account {
   }
 
   attached() {
-    this.userinfo = this.api.getUserInfo();
+    this.api.getUserInfo()
+      .then(data =>{this.userinfo = data});
     this.b2noteapiurl = this.api.getApiUrl();
     this.manualtarget = this.api.getManualTarget();
   }

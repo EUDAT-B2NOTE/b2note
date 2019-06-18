@@ -74,6 +74,14 @@ export class B2note {
         settings: { icon: 'fa fa-question-circle'}
       },
       {
+        route: 'b2note_login',
+        name: 'b2note_login',
+        moduleId: PLATFORM.moduleName('../pages/login'),
+        nav: true,
+        title: 'Login',
+        settings: { icon: 'fa fa-sign-in'}
+      },
+      {
         route: 'b2note_logout',
         name: 'b2note_logout',
         moduleId: PLATFORM.moduleName('../pages/logout'),

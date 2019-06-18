@@ -1,10 +1,14 @@
 # 04/06/2019 - new Eve schema - for validation of w3c web annotation data model - body
 from eve import Eve
 from bson import objectid
-import os
 from eve_swagger import swagger, add_documentation
-from b2note_auth import *
+#from b2note_auth import *
+
+#from b2note_gauth import *
 from b2note_settings import *
+import os
+
+import google_auth
 
 # configures endpoint stored in annotation id's
 prefix = '/annotations';
@@ -29,9 +33,13 @@ def addAnnotationId(items):
 
 #unauthenticated instance
 app = Eve(settings=b2note_eve_settings)
+app.secret_key=os.environ.get("GAUTH_B2NOTE_SECRET_KEY", default=False)
 app.register_blueprint(swagger)
+app.register_blueprint(google_auth.app)
 app.config['SWAGGER_INFO'] = b2note_swagger_settings
 app.on_insert_annotations += addAnnotationId
+
+from b2note_gauth import *
 
 if __name__== "__main__":
   print('Instantiating standalone server.')

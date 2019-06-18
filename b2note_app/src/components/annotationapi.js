@@ -9,6 +9,18 @@ export class AnnotationApi {
   constructor(ea,client){
     this.username = "Guest";
     this.client=client;
+    this.client.configure(config => {
+      config
+        .rejectErrorResponses()
+        .withDefaults({
+          credentials: 'same-origin',
+          headers: {
+
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        })
+    });
     this.ea=ea;
     this.query = []
     this.manualtarget=true;
@@ -23,7 +35,36 @@ export class AnnotationApi {
   }
 
   getUserInfo(){
-    return {
+    return this.client.fetch(this.apiurl+'/userinfo')
+      .then(response => {
+        //console.log(response);
+        if (response.ok) return response.json()
+        else throw response
+      })
+      .then(data =>{
+        data.pseudo=data.name
+        data.firstname=data.given_name
+        data.lastname=data.family_name
+        /*TODO fill experience,jobtitle,org and country
+        data.experience= "beginner",
+        data.jobtitle="Annotator",
+        data.org="Academia",
+        data.country="International"*/
+        console.log('userinfo',data);
+        return data
+      })
+      .catch(error =>{
+        console.log('userinfo error:',error);
+        throw error;
+      })
+      /*{"id":"101486217992397526303",
+      "email":"tmkulhanek@gmail.com",
+      "verified_email":true,
+      "name":      "Tomas Kulhanek",
+      "given_name":"Tomas",
+      "family_name":"Kulhanek","picture":"https://lh6.googleusercontent.com/-TxFomtJl7d0/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reEWif0mbxIXUPgZAG32waifi03fQ/mo/photo.jpg","locale":"en"}
+
+      {
       pseudo: "Guest",
       email: "N/A",
       firstname: "Guest",
@@ -32,7 +73,7 @@ export class AnnotationApi {
       jobtitle: "Annotator",
       org: "Academia",
       country: "International"
-    }
+    }*/
   }
 
   //push = add new item
