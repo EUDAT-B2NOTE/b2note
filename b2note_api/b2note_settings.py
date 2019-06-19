@@ -2,6 +2,7 @@
 
 from b2note_schema import *
 import os
+
 b2note_eve_settings = {
     'MONGO_HOST': 'localhost',
     'MONGO_PORT': 27017,
@@ -14,7 +15,10 @@ b2note_eve_settings = {
     'PUBLIC_METHODS': ['GET'],
     'PUBLIC_ITEM_METHODS': ['GET'],
     'XML': False,
-    'PAGINATION_LIMIT':8192
+    'PAGINATION_LIMIT':8192,
+    'SECRET_KEY' : os.environ.get('B2NOTE_SECRET_KEY',default=False),
+    'GOOGLE_CLIENT_ID': os.environ.get("GAUTH_CLIENT_ID", default=False),
+    'GOOGLE_CLIENT_SECRET': os.environ.get("GAUTH_CLIENT_SECRET", default=False)
   }
 
 b2note_swagger_settings= {

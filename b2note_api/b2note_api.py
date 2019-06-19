@@ -6,7 +6,10 @@ from b2note_auth import B2NoteAuth
 
 from b2note_settings import *
 import os
-import google_auth
+import b2note_api_services
+#import google_auth
+#import google2_auth
+import google3_auth
 
 # configures endpoint stored in annotation id's
 prefix = '/annotations'
@@ -38,11 +41,16 @@ app.register_blueprint(swagger)
 
 #register google auth
 app.secret_key=os.environ.get("GAUTH_B2NOTE_SECRET_KEY", default=False)
-app.register_blueprint(google_auth.app)
+#app.register_blueprint(google_auth.app)
+#app.register_blueprint(google2_auth.app)
+# register google auth oauth provider
+google3_auth.register(app)
+
+# register EVE custom hook on instert
 app.on_insert_annotations += addAnnotationId
 
 # register other FLASK (non-EVE) API services
-from b2note_api_services import *
+app.register_blueprint(b2note_api_services.app)
 
 if __name__== "__main__":
   print('Instantiating standalone server.')

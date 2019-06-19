@@ -27,7 +27,10 @@ export class Home {
 //  console.log('Home.attached()',this.manualtarget);
     this.manualtarget = this.api.getManualTarget();
     this.api.getUserInfo()
-      .then(data => this.userinfo = data)
+      .then(data => {
+        this.userinfo = data
+        this.enablecreate = this.userinfo.id.length>0;
+      })
       .catch(error => { //do nothing or alert
         })
     ;
@@ -60,7 +63,7 @@ export class Home {
         },
         'motivation': 'tagging',
         'creator': {
-          'id':userinfo.id,
+          'id':this.userinfo.id,
           'type': 'Person',
           'nickname': this.userinfo.pseudo
         },
