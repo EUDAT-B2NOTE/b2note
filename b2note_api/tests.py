@@ -181,7 +181,7 @@ class B2noteRestApiTestCase(unittest.TestCase):
       response = self.get("")
       data = json.loads(response.content)
       for item in data["_items"]:
-        print('deleting item',item["_id"])
+        #print('deleting item',item["_id"])
         response2 = self.delete(item["_id"],item["_etag"])
         self.assertIn(b'',response2.content)
 

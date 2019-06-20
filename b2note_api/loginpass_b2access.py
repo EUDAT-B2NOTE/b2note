@@ -14,8 +14,10 @@ from loginpass._core import UserInfo, OAuthBackend
 #Token Information/validation 	https://unity.eudat-aai.fz-juelich.de:443/oauth2 /tokeninfo 	https://b2access.eudat.eu:443/oauth2/tokeninfo
 #User information 	https://unity.eudat-aai.fz-juelich.de:443/oauth2/userinfo 	https://b2access.eudat.eu:443/oauth2/userinfo
 
+# development endpoint
 B2ACCESS_API_URL = 'https://unity.eudat-aai.fz-juelich.de/'
-#B2ACCESS_API_URL = 'https://b2access.eudat.eu/'
+# production endpoint
+# B2ACCESS_API_URL = 'https://b2access.eudat.eu/'
 B2ACCESS_TOKEN_URL = B2ACCESS_API_URL + 'oauth2/token'
 B2ACCESS_TOKENINFO_SUFFIX='oauth2/tokeninfo'
 B2ACCESS_TOKENINFO_URL = B2ACCESS_API_URL + B2ACCESS_TOKENINFO_SUFFIX

@@ -10,7 +10,7 @@ export class AnnotationApi {
   constructor(ea, client) {
     this.userinfo ={}
     this.client = client;
-    //if (this.client.configure) {
+    if (this.client.configure) {
       this.client.configure(config => {
         config
           .rejectErrorResponses()
@@ -23,7 +23,7 @@ export class AnnotationApi {
             }
           })
       });
-    //}
+    }
     this.ea = ea;
     this.query = [];
     this.manualtarget = true;
