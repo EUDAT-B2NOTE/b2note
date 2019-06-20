@@ -12,6 +12,7 @@ addons:
     - mongodb-org-server
     - mongodb-org-shell
     - google-chrome-stable
+    - apache2-dev
 # command to install dependencies
 install:
   - pip install -r b2note_api/requirements.txt

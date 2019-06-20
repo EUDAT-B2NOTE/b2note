@@ -6,10 +6,11 @@ import {inject} from 'aurelia-framework';
 
 @inject(EventAggregator, HttpClient)
 export class AnnotationApi {
+
   constructor(ea, client) {
-    this.username = "Guest";
+    this.userinfo ={}
     this.client = client;
-    if (this.client.configure) {
+    //if (this.client.configure) {
       this.client.configure(config => {
         config
           .rejectErrorResponses()
@@ -22,7 +23,7 @@ export class AnnotationApi {
             }
           })
       });
-    }
+    //}
     this.ea = ea;
     this.query = [];
     this.manualtarget = true;
@@ -31,6 +32,7 @@ export class AnnotationApi {
     this.userinfourl = this.apiurl + '/userinfo';
     //enhance the pagination up to EVE limit - see b2note_settings.py for pagination limit to make it bigger
     this.maxresult="max_result=8192";
+    this.allowgoogle=false;
   }
 
   getUserInfo() {
@@ -50,6 +52,7 @@ export class AnnotationApi {
         data.org="Academia",
         data.country="International"*/
         console.log('userinfo', data);
+        this.userinfo=data
         this.ea.publish(new Userinfo(data));
         return data
       })
@@ -188,6 +191,7 @@ export class AnnotationApi {
       this.annotationsurl,
       {
         method: "POST",
+        headers:{'Authorization':'Bearer '+this.userinfo.token},
         body: json(an)
       })
       .then(response => {

@@ -17,7 +17,10 @@ def is_logged_in():
 
 #return user info
 def get_user_info():
-    return session[USER_INFO]
+    ui = session[USER_INFO]
+    ui['token']=session[AUTH_TOKEN_KEY]
+    print('get_user_info',ui['name'])
+    return ui
 
 # gets data from user_info structure returned by google oauth and converts to json
 def convert(ui):
@@ -25,6 +28,8 @@ def convert(ui):
             'provider':ui['iss'],'email':ui['email'],'id':ui['sub']}
     return myui
 
+# store the token and user information as obtained from oauth
+# in session only - no DB yet
 def handle_authorize(remote, token, user_info):
     if token:
         print('handle_authorize remote name: token',remote.name,token)
@@ -39,8 +44,11 @@ def handle_authorize(remote, token, user_info):
         return redirect(BASE_URI,code=302)
     raise Exception('User not logged in.')
 
+
+# register flask blueprint for google login logout and auth
+# using authlib and loginpass
+
 def register(app):
-    # declare oauth - authlib and loginpass
     oauth = OAuth(app)
     googlebp = create_flask_blueprint(Google, oauth, handle_authorize)
     app.register_blueprint(googlebp, url_prefix='/google')

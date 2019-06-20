@@ -10,5 +10,5 @@ def index():
     if google3_auth.is_logged_in():
         user_info = google3_auth.get_user_info()
         return jsonify(user_info)
-    return jsonify({"status":"not logged in."})
+    return jsonify({"name":"Guest","status":"not logged in."})
 

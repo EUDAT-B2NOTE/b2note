@@ -22,5 +22,8 @@ export class Account {
     console.log('submitmanualtarget()',this.manualtarget)
     this.api.setManualTarget(this.manualtarget);
   }
+  allowGoogle(){
+    console.log('allowgoogle() not used set via global api.allowgoogle directly')
+  }
 
 }

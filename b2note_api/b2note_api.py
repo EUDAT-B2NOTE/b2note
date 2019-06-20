@@ -10,6 +10,7 @@ import b2note_api_services
 #import google_auth
 #import google2_auth
 import google3_auth
+import b2access_auth
 
 # configures endpoint stored in annotation id's
 prefix = '/annotations'
@@ -45,6 +46,7 @@ app.secret_key=os.environ.get("GAUTH_B2NOTE_SECRET_KEY", default=False)
 #app.register_blueprint(google2_auth.app)
 # register google auth oauth provider
 google3_auth.register(app)
+b2access_auth.register(app)
 
 # register EVE custom hook on instert
 app.on_insert_annotations += addAnnotationId

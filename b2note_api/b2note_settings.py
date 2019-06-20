@@ -18,8 +18,10 @@ b2note_eve_settings = {
     'PAGINATION_LIMIT':8192,
     'SECRET_KEY' : os.environ.get('B2NOTE_SECRET_KEY',default=False),
     'GOOGLE_CLIENT_ID': os.environ.get("GAUTH_CLIENT_ID", default=False),
-    'GOOGLE_CLIENT_SECRET': os.environ.get("GAUTH_CLIENT_SECRET", default=False)
-  }
+    'GOOGLE_CLIENT_SECRET': os.environ.get("GAUTH_CLIENT_SECRET", default=False),
+    'B2ACCESS_CLIENT_ID': os.environ.get("B2ACCESS_CLIENT_ID", default=False),
+    'B2ACCESS_CLIENT_SECRET': os.environ.get("B2ACCESS_CLIENT_SECRET", default=False)
+}
 
 b2note_swagger_settings= {
     'title': 'B2NOTE Api',
