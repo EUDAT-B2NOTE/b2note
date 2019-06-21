@@ -8,6 +8,9 @@
     development: https://unity.eudat-aai.fz-juelich.de/
     production: https://b2access.eudat.eu).
 
+    :copyright: (c) 2019 by Tomas Kulhanek, ESDF
+    :license: MIT, see LICENSE for more details.
+
 """
 
 from loginpass._core import UserInfo, OAuthBackend
