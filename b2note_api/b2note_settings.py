@@ -1,5 +1,5 @@
-# Setting for Eve framework and mongodb connection
-
+"""Setting for Eve framework and related services
+"""
 from b2note_schema import *
 import os
 

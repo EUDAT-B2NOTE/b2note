@@ -1,3 +1,11 @@
+/**
+ * Configures webpack
+ *
+ * customized in order to produce one app.bundle
+ * and add copy all files in static/ folder into dist/ folder
+ *
+ */
+
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');

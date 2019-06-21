@@ -1,4 +1,8 @@
-# schemas for annotations and it's parts as a base for MONGODB collection validation made by Eve framework
+"""schema definitions for annotation and it's parts
+
+the schema definition is base for validation before a data artefact is stored into MONGODB collection
+the schema validation is executed by Eve framework
+"""
 
 string_or_list_of_strings = {'anyof': [
     {'type': 'string'},  # single string

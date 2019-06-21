@@ -1,6 +1,11 @@
+/**
+ * implements Download page and it's functionality
+ *
+ * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
+ * @since 06/2019
+ */
+
 import * as jsonld from 'jsonld';
-//import {Readable} from 'stream'
-//import {Parser} from '@rdfjs/parser-jsonld'
 import {AnnotationApi} from '../components/annotationapi';
 import {inject} from 'aurelia-framework';
 

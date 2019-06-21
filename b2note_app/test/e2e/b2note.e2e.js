@@ -25,12 +25,12 @@ describe('aurelia skeleton app', function() {
   it('should display 9 navigation tabs with hrefs', async () => {
     let items = await poSkeleton.getPageTabs();//.then(function(items){
       //console.log('items lenght',items.length);
-      expect(items.length).toBe(9);
+      expect(items.length).toBe(7);
       expect(await items[0].getAttribute('href')).toMatch(/.*#\/$/);
       expect(await items[1].getAttribute('href')).toMatch(/.*#\/b2note_account$/);
-      expect(await items[8].getAttribute('href')).toMatch(/.*#\/b2note_logout$/);
-      expect(await items[7].getAttribute('href')).toMatch(/.*#\/b2note_login$/);
-      expect(await items[6].getAttribute('href')).toMatch(/.*#\/b2note_help$/);
+      expect(await items[6].getAttribute('href')).toMatch(/.*#\/b2note_logout$/);
+      expect(await items[5].getAttribute('href')).toMatch(/.*#\/b2note_login$/);
+      expect(await items[4].getAttribute('href')).toMatch(/.*#\/b2note_help$/);
     });
 
 });

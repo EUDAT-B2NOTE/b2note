@@ -1,5 +1,24 @@
-import {Userinfo} from './messages';
+/**
+ * AnnotationApi component to serve AnnotationApi and shared properties and functionalities
+ *
+ * in order to share properties, it's instance should be injected as singleton by aurelia-framework
+ * using e.g.:
+ *
+ *   @inject(AnnotationApi)
+ *   export class Myclass {
+ *      constructor(api) {
+ *        this.api = api
+ *      }
+ *      mymethod(){
+ *          //now AnnotationApi methods can be called or shared properties can be retrieved
+ *          this.api.getUserInfo()
+ *      }
+ *
+ * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
+ * @since 06/2019
+ */
 
+import {Userinfo} from './messages';
 import {EventAggregator} from 'aurelia-event-aggregator';
 import {HttpClient, json} from 'aurelia-fetch-client';
 import {inject} from 'aurelia-framework';
@@ -8,7 +27,7 @@ import {inject} from 'aurelia-framework';
 export class AnnotationApi {
 
   constructor(ea, client) {
-    this.userinfo ={}
+
     this.client = client;
     if (this.client.configure) {
       this.client.configure(config => {
@@ -25,6 +44,7 @@ export class AnnotationApi {
       });
     }
     this.ea = ea;
+    this.userinfo ={};
     this.query = [];
     this.manualtarget = true;
     this.apiurl = window.location.protocol+'//'+window.location.host+'/api';
@@ -33,8 +53,14 @@ export class AnnotationApi {
     //enhance the pagination up to EVE limit - see b2note_settings.py for pagination limit to make it bigger
     this.maxresult="max_result=8192";
     this.allowgoogle=false;
+    this.searchdialog='dropdown','array','recursive'
   }
 
+  /**
+   * fetch user info from api/userinfo endpoint and returns parsed data structure from json response
+   * throws exception in case of error
+   * @returns {Q.Promise<any> | promise.Promise<T | never> | promise.Promise<T | never> | * | undefined | Promise<T | never>}
+   */
   getUserInfo() {
     return this.client.fetch(this.userinfourl)
       .then(response => {

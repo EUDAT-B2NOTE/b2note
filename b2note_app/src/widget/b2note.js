@@ -1,12 +1,18 @@
+/**
+ * main widget component to be displayed - tabs are rendered as router buttons,
+ * icons are defined in custom settings property
+ * all pages are references by PLATFORM.moduleName()
+ *
+ * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
+ * @since 06/2019
+ */
+
 import {PLATFORM} from 'aurelia-pal';
 import 'font-awesome/css/font-awesome.css';
 import {AnnotationApi} from '../components/annotationapi';
 import {inject} from 'aurelia-framework';
-import {Router, RouterConfiguration} from 'aurelia-router'
-
 
 @inject(AnnotationApi)
-
 export class B2note {
 
   constructor(api) {
@@ -40,22 +46,6 @@ export class B2note {
         nav: true,
         title: 'Search',
         settings: { icon: 'fa fa-search'}
-      },
-      {
-        route: 'b2note_search2',
-        name: 'b2note_search2',
-        moduleId: PLATFORM.moduleName('../pages/search2'),
-        nav: true,
-        title: 'Search',
-        settings: { icon: 'fa fa-search-plus'}
-      },
-      {
-        route: 'b2note_search3',
-        name: 'b2note_search3',
-        moduleId: PLATFORM.moduleName('../pages/search3'),
-        nav: true,
-        title: 'Search',
-        settings: { icon: 'fa fa-search-minus'}
       },
       {
         route: 'b2note_download',

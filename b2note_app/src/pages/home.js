@@ -1,3 +1,11 @@
+/**
+ * implements Home page - Creation of annotation
+ * @todo implement target id and target source as parameters from URL
+ *
+ * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
+ * @since 06/2019
+ */
+
 import {AnnotationApi} from '../components/annotationapi';
 import {inject} from 'aurelia-framework';
 
@@ -24,7 +32,6 @@ export class Home {
   }
 
   attached() {
-//  console.log('Home.attached()',this.manualtarget);
     this.manualtarget = this.api.getManualTarget();
     this.api.getUserInfo()
       .then(data => {

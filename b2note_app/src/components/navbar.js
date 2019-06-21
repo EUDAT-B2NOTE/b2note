@@ -1,3 +1,10 @@
+/**
+ * Navigation Bar component renders icons and appropriate
+ * anchors for pages
+ *
+ * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
+ * @since 06/2019
+ */
 import {EventAggregator} from 'aurelia-event-aggregator';
 import {Userinfo} from './messages'
 import {bindable, inject} from 'aurelia-framework';

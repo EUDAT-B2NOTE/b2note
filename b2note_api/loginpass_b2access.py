@@ -1,13 +1,17 @@
 """
     loginpass.b2access
     ~~~~~~~~~~~~~~~~
-    Loginpass Backend of B2ACCESS (https://b2access.eudat.eu).
+    Loginpass Backend of B2ACCESS
 
-    :copyright: (c) 2019 by Tomas Kulhanek
+    gets endpoint from B2ACCESS_API_URL environment variable, if not specified, default development url is used
+
+    development: https://unity.eudat-aai.fz-juelich.de/
+    production: https://b2access.eudat.eu).
 
 """
 
 from loginpass._core import UserInfo, OAuthBackend
+import os
 
 #Authorization Grant 	https://unity.eudat-aai.fz-juelich.de:443/oauth2-as/oauth2-authz 	https://b2access.eudat.eu:443/oauth2-as/oauth2-authz
 #Access Token 	https://unity.eudat-aai.fz-juelich.de:443/oauth2/token 	https://b2access.eudat.eu:443/oauth2/token
@@ -15,7 +19,7 @@ from loginpass._core import UserInfo, OAuthBackend
 #User information 	https://unity.eudat-aai.fz-juelich.de:443/oauth2/userinfo 	https://b2access.eudat.eu:443/oauth2/userinfo
 
 # development endpoint
-B2ACCESS_API_URL = 'https://unity.eudat-aai.fz-juelich.de/'
+B2ACCESS_API_URL = os.environ.get('B2ACCESS_API_URL',default='https://unity.eudat-aai.fz-juelich.de/')
 # production endpoint
 # B2ACCESS_API_URL = 'https://b2access.eudat.eu/'
 B2ACCESS_TOKEN_URL = B2ACCESS_API_URL + 'oauth2/token'
@@ -39,14 +43,9 @@ class B2Access(OAuthBackend):
         print('b2access profile kwargs:',kwargs)
         resp = self.get(B2ACCESS_USERINFO_SUFFIX,**kwargs)
         data = resp.json()
-        #print('b2access profile() data:',data)
         params = {
             'sub': data['sub'],
             'name': data['name'],
             'email': data['email'],
-            #'preferred_username': data['login'],
-            #'profile': data['html_url'],
-            #'picture': data['avatar_url'],
-            #'website': data.get('blog'),
         }
         return UserInfo(params)

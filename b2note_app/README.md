@@ -22,11 +22,22 @@ Run `au build --env prod`.
 
 ## Unit tests
 
+Unit tests are at `/test/unit/` directory. Every basic component or page should have a unit test to cover at least basic functionality.
+See `test/unit/home.spec.js` how to test component and rendered parts.
+
+You may need to add fetch polyfill if the component uses fetch api during it's lifecycle:
+```javascript 
+import "isomorphic-fetch";  //required if tested component use fetch api
+```
+
 Run `au test` (or `au jest`).
 
 To run in watch mode, `au test --watch` or `au jest --watch`.
 
+
 ## E2E tests
+
+End to end tests are et `test/e2e/`. Router rendering or more complex tests should be made there in order to test basic browser functionality. 
 
 If the dev app is not running, launch it before
 `au run & sleep 10`
@@ -40,5 +51,7 @@ This will run E2E tests using protractor framework.
 Travis CI container uses older version of chrome. The Protractor task downloads 'gecko' driver, which can fail on
 'github rate limit exceeded'. 
 
-Run `au teste2e` in order to test without gecko and on Chrome verison 73. 
+If the dev app is not running, launch it before any other tests: `au run & sleep 10`
+
+Run `au teste2e` in order to test without gecko and on Chrome version 73. 
  

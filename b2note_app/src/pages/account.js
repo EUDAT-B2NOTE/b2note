@@ -1,3 +1,10 @@
+/**
+ * Account page component during activation it retrieves user info
+ * it allows some custom settings
+ * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
+ * @since 06/2019
+ */
+
 import {AnnotationApi} from '../components/annotationapi';
 import {inject} from 'aurelia-framework';
 
@@ -16,14 +23,6 @@ export class Account {
 
   submitB2noteapiurl() {
     this.api.setApiUrl(this.b2noteapiurl);
-  }
-
-  submitManualtarget() {
-    console.log('submitmanualtarget()',this.manualtarget)
-    this.api.setManualTarget(this.manualtarget);
-  }
-  allowGoogle(){
-    console.log('allowgoogle() not used set via global api.allowgoogle directly')
   }
 
 }
