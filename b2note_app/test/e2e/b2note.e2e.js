@@ -26,7 +26,7 @@ describe('aurelia skeleton app', function() {
     let items = await poSkeleton.getPageTabs();//.then(function(items){
       //console.log('items lenght',items.length);
       expect(items.length).toBe(7);
-      expect(await items[0].getAttribute('href')).toMatch(/.*#\/$/);
+      expect(await items[0].getAttribute('href')).toMatch(/.*#\/home$/);
       expect(await items[1].getAttribute('href')).toMatch(/.*#\/b2note_account$/);
       expect(await items[6].getAttribute('href')).toMatch(/.*#\/b2note_logout$/);
       expect(await items[5].getAttribute('href')).toMatch(/.*#\/b2note_login$/);

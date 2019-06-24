@@ -44,7 +44,7 @@ export class B2note {
         moduleId: PLATFORM.moduleName('../pages/home'),
         nav: true,
         title: 'Home',
-        href:'#home',
+        href:'#/home',
         settings: { icon: 'fa fa-home'}
       },
       {
