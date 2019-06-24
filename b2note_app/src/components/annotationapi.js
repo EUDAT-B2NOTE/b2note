@@ -53,7 +53,13 @@ export class AnnotationApi {
     //enhance the pagination up to EVE limit - see b2note_settings.py for pagination limit to make it bigger
     this.maxresult="max_result=8192";
     this.allowgoogle=false;
-    this.searchdialog='dropdown','array','recursive'
+    this.searchdialog='dropdown'//,'array','recursive'
+    //this.target = {id:'',source:''}
+    this.target = {}
+    this.target.id = '';
+    this.target.source = '';
+    this.target.type = 'SpecificResource';
+
   }
 
   /**

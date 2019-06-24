@@ -10,25 +10,41 @@
 import {PLATFORM} from 'aurelia-pal';
 import 'font-awesome/css/font-awesome.css';
 import {AnnotationApi} from '../components/annotationapi';
-import {inject} from 'aurelia-framework';
+import {inject,bindable} from 'aurelia-framework';
 
 @inject(AnnotationApi)
 export class B2note {
+  @bindable targetid;
+  @bindable targetsource;
 
   constructor(api) {
     this.api = api;
   }
 
+  bind(){
+    this.api.targetid = this.targetid;
+    this.api.targetsource = this.targetsource;
+  }
+
  configureRouter(config, router) {
-    console.log('configurerouter()',config,router);
+    //console.log('configurerouter()',config,router);
     config.title = 'B2Note';
     config.map([
       {
-        route: ['', 'b2note_home'],
-        name: 'b2note_home',
+        route: '', redirect:'b2note_home'
+        //name: 'home2',
+        //moduleId: PLATFORM.moduleName('../pages/home'),
+        //nav: false,
+        //title: 'Home',
+        //settings: { icon: 'fa fa-home'}
+      },
+      {
+        route: ['b2note_home','b2note_home/*target'],
+        name: 'home',
         moduleId: PLATFORM.moduleName('../pages/home'),
         nav: true,
         title: 'Home',
+        href:'#home',
         settings: { icon: 'fa fa-home'}
       },
       {

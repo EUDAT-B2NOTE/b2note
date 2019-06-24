@@ -33,10 +33,10 @@ describe('Stage Home Component', () => {
   it('should render inputs and text area', done => {
     component.create(bootstrap).then(() => {
         let nameElement = document.getElementsByTagName('input')[0];
-        expect(nameElement.getAttribute('placeholder')).toContain('handle')
+        expect(nameElement.getAttribute('placeholder')).toContain('uri')
 
         nameElement = document.getElementsByTagName('input')[1];
-        expect(nameElement.getAttribute('placeholder')).toContain('https')
+        expect(nameElement.getAttribute('placeholder')).toContain('uri')
         nameElement = document.getElementsByTagName('input')[2];
         expect(nameElement.getAttribute('placeholder')).toContain('tag')
 
@@ -60,12 +60,12 @@ describe('Stage Home Component', () => {
         expect(nameElement.innerHTML).toContain('Create')
        nameElement = document.getElementsByTagName('button')[2];
         expect(nameElement.innerHTML).toContain('Create')
-       nameElement = document.getElementsByTagName('button')[3];
-        expect(nameElement.innerHTML).toContain('OK')
-        nameElement = document.getElementsByTagName('button')[4];
+       //nameElement = document.getElementsByTagName('button')[3];
+        //expect(nameElement.innerHTML).toContain('OK')
+        nameElement = document.getElementsByTagName('button')[3];
         expect(nameElement.innerHTML).toContain('All my annotation')
 
-        nameElement = document.getElementsByTagName('button')[5];
+        nameElement = document.getElementsByTagName('button')[4];
         expect(nameElement.innerHTML).toContain('All annotations about this file')
         done();
     }).catch(e => {

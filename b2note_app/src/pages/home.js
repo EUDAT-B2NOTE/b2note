@@ -23,12 +23,8 @@ export class Home {
     this.annotationsemantic = '';
     this.annotationkeyword = '';
     this.annotationcomment = '';
-    this.target = {}
-    this.target.id = 'http://hdl.handle.net/11304/3e69a758-dbea-46cb-b9a1-2b2974531c19';
-    this.target.source = 'https://b2share.eudat.eu/api/files/b381828e-59de-4323-b636-7600a6b04bf2/acqu3s';
-    this.target.type = 'SpecificResource';
     this.anid = '';
-    this.showform = true;
+    this.showform = true; this.showack=false; this.showfirstlogin=false;
   }
 
   attached() {
@@ -41,6 +37,21 @@ export class Home {
       .catch(error => { //do nothing or alert
         })
     ;
+  }
+
+  activate(params, routeConfig, navigationInstruction){
+    //parses params in url in form #b2note_home/id=https:/someurl/sdf&source=http://someurl&type=SpecificResource
+    if (params.target) {
+      console.log('home activate()',params.target)
+      let kv = params.target.split('&');
+      for (let kvitem of kv) {
+        let keyvalue = kvitem.split('=');
+        if (keyvalue[0]==='id') this.api.target.id=keyvalue[1];
+        if (keyvalue[0]==='source') this.api.target.source=keyvalue[1];
+        if (keyvalue[0]==='type') this.api.target.type=keyvalue[1];
+       // console.log('api target',this.api.target);
+      }
+    }
   }
 
   switchtab(tabid) {
@@ -64,9 +75,9 @@ export class Home {
           'purpose': 'tagging'
         },
         'target': {
-          'id': this.target.id,
-          'type': this.target.type,
-          'source': this.target.source
+          'id': this.api.target.id,
+          'type': this.api.target.type,
+          'source': this.api.target.source
         },
         'motivation': 'tagging',
         'creator': {
@@ -90,7 +101,7 @@ export class Home {
     this.api.postAnnotation(annotation)
       .then(data => {
         this.anid = data._id;
-        this.showform = false;
+        this.showform = false; this.showack=true;
         this.annotation = data;
         this.annotationtext = JSON.stringify(data, null, 2);
       })
@@ -100,7 +111,16 @@ export class Home {
   }
 
   closeackn() {
-    this.showform = true;
+    this.showform = true; this.showack=false; this.showfirstlogin=false;
+  }
+  closeprofile() {
+    this.closeackn();
+    //TODO send userprofile data to backend to store
+    //this.showform = true; this.showack=false; this.showfirstlogin=false;
+  }
+
+  showfirstlogin(){
+    this.showform = false; this.showack=false; this.showfirstlogin=true;
   }
 
   createKeyword() {
@@ -117,9 +137,9 @@ export class Home {
             'purpose': "tagging"
           },
           'target': {
-            'id': this.target.id,
-            'type': this.target.type,
-            'source': this.target.source
+            'id': this.api.target.id,
+            'type': this.api.target.type,
+            'source': this.api.target.source
           },
           'motivation': 'tagging',
           'creator': {
@@ -154,9 +174,9 @@ export class Home {
             'purpose': "commenting"
           },
           'target': {
-            'id': this.target.id,
-            'type': this.target.type,
-            'source': this.target.source
+            'id': this.api.target.id,
+            'type': this.api.target.type,
+            'source': this.api.target.source
           },
           'motivation': 'commenting',
           'creator': {

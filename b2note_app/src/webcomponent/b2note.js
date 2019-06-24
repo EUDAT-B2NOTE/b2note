@@ -16,7 +16,9 @@ export function configure(aurelia) {
       .globalResources(PLATFORM.moduleName('pages/search'))
       .globalResources(PLATFORM.moduleName('pages/home'))
       .globalResources(PLATFORM.moduleName('pages/help'))
+      .feature(PLATFORM.moduleName('resources/index'))
       .plugin(PLATFORM.moduleName('aurelia-history-browser'))
+      .plugin(PLATFORM.moduleName('aurelia-templating-router'))
       .plugin(PLATFORM.moduleName('aurelia-templating-router'))
 
 
@@ -24,6 +26,7 @@ export function configure(aurelia) {
 
   aurelia.start().then(() => {
     const registry = aurelia.container.get(CustomElementRegistry);
+    registry.fallbackPrefix='b2note-';
     registry.useGlobalElements();
   });
 }
