@@ -7,13 +7,31 @@
   </div>
   <div class.bind="showall ? 'w3-padding':'w3-hide'" style="padding-top:0px !important;">
     <div class="w3-container w3-card-2">
-    <p>All my annotation</p>
+      <h4>All my annotation</h4>
       <table class="w3-border w3-striped w3-card-2 w3-padding">
-        <tr><td>Semantic tag</td><td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${my.semantic.length}&nbsp; </td></tr>
-        <tr><td>Free-text keyword</td><td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${my.keyword.length}&nbsp; </td></tr>
-        <tr><td>Comment</td><td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${my.comment.length}&nbsp; </td></tr>
+        <tr click.delegate="showMySemantic()" class="w3-hover-blue">
+          <td>Semantic tag</td>
+          <td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${my.semantic.length}&nbsp;</td>
+        </tr>
+        <tr click.delegate="showMyKeyword()" class="w3-hover-blue">
+          <td>Free-text keyword</td>
+          <td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${my.keyword.length}&nbsp;</td>
+        </tr>
+        <tr click.delegate="showMyComment()" class="w3-hover-blue">
+          <td>Comment</td>
+          <td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${my.comment.length}&nbsp;</td>
+        </tr>
       </table>
-      </div>
+
+    <div show.bind="showmydetail">
+      <h4>Detail ${showmytitle}</h4>
+      <table class="w3-border w3-striped w3-card-2 w3-padding">
+    <tr repeat.for="tag of my.tags">
+      <td>${tag.body.value}</td><td>${tag.title}</td><td><button class="w3-button fa fa-edit"></button><button class="w3-button fa fa-remove"></button></td>
+    </tr>
+      </table>
+    </div>
+    </div>
   </div>
   <hr/>
 
@@ -24,13 +42,31 @@
   </div>
   <div class.bind="showfile ? 'w3-padding':'w3-hide'" style="padding-top:0px !important;">
     <div class="w3-container w3-card-2">
-    <p>All annotation about this file</p>
+      <p>All annotation about this file</p>
       <table class="w3-border w3-striped w3-card-2 w3-padding">
-        <tr><td>Semantic tag</td><td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${file.semantic.length}&nbsp; </td></tr>
-        <tr><td>Free-text keyword</td><td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${file.keyword.length}&nbsp; </td></tr>
-        <tr><td>Comment</td><td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${file.comment.length}&nbsp; </td></tr>
+        <tr click.delegate="showFileSemantic()" class="w3-hover-blue">
+          <td>Semantic tag</td>
+          <td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${file.semantic.length}&nbsp;</td>
+        </tr>
+        <tr click.delegate="showFileKeyword()" class="w3-hover-blue">
+          <td>Free-text keyword</td>
+          <td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${file.keyword.length}&nbsp;</td>
+        </tr>
+        <tr click.delegate="showFileComment()" class="w3-hover-blue">
+          <td>Comment</td>
+          <td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${file.comment.length}&nbsp;</td>
+        </tr>
       </table>
-      </div>
+
+    <div show.bind="showfiledetail" class="w3-border w3-striped w3-card-2 w3-padding">
+      <h4>Detail ${showfiletitle}</h4>
+      <table class="w3-border w3-striped w3-card-2 w3-padding">
+    <tr repeat.for="tag of file.tags">
+      <td>${tag.body.value}</td><td>${tag.title}</td><td><button class="w3-button fa fa-edit"></button><button class="w3-button fa fa-remove"></button></td>
+    </tr>
+      </table>
+    </div>
+    </div>
   </div>
 
 

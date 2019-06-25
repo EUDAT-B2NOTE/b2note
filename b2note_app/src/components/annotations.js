@@ -18,15 +18,20 @@ export class Annotations {
     this.file.semantic=[];
     this.file.keyword=[];
     this.file.comment=[];
+    this.file.tags=this.file.semantic;//reference
     this.my = {};
     this.my.semantic=[];
     this.my.keyword=[];
     this.my.comment=[];
+    this.my.tags=this.my.semantic;//reference
+    this.showmydetail=false;
+    this.showfiledetail=false;
 
   }
 
   switchAll() {
     this.showall = !this.showall;
+    if (this.showfile) this.showfile=false;
     //if (this.my.semantic.length==0) {
       this.api.getAllMyAnnotationsSemantic()
         .then(data=>{
@@ -49,6 +54,7 @@ export class Annotations {
 
   switchFile() {
     this.showfile = !this.showfile;
+    if (this.showall) this.showall=false;
     //if (this.file.semantic.length==0) {
       this.api.getAllAnnotationsFileSemantic()
         .then(data=>{
@@ -68,4 +74,49 @@ export class Annotations {
         })
     //}
   }
+
+  //sets values of tags through array to find TextualValue and set it
+  setvalue(tags){
+    for (let tag of tags) {
+      if (tag.body.items && tag.body.items.length>0) tag.body.value=tag.body.items[tag.body.items.length-1].value
+      else
+        if (tag.body.source) tag.body.value=tag.body.source;
+
+    }
+    console.log('Annotations, tags',tags)
+  }
+
+  showMySemantic(){
+    this.showmydetail=true;
+    this.showmytitle="Semantic"
+    this.my.tags=this.my.semantic;
+    this.setvalue(this.my.tags)
+  }
+  showMyKeyword(){
+    this.showmydetail=true;
+    this.showmytitle="Free-text keyword"
+    this.my.tags=this.my.keyword;
+  }
+  showMyComment(){
+    this.showmydetail=true;
+    this.showmytitle="Comment"
+    this.my.tags=this.my.comment;
+  }
+  showFileSemantic(){
+    this.showfiledetail=true;
+    this.showfiletitle="Semantic"
+    this.file.tags=this.file.semantic;
+    this.setvalue(this.file.tags)
+  }
+  showFileKeyword(){
+    this.showfiledetail=true;
+    this.showfiletitle="Free-text keyword"
+    this.file.tags=this.file.keyword;
+  }
+  showFileComment(){
+    this.showfiledetail=true;
+    this.showfiletitle="Comment"
+    this.file.tags=this.file.comment;
+  }
+
 }
