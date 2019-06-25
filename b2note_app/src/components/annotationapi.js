@@ -51,7 +51,7 @@ export class AnnotationApi {
     this.annotationsurl = this.apiurl + '/annotations';
     this.userinfourl = this.apiurl + '/userinfo';
     //enhance the pagination up to EVE limit - see b2note_settings.py for pagination limit to make it bigger
-    this.maxresult="max_result=8192";
+    this.maxresult=8192;
     this.allowgoogle=false;
     this.searchdialog='dropdown'//,'array','recursive'
     //this.target = {id:'',source:''}
@@ -68,6 +68,9 @@ export class AnnotationApi {
    * @returns {Q.Promise<any> | promise.Promise<T | never> | promise.Promise<T | never> | * | undefined | Promise<T | never>}
    */
   getUserInfo() {
+    let that=this
+    if (this.userinfo.id) return new Promise(function(resolve,reject){resolve(that.userinfo)})
+    else
     return this.client.fetch(this.userinfourl)
       .then(response => {
         //console.log(response);
@@ -84,7 +87,7 @@ export class AnnotationApi {
         data.org="Academia",
         data.country="International"*/
         console.log('userinfo', data);
-        this.userinfo=data
+        this.userinfo=data;
         this.ea.publish(new Userinfo(data));
         return data
       })
@@ -242,7 +245,7 @@ export class AnnotationApi {
   }
 
   getAllAnnotations() {
-    return this.client.fetch(this.annotationsurl+"?"+this.maxresult)
+    return this.client.fetch(this.annotationsurl+"?max_results="+this.maxresult)
       .then(response => {
         //console.log(response);
         if (response.ok) return response.json()
@@ -259,11 +262,60 @@ export class AnnotationApi {
 
   }
 
-  getAllMyAnnotations() {
+  getAllAnnotationsFileSemantic() {
+  return this.getAllAnnotationsAboutThisFile('"$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"SpecificResource"},{"body.type":"Composite"}]}]')
+  }
+  //https://b2note.bsc.es/api/annotations?where={"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]}
+  getAllAnnotationsFileKeyword() {
+  return this.getAllAnnotationsAboutThisFile('"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]')
+  }
+
+  getAllAnnotationsFileComment() {
+  return this.getAllAnnotationsAboutThisFile('"body.purpose":"commenting"')
+  }
+
+
+  getAllAnnotationsAboutThisFile(filter ="") {
+    let myfilter='?where={"target.id":"'+this.target.id+'"'+(filter.length>0?','+filter+'}':'}');
+    return this.client.fetch(this.annotationsurl+myfilter+'&max_results='+this.maxresult)
+      .then(response => {
+        //console.log(response);
+        if (response.ok) return response.json()
+        else throw response
+      })
+      .then(data => {
+        //console.log('postAnnotation() data', data);
+        return data
+      })
+      .catch(error => {
+        console.log('getAnnotation() error', error);
+        throw error;
+      })
+
+  }
+
+  //https://b2note.bsc.es/api/annotations?where={"$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"SpecificResource"},{"body.type":"Composite"}]}]}
+  getAllMyAnnotationsSemantic() {
+  return this.getAllMyAnnotations('"$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"SpecificResource"},{"body.type":"Composite"}]}]')
+  }
+  //https://b2note.bsc.es/api/annotations?where={"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]}
+  getAllMyAnnotationsKeyword() {
+  return this.getAllMyAnnotations('"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]')
+  }
+
+  getAllMyAnnotationsComment() {
+  return this.getAllMyAnnotations('"body.purpose":"commenting"')
+  }
+
+  //http://localhost/api/annotations?where={"creator.id":"1527d37f-c884-43d4-b7fc-cfa87062d827","$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"SpecificResource"},{"body.type":"Composite"}]}]}};
+  
+getAllMyAnnotations(filter="") {
     return this.getUserInfo()
       .then(ui => {
         let userinfo = ui;
-        return this.client.fetch(this.annotationsurl+'?where={"creator.id":"'+ui.id+'"}&"'+this.maxresult)
+        let myfilter='?where={"creator.id":"'+ui.id+'"'+(filter.length>0?','+filter+'}':'}'); //this will append filter query if it is not empty
+        console.log('getallmyannotations',filter,myfilter);
+        return this.client.fetch(this.annotationsurl+myfilter+'&max_results='+this.maxresult)
           .then(response => {
             //console.log(response);
             if (response.ok) return response.json()

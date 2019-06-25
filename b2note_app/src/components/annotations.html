@@ -8,6 +8,11 @@
   <div class.bind="showall ? 'w3-padding':'w3-hide'" style="padding-top:0px !important;">
     <div class="w3-container w3-card-2">
     <p>All my annotation</p>
+      <table class="w3-border w3-striped w3-card-2 w3-padding">
+        <tr><td>Semantic tag</td><td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${my.semantic.length}&nbsp; </td></tr>
+        <tr><td>Free-text keyword</td><td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${my.keyword.length}&nbsp; </td></tr>
+        <tr><td>Comment</td><td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${my.comment.length}&nbsp; </td></tr>
+      </table>
       </div>
   </div>
   <hr/>
@@ -20,6 +25,11 @@
   <div class.bind="showfile ? 'w3-padding':'w3-hide'" style="padding-top:0px !important;">
     <div class="w3-container w3-card-2">
     <p>All annotation about this file</p>
+      <table class="w3-border w3-striped w3-card-2 w3-padding">
+        <tr><td>Semantic tag</td><td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${file.semantic.length}&nbsp; </td></tr>
+        <tr><td>Free-text keyword</td><td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${file.keyword.length}&nbsp; </td></tr>
+        <tr><td>Comment</td><td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${file.comment.length}&nbsp; </td></tr>
+      </table>
       </div>
   </div>
 

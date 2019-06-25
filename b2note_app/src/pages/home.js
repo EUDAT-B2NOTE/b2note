@@ -52,6 +52,7 @@ export class Home {
        // console.log('api target',this.api.target);
       }
     }
+
   }
 
   switchtab(tabid) {
