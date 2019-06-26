@@ -6,12 +6,15 @@
  */
 
 import {AnnotationApi} from '../components/annotationapi';
+import {EventAggregator} from 'aurelia-event-aggregator';
 import {inject} from 'aurelia-framework';
+import {Taginfo} from "./messages";
 
-@inject(AnnotationApi)
+@inject(AnnotationApi,EventAggregator)
 export class Annotations {
-  constructor(api) {
+  constructor(api,ea) {
     this.api=api;
+    this.ea=ea;
     this.showall = false;
     this.showfile = false;
     this.file = {};
@@ -117,6 +120,26 @@ export class Annotations {
     this.showfiledetail=true;
     this.showfiletitle="Comment"
     this.file.tags=this.file.comment;
+  }
+
+  showdetail(tag,domid){
+    let taginfo = tag;
+    taginfo.domid=domid;
+    taginfo.mode='show';
+    this.ea.publish(new Taginfo(taginfo));
+  }
+  edittag(tag,domid){
+    let taginfo = tag;
+    taginfo.domid=domid;
+    taginfo.mode='edit';
+    this.ea.publish(new Taginfo(taginfo));
+
+  }
+  removetag(tag,domid){
+    let taginfo = tag;
+    taginfo.domid=domid;
+    taginfo.mode='remove';
+    this.ea.publish(new Taginfo(taginfo));
   }
 
 }

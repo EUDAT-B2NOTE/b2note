@@ -11,3 +11,11 @@ export class Userinfo {
   }
 }
 
+// domid  - id of DOM element to address this message
+// value - value of annotation
+export class Taginfo {
+  constructor(taginfo) {
+    this.taginfo = taginfo;
+  }
+}
+

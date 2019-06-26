@@ -1,4 +1,4 @@
-import {bindable, bindingMode} from 'aurelia-framework';
+import {bindable} from 'aurelia-framework';
 
 export class Userprofile{
 @bindable userinfo;
