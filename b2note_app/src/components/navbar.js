@@ -16,6 +16,7 @@ export class Navbar {
   constructor(ea) {
     this.username = "";
     this.ea = ea;
+    this.loggedin=false;
   }
 
   attached() {
@@ -29,6 +30,7 @@ export class Navbar {
   changeUserInfo(userinfo) {
     console.log('changeuserinfo:', userinfo);
     this.username = userinfo.pseudo;
+    this.loggedin = (userinfo.id) && (userinfo.id.length>0);
   }
 
 }

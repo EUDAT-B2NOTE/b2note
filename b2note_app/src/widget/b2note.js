@@ -31,20 +31,12 @@ export class B2note {
     config.title = 'B2Note';
     config.map([
       {
-        route: '', redirect:'b2note_home'
-        //name: 'home2',
-        //moduleId: PLATFORM.moduleName('../pages/home'),
-        //nav: false,
-        //title: 'Home',
-        //settings: { icon: 'fa fa-home'}
-      },
-      {
-        route: ['b2note_home','b2note_home/*target'],
+        route: ['','b2note_home','b2note_home/*target'],
         name: 'home',
         moduleId: PLATFORM.moduleName('../pages/home'),
         nav: true,
         title: 'Home',
-        href:'#/home',
+        href:'#/',
         settings: { icon: 'fa fa-home'}
       },
       {
@@ -84,16 +76,8 @@ export class B2note {
         name: 'b2note_login',
         moduleId: PLATFORM.moduleName('../pages/login'),
         nav: true,
-        title: 'Login',
-        settings: { icon: 'fa fa-sign-in'}
-      },
-      {
-        route: 'b2note_logout',
-        name: 'b2note_logout',
-        moduleId: PLATFORM.moduleName('../pages/logout'),
-        nav: true,
-        title: 'Logout',
-        settings: { icon: 'fa fa-sign-out'}
+        title: 'Login/Logout',
+        settings: { icon: '',iconlogin:'fa fa-sign-in',iconlogout:'fa fa-sign-out'}
       }
     ]);
     this.router = router;

@@ -59,7 +59,18 @@ export class AnnotationApi {
     this.target.id = '';
     this.target.source = '';
     this.target.type = 'SpecificResource';
+  }
 
+  isLoggedIn() {
+    let that=this;
+    if (this.userinfo.id) return new Promise(function(resolve,reject){resolve(that.userinfo.id.length>0)})
+    else {
+      return this.getUserInfo()
+        .then(ui =>{
+          return (ui.id) && (ui.id.length>0);
+        })
+
+    }
   }
 
   /**
@@ -68,7 +79,7 @@ export class AnnotationApi {
    * @returns {Q.Promise<any> | promise.Promise<T | never> | promise.Promise<T | never> | * | undefined | Promise<T | never>}
    */
   getUserInfo() {
-    let that=this
+    let that=this;
     if (this.userinfo.id) return new Promise(function(resolve,reject){resolve(that.userinfo)})
     else
     return this.client.fetch(this.userinfourl)

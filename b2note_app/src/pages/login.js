@@ -18,6 +18,11 @@ constructor(api){
 
 attached(){
   this.allowgoogle=this.api.allowgoogle;
+  this.api.isLoggedIn()
+    .then(data => {
+      this.loggedin=data;
+    })
+
 }
 
 }
