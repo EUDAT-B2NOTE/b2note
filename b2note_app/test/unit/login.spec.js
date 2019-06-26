@@ -3,22 +3,23 @@ import {bootstrap} from 'aurelia-bootstrapper';
 import {StageComponent} from 'aurelia-testing';
 import {PLATFORM} from 'aurelia-pal';
 
-describe('Stage Logout Component', () => {
+describe('Stage Login Component', () => {
   let component;
 
   beforeEach(() => {
     component = StageComponent
-      .withResources(PLATFORM.moduleName('pages/logout'))
-      .inView("<logout></logout>")
+      .withResources(PLATFORM.moduleName('pages/login'))
+      .inView("<login></login>")
 
   });
 
   afterEach(() => component.dispose());
 
-  it('should render logout button', done => {
+  it('should render login or logout button', done => {
     component.create(bootstrap).then(() => {
-        let nameElement = document.getElementsByTagName('a')[0];
-        expect(nameElement.innerHTML).toContain('Logout')
+        let element = document.getElementsByTagName('a')[0];
+        //console.log('login test',nameElement);
+        expect(element.innerHTML).toContain('Login')
         done();
     }).catch(e => {
       fail(e);
