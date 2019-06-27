@@ -30,6 +30,7 @@
           <tr repeat.for="tag of my.tags" class="w3-hover-blue">
             <td click.delegate="showdetail(tag,'my')">${tag.body.value}</td>
             <td>${tag.title}</td>
+            <td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${tag.target.items.length}&nbsp; </td>
             <td>
               <button class="w3-button fa fa-edit" click.delegate="edittag(tag,'my')"></button>
               <button class="w3-button fa fa-remove" click.delegate="removetag(tag,'my')"></button>
@@ -71,6 +72,7 @@
           <tr repeat.for="tag of file.tags" class="w3-hover-blue">
             <td click.delegate="showdetail(tag,'file')">${tag.body.value}</td>
             <td>${tag.title}</td>
+            <td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${tag.target.items.length}&nbsp; </td>
             <td>
               <button class="w3-button fa fa-edit" click.delegate="edittag(tag,'file')"></button>
               <button class="w3-button fa fa-remove"click.delegate="removetag(tag,'file')"></button>
