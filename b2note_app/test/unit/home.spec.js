@@ -56,17 +56,15 @@ describe('Stage Home Component', () => {
     component.create(bootstrap).then(() => {
         let nameElement = document.getElementsByTagName('button')[0];
         expect(nameElement.innerHTML).toContain('Create')
- nameElement = document.getElementsByTagName('button')[1];
+        nameElement = document.getElementsByTagName('button')[1];
         expect(nameElement.innerHTML).toContain('Create')
-       nameElement = document.getElementsByTagName('button')[2];
+        nameElement = document.getElementsByTagName('button')[2];
         expect(nameElement.innerHTML).toContain('Create')
        //nameElement = document.getElementsByTagName('button')[3];
         //expect(nameElement.innerHTML).toContain('OK')
         nameElement = document.getElementsByTagName('button')[3];
         expect(nameElement.innerHTML).toContain('All my annotation')
 
-        nameElement = document.getElementsByTagName('button')[4];
-        expect(nameElement.innerHTML).toContain('All annotations about this file')
         done();
     }).catch(e => {
       fail(e);
