@@ -35,47 +35,39 @@ export class Annotations {
   switchAll() {
     this.showall = !this.showall;
     if (this.showfile) this.showfile=false;
-    //if (this.my.semantic.length==0) {
+    if (this.showall) {
       this.api.getAllMyAnnotationsSemantic()
-        .then(data=>{
-          this.my.semantic=data._items;
+        .then(data => {
+          this.my.semantic = data._items;
         })
-    //}
-    //if (this.my.keyword.length==0) {
       this.api.getAllMyAnnotationsKeyword()
-        .then(data=>{
-          this.my.keyword=data._items;
+        .then(data => {
+          this.my.keyword = data._items;
         })
-    //}
-    //if (this.my.comment.length==0) {
       this.api.getAllMyAnnotationsComment()
-        .then(data=>{
-          this.my.comment=data._items;
+        .then(data => {
+          this.my.comment = data._items;
         })
-    //}
+    }
   }
 
   switchFile() {
     this.showfile = !this.showfile;
     if (this.showall) this.showall=false;
-    //if (this.file.semantic.length==0) {
+    if (this.showfile) {
       this.api.getAllAnnotationsFileSemantic()
-        .then(data=>{
-          this.file.semantic=data._items;
+        .then(data => {
+          this.file.semantic = data._items;
         })
-    //}
-    //if (this.file.keyword.length==0) {
       this.api.getAllAnnotationsFileKeyword()
-        .then(data=>{
-          this.file.keyword=data._items;
+        .then(data => {
+          this.file.keyword = data._items;
         })
-    //}
-    //if (this.file.comment.length==0) {
       this.api.getAllAnnotationsFileComment()
-        .then(data=>{
-          this.file.comment=data._items;
+        .then(data => {
+          this.file.comment = data._items;
         })
-    //}
+    }
   }
 
   //sets values of tags through array to find TextualValue and set it

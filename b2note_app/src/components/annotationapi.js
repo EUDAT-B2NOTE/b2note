@@ -35,25 +35,30 @@ export class AnnotationApi {
           .rejectErrorResponses()
           .withDefaults({
             credentials: 'same-origin',
-            headers: {
+            /*            headers: {
 
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            }
+                          'Accept': 'application/json',
+                          'Content-Type': 'application/json'
+                        }*/
           })
       });
     }
+    this.headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
     this.ea = ea;
-    this.userinfo ={};
+    this.userinfo = {};
     this.query = [];
     this.manualtarget = true;
-    this.apiurl = window.location.protocol+'//'+window.location.host+'/api';
+    this.apiurl = window.location.protocol + '//' + window.location.host + '/api';
     this.annotationsurl = this.apiurl + '/annotations';
     this.userinfourl = this.apiurl + '/userinfo';
+    this.ontologyurl = 'https://b2note.bsc.es/solr/b2note_index';
     //enhance the pagination up to EVE limit - see b2note_settings.py for pagination limit to make it bigger
-    this.maxresult=8192;
-    this.allowgoogle=false;
-    this.searchdialog='dropdown'//,'array','recursive'
+    this.maxresult = 8192;
+    this.allowgoogle = false;
+    this.searchdialog = 'dropdown'//,'array','recursive'
     //this.target = {id:'',source:''}
     this.target = {}
     this.target.id = '';
@@ -62,12 +67,14 @@ export class AnnotationApi {
   }
 
   isLoggedIn() {
-    let that=this;
-    if (this.userinfo.id) return new Promise(function(resolve,reject){resolve(that.userinfo.id.length>0)})
+    let that = this;
+    if (this.userinfo.id) return new Promise(function (resolve, reject) {
+      resolve(that.userinfo.id.length > 0)
+    })
     else {
       return this.getUserInfo()
-        .then(ui =>{
-          return (ui.id) && (ui.id.length>0);
+        .then(ui => {
+          return (ui.id) && (ui.id.length > 0);
         })
 
     }
@@ -79,33 +86,35 @@ export class AnnotationApi {
    * @returns {Q.Promise<any> | promise.Promise<T | never> | promise.Promise<T | never> | * | undefined | Promise<T | never>}
    */
   getUserInfo() {
-    let that=this;
-    if (this.userinfo.id) return new Promise(function(resolve,reject){resolve(that.userinfo)})
+    let that = this;
+    if (this.userinfo.id) return new Promise(function (resolve, reject) {
+      resolve(that.userinfo)
+    })
     else
-    return this.client.fetch(this.userinfourl)
-      .then(response => {
-        //console.log(response);
-        if (response.ok) return response.json();
-        else throw response
-      })
-      .then(data => {
-        if (!data.pseudo) data.pseudo = data.name;
-        data.firstname = data.given_name;
-        data.lastname = data.family_name;
-        /*TODO fill experience,jobtitle,org and country
-        data.experience= "beginner",
-        data.jobtitle="Annotator",
-        data.org="Academia",
-        data.country="International"*/
-        console.log('userinfo', data);
-        this.userinfo=data;
-        this.ea.publish(new Userinfo(data));
-        return data
-      })
-      .catch(error => {
-        console.log('userinfo error:', this.userinfourl,error);
-        throw error;
-      })
+      return this.client.fetch(this.userinfourl)
+        .then(response => {
+          //console.log(response);
+          if (response.ok) return response.json();
+          else throw response
+        })
+        .then(data => {
+          if (!data.pseudo) data.pseudo = data.name;
+          data.firstname = data.given_name;
+          data.lastname = data.family_name;
+          /*TODO fill experience,jobtitle,org and country
+          data.experience= "beginner",
+          data.jobtitle="Annotator",
+          data.org="Academia",
+          data.country="International"*/
+          console.log('userinfo', data);
+          this.userinfo = data;
+          this.ea.publish(new Userinfo(data));
+          return data
+        })
+        .catch(error => {
+          console.log('userinfo error:', this.userinfourl, error);
+          throw error;
+        })
     /*{"id":"101486217992397526303",
     "email":"tmkulhanek@gmail.com",
     "verified_email":true,
@@ -237,7 +246,7 @@ export class AnnotationApi {
       this.annotationsurl,
       {
         method: "POST",
-        headers:{'Authorization':'Bearer '+this.userinfo.token},
+        headers: {'Authorization': 'Bearer ' + this.userinfo.token},
         body: json(an)
       })
       .then(response => {
@@ -256,7 +265,7 @@ export class AnnotationApi {
   }
 
   getAllAnnotations() {
-    return this.client.fetch(this.annotationsurl+"?max_results="+this.maxresult)
+    return this.client.fetch(this.annotationsurl + "?max_results=" + this.maxresult)
       .then(response => {
         //console.log(response);
         if (response.ok) return response.json()
@@ -274,21 +283,22 @@ export class AnnotationApi {
   }
 
   getAllAnnotationsFileSemantic() {
-  return this.getAllAnnotationsAboutThisFile('"$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"SpecificResource"},{"body.type":"Composite"}]}]')
+    return this.getAllAnnotationsAboutThisFile('"$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"Composite"},{"body.type":"SpecificResource"}]}]')
   }
+
   //https://b2note.bsc.es/api/annotations?where={"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]}
   getAllAnnotationsFileKeyword() {
-  return this.getAllAnnotationsAboutThisFile('"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]')
+    return this.getAllAnnotationsAboutThisFile('"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]')
   }
 
   getAllAnnotationsFileComment() {
-  return this.getAllAnnotationsAboutThisFile('"body.purpose":"commenting"')
+    return this.getAllAnnotationsAboutThisFile('"body.purpose":"commenting"')
   }
 
 
-  getAllAnnotationsAboutThisFile(filter ="") {
-    let myfilter='?where={"target.id":"'+this.target.id+'"'+(filter.length>0?','+filter+'}':'}');
-    return this.client.fetch(this.annotationsurl+myfilter+'&max_results='+this.maxresult)
+  getAllAnnotationsAboutThisFile(filter = "") {
+    let myfilter = '?where={"target.id":"' + this.target.id + '"' + (filter.length > 0 ? ',' + filter + '}' : '}');
+    return this.client.fetch(this.annotationsurl + myfilter + '&max_results=' + this.maxresult)
       .then(response => {
         //console.log(response);
         if (response.ok) return response.json()
@@ -307,26 +317,27 @@ export class AnnotationApi {
 
   //https://b2note.bsc.es/api/annotations?where={"$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"SpecificResource"},{"body.type":"Composite"}]}]}
   getAllMyAnnotationsSemantic() {
-  return this.getAllMyAnnotations('"$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"SpecificResource"},{"body.type":"Composite"}]}]')
+    return this.getAllMyAnnotations('"$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"SpecificResource"},{"body.type":"Composite"}]}]')
   }
+
   //https://b2note.bsc.es/api/annotations?where={"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]}
   getAllMyAnnotationsKeyword() {
-  return this.getAllMyAnnotations('"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]')
+    return this.getAllMyAnnotations('"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]')
   }
 
   getAllMyAnnotationsComment() {
-  return this.getAllMyAnnotations('"body.purpose":"commenting"')
+    return this.getAllMyAnnotations('"body.purpose":"commenting"')
   }
 
   //http://localhost/api/annotations?where={"creator.id":"1527d37f-c884-43d4-b7fc-cfa87062d827","$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"SpecificResource"},{"body.type":"Composite"}]}]}};
-  
-getAllMyAnnotations(filter="") {
+
+  getAllMyAnnotations(filter = "") {
     return this.getUserInfo()
       .then(ui => {
         let userinfo = ui;
-        let myfilter='?where={"creator.id":"'+ui.id+'"'+(filter.length>0?','+filter+'}':'}'); //this will append filter query if it is not empty
-        console.log('getallmyannotations',filter,myfilter);
-        return this.client.fetch(this.annotationsurl+myfilter+'&max_results='+this.maxresult)
+        let myfilter = '?where={"creator.id":"' + ui.id + '"' + (filter.length > 0 ? ',' + filter + '}' : '}'); //this will append filter query if it is not empty
+        console.log('getallmyannotations', filter, myfilter);
+        return this.client.fetch(this.annotationsurl + myfilter + '&max_results=' + this.maxresult)
           .then(response => {
             //console.log(response);
             if (response.ok) return response.json()
@@ -342,6 +353,30 @@ getAllMyAnnotations(filter="") {
           })
 
       });
-
   }
+
+  getOntologies(uris) {
+    let query = '("' + uris[0];
+    for (let i = 1; i < uris.length; i++) {
+      query += '" OR "' + uris[i];
+    }
+    query += '")';
+    query = query.replace(/#/g,'%23');
+    console.log('getOntologies query:',query)
+    return this.client.fetch(this.ontologyurl + '/select?q=uris:' + query + '&rows=100&wt=json', {headers: {}})
+      .then(response => {
+        //console.log(response);
+        if (response.ok) return response.json()
+        else throw response
+      })
+      .then(data => {
+        //console.log('postAnnotation() data', data);
+        return data
+      })
+      .catch(error => {
+        console.log('getAnnotation() error', error);
+        throw error;
+      })
+  }
+
 }

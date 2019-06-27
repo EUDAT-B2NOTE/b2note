@@ -1,5 +1,38 @@
 <template>
-  <div show.bind="showtaginfo">
-    <p>Detail ${tagtitle}</p>
+  <div show.bind="showtaginfo" ref="detailtagref">
+    <div show.bind="taginfo.mode==='show'">
+      <p>${tagtitle} <span class="w3-small">[${classlength} classes]</span></p>
+        <div>
+        <table class="w3-border w3-striped w3-card-2 w3-padding">
+          <tr><td>Label</td><td>${class.labels}</td></tr>
+          <tr if.bind="class.description"><td>Definition</td><td>${class.description}</td></tr>
+          <tr><td>Short Form</td><td>${class.short_form}</td></tr>
+          <tr if.bind="class.synonyms"><td>Synonyms</td><td>${class.synonyms}</td></tr>
+          <tr><td>Ontology name</td><td>${class.ontology_name}</td></tr>
+          <tr><td>Ontology acronym</td><td>${class.ontology_acronym}</td></tr>
+          <tr><td>URI</td><td><a class="w3-tiny" href.bind="class.uris" target="_blank">${class.uris}</a></td></tr>
+          <!--tr><td>Also In</td><td></td></tr-->
+        </table>
+        </div>
+      <div>
+        <button class="w3-button w3-small w3-hover-blue" click.delegate="switchprev()" title="previous"><i class="fa fa-arrow-left"></i></button>
+        <span class="w3-small"><b>${classindex}/${classlength}</b></span>
+        <button repeat.for="item of classes" class.bind="item.isfocused ? 'w3-blue w3-button w3-small w3-padding-tiny' : 'w3-light-grey w3-button w3-small w3-hover-blue w3-padding-tiny'" click.delegate="switch(item)" title="${item.ontology_name}"><i class="fa fa-circle-o"></i></button>
+        <button class="w3-button w3-small w3-hover-blue" click.delegate="switchnext()" title="next"><i class="fa fa-arrow-right"></i></button>
+      </div>
+      <div>
+        <p>Used to annotate these files:</p>
+        <table class="w3-border w3-striped w3-card-2 w3-padding">
+          <tr><th title="landing page">id</th><th title="direct link">source</th></tr>
+          <tr><td><a href.bind="taginfo.target.id" class="w3-tiny">${taginfo.target.id}</a></td><td><a href.bind="taginfo.target.source" class="w3-tiny">${taginfo.target.source}</a></td></tr>
+        </table>
+      </div>
+    </div>
+    <div show.bind="taginfo.mode==='edit'">
+      edit
+    </div>
+    <div show.bind="taginfo.mode==='remove'">
+      remove
+    </div>
   </div>
 </template>

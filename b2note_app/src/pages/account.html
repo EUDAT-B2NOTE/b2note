@@ -9,10 +9,11 @@
       <table class="w3-border w3-striped w3-card-2 w3-padding">
         <tr class="w3-margin w3-padding">
           <td class="w3-margin" colspan="2"><label>B2NOTE backend server endpoint:</label> <input
-            value.bind="b2noteapiurl" class="w3-input w3-tiny w3-border"/></td>
-          <td>
-            <button class="w3-button w3-green w3-round" click.delegate="submitB2noteapiurl()">Save</button>
-          </td>
+            value.bind="api.apiurl" class="w3-input w3-tiny w3-border"/></td>
+        </tr>
+        <tr class="w3-margin w3-padding">
+          <td class="w3-margin" colspan="2"><label>B2NOTE SOLR index endpoint:</label> <input
+            value.bind="api.ontologyurl" class="w3-input w3-tiny w3-border"/></td>
         </tr>
         <tr class="w3-margin">
           <td><label>manually fill target urls</label></td>

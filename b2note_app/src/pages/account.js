@@ -17,12 +17,9 @@ export class Account {
   activate() {
     this.api.getUserInfo()
       .then(data =>{this.userinfo = data});
-    this.b2noteapiurl = this.api.getApiUrl();
-    this.manualtarget = this.api.getManualTarget();
+//    this.b2noteapiurl = this.api.getApiUrl();
+//    this.manualtarget = this.api.getManualTarget();
   }
 
-  submitB2noteapiurl() {
-    this.api.setApiUrl(this.b2noteapiurl);
-  }
 
 }
