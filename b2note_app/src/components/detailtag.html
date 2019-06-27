@@ -29,8 +29,24 @@
         <p></p>
       </div>
     </div>
-    <div show.bind="taginfo.mode==='edit'">
-      edit
+    <div show.bind="taginfo.mode==='edit'" ref="detailtagedit">
+      <p>Edit: ${tagtitle} </p>
+      <div id="tab1" show.bind="active==='tab1'">
+        <input placeholder="Type-in to select a tag." value.bind="annotationsemantic"/>
+        <button class="w3-button" click.delegate="createSemantic()">Modify</button>
+
+      </div>
+      <div show.bind="active==='tab2'">
+        <input placeholder="Type-in a keyword." value.bind="annotationkeyword"/>
+        <button class="w3-button" click.delegate="createKeyword()">Modify</button>
+      </div>
+
+      <div show.bind="active==='tab3'">
+        <textarea placeholder="Type your comment." value.bind="annotationcomment">
+        </textarea>
+        <button class="w3-button" click.delegate="createComment()">Modify</button>
+      </div>
+
     </div>
     <div show.bind="taginfo.mode==='remove'">
       remove

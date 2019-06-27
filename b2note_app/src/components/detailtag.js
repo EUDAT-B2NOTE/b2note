@@ -37,47 +37,57 @@ export class Detailtag {
     //
     if (taginfo.domid === this.id) { //taginfo is addressed to this instance
       //visualize
-      console.log('Detailtag.changeTagInfo() taginfo.body', taginfo.body);
-      this.taginfo = taginfo;
-      this.tagtitle = this.taginfo.body.value;
-      this.showtaginfo = true;
-      let ontologies = [];
-      //get the detail information about ontologies used in the annotation body.items
-      if (this.taginfo.body.items && (this.taginfo.body.items.length > 0)) {
-        //collect just ontologies reffered
-        for (let item of this.taginfo.body.items) {
-          if (item.source && (item.source.length > 0)) ontologies.push(item.source)
-        }
-        //get the detail information from SOLR index
-        this.api.getOntologies(ontologies)
-          .then(data => {
-            console.log('changetaginfo() data:', data);
-            //result may contain repeated uris - SOLR index has duplicates
-            //deduplicate
-            let oset = new Set();
-            let oaggr = []
-            for (let doc of data.response.docs) {
-              if (!oset.has(doc.uris)) {
-                oset.add(doc.uris)
-                oaggr.push(doc);
+      if (taginfo.mode === 'show') {
+        console.log('Detailtag.changeTagInfo() taginfo.body', taginfo.body);
+        this.taginfo = taginfo;
+        this.tagtitle = this.taginfo.body.value;
+        this.showtaginfo = true;
+        let ontologies = [];
+        //get the detail information about ontologies used in the annotation body.items
+        if (this.taginfo.body.items && (this.taginfo.body.items.length > 0)) {
+          //collect just ontologies reffered
+          for (let item of this.taginfo.body.items) {
+            if (item.source && (item.source.length > 0)) ontologies.push(item.source)
+          }
+          //get the detail information from SOLR index
+          this.api.getOntologies(ontologies)
+            .then(data => {
+              console.log('changetaginfo() data:', data);
+              //result may contain repeated uris - SOLR index has duplicates
+              //deduplicate
+              let oset = new Set();
+              let oaggr = []
+              for (let doc of data.response.docs) {
+                if (!oset.has(doc.uris)) {
+                  oset.add(doc.uris)
+                  oaggr.push(doc);
+                }
               }
-            }
-            console.log('changetaginfo() oaggr:', oaggr);
-            //now oaggr contains information about ontologies
-            //return oaggr;
-            if (oaggr.length > 0) {
-              this.classes = oaggr;
-              this.class = oaggr[0];
-              this.class.isfocused=true;
-              this.classindex=1;
-              this.classlength=oaggr.length;
-            }
-            //scroll into view
-            this.detailtagref.scrollIntoView()
+              console.log('changetaginfo() oaggr:', oaggr);
+              //now oaggr contains information about ontologies
+              //return oaggr;
+              if (oaggr.length > 0) {
+                this.classes = oaggr;
+                this.class = oaggr[0];
+                this.class.isfocused = true;
+                this.classindex = 1;
+                this.classlength = oaggr.length;
+              }
+              //scroll into view
+              this.detailtagref.scrollIntoView()
 
-          })
+            })
+        }
+        //this.tagtitle=taginfo.tagvalue;
+      } else if (taginfo.mode === 'edit') {
+        console.log('detailtag mode edit tag:',taginfo)
+        this.taginfo = taginfo;
+        this.showtaginfo=true;
+        this.tagtitle = this.taginfo.body.value;
+        this.active = this.taginfo.body.purpose === 'tagging' ? 'tab1' : 'tab3'; //Semantic or Comment
+        if (this.taginfo.body.type == "TextualValue") this.active = 'tab2'; //Keyword
+        this.annotationsemantic=this.annotationkeyword=this.annotationcomment='';
       }
-      //this.tagtitle=taginfo.tagvalue;
     }
   }
 
