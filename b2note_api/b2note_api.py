@@ -37,7 +37,7 @@ app.config['SWAGGER_INFO'] = b2note_settings.b2note_swagger_settings
 app.register_blueprint(swagger)
 
 #register secret key for this app
-app.secret_key=os.environ.get("GAUTH_B2NOTE_SECRET_KEY", default=False)
+app.secret_key=os.environ.get("B2NOTE_SECRET_KEY", default=False)
 
 # delegate registration of oauth providers and related services in app instance
 b2note_auth.register(app)
