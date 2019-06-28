@@ -79,3 +79,5 @@ db.*
 # Accounts DB
 *.sqlite3
 
+# venv
+py3/**
