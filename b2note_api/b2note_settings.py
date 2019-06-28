@@ -11,7 +11,8 @@ b2note_eve_settings = {
     'MONGO_PASSWORD': os.environ['MONGODB_PWD'],
     'DOMAIN': {
         'annotations': {'allow_unknown': True, 'schema': annotation_schema},
-        'ontology':{'allow_unknown':True}
+        'ontology':{'allow_unknown':True},
+        'userprofile':{'allow_unknown':True},
     },
     'RESOURCE_METHODS': ['GET', 'POST', 'DELETE'],
     'ITEM_METHODS': ['GET', 'PATCH', 'PUT', 'DELETE'],
