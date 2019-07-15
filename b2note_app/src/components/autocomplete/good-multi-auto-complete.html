@@ -1,0 +1,36 @@
+<template>
+  <require from="./good-multi-auto-complete.css"></require>
+  <require from="./good-scroll-into-view-if"></require>
+
+  <div class="gmac-container"
+    class.bind="isCurrentValueInvalid ? 'gmac-value-inconsistent' : ''">
+    <input class="gmac-input"         
+        class.bind="additionalClassInput"
+        ref="_suggestionsElementLogic.inputElement"
+        placeholder.bind="placeholder"
+        autocomplete="off"         
+        value.bind="_value"
+        blur.trigger="resetSuggestions()"
+        keydown.delegate="keyPressed($event)"></input>  
+    <div class="gmac-suggestions"
+        ref="_suggestionsElementLogic.suggestionsElement" 
+        style="display:none">
+        <div repeat.for="item of _suggestionsLogic.currentSuggestions"
+            data-item-index="${$index}"
+            good-scroll-into-view-if.bind="$index === _suggestionsLogic.currentHighlightedIndex"
+            mousemove.delegate="!item.isDisabled ? _suggestionsLogic.highlight($index) : false"
+            mousedown.delegate="!item.isDisabled ? select($index) : false">
+            <template replaceable part="suggestion-item-template">
+                <div class="gmac-suggestion-item ${item.isHighlighted ? 'gmac-suggestion-item-highlighted' : ''}">${item.value}</div>
+            </template>
+        </div>
+    </div>    
+    <div if.bind="selectedItems != undefined && selectedItems.length > 0" class="gmac-selected-items">
+        <template repeat.for="item of selectedItems">
+            <template replaceable part="selected-item-template">
+                <span class="gmac-selected-item"><a class="gmac-selected-item-remove" mousedown.delegate="remove($index)">[&times;]</a><span>${item}</span></span>
+            </template>
+        </template>
+    </div>
+  </div>
+</template>

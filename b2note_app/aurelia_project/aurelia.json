@@ -13,6 +13,7 @@
     "id": "babel",
     "fileExtension": ".js"
   },
+
   "build": {
     "options": {
       "server": "dev",

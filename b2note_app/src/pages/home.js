@@ -9,8 +9,24 @@
 import {AnnotationApi} from '../components/annotationapi';
 import {inject} from 'aurelia-framework';
 
+
 @inject(AnnotationApi)
 export class Home {
+/*  private tabs:Tab[];
+  private active:string;
+  annotationsemantic:string;
+  annotationkeyword:string;
+  annotationcomment:string
+  anid:string;
+  showform:boolean
+  showack:boolean
+  showfirstlogin:boolean;
+  manualtarget:boolean;
+  userinfo;
+  enablecreate:boolean;
+  private annotation: any;
+  private annotationtext: string;
+*/
 
   constructor(api) {
     this.api = api;
@@ -25,7 +41,12 @@ export class Home {
     this.annotationcomment = '';
     this.anid = '';
     this.showform = true; this.showack=false; this.showfirstlogin=false;
+    this._availableItems = ["strychnine","glycine","strasdf","glcsdf"];//items;
+    this.selectedItem = null;
+    this.selectedItems = [];// [items[Math.floor(Math.random() * 1000)], items[Math.floor(Math.random() * 1000)]];
   }
+
+
 
   attached() {
     this.manualtarget = this.api.getManualTarget();
@@ -120,7 +141,7 @@ export class Home {
     //this.showform = true; this.showack=false; this.showfirstlogin=false;
   }
 
-  showfirstlogin(){
+  showfirstloginfn(){
     this.showform = false; this.showack=false; this.showfirstlogin=true;
   }
 
@@ -195,4 +216,28 @@ export class Home {
         };
         this.postAnnotation(annotation);
   }
+
+  getSuggestions(value) {
+    console.log('getSuggestions',value);
+        return this._availableItems.filter((item) => item.startsWith(value) ? item : undefined);
+    }
+
+    getSuggestionsForMulti(value) {
+        return this._availableItems.filter((item) => this.selectedItems.indexOf(item) < 0 && item.startsWith(value) ? item : undefined);
+    }
+
+    getOrCreateItemByValue(value){
+        let existingItem = this._availableItems.filter((item) => item === value ? item : undefined)[0];
+        if (existingItem == undefined) {
+            existingItem = value;
+            this._availableItems.push(existingItem);
+        }
+
+        return existingItem;
+    }
 }
+
+/*interface Tab {
+    id:string; label:string
+  }
+*/

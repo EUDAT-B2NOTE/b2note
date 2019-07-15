@@ -28,4 +28,5 @@ export function configure(aurelia) {
 
   //to include other main modules in webpack bundle - just reference them bellow by PLATFORM.moduleName()
   PLATFORM.moduleName('webcomponent/b2note');
+  //PLATFORM.moduleName('aurelia-autocomplete');
 }
