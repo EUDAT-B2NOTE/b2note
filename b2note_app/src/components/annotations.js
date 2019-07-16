@@ -8,7 +8,7 @@
 import {AnnotationApi} from '../components/annotationapi';
 import {EventAggregator} from 'aurelia-event-aggregator';
 import {inject} from 'aurelia-framework';
-import {Taginfo} from "./messages";
+import {Taginfo,Updateall,Updatefile} from "./messages";
 
 @inject(AnnotationApi, EventAggregator)
 export class Annotations {
@@ -29,12 +29,26 @@ export class Annotations {
     this.my.tags = this.my.semantic;//reference
     this.showmydetail = false;
     this.showfiledetail = false;
+  }
 
+  attached() {
+    this.s1 = this.ea.subscribe(Updateall, msg => this.updateAll());
+    this.s2 = this.ea.subscribe(Updatefile, msg => this.updateFile());
+  }
+
+  detached() {
+    this.s2.dispose();
+    this.s1.dispose();
   }
 
   switchAll() {
     this.showall = !this.showall;
     if (this.showfile) this.showfile = false;
+    this.updateAll();
+  }
+
+  updateAll(){
+    this.showmydetail=false;
     if (this.showall) {
       this.api.getAllMyAnnotationsSemantic()
         .then(data => {
@@ -54,6 +68,11 @@ export class Annotations {
   switchFile() {
     this.showfile = !this.showfile;
     if (this.showall) this.showall = false;
+    this.updateFile();
+  }
+
+  updateFile(){
+        this.showfiledetail=false;
     if (this.showfile) {
       this.api.getAllAnnotationsFileSemantic()
         .then(data => {
@@ -68,6 +87,7 @@ export class Annotations {
           this.file.comment = data._items;
         })
     }
+
   }
 
   //sets values of tags through array to find TextualValue (last item) and set it

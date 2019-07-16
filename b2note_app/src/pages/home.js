@@ -7,10 +7,12 @@
  */
 
 import {AnnotationApi} from '../components/annotationapi';
+import {EventAggregator} from 'aurelia-event-aggregator';
 import {inject} from 'aurelia-framework';
+import {Updateall,Updatefile} from '../components/messages';
 
 
-@inject(AnnotationApi)
+@inject(AnnotationApi,EventAggregator)
 export class Home {
 /*  private tabs:Tab[];
   private active:string;
@@ -28,8 +30,9 @@ export class Home {
   private annotationtext: string;
 */
 
-  constructor(api) {
+  constructor(api,ea) {
     this.api = api;
+    this.ea=ea;
     this.tabs = [
       {id: 'tab1', label: 'Semantic annotation'},
       {id: 'tab2', label: 'Free-text keywords'},
@@ -124,6 +127,8 @@ export class Home {
         this.showform = false; this.showack=true;
         this.annotation = data;
         this.annotationtext = JSON.stringify(data, null, 2);
+        this.ea.publish(new Updateall(this.annotation));
+        this.ea.publish(new Updatefile(this.annotation));
       })
       .catch(error => {
         alert('Error while creating annotation. It was not created\n\nHTTP status:' + error.status + '\nHTTP status text:' + error.statusText);
@@ -182,7 +187,7 @@ export class Home {
 
   createComment() {
     console.log('create semantic:', this.annotationcomment)
-    let anvalue = this.annotationkeyword;
+    let anvalue = this.annotationcomment;
         let datetime = new Date();
         let annotation = {
           '@context': 'http://www.w3/org/ns/anno/jsonld',
@@ -215,15 +220,11 @@ export class Home {
         this.postAnnotation(annotation);
   }
 
-  async getSuggestions(value) {
-    console.log('getSuggestions',value);
-    //let data = await this.api.getOntologySuggestions(value)
+  getSuggestions(value) {
         return this.api.getOntologySuggestions(value)
           .then(data =>{
-            console.log('getSuggestions data:',data);
             return data;
           })
-        //return this._availableItems.filter((item) => item.startsWith(value) ? item : undefined);
     }
 
     getSuggestionsForMulti(value) {

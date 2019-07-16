@@ -19,3 +19,15 @@ export class Taginfo {
   }
 }
 
+export class Updateall{
+  constructor(taginfo) {
+    this.taginfo = taginfo;
+  }
+
+}
+export class Updatefile{
+  constructor(taginfo) {
+    this.taginfo = taginfo;
+  }
+}
+

@@ -9,7 +9,7 @@ import {AnnotationApi} from '../components/annotationapi';
 import {inject} from 'aurelia-framework';
 import {bindable} from 'aurelia-framework';
 import {EventAggregator} from 'aurelia-event-aggregator';
-import {Taginfo} from "./messages";
+import {Taginfo,Updateall,Updatefile} from "./messages";
 
 @inject(AnnotationApi, EventAggregator)
 export class Detailtag {
@@ -86,7 +86,12 @@ export class Detailtag {
         this.tagtitle = this.taginfo.body.value;
         this.active = this.taginfo.body.purpose === 'tagging' ? 'tab1' : 'tab3'; //Semantic or Comment
         if (this.taginfo.body.type == "TextualValue") this.active = 'tab2'; //Keyword
-        this.annotationsemantic=this.annotationkeyword=this.annotationcomment='';
+        this.annotationsemantic=this.annotationkeyword=this.annotationcomment=''; //
+      } else if (taginfo.mode === 'remove'){
+        console.log('detailtag mode remove tag:',taginfo);
+        this.taginfo=taginfo;
+        this.showtaginfo=true;
+        this.tagtitle = this.taginfo.body.value;
       }
     }
   }
@@ -111,5 +116,40 @@ export class Detailtag {
     this.class.isfocused=true;
   }
 
+  deleteAnnotation(){
+    this.api.deleteAnnotation(this.taginfo)
+      .then(response=>{
+        console.log('deleteAnnotation() then response',response)
+        this.taginfo.mode="ackremove";
+        if (response.ok) this.tagtitle="Annotation was deleted. ";
+        else this.tagtitle="Error occured during deletion. HTTP status:"+response.status+" text:"+response.statusText;
+      })
+      .catch(response=>{
+        console.log('deleteAnnotation() catch response',response)
+        this.tagtitle="Error occured during deletion. HTTP status:"+response.status+" text:"+response.statusText;
+        this.taginfo.mode="ackremove"
+      })
+  }
+
+  cancelDeleteAnnotation(){
+    this.showtaginfo=false;
+  }
+
+  ok(){
+    this.showtaginfo=false;
+    this.taginfo.mode="";
+    if (this.id==='my') this.ea.publish(new Updateall(this.taginfo));
+    else this.ea.publish(new Updatefile(this.taginfo));
+  }
+
+  createSemantic(){
+
+  }
+  createKeyword(){
+
+  }
+  createComment(){
+
+  }
 
 }

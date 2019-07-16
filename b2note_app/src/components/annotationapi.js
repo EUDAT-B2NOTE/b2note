@@ -243,6 +243,12 @@ export class AnnotationApi {
     return this.manualtarget;
   }
 
+  /**
+   * Sends POST request to create annotation in DB
+   *
+   * @param an annotation conforming W3C annotation data model - validation is made by DB
+   * @returns {Promise} with  response data deserialized from json - annotation with created _id and id
+   */
   postAnnotation(an) {
     return this.client.fetch(
       this.annotationsurl,
@@ -262,6 +268,31 @@ export class AnnotationApi {
       })
       .catch(error => {
         console.log('postAnnotation() error', error);
+        throw error;
+      })
+  }
+
+  /**
+   * Sends DELETE request to delete annotation from DB
+   *
+   * @param an Annotation - _id and _etag are mandatory to delete annotation
+   * @returns {Promise} with response data deserialized from json
+   */
+  deleteAnnotation(an) {
+    return this.client.fetch(
+      this.annotationsurl+'/'+an._id,
+      {
+        method: "DELETE",
+        headers: {'Authorization': 'Bearer ' + this.userinfo.token,'If-Match':an._etag},
+        //body: json(an)
+      })
+      .then(response => {
+        //console.log(response);
+        if (response.ok) return response
+        else throw response
+      })
+      .catch(error => {
+        console.log('deleteAnnotation() error', error);
         throw error;
       })
   }

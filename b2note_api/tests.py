@@ -70,13 +70,21 @@ class B2noteRestApiTestCase(unittest.TestCase):
       data = '{"id":"http://example.org/anno1","body":"http://example.com/post1","target":"http://example.com/page1"}'
       response = self.post(data)
       #print(response.content)
+
       assert b'"_status": "OK"' in response.content
+      #data2 = json.loads(response.content)
+      self.clean(response)
+
+    def clean(self, response):
+        data2 = json.loads(response.content)
+        self.delete(data2["_id"], data2["_etag"]);
 
     def test_create_annotation_bodyValue(self):
       data = '{"id":"http://example.org/anno1","bodyValue":"Comment here","target":"http://example.com/page1"}'
       response = self.post(data)
       #print(response.content)
       assert b'"_status": "OK"' in response.content
+      self.clean(response)
 
 
     def test_missing_target(self):
@@ -104,46 +112,55 @@ class B2noteRestApiTestCase(unittest.TestCase):
       responsedata2 = json.loads(response2.content)
       #print(responsedata2)
       self.assertEqual(responsedata['_id'],responsedata2['_id'])
+      self.clean(response)
 
     def test_stringbody_schema(self):
       body = '{"id":"http://example.org/anno1","body":"http://example.com/post1","target":"http://example.com/page1"}'
       response = self.post(body)
       #print(response.content)
       self.assertIn(b'"_status": "OK"',response.content)
+      self.clean(response)
 
     def test_listbody_schema(self):
       body = '{"id":"http://example.org/anno1","body":["http://example.com/post1","http://example.com/post2"],"target":"http://example.com/page1"}'
       response = self.post(body)
       #print(response.content)
       self.assertIn(b'"_status": "OK"',response.content)
+      self.clean(response)
 
     def test_listbodyids_schema(self):
       body = '{"id":"http://example.org/anno1","body":[{"id":"http://example.com/post1"},{"id":"http://example.com/post2"}],"target":"http://example.com/page1"}'
       response = self.post(body)
       #print(response.content)
       self.assertIn(b'"_status": "OK"',response.content)
+      self.clean(response)
 
     def test_listbodyformat_language_processinglanguage_textdirection_schema(self):
       body = '{"id":"http://example.org/anno1","body":[{"id":"http://example.com/post1","format":"audio/mpeg"},{"id":"http://example.com/post2","format":"application/pdf"}],"target":"http://example.com/page1"}'
       response = self.post(body)
       #print(response.content)
       self.assertIn(b'"_status": "OK"',response.content)
+      self.clean(response)
       body = '{"id":"http://example.org/anno1","body":[{"id":"http://example.com/post1","format":["audio/mpeg","audio/mp3"]},{"id":"http://example.com/post2","format":"application/pdf"}],"target":"http://example.com/page1"}'
       response = self.post(body)
       #print(response.content)
       self.assertIn(b'"_status": "OK"',response.content)
+      self.clean(response)
       body = '{"id":"http://example.org/anno1","body":[{"id":"http://example.com/post1","format":"audio/mpeg","language":"en"},{"id":"http://example.com/post2","format":"application/pdf"}],"target":"http://example.com/page1"}'
       response = self.post(body)
       #print(response.content)
       self.assertIn(b'"_status": "OK"',response.content)
+      self.clean(response)
       body = '{"id":"http://example.org/anno1","body":[{"id":"http://example.com/post1","format":"audio/mpeg","language":"en","processingLanguage":"en-UK"},{"id":"http://example.com/post2","format":"application/pdf"}],"target":"http://example.com/page1"}'
       response = self.post(body)
       #print(response.content)
       self.assertIn(b'"_status": "OK"',response.content)
+      self.clean(response)
       body = '{"id":"http://example.org/anno1","body":[{"id":"http://example.com/post1","format":"audio/mpeg","language":"en","processingLanguage":"en-UK","textDirection":"auto"},{"id":"http://example.com/post2","format":"application/pdf"}],"target":"http://example.com/page1"}'
       response = self.post(body)
       #print(response.content)
       self.assertIn(b'"_status": "OK"',response.content)
+      self.clean(response)
       body = '{"id":"http://example.org/anno1","body":[{"id":"http://example.com/post1","format":"audio/mpeg","language":"en","processingLanguage":"en-UK","textDirection":"badvalue"},{"id":"http://example.com/post2","format":"application/pdf"}],"target":"http://example.com/page1"}'
       response = self.post(body)
       #print(response.content)
@@ -154,6 +171,7 @@ class B2noteRestApiTestCase(unittest.TestCase):
       response = self.post(body)
       #print(response.content)
       self.assertIn(b'"_status": "OK"',response.content)
+      self.clean(response)
       body = '{"id":"http://example.org/anno1","body":{"id":"http://example.com/post1","type":"BadValue"},"target":"http://example.com/page1"}'
       response = self.post(body)
       #print(response.content)
@@ -162,10 +180,12 @@ class B2noteRestApiTestCase(unittest.TestCase):
       response = self.post(body)
       #print(response.content)
       self.assertIn(b'"_status": "OK"',response.content)
+      self.clean(response)
       body = '{"id":"http://example.org/anno1","body":{"id":"http://example.com/post1","type":"Choice","items":["TestValue","TestValue2"]},"target":"http://example.com/page1"}'
       response = self.post(body)
       #print(response.content)
       self.assertIn(b'"_status": "OK"',response.content)
+      self.clean(response)
       body = '{"id":"http://example.org/anno1","body":{"id":"http://example.com/post1","type":"Choice","items":"BadTestValueShouldBeList"},"target":"http://example.com/page1"}'
       response = self.post(body)
       #print(response.content)
@@ -176,31 +196,20 @@ class B2noteRestApiTestCase(unittest.TestCase):
       body ='{"@context":"http://www.w3/org/ns/anno/jsonld","id":"","type":"Annotation","body":{"type":"SpecificResource","source":"protein"},"target":{"id":"http://hdl.handle.net/11304/3e69a758-dbea-46cb-b9a1-2b2974531c19","type":"SpecificResource","source":"https://b2share.eudat.eu/api/files/b381828e-59de-4323-b636-7600a6b04bf2/acqu3s"},"motivation":"tagging","creator":{"type":"Person","nickname":"Guest"},"generator":{"type":"Software","homepage":{"href":"http://localhost/b2note/#/","origin":"http://localhost","protocol":"http:","host":"localhost","hostname":"localhost","port":"","pathname":"/b2note/","search":"","hash":"#/"},"name":"B2Note v2.0"},"created":"2019-06-12T11:01:25.654Z","generated":"2019-06-12T11:01:25.654Z"}'
       response = self.post(body)
       self.assertIn(b'"_status": "OK"',response.content)
+      self.clean(response)
 
     def test_annotationcomposite(self):
       body ='{"@context":"http://www.w3/org/ns/anno/jsonld","id":"","type":"Annotation","body":{"type":"Composite","purpose":"tagging","items":[{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/LNC/MTHU004642"},{"type":"SpecificResource","source":"http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C84183"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/MESH/D013331"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/RCD/x02ML"},{"type":"SpecificResource","source":"http://www.loria.fr/~coulet/ontology/sopharm/version2.0/chebi.owl#CHEBI_28973"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/SNMI/C-30364"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/SNOMEDCT/51200005"},{"type":"SpecificResource","source":"http://phenomebrowser.net/ontologies/mesh/mesh.owl#D03.132.436.681.722"},{"type":"SpecificResource","source":"http://phenomebrowser.net/ontologies/mesh/mesh.owl#D03.438.473.402.681.722"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/LNC/LP14284-1"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/RXNORM/66422"},{"type":"SpecificResource","source":"http://purl.obolibrary.org/obo/DRON_00012737"},{"type":"SpecificResource","source":"http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Strychnine"},{"type":"SpecificResource","source":"http://phenomebrowser.net/ontologies/mesh/mesh.owl#D013331"},{"type":"TextualBody","value":"Strychnine"}]},"target":{"id":"http://hdl.handle.net/11304/3e69a758-dbea-46cb-b9a1-2b2974531c19","type":"SpecificResource","source":"https://b2share.eudat.eu/api/files/b381828e-59de-4323-b636-7600a6b04bf2/acqu3s"},"motivation":"tagging","creator":{"id":"1527d37f-c884-43d4-b7fc-cfa87062d827","type":"Person","nickname":"Tomas Kulhanek"},"generator":{"type":"Software","homepage":{"href":"http://localhost/b2note/#/","origin":"http://localhost","protocol":"http:","host":"localhost","hostname":"localhost","port":"","pathname":"/b2note/","search":"","hash":"#/"},"name":"B2Note v2.0"},"created":"2019-07-16T10:24:24.763Z","generated":"2019-07-16T10:24:24.763Z"}'
       response = self.post(body)
       self.assertIn(b'"_status": "OK"',response.content)
+      self.clean(response)
 
-    def test_deleteannotations(self):
-      response = self.get("")
-      data = json.loads(response.content)
-      for item in data["_items"]:
-        #print('deleting item',item["_id"])
-        response2 = self.delete(item["_id"],item["_etag"])
-        self.assertIn(b'',response2.content)
-
-    # def test_deleteallannotations(self):
-    #   deleteannotations = True
-    #   # delete all annotations
-    #   while deleteannotations:
-    #     response = self.get('')
-    #     data = json.loads(response.content)
-    #     deleteannotations = len(data["_items"])>0
-    #     for item in data["_items"]:
-    #       self.delete( item["_id"],item["_etag"])
-
-
+    def test_deleteannotation(self):
+      data = '{"id":"http://example.org/anno1","body":"http://example.com/post1","target":"http://example.com/page1"}'
+      response = self.post(data)
+      data2 = json.loads(response.content)
+      response2=self.delete(data2["_id"], data2["_etag"]);
+      self.assertIn(b'',response2.content)
 
     def test_apidocs(self):
 
