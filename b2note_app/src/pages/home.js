@@ -217,9 +217,15 @@ export class Home {
         this.postAnnotation(annotation);
   }
 
-  getSuggestions(value) {
+  async getSuggestions(value) {
     console.log('getSuggestions',value);
-        return this._availableItems.filter((item) => item.startsWith(value) ? item : undefined);
+    //let data = await this.api.getOntologySuggestions(value)
+        return this.api.getOntologySuggestions(value)
+          .then(data =>{
+            console.log('getSuggestions data:',data);
+            return data;
+          })
+        //return this._availableItems.filter((item) => item.startsWith(value) ? item : undefined);
     }
 
     getSuggestionsForMulti(value) {

@@ -55,6 +55,7 @@ export class AnnotationApi {
     this.annotationsurl = this.apiurl + '/annotations';
     this.userinfourl = this.apiurl + '/userinfo';
     this.ontologyurl = 'https://b2note.bsc.es/solr/b2note_index';
+    //this.solrurl='https://b2note.bsc.es/solr/b2note_index/select?q=((labels:/stry.*/) AND NOT (labels:/Error[0-9].*/))&sort=norm(labels) desc&fl=labels,uris,ontology_acronym,short_form,synonyms,norm(labels)&wt=json&indent=true&rows=1000';
     //enhance the pagination up to EVE limit - see b2note_settings.py for pagination limit to make it bigger
     this.maxresult = 8192;
     this.allowgoogle = false;
@@ -374,8 +375,48 @@ export class AnnotationApi {
         return data
       })
       .catch(error => {
-        console.log('getAnnotation() error', error);
+        console.log('getOntologies() error', error);
         throw error;
+      })
+  }
+
+  getOntologySuggestions(prefix){
+    //this.solrurl='https://b2note.bsc.es/solr/b2note_index/select?q=((labels:/stry.*/) AND NOT (labels:/Error[0-9].*/))&sort=norm(labels) desc&fl=labels,uris,ontology_acronym,short_form,synonyms,norm(labels)&wt=json&indent=true&rows=1000';
+    let queryurl=this.ontologyurl+'/select?q=((labels:/'+prefix+'.*/) AND NOT (labels:/Error[0-9].*/))&sort=norm(labels) desc&fl=labels,uris,ontology_acronym,short_form,synonyms,norm(labels)&wt=json&indent=true&rows=1000';
+    return this.client.fetch(queryurl, {headers:{}})
+      .then(response =>{
+        if (response.ok) return response.json();
+        else throw response
+      })
+      .then (data =>{
+        //aggregate per label
+        //let suggclasses= []
+        let suggclasses ={}
+        for (let ont of data.response.docs) {
+          //console.log('ontology class',ont);
+          if (suggclasses.hasOwnProperty(ont.labels)){
+            suggclasses[ont.labels].count++;
+          } else {
+            suggclasses[ont.labels]={}
+            suggclasses[ont.labels].name=ont.labels;
+            suggclasses[ont.labels].count=1;
+          }
+        }
+        //create string representation
+        let suggclassesstring =[];
+        //sort keys by number of classes
+        let keys = Object.keys(suggclasses);
+        let keyssorted = keys.sort(function(a,b){return suggclasses[b].count - suggclasses[a].count});
+        //create string repr. in form 'name (count)'
+        for (let key of keyssorted){
+          suggclassesstring.push(suggclasses[key].name+' ('+suggclasses[key].count+')');
+        }
+        //TODO return string array or array of structs?
+        return suggclassesstring;
+      })
+      .catch(error=>{
+        console.log('getOntologySuggestion() error',error);
+        throw error
       })
   }
 
