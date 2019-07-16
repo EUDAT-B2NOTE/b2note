@@ -421,7 +421,9 @@ export class AnnotationApi {
         //create string repr. in form 'name (count)'
         for (let key of keyssorted){
           suggclassesstring.push(suggclasses[key].str);
-          this.lastsuggest[suggclasses[key].str]=suggclasses[key].ontologies; //store lastsuggest ontologies associated by suggestion
+          this.lastsuggest[suggclasses[key].str]={}
+          this.lastsuggest[suggclasses[key].str].name=key;
+          this.lastsuggest[suggclasses[key].str].ontologies=suggclasses[key].ontologies; //store lastsuggest ontologies associated by suggestion
         }
         return suggclassesstring;
       })
@@ -434,9 +436,14 @@ export class AnnotationApi {
   /***
    * constructs items struct as W3C data annotation model from ontologies already stored during previous getOntologySuggestions
    */
-  getAnnotationItems(){
-    let items= {}
-    
+  getAnnotationItems(key){
+    let items= []
+    for (let ont of this.lastsuggest[key].ontologies) {
+      let item={type:'SpecificResource',source:ont.uris}
+      items.push(item)
+    }
+    items.push({type:'TextualBody',value:this.lastsuggest[key].name})
+    return items;
   }
 
 }

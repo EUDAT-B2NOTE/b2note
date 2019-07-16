@@ -9,17 +9,30 @@ string_or_list_of_strings = {'anyof': [
     {'type': 'list', 'schema': {'type': 'string'}}  # or list of strings
 ]}
 
+# W3C list Dataset..Text for external resources, TextualBody,Choicethese values - but may contain other values from vocabularies
+body_type_type={'type': 'string',
+             'allowed': ['Dataset', 'Image', 'Video', 'Sound', 'Text', 'TextualBody', 'Choice', 'SpecificResource','Composite']}
+
+item_type2={
+    'source':{'type':'string'},
+    'value':{'type':'string'},
+    'type':body_type_type
+}
+
+item_schema={'anyof':[
+    {'type': 'string'},
+    {'type': 'dict', 'schema':item_type2 }
+]}
+
 body_type = {
     'id': {'type': 'string'},
-    'type': {'type': 'string',
-             'allowed': ['Dataset', 'Image', 'Video', 'Sound', 'Text', 'TextualBody', 'Choice', 'SpecificResource']},
-    # W3C list Dataset..Text for external resources, TextualBody,Choicethese values - but may contain other values from vocabularies
+    'type': body_type_type,
     'format': string_or_list_of_strings,
     'language': string_or_list_of_strings,
     'processingLanguage': {'type': 'string'},
     'textDirection': {'type': 'string', 'allowed': ['ltr', 'ptr', 'auto']},
     'value': {'type': 'string'},  # in case of type==TextualBody
-    'items': {'type': 'list', 'schema': {'type': 'string'}},  # in case of type==Choice
+    'items': {'type': 'list', 'schema': item_schema},  # in case of type==Choice
     'source': {'type': 'string'}
 }
 
