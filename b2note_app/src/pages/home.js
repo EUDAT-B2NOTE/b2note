@@ -83,8 +83,7 @@ export class Home {
 
   createSemantic() {
     console.log('create semantic:', this.annotationsemantic);
-    let anvalue = this.annotationsemantic;
-
+    let anvalue = this.api.getAnnotationItems(this.annotationsemantic);
     //  let userinfo = data;
       let datetime = new Date();
       let annotation = {
@@ -92,9 +91,9 @@ export class Home {
         'id': '',
         'type': 'Annotation',
         'body': {
-          'type': 'SpecificResource',
-          'source': anvalue,
-          'purpose': 'tagging'
+          'type': 'Composite',
+          'purpose': 'tagging',
+          'items': anvalue
         },
         'target': {
           'id': this.api.target.id,
@@ -116,7 +115,6 @@ export class Home {
         'generated': datetime.toISOString()
       };
       this.postAnnotation(annotation);
-
   }
 
   postAnnotation(annotation) {

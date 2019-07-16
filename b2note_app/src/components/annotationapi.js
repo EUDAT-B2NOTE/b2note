@@ -65,6 +65,7 @@ export class AnnotationApi {
     this.target.id = '';
     this.target.source = '';
     this.target.type = 'SpecificResource';
+    this.lastsuggest = {}; //associative array of suggestion containing ontologies
   }
 
   isLoggedIn() {
@@ -380,6 +381,10 @@ export class AnnotationApi {
       })
   }
 
+  /*** send API request to SOLR returns array of string in form 'name (count)'
+   *   stores internally ontologies returned which is then used by subsequent call of getAnnotationItems()
+   */
+
   getOntologySuggestions(prefix){
     //this.solrurl='https://b2note.bsc.es/solr/b2note_index/select?q=((labels:/stry.*/) AND NOT (labels:/Error[0-9].*/))&sort=norm(labels) desc&fl=labels,uris,ontology_acronym,short_form,synonyms,norm(labels)&wt=json&indent=true&rows=1000';
     let queryurl=this.ontologyurl+'/select?q=((labels:/'+prefix+'.*/) AND NOT (labels:/Error[0-9].*/))&sort=norm(labels) desc&fl=labels,uris,ontology_acronym,short_form,synonyms,norm(labels)&wt=json&indent=true&rows=1000';
@@ -389,35 +394,49 @@ export class AnnotationApi {
         else throw response
       })
       .then (data =>{
-        //aggregate per label
-        //let suggclasses= []
+        //aggregate per labels
         let suggclasses ={}
         for (let ont of data.response.docs) {
           //console.log('ontology class',ont);
           if (suggclasses.hasOwnProperty(ont.labels)){
             suggclasses[ont.labels].count++;
+            suggclasses[ont.labels].str=suggclasses[ont.labels].name+' ('+suggclasses[ont.labels].count+')';
+            suggclasses[ont.labels].ontologies.push(ont);
           } else {
             suggclasses[ont.labels]={}
             suggclasses[ont.labels].name=ont.labels;
             suggclasses[ont.labels].count=1;
+            suggclasses[ont.labels].str=ont.labels+' (1)';
+            suggclasses[ont.labels].ontologies=[]
+            suggclasses[ont.labels].ontologies.push(ont);
           }
         }
-        //create string representation
+        //create array of string representation which is returned
         let suggclassesstring =[];
         //sort keys by number of classes
         let keys = Object.keys(suggclasses);
         let keyssorted = keys.sort(function(a,b){return suggclasses[b].count - suggclasses[a].count});
+        //store lastsuggest as 'associative array'
+        this.lastsuggest={}
         //create string repr. in form 'name (count)'
         for (let key of keyssorted){
-          suggclassesstring.push(suggclasses[key].name+' ('+suggclasses[key].count+')');
+          suggclassesstring.push(suggclasses[key].str);
+          this.lastsuggest[suggclasses[key].str]=suggclasses[key].ontologies; //store lastsuggest ontologies associated by suggestion
         }
-        //TODO return string array or array of structs?
         return suggclassesstring;
       })
       .catch(error=>{
         console.log('getOntologySuggestion() error',error);
         throw error
       })
+  }
+
+  /***
+   * constructs items struct as W3C data annotation model from ontologies already stored during previous getOntologySuggestions
+   */
+  getAnnotationItems(){
+    let items= {}
+    
   }
 
 }
