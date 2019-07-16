@@ -227,19 +227,6 @@ export class Home {
           })
     }
 
-    getSuggestionsForMulti(value) {
-        return this._availableItems.filter((item) => this.selectedItems.indexOf(item) < 0 && item.startsWith(value) ? item : undefined);
-    }
-
-    getOrCreateItemByValue(value){
-        let existingItem = this._availableItems.filter((item) => item === value ? item : undefined)[0];
-        if (existingItem == undefined) {
-            existingItem = value;
-            this._availableItems.push(existingItem);
-        }
-
-        return existingItem;
-    }
 }
 
 /*interface Tab {

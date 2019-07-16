@@ -1,4 +1,7 @@
 <template>
+  <require from="../components/autocomplete/good-auto-complete"></require>
+  <require from="../components/autocomplete.css"></require>
+
   <div show.bind="showtaginfo" ref="detailtagref">
     <div show.bind="taginfo.mode==='show'">
       <p>${tagtitle} <span class="w3-small">[${classlength} classes]</span></p>
@@ -32,7 +35,15 @@
     <div show.bind="taginfo.mode==='edit'" ref="detailtagedit">
       <p>Edit annotation '<span class="w3-tiny">${taginfo.body.value}</span>' of target '<span title.bind="taginfo.target.id" class="w3-tiny">${taginfo.target.id}</span>'</p>
       <div id="tab1" show.bind="active==='tab1'">
-        <input placeholder="Type-in to select a tag." value.bind="annotationsemantic"/>
+        <!--input placeholder="Type-in to select a tag." value.bind="annotationsemantic"/-->
+                <good-auto-complete
+                    additional-class-input="form-control"
+                    selected-item.bind="annotationsemantic"
+                    suggestions-provider.bind="getSuggestions"
+                    suggestions-debounce="1000"
+                    min-search-value-length="2"
+                    placeholder="Type-in to select a tag.">
+        </good-auto-complete>
         <button class="w3-button" click.delegate="createSemantic()">Modify</button>
 
       </div>
@@ -58,6 +69,9 @@
     </div>
     <div show.bind="taginfo.mode=='ackremove'">
       <p>${tagtitle} <button class="w3-button" click.delegate="ok()">OK</button></p>
+    </div>
+    <div show.bind="taginfo.mode=='ackmodify'">
+      <p>${tagtitle}</p><p class="w3-tiny"> ${annotationtext}</p> <button class="w3-button" click.delegate="ok()">OK</button>
     </div>
   </div>
 </template>

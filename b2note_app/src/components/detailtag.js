@@ -80,15 +80,18 @@ export class Detailtag {
         }
         //this.tagtitle=taginfo.tagvalue;
       } else if (taginfo.mode === 'edit') {
-        console.log('detailtag mode edit tag:',taginfo)
         this.taginfo = taginfo;
         this.showtaginfo=true;
         this.tagtitle = this.taginfo.body.value;
-        this.active = this.taginfo.body.purpose === 'tagging' ? 'tab1' : 'tab3'; //Semantic or Comment
-        if (this.taginfo.body.type == "TextualValue") this.active = 'tab2'; //Keyword
+        //set default mode - tag, then check whether keyword or comment
+        this.active='tab1';
+        if (this.taginfo.body.purpose === 'tagging'){
+          if (this.taginfo.body.type === "TextualBody") this.active = 'tab2'; //Keyword
+          else this.active='tab1';//Semantic
+        } else if(this.taginfo.body.purpose ==='commenting') this.active='tab3'; //Comment
+
         this.annotationsemantic=this.annotationkeyword=this.annotationcomment=''; //
       } else if (taginfo.mode === 'remove'){
-        console.log('detailtag mode remove tag:',taginfo);
         this.taginfo=taginfo;
         this.showtaginfo=true;
         this.tagtitle = this.taginfo.body.value;
@@ -143,13 +146,79 @@ export class Detailtag {
   }
 
   createSemantic(){
-
+    let annotation=Object.assign({},this.taginfo);
+    //remove properties added by VM
+    delete annotation.mode;
+    delete annotation.domid;
+    delete annotation.target.items;
+    delete annotation.body;
+    //delete annotation.body.value;
+    let anvalue = this.api.getAnnotationItems(this.annotationsemantic);
+    annotation.body= {
+          'type': 'Composite',
+          'purpose': 'tagging',
+          'items': anvalue
+        }
+    this.putAnnotation(annotation);
   }
   createKeyword(){
-
+    let annotation=Object.assign({},this.taginfo);
+    //remove properties added by VM
+    delete annotation.mode;
+    delete annotation.domid;
+    delete annotation.target.items;
+    delete annotation.body;
+    //delete annotation.body.value;
+    //let anvalue = this.api.getAnnotationItems(this.annotationsemantic);
+    annotation.body= {
+            'type': 'TextualBody',
+            'value': this.annotationkeyword,
+            'purpose': "tagging"
+          }
+    this.putAnnotation(annotation);
   }
+
   createComment(){
-
+  let annotation=Object.assign({},this.taginfo);
+    //remove properties added by VM
+    delete annotation.mode;
+    delete annotation.domid;
+    delete annotation.target.items;
+    delete annotation.body;
+    //delete annotation.body.value;
+    //let anvalue = this.api.getAnnotationItems(this.annotationsemantic);
+    annotation.body={
+            'type': 'TextualBody',
+            'value': anvalue,
+            'purpose': "commenting"
+          }
+    this.putAnnotation(annotation);
   }
+
+  putAnnotation(annotation) {
+    this.api.putAnnotation(annotation)
+      .then(data => {
+        //this.anid = data._id;
+        //this.showform = false; this.showack=true;
+        //this.annotation = data;
+        this.annotationtext = JSON.stringify(data, null, 2);
+        this.taginfo.mode="ackmodify";
+        this.tagtitle="Annotation was modified. ";
+        //this.ea.publish(new Updateall(this.annotation));
+        //this.ea.publish(new Updatefile(this.annotation));
+      })
+      .catch(error => {
+        alert('Error while creating annotation. It was not created\n\nHTTP status:' + error.status + '\nHTTP status text:' + error.statusText);
+      })
+  }
+
+
+  //TODO -refactor - copy of home.js getsuggestions
+    getSuggestions(value) {
+        return this.api.getOntologySuggestions(value)
+          .then(data =>{
+            return data;
+          })
+    }
 
 }

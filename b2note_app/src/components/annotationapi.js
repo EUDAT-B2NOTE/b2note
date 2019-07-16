@@ -275,7 +275,7 @@ export class AnnotationApi {
   /**
    * Sends DELETE request to delete annotation from DB
    *
-   * @param an Annotation - _id and _etag are mandatory to delete annotation
+   * @param an Annotation - _id and _etag properties are mandatory to delete annotation
    * @returns {Promise} with response data deserialized from json
    */
   deleteAnnotation(an) {
@@ -293,6 +293,32 @@ export class AnnotationApi {
       })
       .catch(error => {
         console.log('deleteAnnotation() error', error);
+        throw error;
+      })
+  }
+  /**
+   * Sends PUT request to update annotation in DB
+   *
+   * @param an - Annotation - _id and _etag properties are mandatory to update annotation
+   * @returns {} Promise with  response data deserialized from json
+   */
+  putAnnotation(an) {
+    return this.client.fetch(
+      this.annotationsurl+'/'+an._id,
+      {
+        method: "PUT",
+        headers: {'Authorization': 'Bearer ' + this.userinfo.token,'If-Match':an._etag},
+        body: json(an)
+      })
+      .then(response => {
+        if (response.ok) return response.json()
+        else throw response
+      })
+      .then(data => {
+        return data
+      })
+      .catch(error => {
+        console.log('putAnnotation() error', error);
         throw error;
       })
   }
