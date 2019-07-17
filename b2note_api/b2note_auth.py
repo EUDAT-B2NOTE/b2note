@@ -29,13 +29,6 @@ def is_logged_in():
     """ function to return True or False based on whether current session is authenticatec """
     return True if AUTH_TOKEN_KEY in session else False
 
-def get_user_info():
-    """"function to return user information stored in current session"""
-    ui = session[USER_INFO]
-    ui['token']=session[AUTH_TOKEN_KEY]
-    #print('get_user_info',ui['name'])
-    return ui
-
 def convertb2access(ui):
     """function to convert user information returned by b2access service
 
@@ -120,4 +113,31 @@ def register(app):
         if is_logged_in():
             user_info = get_user_info()
             return jsonify(user_info)
+        #(token == 'test' and request.host == 'localhost:5000')
+        # return test user info in case of local deployment
+        if (request.headers.get('authorization') == 'Basic dGVzdDp0ZXN0' and request.host=='localhost:5000'):
+            users = app.data.driver.db['userprofile']
+            a = users.find_one({'id': '0001'})
+            ui= {"name":"Test","id":"0001"}
+            if a != None:
+                #a['token'] = ui['token']
+                ui = a
+                ui['_id']=str(ui['_id'])
+            return jsonify(ui)
         return jsonify({"name":"Guest","status":"not logged in."})
+
+    def get_user_info():
+        """"function to return user information stored in current session"""
+        ui = session[USER_INFO]
+        ui['token']=session[AUTH_TOKEN_KEY]
+        #if (ui['token'] == 'test' and request.host == 'localhost:5000'):
+        #    ui['id']='0001'
+        #check whether user exists in DB, and update fields accordingly
+        users = app.data.driver.db['userprofile']
+        a = users.find_one({'id': ui['id']})
+        if a !=None:
+            print(a)
+            a['token']=ui['token']
+            ui = a
+        #print('get_user_info',ui['name'])
+        return ui

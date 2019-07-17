@@ -1,7 +1,7 @@
 /**
- * AnnotationApi component to serve AnnotationApi and shared properties and functionalities
+ * AnnotationApi class to serve client calls of backend api and share features and properties
  *
- * in order to share properties, it's instance should be injected as singleton by aurelia-framework
+ * in order to share properties, it's instance must be injected as singleton by aurelia-framework
  * using e.g.:
  *
  *   @inject(AnnotationApi)
@@ -54,6 +54,7 @@ export class AnnotationApi {
     this.apiurl = window.location.protocol + '//' + window.location.host + '/api';
     this.annotationsurl = this.apiurl + '/annotations';
     this.userinfourl = this.apiurl + '/userinfo';
+    this.userprofileurl = this.apiurl+'/userprofile';
     this.ontologyurl = 'https://b2note.bsc.es/solr/b2note_index';
     //this.solrurl='https://b2note.bsc.es/solr/b2note_index/select?q=((labels:/stry.*/) AND NOT (labels:/Error[0-9].*/))&sort=norm(labels) desc&fl=labels,uris,ontology_acronym,short_form,synonyms,norm(labels)&wt=json&indent=true&rows=1000';
     //enhance the pagination up to EVE limit - see b2note_settings.py for pagination limit to make it bigger
@@ -323,6 +324,61 @@ export class AnnotationApi {
       })
   }
 
+  /**
+   * Sends PUT request to update userprofile in DB
+   *
+   * @param up - User Profile - id and _etag properties are mandatory to update user profile
+   * @returns {} Promise with  response data deserialized from json
+   */
+  putUserprofile(up) {
+    return this.client.fetch(
+      this.userprofileurl+'/'+up._id,
+      {
+        method: "PUT",
+        headers: {'Authorization': 'Bearer ' + this.userinfo.token,'If-Match':up._etag},
+        body: json(up)
+      })
+      .then(response => {
+        if (response.ok) return response.json()
+        else throw response
+      })
+      .then(data => {
+        return data
+      })
+      .catch(error => {
+        console.log('putUserprofile() error', error);
+        throw error;
+      })
+  }
+  /**
+   * Sends POST request to create user profile in DB
+   *
+   * @param up user profile
+   * @returns {Promise} with response data deserialized from json - user profile with created id and _etag
+   */
+  postUserprofile(up) {
+    return this.client.fetch(
+      this.userprofileurl,
+      {
+        method: "POST",
+        headers: {'Authorization': 'Bearer ' + this.userinfo.token},
+        body: json(up)
+      })
+      .then(response => {
+        //console.log(response);
+        if (response.ok) return response.json()
+        else throw response
+      })
+      .then(data => {
+        //console.log('postAnnotation() data', data);
+        return data
+      })
+      .catch(error => {
+        console.log('postUserprofile() error', error);
+        throw error;
+      })
+  }
+
   getAllAnnotations() {
     return this.client.fetch(this.annotationsurl + "?max_results=" + this.maxresult)
       .then(response => {
@@ -503,4 +559,16 @@ export class AnnotationApi {
     return items;
   }
 
+  saveUserProfile(up){
+    this.userinfo=up;
+    if (up.hasOwnProperty('_etag') && up.hasOwnProperty('_id'))
+      return this.putUserprofile(up);
+    else
+      return this.postUserprofile(up)
+        .then(data=>{
+          this.userinfo._id = data._id;
+          this.userinfo._etag = data._etag;
+          return data;
+    })
+  }
 }

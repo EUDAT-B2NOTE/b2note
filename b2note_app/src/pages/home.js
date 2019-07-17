@@ -1,6 +1,5 @@
 /**
  * implements Home page - Creation of annotation
- * @todo implement target id and target source as parameters from URL
  *
  * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
  * @since 06/2019

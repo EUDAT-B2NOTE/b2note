@@ -26,9 +26,22 @@ def addAnnotationId(items):
     duplicates this value into id field with apiurl as prefix,
     thus id is a direct URI to the annotation
     """
+
     for item in items:
         item['_id']=objectid.ObjectId()
         item['id']=apiurl+prefix+'/'+str(item['_id'])
+
+def addUserprofileRemoveToken(items):
+    """this is custom manipulation of userprofile insertion
+    """
+    for item in items:
+        item.pop('token',None)
+def replaceUserprofileRemoveToken(item,orig):
+    item.pop('token', None)
+        #items['token'] = ''
+        #print(items)
+        #delattr(items,'token')
+
 
 # define basic app - Eve is instance of Flask,
 app = Eve(settings=b2note_settings.b2note_eve_settings,auth=b2note_auth.B2NoteAuth)
@@ -42,8 +55,12 @@ app.secret_key=os.environ.get("B2NOTE_SECRET_KEY", default=False)
 # delegate registration of oauth providers and related services in app instance
 b2note_auth.register(app)
 
-# register EVE custom hook on instert - will add id field as defined above
+# register EVE custom hook on instert - will add id field, remove token as defined above
 app.on_insert_annotations += addAnnotationId
+app.on_insert_userprofile += addUserprofileRemoveToken
+app.on_replace_userprofile += replaceUserprofileRemoveToken
+app.on_update_userprofile += replaceUserprofileRemoveToken
+
 
 # if this python script is executed directly - the run the app as standalone server on localhost, usually on port 5000
 if __name__== "__main__":

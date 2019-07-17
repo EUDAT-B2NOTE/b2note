@@ -1,8 +1,11 @@
 import unittest
 import requests
 import json
+from pprint import pprint
 
 LOCALHOST_ANNOTATIONS = 'http://localhost:5000/annotations'
+LOCALHOST_USERPROFILE = 'http://localhost:5000/userprofile'
+LOCALHOST_USERINFO = 'http://localhost:5000/userinfo'
 LOCALHOST_APIDOCS = 'http://localhost:5000/api-docs'
 
 
@@ -61,6 +64,18 @@ class B2noteRestApiTestCase(unittest.TestCase):
 
     def post(self,data):
       return requests.post(LOCALHOST_ANNOTATIONS, headers={'Content-Type':'application/json','Authorization': 'Basic dGVzdDp0ZXN0'}, data=data)
+
+    def postUP(self,data):
+      return requests.post(LOCALHOST_USERPROFILE, headers={'Content-Type':'application/json','Authorization': 'Basic dGVzdDp0ZXN0'}, data=data)
+
+    def putUP(self,data,id,etag):
+      return requests.put(LOCALHOST_USERPROFILE+'/'+id, headers={'Content-Type':'application/json','Authorization': 'Basic dGVzdDp0ZXN0','If-Match':etag}, data=data)
+
+    def getUP(self,id):
+      return requests.get(LOCALHOST_USERPROFILE+'/'+id, headers=self.headers)
+
+    def getUI(self):
+      return requests.get(LOCALHOST_USERINFO, headers={'Content-Type':'application/json','Authorization': 'Basic dGVzdDp0ZXN0'})
 
     def test_getAnnotation(self):
       response = self.get('')
@@ -199,7 +214,7 @@ class B2noteRestApiTestCase(unittest.TestCase):
       self.clean(response)
 
     def test_annotationcomposite(self):
-      body ='{"@context":"http://www.w3/org/ns/anno/jsonld","id":"","type":"Annotation","body":{"type":"Composite","purpose":"tagging","items":[{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/LNC/MTHU004642"},{"type":"SpecificResource","source":"http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C84183"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/MESH/D013331"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/RCD/x02ML"},{"type":"SpecificResource","source":"http://www.loria.fr/~coulet/ontology/sopharm/version2.0/chebi.owl#CHEBI_28973"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/SNMI/C-30364"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/SNOMEDCT/51200005"},{"type":"SpecificResource","source":"http://phenomebrowser.net/ontologies/mesh/mesh.owl#D03.132.436.681.722"},{"type":"SpecificResource","source":"http://phenomebrowser.net/ontologies/mesh/mesh.owl#D03.438.473.402.681.722"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/LNC/LP14284-1"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/RXNORM/66422"},{"type":"SpecificResource","source":"http://purl.obolibrary.org/obo/DRON_00012737"},{"type":"SpecificResource","source":"http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Strychnine"},{"type":"SpecificResource","source":"http://phenomebrowser.net/ontologies/mesh/mesh.owl#D013331"},{"type":"TextualBody","value":"Strychnine"}]},"target":{"id":"http://hdl.handle.net/11304/3e69a758-dbea-46cb-b9a1-2b2974531c19","type":"SpecificResource","source":"https://b2share.eudat.eu/api/files/b381828e-59de-4323-b636-7600a6b04bf2/acqu3s"},"motivation":"tagging","creator":{"id":"1527d37f-c884-43d4-b7fc-cfa87062d827","type":"Person","nickname":"Tomas Kulhanek"},"generator":{"type":"Software","homepage":{"href":"http://localhost/b2note/#/","origin":"http://localhost","protocol":"http:","host":"localhost","hostname":"localhost","port":"","pathname":"/b2note/","search":"","hash":"#/"},"name":"B2Note v2.0"},"created":"2019-07-16T10:24:24.763Z","generated":"2019-07-16T10:24:24.763Z"}'
+      body ='{"@context":"http://www.w3/org/ns/anno/jsonld","id":"","type":"Annotation","body":{"type":"Composite","purpose":"tagging","items":[{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/LNC/MTHU004642"},{"type":"SpecificResource","source":"http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C84183"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/MESH/D013331"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/RCD/x02ML"},{"type":"SpecificResource","source":"http://www.loria.fr/~coulet/ontology/sopharm/version2.0/chebi.owl#CHEBI_28973"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/SNMI/C-30364"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/SNOMEDCT/51200005"},{"type":"SpecificResource","source":"http://phenomebrowser.net/ontologies/mesh/mesh.owl#D03.132.436.681.722"},{"type":"SpecificResource","source":"http://phenomebrowser.net/ontologies/mesh/mesh.owl#D03.438.473.402.681.722"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/LNC/LP14284-1"},{"type":"SpecificResource","source":"http://purl.bioontology.org/ontology/RXNORM/66422"},{"type":"SpecificResource","source":"http://purl.obolibrary.org/obo/DRON_00012737"},{"type":"SpecificResource","source":"http://ontology.apa.org/apaonto/termsonlyOUT%20(5).owl#Strychnine"},{"type":"SpecificResource","source":"http://phenomebrowser.net/ontologies/mesh/mesh.owl#D013331"},{"type":"TextualBody","value":"Strychnine"}]},"target":{"id":"http://hdl.handle.net/11304/3e69a758-dbea-46cb-b9a1-2b2974531c19","type":"SpecificResource","source":"https://b2share.eudat.eu/api/files/b381828e-59de-4323-b636-7600a6b04bf2/acqu3s"},"motivation":"tagging","creator":{"id":"0001","type":"Person","nickname":"Tomas Kulhanek"},"generator":{"type":"Software","homepage":{"href":"http://localhost/b2note/#/","origin":"http://localhost","protocol":"http:","host":"localhost","hostname":"localhost","port":"","pathname":"/b2note/","search":"","hash":"#/"},"name":"B2Note v2.0"},"created":"2019-07-16T10:24:24.763Z","generated":"2019-07-16T10:24:24.763Z"}'
       response = self.post(body)
       self.assertIn(b'"_status": "OK"',response.content)
       self.clean(response)
@@ -212,12 +227,53 @@ class B2noteRestApiTestCase(unittest.TestCase):
       self.assertIn(b'',response2.content)
 
     def test_apidocs(self):
-
       response=self.getapidocs()
       self.assertIn(b"\"swagger\":\"2.0\"",response.content)
 
+    def test_adduserprofile(self):
+        data='{"name":"Tomas Kulhanek","id":"0001","email":"tm@g.com","provider":"b2access","token":"PEOuFFydpkf4mgoUb9vhLH4VFQfsmElyiLkvlBkoKoo","pseudo":"Tomas Kulhanek","firstname":"Tomas","lastname":"Kulhanek","jobtitle":"Sr","org":"EOSC","country":"CZ"}'
+        response = self.postUP(data)
+        data2 = json.loads(response.content)
+        self.assertIn(b'"_id":', response.content)
+        #data = '{"name":"Tomas Kulhanek","id":"0001","email":"tm@g.com","provider":"b2access","token":"PEOuFFydpkf4mgoUb9vhLH4VFQfsmElyiLkvlBkoKoo","pseudo":"Tomas Kulhanek","firstname":"Tomas","lastname":"Kulhanek","jobtitle":"Sr","org":"EOSC","country":"CZ"}'
+        #get up
+        response2 = self.getUP(data2['_id'])
+        data3 = json.loads(response2.content)
+        self.assertIn(b'"_id":', response2.content)
+        # token property should be ignored, not stored and returned
+        self.assertNotIn('token',data3,0)
+        self.assertIn('id', data3, 0)
+        #data4 = '{"name":"Tomas Kulhanek","id":"0001","email":"tm@g.com","provider":"b2access","token":"PEOuFFydpkf4mgoUb9vhLH4VFQfsmElyiLkvlBkoKoo","pseudo":"Tomas Kulhanek","firstname":"Tomas","lastname":"Kulhanek","jobtitle":"Sr","org":"EOSC","country":"CZ"}'
+        data3['name']="TK"
+        data3.pop('_links',None)
+        data3.pop('_created', None)
+        data3.pop('_updated', None)
+        #data3.pop('_id',None)
+        print(data3)
+        data4 = json.dumps(data3)
+        response3 = self.putUP(data4,data3['_id'],data3['_etag'])
+        #data5=json.loads(response3.content)
+        self.assertIn(b'"_status": "OK"', response3.content)
+        response4 = self.getUP(data3['_id'])
+        data6=json.loads(response4.content)
+        self.assertEqual(data6['name'],'TK')
+        self.assertNotIn('token',data6)
+        self.assertIn('id', data6)
+        #self.assertNotIn('token',data5)
+
+        #test user info
+        response7 = self.getUI()
+        data7=json.loads(response7.content)
+        self.assertIn(b'"_id"', response7.content)
+        self.assertIn('id',data7)
+        self.assertEqual(data7['id'],'0001')
+        
+
+
+
 if __name__ == '__main__':
     unittest.main()
+
 
 
 

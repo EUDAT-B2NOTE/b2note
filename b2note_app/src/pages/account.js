@@ -16,7 +16,10 @@ export class Account {
 
   activate() {
     this.api.getUserInfo()
-      .then(data =>{this.userinfo = data});
+      .then(data =>{
+        this.userinfo = data
+        console.log('account() userinfo:',this.userinfo)
+      });
 //    this.b2noteapiurl = this.api.getApiUrl();
 //    this.manualtarget = this.api.getManualTarget();
   }
