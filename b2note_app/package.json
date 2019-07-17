@@ -10,7 +10,6 @@
   "dependencies": {
     "@rdfjs/parser-jsonld": "^1.1.1",
     "au-cli": "0.0.5",
-    "aurelia-animator-css": "^1.0.4",
     "aurelia-bootstrapper": "^2.3.2",
     "aurelia-fetch-client": "^1.8.2",
     "aurelia-protractor-plugin": "^1.0.6",
