@@ -253,7 +253,7 @@ class B2noteRestApiTestCase(unittest.TestCase):
         data3.pop('_created', None)
         data3.pop('_updated', None)
         #data3.pop('_id',None)
-        print(data3)
+        #print(data3)
         data4 = json.dumps(data3)
         response3 = self.putUP(data4,data3['_id'],data3['_etag'])
         #data5=json.loads(response3.content)
@@ -275,7 +275,7 @@ class B2noteRestApiTestCase(unittest.TestCase):
 
         #remove userprofile
         response = self.deleteUP(data6['_id'],data6['_etag'])
-        print(response)
+        #print(response)
         self.assertLess(response.status_code,300)
         self.assertGreaterEqual(response.status_code,200)
 
