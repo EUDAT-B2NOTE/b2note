@@ -21,6 +21,7 @@ export class Userprofile{
   enableEdit(){
     //console.log('edit up',this.userinfo)
     this.edit=true;
+    if (!this.userinfo.experience) this.userinfo.experience='beginner'
   }
   saveEdit(){
     this.edit=false;

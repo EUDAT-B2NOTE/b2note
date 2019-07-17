@@ -28,7 +28,7 @@ export class Navbar {
   }
 
   changeUserInfo(userinfo) {
-    console.log('changeuserinfo:', userinfo);
+    //console.log('changeuserinfo:', userinfo);
     this.username = userinfo.pseudo;
     this.loggedin = (userinfo.id) && (userinfo.id.length>0);
   }

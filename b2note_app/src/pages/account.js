@@ -13,16 +13,10 @@ export class Account {
   constructor(api) {
     this.api = api;
   }
-
   activate() {
     this.api.getUserInfo()
       .then(data =>{
         this.userinfo = data
-        console.log('account() userinfo:',this.userinfo)
       });
-//    this.b2noteapiurl = this.api.getApiUrl();
-//    this.manualtarget = this.api.getManualTarget();
   }
-
-
 }

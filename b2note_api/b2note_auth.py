@@ -136,8 +136,9 @@ def register(app):
         users = app.data.driver.db['userprofile']
         a = users.find_one({'id': ui['id']})
         if a !=None:
-            print(a)
+            #print(a)
             a['token']=ui['token']
             ui = a
+            ui['_id'] = str(ui['_id'])
         #print('get_user_info',ui['name'])
         return ui

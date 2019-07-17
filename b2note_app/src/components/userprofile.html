@@ -3,8 +3,8 @@
     <tr>
       <th></th>
       <th show.bind="!edit">
-        <button class="w3-button w3-small" title="modify user profile" click.delegate="enableEdit()"><i
-          class="fa fa-edit"></i></button>
+        <button class="w3-button w3-small w3-padding-4" title="modify user profile" click.delegate="enableEdit()" show.bind="userinfo.id"><i
+          class="fa fa-edit"></i>Modify</button>
       </th>
       <th show.bind="edit">
         <button class="w3-button w3-small w3-red w3-hover-pale-red" title="modify user profile"

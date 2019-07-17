@@ -102,14 +102,14 @@ export class AnnotationApi {
         })
         .then(data => {
           if (!data.pseudo) data.pseudo = data.name;
-          data.firstname = data.given_name;
-          data.lastname = data.family_name;
+          if (!data.firstname) data.firstname = data.given_name;
+          if (!data.lastname) data.lastname = data.family_name;
           /*TODO fill experience,jobtitle,org and country
           data.experience= "beginner",
           data.jobtitle="Annotator",
           data.org="Academia",
           data.country="International"*/
-          console.log('userinfo', data);
+          //console.log('userinfo', data);
           this.userinfo = data;
           this.ea.publish(new Userinfo(data));
           return data

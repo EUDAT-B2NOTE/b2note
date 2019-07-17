@@ -71,6 +71,9 @@ class B2noteRestApiTestCase(unittest.TestCase):
     def putUP(self,data,id,etag):
       return requests.put(LOCALHOST_USERPROFILE+'/'+id, headers={'Content-Type':'application/json','Authorization': 'Basic dGVzdDp0ZXN0','If-Match':etag}, data=data)
 
+    def deleteUP(self,id,etag):
+      return requests.delete(LOCALHOST_USERPROFILE+'/'+id, headers={'Content-Type':'application/json','Authorization': 'Basic dGVzdDp0ZXN0','If-Match':etag})
+
     def getUP(self,id):
       return requests.get(LOCALHOST_USERPROFILE+'/'+id, headers=self.headers)
 
@@ -245,6 +248,7 @@ class B2noteRestApiTestCase(unittest.TestCase):
         self.assertIn('id', data3, 0)
         #data4 = '{"name":"Tomas Kulhanek","id":"0001","email":"tm@g.com","provider":"b2access","token":"PEOuFFydpkf4mgoUb9vhLH4VFQfsmElyiLkvlBkoKoo","pseudo":"Tomas Kulhanek","firstname":"Tomas","lastname":"Kulhanek","jobtitle":"Sr","org":"EOSC","country":"CZ"}'
         data3['name']="TK"
+        data3['pseudo'] = "TK"
         data3.pop('_links',None)
         data3.pop('_created', None)
         data3.pop('_updated', None)
@@ -257,6 +261,7 @@ class B2noteRestApiTestCase(unittest.TestCase):
         response4 = self.getUP(data3['_id'])
         data6=json.loads(response4.content)
         self.assertEqual(data6['name'],'TK')
+        self.assertEqual(data6['pseudo'], 'TK')
         self.assertNotIn('token',data6)
         self.assertIn('id', data6)
         #self.assertNotIn('token',data5)
@@ -267,7 +272,12 @@ class B2noteRestApiTestCase(unittest.TestCase):
         self.assertIn(b'"_id"', response7.content)
         self.assertIn('id',data7)
         self.assertEqual(data7['id'],'0001')
-        
+
+        #remove userprofile
+        response = self.deleteUP(data6['_id'],data6['_etag'])
+        print(response)
+        self.assertLess(response.status_code,300)
+        self.assertGreaterEqual(response.status_code,200)
 
 
 
