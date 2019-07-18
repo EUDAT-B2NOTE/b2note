@@ -68,6 +68,16 @@ export class SuggestionsLogic<T> {
         return true;
     }
 
+    public async setSuggestions(suggestions: T[]){
+        this._suggestions.splice(0);
+        console.log('setsuggestions()1 s.len',this._suggestions.length)
+        let autoCompleteItems = suggestions.map<AutoCompleteItem<T>>((value, index) => new AutoCompleteItem<T>(value, index, this.isSelectedValidator(value), this.isDisabledValidator(value)));
+        this._suggestions.push.apply(this._suggestions, autoCompleteItems);
+        console.log('setsuggestions()2 s.len',this._suggestions.length)
+        this.highlight(this.getNextPossibleIndexToHighlight(-1, 1));
+        return true;
+    }
+
     public applyHighlightingKeyboardFeatures(keyboardEvent: KeyboardEvent): boolean {
         if (keyboardEvent.altKey || keyboardEvent.shiftKey || keyboardEvent.ctrlKey) {
             // we do not want to interfere with e.g. selection of text (shift + arrows) even when the suggestions are visible

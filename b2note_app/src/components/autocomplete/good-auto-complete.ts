@@ -31,4 +31,5 @@ export class GoodAutoCompleteCustomElement<T extends Indexer> extends AutoComple
     private selectedItemChanged(): void {
         this.reset();
     }
+
 }

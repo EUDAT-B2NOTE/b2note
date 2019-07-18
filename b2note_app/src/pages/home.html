@@ -33,20 +33,30 @@
     <div id="tabcontent">
       <div id="tab1" show.bind="active==='tab1'">
         <!--input placeholder="Type-in to select a tag." value.bind="annotationsemantic"/-->
-        <good-auto-complete
+        <good-auto-complete view-model.ref="goodautocomplete"
                     additional-class-input="form-control"
                     selected-item.bind="annotationsemantic"
                     suggestions-provider.bind="getSuggestions"
                     suggestions-debounce="1000"
-                    min-search-value-length="2"
+                    min-search-value-length="3"
                     placeholder="Type-in to select a tag.">
         </good-auto-complete>
         <button class="w3-button" click.delegate="createSemantic()">Create</button>
 
       </div>
       <div show.bind="active==='tab2'">
+        <div show.bind="!confirmkeyword">
         <input placeholder="Type-in a keyword." value.bind="annotationkeyword"/>
-        <button class="w3-button" click.delegate="createKeyword()">Create</button>
+        <button class="w3-button" click.delegate="checkKeyword()">Create</button>
+        </div>
+        <div show.bind="confirmkeyword">
+          We detected ${keywordterms} semantic terms matching your keyword.<br/>
+Would you like to select one? Or carry on with free-text?<br/>
+        <button class="w3-button" click.delegate="switchSemantic()">Semantic</button>
+        <button class="w3-button" click.delegate="createKeyword()">Keyword</button>
+        <button class="w3-button" click.delegate="switchCancel()">Cancel</button>
+
+        </div>
       </div>
 
       <div show.bind="active==='tab3'">
@@ -56,7 +66,7 @@
       </div>
 
     </div>
-    <annotations></annotations>
+    <annotations show.bind="!confirmkeyword && !showack"></annotations>
   </div>
   <div show.bind="showack" class="w3-container">
     <h3>Annotation was created</h3>

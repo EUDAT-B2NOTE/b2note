@@ -42,10 +42,12 @@ export class Home {
     this.annotationkeyword = '';
     this.annotationcomment = '';
     this.anid = '';
-    this.showform = true; this.showack=false; this.showfirstlogin=false;
+    this.showform = true; this.showack=false; this.showfirstlogin=false;this.confirmkeyword=false;
     this._availableItems = ["strychnine","glycine","strasdf","glcsdf"];//items;
     this.selectedItem = null;
     this.selectedItems = [];// [items[Math.floor(Math.random() * 1000)], items[Math.floor(Math.random() * 1000)]];
+    this.keywordterms=0;
+    
   }
 
 
@@ -139,8 +141,6 @@ export class Home {
   }
   closeprofile() {
     this.closeackn();
-    //TODO send userprofile data to backend to store
-    //this.showform = true; this.showack=false; this.showfirstlogin=false;
   }
 
   showfirstloginfn(){
@@ -148,7 +148,7 @@ export class Home {
   }
 
   createKeyword() {
-    console.log('create keyword:', this.annotationkeyword)
+    console.log('create keyword:', this.annotationkeyword);
     let anvalue = this.annotationkeyword;
         let datetime = new Date();
         let annotation = {
@@ -180,8 +180,6 @@ export class Home {
           'generated': datetime.toISOString()
         };
         this.postAnnotation(annotation);
-
-
   }
 
   createComment() {
@@ -226,6 +224,44 @@ export class Home {
           })
     }
 
+  checkKeyword(){
+    //check whether keyword exist as semantic tag, if not createKeyword()
+    // if yes display dialog 'Semantic' change the display to semantic and copy the value,
+    // 'Keyword' will create keyword
+    // 'Cancel' returns back to home
+    this.getSuggestions(this.annotationkeyword)
+      .then(suggestions =>{
+        this.keywordterms=suggestions.length;
+        if (this.keywordterms==0) {
+          this.createKeyword()
+        } else {
+          this.confirmkeyword=true;
+          this.suggestions=suggestions;
+        }
+      })
+  }
+
+  async switchSemantic(){
+    this.annotationsemantic=this.annotationkeyword;
+    this.active='tab1';
+    this.confirmkeyword=false;
+    //set the suggestions to autocomplete component;
+    console.log('switchsemantic() goodautocomplete ref',this.goodautocomplete)
+    await sleep(500);
+    console.log('seting suggestions',this.goodautocomplete)
+    this.goodautocomplete.setSuggestions(this.suggestions);
+  }
+  switchCancel(){
+    this.annotationkeyword=this.annotationsemantic='';
+    this.active='tab1';
+    this.confirmkeyword=false;
+  }
+
+
+}
+
+function sleep(ms){
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 /*interface Tab {

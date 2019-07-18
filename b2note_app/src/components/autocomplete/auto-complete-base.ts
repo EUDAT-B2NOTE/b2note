@@ -212,4 +212,13 @@ export abstract class AutoCompleteBase<T extends Indexer> {
         this._comittedValue = this.getInitialDisplayValue();
         this._value = this._comittedValue;
     }
+
+    public setSuggestions(suggestions:T[]){
+      this.reset();
+      console.log('setSuggestions',suggestions);
+      this._suggestionsLogic.setSuggestions(suggestions);
+      this._suggestionsElementLogic.showSuggestions();
+    }
+
+
 }
