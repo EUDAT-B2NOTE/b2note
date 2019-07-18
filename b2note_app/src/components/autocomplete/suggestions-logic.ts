@@ -70,10 +70,8 @@ export class SuggestionsLogic<T> {
 
     public async setSuggestions(suggestions: T[]){
         this._suggestions.splice(0);
-        console.log('setsuggestions()1 s.len',this._suggestions.length)
         let autoCompleteItems = suggestions.map<AutoCompleteItem<T>>((value, index) => new AutoCompleteItem<T>(value, index, this.isSelectedValidator(value), this.isDisabledValidator(value)));
         this._suggestions.push.apply(this._suggestions, autoCompleteItems);
-        console.log('setsuggestions()2 s.len',this._suggestions.length)
         this.highlight(this.getNextPossibleIndexToHighlight(-1, 1));
         return true;
     }

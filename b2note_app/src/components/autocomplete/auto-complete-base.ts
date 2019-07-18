@@ -215,7 +215,7 @@ export abstract class AutoCompleteBase<T extends Indexer> {
 
     public setSuggestions(suggestions:T[]){
       this.reset();
-      console.log('setSuggestions',suggestions);
+      //console.log('setSuggestions',suggestions);
       this._suggestionsLogic.setSuggestions(suggestions);
       this._suggestionsElementLogic.showSuggestions();
     }

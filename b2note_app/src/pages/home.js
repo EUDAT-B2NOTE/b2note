@@ -246,9 +246,10 @@ export class Home {
     this.active='tab1';
     this.confirmkeyword=false;
     //set the suggestions to autocomplete component;
-    console.log('switchsemantic() goodautocomplete ref',this.goodautocomplete)
+    //console.log('switchsemantic() goodautocomplete ref',this.goodautocomplete)
+    //wait 500 ms in order the view is back in semantic so the autocomplete dialog can be shown.
     await sleep(500);
-    console.log('seting suggestions',this.goodautocomplete)
+    //console.log('seting suggestions',this.goodautocomplete)
     this.goodautocomplete.setSuggestions(this.suggestions);
   }
   switchCancel(){
