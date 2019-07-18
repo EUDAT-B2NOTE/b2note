@@ -142,3 +142,13 @@ def register(app):
             ui['_id'] = str(ui['_id'])
         #print('get_user_info',ui['name'])
         return ui
+
+    @app.route('/interface_main', methods=['POST'])
+    def compatibility_redirect():
+        #""" redirects old POST request with target id and source to GET request to new UI with params in url"""
+        targetsource = request.form.get('subject_tofeed','') # source - direct link to file
+        # request.form['recordurl_tofeed'] this is ignored in b2note v 1.0
+        targetid = request.form.get('pid_tofeed','')  # id - landingpage
+        redirecturl = BASE_URI + '/#/b2note_home/id=' + targetid + '&source=' + targetsource
+        # /#/b2note_home/id=https:/someurl/sdf&source=http://someurl
+        return redirect(redirecturl, code=303)

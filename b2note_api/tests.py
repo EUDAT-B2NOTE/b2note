@@ -1,13 +1,12 @@
 import unittest
 import requests
 import json
-from pprint import pprint
 
 LOCALHOST_ANNOTATIONS = 'http://localhost:5000/annotations'
 LOCALHOST_USERPROFILE = 'http://localhost:5000/userprofile'
 LOCALHOST_USERINFO = 'http://localhost:5000/userinfo'
 LOCALHOST_APIDOCS = 'http://localhost:5000/api-docs'
-
+LOCALHOST = 'http://localhost:5000'
 
 class B2noteRestApiTestCase(unittest.TestCase):
 
@@ -56,8 +55,8 @@ class B2noteRestApiTestCase(unittest.TestCase):
     def delete(self,resource,etag):
       return requests.delete(LOCALHOST_ANNOTATIONS+'/'+resource,headers={'Content-Type':'application/json','Authorization': 'Basic dGVzdDp0ZXN0','If-Match':etag})
 
-    def get(self,resource):
-      return requests.get(LOCALHOST_ANNOTATIONS + '/' + resource, headers=self.headers)
+    def postGeneric(self,resource,data):
+      return requests.post(LOCALHOST + '/' + resource,  headers={'Content-Type':'application/json','Authorization': 'Basic dGVzdDp0ZXN0', 'Content-Type':'application/x-www-form-urlencoded'}, data=data)
 
     def getapidocs(self,resource=""):
       return requests.get(LOCALHOST_APIDOCS + '/' + resource, headers=self.headers)
@@ -278,6 +277,12 @@ class B2noteRestApiTestCase(unittest.TestCase):
         #print(response)
         self.assertLess(response.status_code,300)
         self.assertGreaterEqual(response.status_code,200)
+
+    def test_compatibilityredirect(self):
+        data = 'subject_tofeed=https%3A%2F%2Fb2share.eudat.eu%2Frecords%2F39fa39965b314f658e4a198a78d7f6b5&pid_tofeed=http%3A%2F%2Fhdl.handle.net%2F11304%2F3522daa6-b988-11e3-8cd7-14feb57d12b9'
+        response = self.postGeneric('interface_main',data)
+        self.assertTrue(response.status_code == 303 or response.status_code == 200)
+
 
 
 

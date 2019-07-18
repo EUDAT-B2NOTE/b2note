@@ -63,7 +63,7 @@ export class Home {
   }
 
   activate(params, routeConfig, navigationInstruction){
-    //parses params in url in form #b2note_home/id=https:/someurl/sdf&source=http://someurl&type=SpecificResource
+    //parses params in url in form http://localhost/b2note/#/b2note_home/id=https:/someurl/sdf&source=http://someurl&type=SpecificResource
     if (params.target) {
       console.log('home activate()',params.target)
       let kv = params.target.split('&');
