@@ -60,11 +60,17 @@ describe('Stage Home Component', () => {
         nameElement = document.getElementsByTagName('button')[1];
         expect(nameElement.innerHTML).toContain('Create')
         nameElement = document.getElementsByTagName('button')[2];
-        expect(nameElement.innerHTML).toContain('Create')
+        expect(nameElement.innerHTML).toContain('Semantic')
+        nameElement = document.getElementsByTagName('button')[3];
+        expect(nameElement.innerHTML).toContain('Keyword')
+        nameElement = document.getElementsByTagName('button')[4];
+        expect(nameElement.innerHTML).toContain('Cancel')
        //nameElement = document.getElementsByTagName('button')[3];
         //expect(nameElement.innerHTML).toContain('OK')
-        nameElement = document.getElementsByTagName('button')[3];
-        expect(nameElement.innerHTML).toContain('All my annotation')
+        nameElement = document.getElementsByTagName('button')[5];
+        expect(nameElement.innerHTML).toContain('Create')
+        nameElement = document.getElementsByTagName('button')[6];
+        expect(nameElement.innerHTML).toContain('All')
 
         done();
     }).catch(e => {
