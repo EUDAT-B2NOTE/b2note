@@ -1,0 +1,88 @@
+<template>
+  <require from="../components/annotations"></require>
+  <require from="../components/userprofile"></require>
+  <require from="../components/autocomplete/good-auto-complete"></require>
+  <require from="../components/autocomplete.css"></require>
+  <div show.bind="showform" class="w3-container">
+    <h3>Create annotation</h3>
+
+    <div show.bind="manualtarget">
+      <table style="min-width:400px" class="w3-tiny">
+        <tr>
+          <td><label title="e.g. handle - redirecting to landing page URL">id:</label></td>
+          <td><input class="w3-input  w3-padding-0"
+                     placeholder="[uri to landing page of target]"
+                     value.bind="api.target.id"/></td>
+        </tr>
+        <tr>
+          <td><label title="(source) e.g. direct download URL">source</label></td>
+          <td><input class="w3-input w3-padding-0"
+                     placeholder="[uri to directly download the target]"
+                     value.bind="api.target.source"/></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="w3-bar w3-padding-top">
+      <a class="w3-bar-item w3-hover-blue"
+         class.bind="(active==tab.id) ? 'w3-white w3-border-top w3-border-left w3-border-right':'w3-border-bottom w3-light-gray'  "
+         style="width:9em; white-space: normal;" repeat.for="tab of tabs" click.delegate="switchtab(tab.id)">${tab.label}
+        <span if.bind="tab.id=='tab3'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></a>
+    </div>
+    <br/>
+    <div id="tabcontent">
+      <div id="tab1" show.bind="active==='tab1'">
+        <!--input placeholder="Type-in to select a tag." value.bind="annotationsemantic"/-->
+        <good-auto-complete view-model.ref="goodautocomplete"
+                    additional-class-input="form-control"
+                    selected-item.bind="annotationsemantic"
+                    suggestions-provider.bind="getSuggestions"
+                    suggestions-debounce="1000"
+                    min-search-value-length="3"
+                    placeholder="Type-in to select a tag.">
+        </good-auto-complete>
+        <button class="w3-button" click.delegate="createSemantic()">Create</button>
+
+      </div>
+      <div show.bind="active==='tab2'">
+        <div show.bind="!confirmkeyword">
+        <input placeholder="Type-in a keyword." value.bind="annotationkeyword"/>
+        <button class="w3-button" click.delegate="checkKeyword()">Create</button>
+        </div>
+        <div show.bind="confirmkeyword">
+          We detected ${keywordterms} semantic terms matching your keyword.<br/>
+Would you like to select one? Or carry on with free-text?<br/>
+        <button class="w3-button" click.delegate="switchSemantic()">Semantic</button>
+        <button class="w3-button" click.delegate="createKeyword()">Keyword</button>
+        <button class="w3-button" click.delegate="switchCancel()">Cancel</button>
+
+        </div>
+      </div>
+
+      <div show.bind="active==='tab3'">
+        <textarea placeholder="Type your comment." value.bind="annotationcomment">
+        </textarea>
+        <button class="w3-button" click.delegate="createComment()">Create</button>
+      </div>
+
+    </div>
+    <annotations show.bind="!confirmkeyword && !showack"></annotations>
+  </div>
+  <div show.bind="showack" class="w3-container">
+    <h3>Annotation was created</h3>
+    <button class="w3-button" click.delegate="closeackn()">OK</button>
+    <div class="w3-small">Annotation ID:<b>${anid}</b></div>
+    <div class="w3-tiny"><pre>${annotationtext}</pre></div>
+  </div>
+  <div show.bind="showfirstlogin" class="w3-container">
+    <userprofile></userprofile>
+    <button class="w3-button" click.delegate="closeprofile()">OK</button>
+  </div>
+
+
+  <div class="w3-container">
+    <hr/>
+    <a href="https://www.eudat.eu/support-request" class="w3-button">Contact and support request</a>
+  </div>
+
+</template>

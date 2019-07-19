@@ -1,6 +1,6 @@
 language: python
 python:
-  - "2.7"
+  - "3.6"
 sudo: false
 services:
   - mongodb
@@ -11,17 +11,27 @@ addons:
     packages:
     - mongodb-org-server
     - mongodb-org-shell
+    - google-chrome-stable
+    - apache2-dev
 # command to install dependencies
 install:
-  - pip install -r requirements.txt
-  - pip install git+https://github.com/AymRod/pyoidc
-  - pip install git+http://github.com/django-nonrel/django@nonrel-1.5
-  - pip install git+http://github.com/django-nonrel/django-dbindexer@master
-  - pip install git+http://github.com/django-nonrel/djangotoolbox@master
-  - pip install git+https://github.com/django-nonrel/mongodb-engine
+  - pip install -r b2note_api/requirements.txt
+  - npm install aurelia-cli -g
 # command to run tests
 before_script:
   - sleep 15
-  - mongo test_database --eval 'db.createUser({"user":"tester","pwd":"abc123", roles:["readWrite"]});'
+  - echo preparing
+  - mongo ${MONGODB_NAME} --eval 'db.createUser({"user":"'${MONGODB_USR}'","pwd":"'${MONGODB_PWD}'", roles:["readWrite"]});'
+  - cd b2note_app
+  - npm install
+  - cd ..
 script:
-  - python manage.py test b2note_app
+  - echo Backend API unit tests
+  - cd b2note_api
+  - python -m unittest
+  - echo Frontend APP UI unit tests
+  - cd ..
+  - cd b2note_app
+  - au test
+  - echo Frontend APP UI e2e tests
+  - au run & sleep 10; au teste2e

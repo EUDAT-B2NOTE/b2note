@@ -1,0 +1,17 @@
+<template>
+  <div class="w3-container">
+    <div show.bind="!loggedin">
+      <h3>Login</h3>
+      <a show.bind="allowgoogle" class="w3-button" href="/api/google/login?next=/b2note/">Login using Google Account</a>
+      <p show.bind="allowgoogle">This will use the Google Authentication Service to log into B2NOTE.</p>
+      <a class="w3-button" href="/api/b2access/login?next=/b2note/">Login using B2Access</a>
+      <p>This will use the B2Access Authentication Service to log into B2NOTE.</p>
+    </div>
+    <div show.bind="loggedin">
+      <h3>Logout</h3>
+      <a show.bind="allowgoogle" class="w3-button" href="/api/google/logout">Logout using Google Account</a>
+      <p show.bind="allowgoogle">This will close this widget.</p>
+      <a class="w3-button" href="/api/b2access/logout">Logout using B2Access</a>
+      <p>This will close this widget.</p>
+    </div>
+</template>

@@ -1,5 +1,4 @@
-B2NOTE
-======
+# B2NOTE
 
 A [EUDAT](https://www.eudat.eu) service for creating, storing and managing annotations about online resources.
 
@@ -17,16 +16,18 @@ Master | [![Build Status](https://travis-ci.org/EUDAT-B2NOTE/b2note.svg?branch=m
 Development | [![Build Status](https://travis-ci.org/EUDAT-B2NOTE/b2note.svg?branch=development)](https://travis-ci.org/EUDAT-B2NOTE/b2note)
 
 
-##Contributors
+## Contributors
+
 
  Name  |  Affiliation | Contact
 -------|-------|-------
-Dr. Yann Le Franc   | e-Science Data Factory | ylefranc@esciencefactory.com
-Dr. Antoine Brémaud | e-Science Data Factory | [abremaud@esciencefactory.com](mailto:abremaud@esciencefactory.com)
-Mr. Pablo Ródenas Barquero | Barcelona Supercomputing Center | pablo.rodenas@bsc.es
+Dr. Yann Le Franc   | e-Science Data Factory | ylefranc at esciencefactory.com
+Dr. Antoine Brémaud | e-Science Data Factory | abremaud at esciencefactory.com
+Mr. Pablo Ródenas Barquero | Barcelona Supercomputing Center | pablo.rodenas at bsc.es
+Dr. Tomas Kulhanek | e-Science Data Factory | tkulhanek at esciencefactory.com
 
 
-##Instructions for contributing
+## Instructions for contributing
 
 Please follow along guidelines outlined at:
 
@@ -47,7 +48,7 @@ In short:
     1. May require preemptive alignment to target branch latest code.
 
 
-##Copyright
+## Copyright
 
 Copyright © e-Science Data Factory, 2015-2016
 

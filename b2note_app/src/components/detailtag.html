@@ -1,0 +1,77 @@
+<template>
+  <require from="../components/autocomplete/good-auto-complete"></require>
+  <require from="../components/autocomplete.css"></require>
+
+  <div show.bind="showtaginfo" ref="detailtagref">
+    <div show.bind="taginfo.mode==='show'">
+      <p>${tagtitle} <span class="w3-small">[${classlength} classes]</span></p>
+        <div>
+        <table class="w3-border w3-striped w3-card-2 w3-padding">
+          <tr><td>Label</td><td>${class.labels}</td></tr>
+          <tr if.bind="class.description"><td>Definition</td><td>${class.description}</td></tr>
+          <tr><td>Short Form</td><td>${class.short_form}</td></tr>
+          <tr if.bind="class.synonyms"><td>Synonyms</td><td>${class.synonyms}</td></tr>
+          <tr><td>Ontology name</td><td>${class.ontology_name}</td></tr>
+          <tr><td>Ontology acronym</td><td>${class.ontology_acronym}</td></tr>
+          <tr><td>URI</td><td><a class="w3-tiny" href.bind="class.uris" target="_blank">${class.uris}</a></td></tr>
+          <!--tr><td>Also In</td><td></td></tr-->
+        </table>
+        </div>
+      <div>
+        <button class="w3-button w3-small w3-hover-blue" click.delegate="switchprev()" title="previous"><i class="fa fa-arrow-left"></i></button>
+        <span class="w3-small"><b>${classindex}/${classlength}</b></span>
+        <button repeat.for="item of classes" class.bind="item.isfocused ? 'w3-blue w3-button w3-small w3-padding-tiny' : 'w3-light-grey w3-button w3-small w3-hover-blue w3-padding-tiny'" click.delegate="switch(item)" title="${item.ontology_name}"><i class="fa fa-circle-o"></i></button>
+        <button class="w3-button w3-small w3-hover-blue" click.delegate="switchnext()" title="next"><i class="fa fa-arrow-right"></i></button>
+      </div>
+      <div>
+        <p>Used to annotate these files:</p>
+        <table class="w3-border w3-striped w3-card-2 w3-padding">
+          <tr><th title="landing page">id</th><th title="direct link">source</th></tr>
+          <tr repeat.for="item of taginfo.target.items"><td><a href.bind="item.id" class="w3-tiny">${item.id}</a></td><td><a href.bind="item.source" class="w3-tiny">${item.source}</a></td></tr>
+        </table>
+        <p></p>
+      </div>
+    </div>
+    <div show.bind="taginfo.mode==='edit'" ref="detailtagedit">
+      <p>Edit annotation '<span class="w3-tiny">${taginfo.body.value}</span>' of target '<span title.bind="taginfo.target.id" class="w3-tiny">${taginfo.target.id}</span>'</p>
+      <div id="tab1" show.bind="active==='tab1'">
+        <!--input placeholder="Type-in to select a tag." value.bind="annotationsemantic"/-->
+                <good-auto-complete
+                    additional-class-input="form-control"
+                    selected-item.bind="annotationsemantic"
+                    suggestions-provider.bind="getSuggestions"
+                    suggestions-debounce="1000"
+                    min-search-value-length="2"
+                    placeholder="Type-in to select a tag.">
+        </good-auto-complete>
+        <button class="w3-button" click.delegate="createSemantic()">Modify</button>
+
+      </div>
+      <div show.bind="active==='tab2'">
+        <input placeholder="Type-in a keyword." value.bind="annotationkeyword"/>
+        <button class="w3-button" click.delegate="createKeyword()">Modify</button>
+      </div>
+
+      <div show.bind="active==='tab3'">
+        <textarea placeholder="Type your comment." value.bind="annotationcomment">
+        </textarea>
+        <button class="w3-button" click.delegate="createComment()">Modify</button>
+      </div>
+
+    </div>
+    <div show.bind="taginfo.mode==='remove'">
+      <p>
+        Delete first annotation '<span class="w3-tiny">${taginfo.body.value}</span>' of target '<span title.bind="taginfo.target.id" class="w3-tiny">${taginfo.target.id}</span>'
+      </p>
+        <button class="w3-button w3-red w3-hover-pale-red" click.delegate="deleteAnnotation()">Delete</button>
+        <button class="w3-button" click.delegate="cancelDeleteAnnotation()">Cancel</button>
+
+    </div>
+    <div show.bind="taginfo.mode=='ackremove'">
+      <p>${tagtitle} <button class="w3-button" click.delegate="ok()">OK</button></p>
+    </div>
+    <div show.bind="taginfo.mode=='ackmodify'">
+      <p>${tagtitle}</p><p class="w3-tiny"> ${annotationtext}</p> <button class="w3-button" click.delegate="ok()">OK</button>
+    </div>
+  </div>
+</template>

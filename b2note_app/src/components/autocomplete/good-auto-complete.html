@@ -1,0 +1,29 @@
+<template>
+  <require from="./good-auto-complete.css"></require>
+  <require from="./good-scroll-into-view-if"></require>
+
+  <span class="gac-container"
+    class.bind="isCurrentValueInvalid ? 'gac-value-inconsistent' : ''">
+    <input class="gac-input" 
+        class.bind="additionalClassInput"
+        ref="_suggestionsElementLogic.inputElement"
+        placeholder.bind="placeholder"
+        autocomplete="off" 
+        value.bind="_value"
+        blur.trigger="resetSuggestions()"
+        keydown.delegate="keyPressed($event)"></input> 
+    <div class="gac-suggestions"
+        ref="_suggestionsElementLogic.suggestionsElement" 
+        style="display:none">
+        <div repeat.for="item of _suggestionsLogic.currentSuggestions"
+            data-item-index="${$index}"
+            good-scroll-into-view-if.bind="$index === _suggestionsLogic.currentHighlightedIndex"
+            mousemove.delegate="!item.isDisabled ? mousemove($event, $index) : false"
+            mousedown.delegate="!item.isDisabled ? select($index) : false">
+            <template replaceable part="suggestion-item-template">
+                <div class="gac-suggestion-item ${item.isHighlighted ? 'gac-suggestion-item-highlighted' : ''}">${item.value}</div>
+            </template>
+        </div>
+    </div>
+  </span>
+</template>

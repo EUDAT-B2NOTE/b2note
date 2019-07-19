@@ -1,0 +1,88 @@
+<template>
+  <require from="./detailtag"></require>
+  <hr/>
+  <div class="w3-container">
+    <button click.delegate="switchAll()" class="w3-button w3-light-gray w3-border-up w3-twothird"><i
+      class.bind="showall? 'fa fa-arrow-up': 'fa fa-arrow-down'"></i> All my annotation
+    </button>
+  </div>
+  <div class.bind="showall ? 'w3-padding':'w3-hide'" style="padding-top:0px !important;">
+    <div class="w3-container w3-card-2">
+      <p>All my annotation</p>
+      <table class="w3-border w3-striped w3-card-2 w3-padding">
+        <tr click.delegate="showMySemantic()" class="w3-hover-blue">
+          <td>Semantic tag</td>
+          <td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${my.semantic.length}&nbsp;</td>
+        </tr>
+        <tr click.delegate="showMyKeyword()" class="w3-hover-blue">
+          <td>Free-text keyword</td>
+          <td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${my.keyword.length}&nbsp;</td>
+        </tr>
+        <tr click.delegate="showMyComment()" class="w3-hover-blue">
+          <td>Comment</td>
+          <td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${my.comment.length}&nbsp;</td>
+        </tr>
+      </table>
+
+      <div show.bind="showmydetail">
+        <p>${showmytitle} annotations</p>
+        <table class="w3-border w3-striped w3-card-2 w3-padding">
+          <tr repeat.for="tag of my.tags" class="w3-hover-blue">
+            <td click.delegate="showdetail(tag,'my')">${tag.body.value}</td>
+            <td>${tag.title}</td>
+            <td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${tag.target.items.length}&nbsp; </td>
+            <td>
+              <button class="w3-button fa fa-edit" click.delegate="edittag(tag,'my')"></button>
+              <button class="w3-button fa fa-remove" click.delegate="removetag(tag,'my')"></button>
+            </td>
+          </tr>
+        </table>
+        <detailtag id="my"></detailtag>
+      </div>
+    </div>
+  </div>
+  <hr/>
+
+  <div class="w3-container">
+    <button click.delegate="switchFile()" class="w3-button w3-light-gray w3-border-up w3-twothird"><i
+      class.bind="showfile? 'fa fa-arrow-up': 'fa fa-arrow-down'"></i> All annotations about this file
+    </button>
+  </div>
+  <div class.bind="showfile ? 'w3-padding':'w3-hide'" style="padding-top:0px !important;">
+    <div class="w3-container w3-card-2">
+      <p>All annotation about this file</p>
+      <table class="w3-border w3-striped w3-card-2 w3-padding">
+        <tr click.delegate="showFileSemantic()" class="w3-hover-blue">
+          <td>Semantic tag</td>
+          <td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${file.semantic.length}&nbsp;</td>
+        </tr>
+        <tr click.delegate="showFileKeyword()" class="w3-hover-blue">
+          <td>Free-text keyword</td>
+          <td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${file.keyword.length}&nbsp;</td>
+        </tr>
+        <tr click.delegate="showFileComment()" class="w3-hover-blue">
+          <td>Comment</td>
+          <td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${file.comment.length}&nbsp;</td>
+        </tr>
+      </table>
+
+      <div show.bind="showfiledetail">
+        <p>${showfiletitle} annotations</p>
+        <table class="w3-border w3-striped w3-card-2 w3-padding">
+          <tr repeat.for="tag of file.tags" class="w3-hover-blue">
+            <td click.delegate="showdetail(tag,'file')">${tag.body.value}</td>
+            <td>${tag.title}</td>
+            <td class="w3-small w3-deep-orange w3-round-large"> &nbsp;${tag.target.items.length}&nbsp; </td>
+            <td>
+              <button class="w3-button fa fa-edit" click.delegate="edittag(tag,'file')"></button>
+              <button class="w3-button fa fa-remove"click.delegate="removetag(tag,'file')"></button>
+            </td>
+          </tr>
+        </table>
+        <detailtag id="file"></detailtag>
+      </div>
+    </div>
+  </div>
+
+
+</template>

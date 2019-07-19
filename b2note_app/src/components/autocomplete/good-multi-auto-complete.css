@@ -1,0 +1,18 @@
+.gmac-container {
+    position: relative;
+}
+
+.gmac-selected-items {
+    width: auto;
+}
+
+.gmac-suggestions {
+    position: absolute;        
+    height: auto;
+    z-index: 999;
+    overflow-y: auto;
+}
+
+.gmac-suggestion-item {
+    cursor: default;
+}

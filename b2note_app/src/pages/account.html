@@ -1,0 +1,37 @@
+<template>
+  <require from="../w3.css"></require>
+  <require from="../components/userprofile"></require>
+  <div class="w3-container">
+    <h3>User account</h3>
+    <userprofile userinfo.bind="userinfo"></userprofile>
+    <h3>Settings</h3>
+    <form>
+      <table class="w3-border w3-striped w3-card-2 w3-padding">
+        <tr class="w3-margin w3-padding">
+          <td class="w3-margin" colspan="2"><label>B2NOTE backend server endpoint:</label> <input
+            value.bind="api.apiurl" class="w3-input w3-tiny w3-border"/></td>
+        </tr>
+        <tr class="w3-margin w3-padding">
+          <td class="w3-margin" colspan="2"><label>B2NOTE SOLR index endpoint:</label> <input
+            value.bind="api.ontologyurl" class="w3-input w3-tiny w3-border"/></td>
+        </tr>
+        <tr class="w3-margin">
+          <td><label>manually fill target urls</label></td>
+          <td><input checked.bind="manualtarget" type="checkbox"/></td>
+        </tr>
+        <tr class="w3-margin">
+          <td><label>allow google login</label></td>
+          <td><input checked.bind="api.allowgoogle" type="checkbox"/></td>
+        </tr>
+        <tr class="w3-margin">
+          <td><label>search UI design</label></td>
+          <td><select value.bind="api.searchdialog">
+            <option value="dropdown">Dropdown (Default)</option>
+            <option value="array">Array</option>
+            <option value="recursive">Recursive</option>
+          </select></td>
+        </tr>
+      </table>
+    </form>
+  </div>
+</template>

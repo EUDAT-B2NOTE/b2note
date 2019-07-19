@@ -1,0 +1,21 @@
+<template>
+  <require from="../components/recursivesearchdialog"></require>
+  <require from="../components/arraysearchdialog"></require>
+  <require from="../components/dropdownsearchdialog"></require>
+  <div class="w3-container">
+    <h3>Search</h3>
+    <div show.bind="api.searchdialog==='recursive'">
+    <p>Variant: Recursive search dialog</p>
+    <recursivesearchdialog></recursivesearchdialog>
+      </div>
+    <div show.bind="api.searchdialog==='array'">
+      <p>Variant:Array Search dialog</p>
+    <arraysearchdialog></arraysearchdialog>
+    </div>
+    <div show.bind="api.searchdialog==='dropdown'">
+          <p>Variant:Dropdown Search dialog</p>
+    <dropdownsearchdialog></dropdownsearchdialog>
+
+    </div>
+  </div>
+</template>

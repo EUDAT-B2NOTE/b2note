@@ -10,7 +10,6 @@ __pycache__/
 env/
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -76,3 +75,5 @@ db.*
 # Accounts DB
 *.sqlite3
 
+# venv
+py3/**

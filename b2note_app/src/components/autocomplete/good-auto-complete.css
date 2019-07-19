@@ -1,0 +1,14 @@
+.gac-container {
+    position: relative;
+}
+
+.gac-suggestions {
+    position: absolute;        
+    height: auto;
+    z-index: 999;
+    overflow-y: auto;
+}
+
+.gac-suggestion-item {
+    cursor: default;
+}

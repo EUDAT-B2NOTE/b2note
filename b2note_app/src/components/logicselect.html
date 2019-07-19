@@ -1,0 +1,12 @@
+<template bindable="first, logic">
+  <select show.bind="first" class="w3-button w3-padding-4" value.bind="logic">
+        <option value=""></option>
+        <option value="NOT">NOT</option>
+      </select>
+        <select show.bind="!first" class="w3-button w3-padding-4" value.bind="logic">
+        <option value="AND">AND</option>
+        <option value="OR">OR</option>
+        <option value="AND NOT">AND NOT</option>
+        <option value="OR NOT">OR NOT</option>
+      </select>
+</template>
