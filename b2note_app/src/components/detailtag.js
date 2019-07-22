@@ -126,6 +126,9 @@ export class Detailtag {
         this.taginfo.mode="ackremove";
         if (response.ok) this.tagtitle="Annotation was deleted. ";
         else this.tagtitle="Error occured during deletion. HTTP status:"+response.status+" text:"+response.statusText;
+        this.api.incAllAnnotationsSemantic();
+        this.api.incAllAnnotationsKeyword();
+        this.api.incAllAnnotationsComment();
       })
       .catch(response=>{
         console.log('deleteAnnotation() catch response',response)
@@ -160,6 +163,7 @@ export class Detailtag {
           'items': anvalue
         }
     this.putAnnotation(annotation);
+    this.api.incAllAnnotationsSemantic();
   }
   createKeyword(){
     let annotation=Object.assign({},this.taginfo);
@@ -176,6 +180,7 @@ export class Detailtag {
             'purpose': "tagging"
           }
     this.putAnnotation(annotation);
+    this.api.incAllAnnotationsKeyword();
   }
 
   createComment(){
@@ -193,6 +198,8 @@ export class Detailtag {
             'purpose': "commenting"
           }
     this.putAnnotation(annotation);
+    this.api.incAllAnnotationsComment();
+
   }
 
   putAnnotation(annotation) {

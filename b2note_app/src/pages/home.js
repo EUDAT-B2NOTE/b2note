@@ -119,6 +119,8 @@ export class Home {
         'generated': datetime.toISOString()
       };
       this.postAnnotation(annotation);
+      this.api.incAllAnnotationsSemantic();
+
   }
 
   postAnnotation(annotation) {
@@ -130,6 +132,7 @@ export class Home {
         this.annotationtext = JSON.stringify(data, null, 2);
         this.ea.publish(new Updateall(this.annotation));
         this.ea.publish(new Updatefile(this.annotation));
+        //return data;
       })
       .catch(error => {
         alert('Error while creating annotation. It was not created\n\nHTTP status:' + error.status + '\nHTTP status text:' + error.statusText);
@@ -179,7 +182,8 @@ export class Home {
           'created': datetime.toISOString(),
           'generated': datetime.toISOString()
         };
-        this.postAnnotation(annotation);
+        this.postAnnotation(annotation)
+        this.api.incAllAnnotationsKeyword()
   }
 
   createComment() {
@@ -214,14 +218,18 @@ export class Home {
           'created': datetime.toISOString(),
           'generated': datetime.toISOString()
         };
-        this.postAnnotation(annotation);
+        this.postAnnotation(annotation)
+        this.api.incAllAnnotationsComment();
   }
 
   getSuggestions(value) {
-        return this.api.getOntologySuggestions(value)
+        return this.api.getOntologySuggestions(value,4000)
           .then(data =>{
             return data;
           })
+          .catch(error =>{
+            return []
+    })
     }
 
   checkKeyword(){
@@ -238,7 +246,7 @@ export class Home {
           this.confirmkeyword=true;
           this.suggestions=suggestions;
         }
-      })
+       })
   }
 
   async switchSemantic(){

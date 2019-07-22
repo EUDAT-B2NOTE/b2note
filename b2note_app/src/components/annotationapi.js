@@ -67,6 +67,7 @@ export class AnnotationApi {
     this.target.source = '';
     this.target.type = 'SpecificResource';
     this.lastsuggest = {}; //associative array of suggestion containing ontologies
+    this.afs=this.afk=this.afc=0; //indeces for cache purpose - increment when some change appears
   }
 
   isLoggedIn() {
@@ -398,21 +399,32 @@ export class AnnotationApi {
   }
 
   getAllAnnotationsFileSemantic() {
-    return this.getAllAnnotationsAboutThisFile('"$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"Composite"},{"body.type":"SpecificResource"}]}]')
+    return this.getAllAnnotationsAboutThisFile('"$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"Composite"},{"body.type":"SpecificResource"}]}]',this.afs)
+  }
+  incAllAnnotationsSemantic(){
+    this.afs++;
   }
 
   //https://b2note.bsc.es/api/annotations?where={"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]}
   getAllAnnotationsFileKeyword() {
-    return this.getAllAnnotationsAboutThisFile('"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]')
+    return this.getAllAnnotationsAboutThisFile('"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]',this.afk)
+  }
+
+  incAllAnnotationsKeyword(){
+    this.afk++;
   }
 
   getAllAnnotationsFileComment() {
-    return this.getAllAnnotationsAboutThisFile('"body.purpose":"commenting"')
+    return this.getAllAnnotationsAboutThisFile('"body.purpose":"commenting"',this.afc)
+  }
+
+  incAllAnnotationsComment(){
+    this.afc++;
   }
 
 
-  getAllAnnotationsAboutThisFile(filter = "") {
-    let myfilter = '?where={"target.id":"' + this.target.id + '"' + (filter.length > 0 ? ',' + filter + '}' : '}');
+  getAllAnnotationsAboutThisFile(filter = "",customq=0) {
+    let myfilter = '?where={"target.id":"' + this.target.id + '"' + (filter.length > 0 ? ',' + filter + '}' : '}')+(customq>0?'&customq='+customq:'');
     return this.client.fetch(this.annotationsurl + myfilter + '&max_results=' + this.maxresult)
       .then(response => {
         //console.log(response);
@@ -432,25 +444,26 @@ export class AnnotationApi {
 
   //https://b2note.bsc.es/api/annotations?where={"$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"SpecificResource"},{"body.type":"Composite"}]}]}
   getAllMyAnnotationsSemantic() {
-    return this.getAllMyAnnotations('"$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"SpecificResource"},{"body.type":"Composite"}]}]')
+    return this.getAllMyAnnotations('"$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"SpecificResource"},{"body.type":"Composite"}]}]',this.afs)
   }
 
   //https://b2note.bsc.es/api/annotations?where={"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]}
   getAllMyAnnotationsKeyword() {
-    return this.getAllMyAnnotations('"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]')
+    return this.getAllMyAnnotations('"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]',this.afk)
   }
 
   getAllMyAnnotationsComment() {
-    return this.getAllMyAnnotations('"body.purpose":"commenting"')
+    return this.getAllMyAnnotations('"body.purpose":"commenting"',this.afc)
   }
+
 
   //http://localhost/api/annotations?where={"creator.id":"1527d37f-c884-43d4-b7fc-cfa87062d827","$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"SpecificResource"},{"body.type":"Composite"}]}]}};
 
-  getAllMyAnnotations(filter = "") {
+  getAllMyAnnotations(filter = "",customq=0) {
     return this.getUserInfo()
       .then(ui => {
         let userinfo = ui;
-        let myfilter = '?where={"creator.id":"' + ui.id + '"' + (filter.length > 0 ? ',' + filter + '}' : '}'); //this will append filter query if it is not empty
+        let myfilter = '?where={"creator.id":"' + ui.id + '"' + (filter.length > 0 ? ',' + filter + '}' : '}')+(customq>0?'&customq='+customq:''); //this will append filter query if it is not empty
         console.log('getallmyannotations', filter, myfilter);
         return this.client.fetch(this.annotationsurl + myfilter + '&max_results=' + this.maxresult)
           .then(response => {
