@@ -135,7 +135,7 @@ export class Annotations {
   showMyKeyword() {
     this.showmydetail = true;
     this.showmytitle = "Free-text keyword"
-    this.my.tags = this.my.keyword;
+    this.my.tags = this.aggregatePerBody(this.my.keyword);
   }
 
   showMyComment() {
@@ -154,7 +154,7 @@ export class Annotations {
   showFileKeyword() {
     this.showfiledetail = true;
     this.showfiletitle = "Free-text keyword"
-    this.file.tags = this.file.keyword;
+    this.file.tags = this.aggregatePerBody(this.file.keyword);
   }
 
   showFileComment() {
