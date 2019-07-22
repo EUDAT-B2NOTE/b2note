@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>B2Note iframe component demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="">
+    <!-- imported CSS are concatenated and added automatically -->
+    <script>
+      /**
+ * Defines the height of the iframe in the onload event.
+ * @param {String} subject
+ * @return None
+ */
+function load_iframe(subject){
+	var iframe = window.parent.document.getElementById("b2note_iframe");
+	var doc = iframe.contentDocument? iframe.contentDocument:
+        iframe.contentWindow.document;
+	iframe.style.visibility = 'hidden';
+	iframe.style.height = "10px"; // reset to minimal height ...
+	// IE opt. for bing/msn needs a bit added or scrollbar appears
+	iframe.style.height = getDocHeight( doc ) + 4 + "px";
+	iframe.style.visibility = 'visible';
+	iframe.subject_tofeed=subject;
+}
+/**
+ * Helper function which returns the higher value of the document height.
+ * @param {Object} doc
+ * @return {Number} height
+ */
+function getDocHeight(doc) {
+    doc = doc || document;
+    // stackoverflow.com/questions/1145850/
+    var body = doc.body, html = doc.documentElement;
+    var height = Math.max( body.scrollHeight, body.offsetHeight,
+        html.clientHeight, html.scrollHeight, html.offsetHeight );
+    return height;
+}
+
+    </script>
+  </head>
+  <body>
+  <h3>B2NOTE as web component</h3>
+  <p>This is demo page. B2NOTE iframe component as floating component on the right.
+  </p>
+    <div id="aucontainer" style="float:right;width:33%">b2note-home
+    <button onclick="document.getElementById('aucontainer').hidden=true" title="close b2note component">x</button>
+    <iframe id="b2note_iframe" name="b2note_iframe" src="/interface_main"
+                width=400 onload="load_iframe('')"
+                scrolling="yes"></iframe>
+  <br/>
+  </div>
+  <table>
+                <!-- For the production version the url will be pointing to https://b2note.bsc.es/api/create_annotation -->
+                <form action="/interface_main" method="post" target="b2note_iframe">
+
+                    <input type='hidden' name='csrfmiddlewaretoken' value='8eaUAYAzvQrhpyu8V0hmaL8oc1jJXmgJ' />
+
+                    <tr class="row1" colspan="2">
+
+                        <td></td>
+
+                    </tr>
+
+                    <tr class="row2">
+
+                        <td>
+
+                            <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/records/b1092be3cd4844e0bffd7b669521ba3c" class="field left" readonly="readonly" />
+                            <a href="https://b2share.eudat.eu/records/b1092be3cd4844e0bffd7b669521ba3c" target="_blank">Orthography-based dating and localisation of Middle Dutch charters</a>
+                            <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/3720bb44-831c-48f3-9847-6988a41236e1" class="field left" readonly="readonly" />
+
+                        </td>
+
+                        <td rowspan="2">
+
+                            <input type="submit" id="button1" value="Create Annotation" title="Click to annotate using B2NOTE."/>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr class="row3">
+
+                        <td>http://hdl.handle.net/11304/3720bb44-831c-48f3-9847-6988a41236e1</td>
+
+                    </tr>
+
+                    <tr class="row4" colspan="2">
+
+                        <td> </td>
+                        <td> </td>
+
+                    </tr>
+
+                </form>
+
+
+
+                <!-- For the production version the url will be pointing to https://b2note.bsc.es/api/create_annotation -->
+                <form action="/interface_main" method="post" target="b2note_iframe">
+
+                    <input type='hidden' name='csrfmiddlewaretoken' value='8eaUAYAzvQrhpyu8V0hmaL8oc1jJXmgJ' />
+
+                    <tr class="row1" colspan="2">
+
+                        <td></td>
+
+                    </tr>
+
+                    <tr class="row2">
+
+                        <td>
+
+                            <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/records/39fa39965b314f658e4a198a78d7f6b5" class="field left" readonly="readonly" />
+                            <a href="https://b2share.eudat.eu/records/39fa39965b314f658e4a198a78d7f6b5" target="_blank">ImageJ plugin ColonyArea</a>
+                            <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/3522daa6-b988-11e3-8cd7-14feb57d12b9" class="field left" readonly="readonly" />
+
+                        </td>
+
+                        <td rowspan="2">
+
+                            <input type="submit" id="button2" value="Create Annotation" title="Click to annotate using B2NOTE."/>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr class="row3">
+
+                        <td>http://hdl.handle.net/11304/3522daa6-b988-11e3-8cd7-14feb57d12b9</td>
+
+                    </tr>
+
+                    <tr class="row4" colspan="2">
+
+                        <td> </td>
+                        <td> </td>
+
+                    </tr>
+
+                </form>
+
+
+
+                <!-- For the production version the url will be pointing to https://b2note.bsc.es/api/create_annotation -->
+                <form action="/interface_main" method="post" target="b2note_iframe">
+
+                    <input type='hidden' name='csrfmiddlewaretoken' value='8eaUAYAzvQrhpyu8V0hmaL8oc1jJXmgJ' />
+
+                    <tr class="row1" colspan="2">
+
+                        <td></td>
+
+                    </tr>
+
+                    <tr class="row2">
+
+                        <td>
+
+                            <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/records/5b1ac2030a9f4338bba9d92593e2e5e4" class="field left" readonly="readonly" />
+                            <a href="https://b2share.eudat.eu/records/5b1ac2030a9f4338bba9d92593e2e5e4" target="_blank">REST paper 2014</a>
+                            <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/6a9078c4-c3b0-11e3-8cd7-14feb57d12b9" class="field left" readonly="readonly" />
+
+                        </td>
+
+                        <td rowspan="2">
+
+                            <input type="submit" id="button3" value="Create Annotation" title="Click to annotate using B2NOTE."/>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr class="row3">
+
+                        <td>http://hdl.handle.net/11304/6a9078c4-c3b0-11e3-8cd7-14feb57d12b9</td>
+
+                    </tr>
+
+                    <tr class="row4" colspan="2">
+
+                        <td> </td>
+                        <td> </td>
+
+                    </tr>
+
+                </form>
+
+
+
+                <!-- For the production version the url will be pointing to https://b2note.bsc.es/api/create_annotation -->
+                <form action="/interface_main" method="post" target="b2note_iframe">
+
+                    <input type='hidden' name='csrfmiddlewaretoken' value='8eaUAYAzvQrhpyu8V0hmaL8oc1jJXmgJ' />
+
+                    <tr class="row1" colspan="2">
+
+                        <td></td>
+
+                    </tr>
+
+                    <tr class="row2">
+
+                        <td>
+
+                            <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/records/8f90692d770249f08e42d4613e91dbea" class="field left" readonly="readonly" />
+                            <a href="https://b2share.eudat.eu/records/8f90692d770249f08e42d4613e91dbea" target="_blank">piSVM Analytics Runtimes JUDGE Cluster Rome Images 55 Features</a>
+                            <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/69430fd2-e7d6-11e3-b2d7-14feb57d12b9" class="field left" readonly="readonly" />
+
+                        </td>
+
+                        <td rowspan="2">
+
+                            <input type="submit" id="button4" value="Create Annotation" title="Click to annotate using B2NOTE."/>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr class="row3">
+
+                        <td>http://hdl.handle.net/11304/69430fd2-e7d6-11e3-b2d7-14feb57d12b9</td>
+
+                    </tr>
+
+                    <tr class="row4" colspan="2">
+
+                        <td> </td>
+                        <td> </td>
+
+                    </tr>
+
+                </form>
+
+
+
+                <!-- For the production version the url will be pointing to https://b2note.bsc.es/api/create_annotation -->
+                <form action="/interface_main" method="post" target="b2note_iframe">
+
+                    <input type='hidden' name='csrfmiddlewaretoken' value='8eaUAYAzvQrhpyu8V0hmaL8oc1jJXmgJ' />
+
+                    <tr class="row1" colspan="2">
+
+                        <td></td>
+
+                    </tr>
+
+                    <tr class="row2">
+
+                        <td>
+
+                            <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/records/f253047b330449d69594f60aebbf3d62" class="field left" readonly="readonly" />
+                            <a href="https://b2share.eudat.eu/records/f253047b330449d69594f60aebbf3d62" target="_blank">GoNL SNPs and Indels release 5</a>
+                            <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/fe356a8e-3f2b-11e4-81ac-dcbd1b51435e" class="field left" readonly="readonly" />
+
+                        </td>
+
+                        <td rowspan="2">
+
+                            <input type="submit" id="button5" value="Create Annotation" title="Click to annotate using B2NOTE."/>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr class="row3">
+
+                        <td>http://hdl.handle.net/11304/fe356a8e-3f2b-11e4-81ac-dcbd1b51435e</td>
+
+                    </tr>
+
+                    <tr class="row4" colspan="2">
+
+                        <td> </td>
+                        <td> </td>
+
+                    </tr>
+
+                </form>
+
+
+
+                <!-- For the production version the url will be pointing to https://b2note.bsc.es/api/create_annotation -->
+                <form action="/interface_main" method="post" target="b2note_iframe">
+
+                    <input type='hidden' name='csrfmiddlewaretoken' value='8eaUAYAzvQrhpyu8V0hmaL8oc1jJXmgJ' />
+
+                    <tr class="row1" colspan="2">
+
+                        <td></td>
+
+                    </tr>
+
+                    <tr class="row2">
+
+                        <td>
+
+                            <input type="hidden" name="subject_tofeed" value="https://b2share.eudat.eu/records/5a62838104c14932823cfd905eb438fc" class="field left" readonly="readonly" />
+                            <a href="https://b2share.eudat.eu/records/5a62838104c14932823cfd905eb438fc" target="_blank">Influence of smoking and obesity in sperm quality</a>
+                            <input type="hidden" name="pid_tofeed" value="http://hdl.handle.net/11304/9061f60c-41cf-11e4-81ac-dcbd1b51435e" class="field left" readonly="readonly" />
+
+                        </td>
+
+                        <td rowspan="2">
+
+                            <input type="submit" id="button6" value="Create Annotation" title="Click to annotate using B2NOTE."/>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr class="row3">
+
+                        <td>http://hdl.handle.net/11304/9061f60c-41cf-11e4-81ac-dcbd1b51435e</td>
+
+                    </tr>
+
+                    <tr class="row4" colspan="2">
+
+                        <td> </td>
+                        <td> </td>
+
+                    </tr>
+
+                </form>
+
+
+
+            </table>
+
+  </body>
+</html>
