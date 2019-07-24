@@ -13,6 +13,7 @@
  * @return None
  */
 function load_iframe(subject){
+  console.log('load_iframe')
 	var iframe = window.parent.document.getElementById("b2note_iframe");
 	var doc = iframe.contentDocument? iframe.contentDocument:
         iframe.contentWindow.document;
@@ -22,6 +23,13 @@ function load_iframe(subject){
 	iframe.style.height = getDocHeight( doc ) + 4 + "px";
 	iframe.style.visibility = 'visible';
 	iframe.subject_tofeed=subject;
+}
+
+function show_iframe(subject){
+  console.log('show_iframe')
+	var iframe = window.parent.document.getElementById("b2note_iframe");
+	iframe.style.visibility = 'visible';
+	return true;
 }
 /**
  * Helper function which returns the higher value of the document height.
@@ -43,8 +51,8 @@ function getDocHeight(doc) {
   <h3>B2NOTE as web component</h3>
   <p>This is demo page. B2NOTE iframe component as floating component on the right.
   </p>
-    <div id="aucontainer" style="float:right;width:33%">b2note-home
-    <button onclick="document.getElementById('aucontainer').hidden=true" title="close b2note component">x</button>
+    <div id="aucontainer" style="float:right;width:33%">
+    <!--button onclick="document.getElementById('aucontainer').hidden=true" title="close b2note component">x</button-->
     <iframe id="b2note_iframe" name="b2note_iframe" src="/interface_main"
                 width=400 onload="load_iframe('')"
                 scrolling="yes"></iframe>
@@ -52,7 +60,7 @@ function getDocHeight(doc) {
   </div>
   <table>
                 <!-- For the production version the url will be pointing to https://b2note.bsc.es/api/create_annotation -->
-                <form action="/interface_main" method="post" target="b2note_iframe">
+                <form action="/interface_main" method="post" target="b2note_iframe" >
 
                     <input type='hidden' name='csrfmiddlewaretoken' value='8eaUAYAzvQrhpyu8V0hmaL8oc1jJXmgJ' />
 

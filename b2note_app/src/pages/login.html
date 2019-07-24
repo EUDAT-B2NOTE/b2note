@@ -4,7 +4,8 @@
       <h3>Login</h3>
       <a show.bind="allowgoogle" class="w3-button" href="/api/google/login?next=/b2note/">Login using Google Account</a>
       <p show.bind="allowgoogle">This will use the Google Authentication Service to log into B2NOTE.</p>
-      <a class="w3-button" href="/api/b2access/login?next=/b2note/">Login using B2Access</a>
+      <a class="w3-button" href="/api/b2access/login?next=/b2note/" show.bind="!iframe">Login using B2Access</a>
+      <button class="w3-button" show.bind="iframe" click.delegate="popupLogin()">Login using B2Access popup</button>
       <p>This will use the B2Access Authentication Service to log into B2NOTE.</p>
     </div>
     <div show.bind="loggedin">

@@ -80,6 +80,7 @@ export class B2note {
         settings: { icon: '',iconlogin:'fa fa-sign-in',iconlogout:'fa fa-sign-out'}
       }
     ]);
-    this.router = router;
+    this.router=router;
+    this.api.router = router;
   }
 }

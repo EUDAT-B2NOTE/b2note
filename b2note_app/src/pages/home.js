@@ -76,6 +76,9 @@ export class Home {
         if (keyvalue[0]==='type') this.api.target.type=keyvalue[1];
        // console.log('api target',this.api.target);
       }
+    } else {
+      //no params = send message to potential window opener - listener in login.js which closes the popup
+      if (window.opener) window.opener.postMessage('b2note home opened', "*");
     }
 
   }

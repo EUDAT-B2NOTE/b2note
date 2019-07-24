@@ -68,6 +68,7 @@ export class AnnotationApi {
     this.target.type = 'SpecificResource';
     this.lastsuggest = {}; //associative array of suggestion containing ontologies
     this.afs=this.afk=this.afc=0; //indeces for cache purpose - increment when some change appears
+    this.router=undefined;//router
   }
 
   isLoggedIn() {
