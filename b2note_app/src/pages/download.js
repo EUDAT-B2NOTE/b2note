@@ -56,6 +56,7 @@ export class Download {
     this.jsonurl = window.URL.createObjectURL(data);
   }
 
+  //TODO implement RDF conversion - jsonld seems to support only nquads
   createRdf(){
 // serialize a document to N-Quads (RDF)
     this.rdf="";

@@ -94,7 +94,7 @@ export class Home {
     //  let userinfo = data;
       let datetime = new Date();
       let annotation = {
-        '@context': 'http://www.w3/org/ns/anno/jsonld',
+        '@context': 'http://www.w3.org/ns/anno/jsonld',
         'id': '',
         'type': 'Annotation',
         'body': {
@@ -158,7 +158,7 @@ export class Home {
     let anvalue = this.annotationkeyword;
         let datetime = new Date();
         let annotation = {
-          '@context': 'http://www.w3/org/ns/anno/jsonld',
+          '@context': 'http://www.w3.org/ns/anno/jsonld',
           'id': '',
           'type': 'Annotation',
           'body': {
@@ -194,7 +194,7 @@ export class Home {
     let anvalue = this.annotationcomment;
         let datetime = new Date();
         let annotation = {
-          '@context': 'http://www.w3/org/ns/anno/jsonld',
+          '@context': 'http://www.w3.org/ns/anno/jsonld',
           'id': '',
           'type': 'Annotation',
           'body': {
