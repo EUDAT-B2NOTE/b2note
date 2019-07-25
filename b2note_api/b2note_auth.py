@@ -143,7 +143,7 @@ def register(app):
         #print('get_user_info',ui['name'])
         return ui
 
-    @app.route('/interface_main', methods=['POST'])
+    @app.route('/interface_main', methods=['GET','POST'])
     def compatibility_redirect():
         #""" redirects old POST request with target id and source to GET request to new UI with params in url"""
         targetsource = request.form.get('subject_tofeed','') # source - direct link to file
