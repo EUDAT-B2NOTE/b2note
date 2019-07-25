@@ -1,7 +1,7 @@
 /**
- * Annotattion component with accordion to show overview about existing annotations
+ * Annotation component with accordion to show overview about existing annotations
  * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
- * @since 06/2019
+ * @since v2.0
  */
 
 import {AnnotationApi} from '../components/annotationapi';
@@ -30,6 +30,9 @@ export class Annotations {
     this.showfiledetail = false;
   }
 
+  /**
+   * subscribe to notification about changes in annotations
+   */
   attached() {
     this.s1 = this.ea.subscribe(Updateall, msg => this.updateAll());
     this.s2 = this.ea.subscribe(Updatefile, msg => this.updateFile());
@@ -40,6 +43,9 @@ export class Annotations {
     this.s1.dispose();
   }
 
+  /**
+   * switch view to All My Annotation
+   */
   switchAll() {
     this.showall = !this.showall;
     if (this.showfile) this.showfile = false;
@@ -64,6 +70,9 @@ export class Annotations {
     }
   }
 
+  /**
+   * Switch view to 'Annotation about this file'
+   */
   switchFile() {
     this.showfile = !this.showfile;
     if (this.showall) this.showall = false;
@@ -89,17 +98,24 @@ export class Annotations {
 
   }
 
-  //sets values of tags through array to find TextualValue (last item) and set it
+  /**
+   * sets values of tags through array to find TextualValue (last item) and set it
+   * @param tags
+   */
   setvalue(tags) {
     for (let tag of tags) {
       if (tag.body.items && tag.body.items.length > 0) tag.body.value = tag.body.items[tag.body.items.length - 1].value
       else if (tag.body.source) tag.body.value = tag.body.source;
     }
     console.log('Annotations, tags', tags)
-    //aggregate targets
   }
 
 
+  /**
+   * Aggregates annotation tags per the body value, multiple targets per the body are in target.items array
+   * @param tags
+   * @returns {Array}
+   */
   aggregatePerBody(tags) {
     let tagset = {} // set of body values
     let newtags = []
@@ -111,13 +127,13 @@ export class Annotations {
       }
       if (tagset.hasOwnProperty(tag.body.value)) {
         //adds target to existing
-        console.log('aggregatePerBody() adding target to existing body [body.value,target, index-tagset[body.value])',tag.body.value,tag.target,tagset);
+        //console.log('aggregatePerBody() adding target to existing body [body.value,target, index-tagset[body.value])',tag.body.value,tag.target,tagset);
         newtags[tagset[tag.body.value]].target.items.push(tag.target)
       } else {
         //creates newtag
         let index = newtags.push(tag) - 1;
         tagset[tag.body.value] = index;
-        console.log('aggregatePerBody() creating target to existing body [body.value,target, index-tagset[body.value])',tag.body.value,tag.target,tagset);
+        //console.log('aggregatePerBody() creating target to existing body [body.value,target, index-tagset[body.value])',tag.body.value,tag.target,tagset);
         newtags[tagset[tag.body.value]].target.items = [];
         newtags[tagset[tag.body.value]].target.items.push(tag.target)
       }

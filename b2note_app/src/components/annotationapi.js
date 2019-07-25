@@ -1,9 +1,7 @@
 /**
  * AnnotationApi class to serve client calls of backend api and share features and properties
- *
  * in order to share properties, it's instance must be injected as singleton by aurelia-framework
  * using e.g.:
- *
  *   @inject(AnnotationApi)
  *   export class Myclass {
  *      constructor(api) {
@@ -15,7 +13,7 @@
  *      }
  *
  * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
- * @since 06/2019
+ * @since v2.0
  */
 
 import {Userinfo} from './messages';
@@ -56,12 +54,10 @@ export class AnnotationApi {
     this.userinfourl = this.apiurl + '/userinfo';
     this.userprofileurl = this.apiurl+'/userprofile';
     this.ontologyurl = 'https://b2note.bsc.es/solr/b2note_index';
-    //this.solrurl='https://b2note.bsc.es/solr/b2note_index/select?q=((labels:/stry.*/) AND NOT (labels:/Error[0-9].*/))&sort=norm(labels) desc&fl=labels,uris,ontology_acronym,short_form,synonyms,norm(labels)&wt=json&indent=true&rows=1000';
     //enhance the pagination up to EVE limit - see b2note_settings.py for pagination limit to make it bigger
     this.maxresult = 8192;
     this.allowgoogle = false;
     this.searchdialog = 'dropdown'//,'array','recursive'
-    //this.target = {id:'',source:''}
     this.target = {}
     this.target.id = '';
     this.target.source = '';
@@ -71,6 +67,10 @@ export class AnnotationApi {
     this.router=undefined;//router
   }
 
+  /**
+   * Checks whether userinfo is set or tries to get it - user is logged
+   * @returns {(Q.Promise<any> | promise.Promise<T | never>)|Promise<any>}
+   */
   isLoggedIn() {
     let that = this;
     if (this.userinfo.id) return new Promise(function (resolve, reject) {
@@ -120,45 +120,43 @@ export class AnnotationApi {
           console.log('userinfo error:', this.userinfourl, error);
           throw error;
         })
-    /*{"id":"101486217992397526303",
-    "email":"tmkulhanek@gmail.com",
-    "verified_email":true,
-    "name":      "Tomas Kulhanek",
-    "given_name":"Tomas",
-    "family_name":"Kulhanek","picture":"https://lh6.googleusercontent.com/-TxFomtJl7d0/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reEWif0mbxIXUPgZAG32waifi03fQ/mo/photo.jpg","locale":"en"}
-
-    {
-    pseudo: "Guest",
-    email: "N/A",
-    firstname: "Guest",
-    lastname: "",
-    experience: "beginner",
-    jobtitle: "Annotator",
-    org: "Academia",
-    country: "International"
-  }*/
   }
 
-  //push = add new item
-  //returns the index in list where it was pushed.
+  /**
+   * Pushes (adds to the end) new item into constructed query
+   * @param item
+   * @returns {number} index of item in query array
+   */
   pushQueryitem(item) {
     // remove binary,leave unary NOT logic operator from first item
     if ((this.query.length === 0) && (item.logic !== 'NOT')) item.logic = '';
     return this.query.push(item) - 1;
   }
 
-  //modify item at index
+  /**
+   * Modifies item on specified index
+   * @param index
+   * @param item
+   */
   modifyQueryitem(index, item) {
     this.query[index] = item;
   }
 
-  //delete all from index
+  /**
+   * Deletes all items from specified index to the end
+   * @param index
+   */
   deleteQueryitem(index) {
     while (index < this.query.length) {
       this.query.pop()
     }
   }
 
+  /**
+   * Query API using the query - if undefined, then use cosntructed query from previous calls of [push/modify/delete]QueryItem()
+   * @param query
+   * @returns {*}
+   */
   searchQuery(query) {
     //query is defined - then use it, otherwise use the query constructed from push.. modify... delete.. methods above
     //console.log('searchQuery',query,this.query);
@@ -180,11 +178,19 @@ export class AnnotationApi {
       })
   }
 
-
+  /**
+   * translates constructed query to EVE API query
+   * @returns {*|{}}
+   */
   createApiQuery() {
     return this.createQueryRecord(this.query)
   }
 
+  /**
+   * Translates myquery into API query
+   * @param myquery
+   * @returns {({$and: *[]}|{$or: *[]})|{}|{"body.purpose"}|{"body.source", "body.type"}|{"body.value", "body.type"}}
+   */
   createQueryRecord(myquery) {
     if (myquery.length > 0) {
       let query = myquery.slice();
@@ -200,50 +206,28 @@ export class AnnotationApi {
     } else return {};
   }
 
-  /*
-    value==qitem - {'value':'qitem'}
-    NOT value == qitem = {'value':{$ne:'qitem'}
-    AND value=q1 AND value==q2 - {'value':'q1','value':'q1' } or {$and:[{'value':'q1'},{'value':'q2'}]}
-    OR value=q1 OR value==q2 - {$or:[{'value':'q1'},{'value':'q2'}]}
+  /**
+   * Translates single query item to API query item as follows:
+    - value==qitem - {'value':'qitem'}
+    - NOT value == qitem = {'value':{$ne:'qitem'}
+    - AND value=q1 AND value==q2 - {'value':'q1','value':'q1' } or {$and:[{'value':'q1'},{'value':'q2'}]}
+    - OR value=q1 OR value==q2 - {$or:[{'value':'q1'},{'value':'q2'}]}
+   * @param qi
+   * @returns {{"body.purpose": string}|{"body.value": {$ne: *}, "body.type": string}|{"body.source": *, "body.type": string}|{"body.value": *, "body.type": string}|{"body.source": {$ne: *}, "body.type": string}}
    */
-
-
   createQueryitem(qi) {
     if (qi.type === 'comment')
       return {'body.purpose': 'commenting'};
     else if (qi.type === 'semantic')
     //TODO check if synonyms - then add keyword with the same value???
     {
-      //console.log('createQueryitem()',qi)
       if (qi.logic.match(/.*NOT/)) return {'body.type': 'SpecificResource', 'body.source': {'$ne': qi.value}};
       else return {'body.type': 'SpecificResource', 'body.source': qi.value}
     } else //keyword
     {
-      //console.log('createQueryitem()',qi)
-      //console.log('createQueryitem logic ()',qi.logic)
       if (qi.logic.match(/.*NOT/)) return {'body.type': 'TextualValue', 'body.value': {'$ne': qi.value}};
       return {'body.type': 'TextualValue', 'body.value': qi.value}
     }
-
-    //{"body.value":"protein2"}
-  }
-
-  setApiUrl(url) {
-    this.apiurl = url;
-  }
-
-  getApiUrl() {
-    return this.apiurl;
-  }
-
-  setManualTarget(mt) {
-    //  console.log('AnnotationApi.setmanualtarget()',mt)
-    this.manualtarget = mt;
-  }
-
-  getManualTarget() {
-    //  console.log('AnnotationApi.getmanualtarget()',this.manualtarget)
-    return this.manualtarget;
   }
 
   /**
@@ -381,6 +365,10 @@ export class AnnotationApi {
       })
   }
 
+  /**
+   * gets all annotations using API call
+   * @returns {*}
+   */
   getAllAnnotations() {
     return this.client.fetch(this.annotationsurl + "?max_results=" + this.maxresult)
       .then(response => {
@@ -399,31 +387,50 @@ export class AnnotationApi {
 
   }
 
+  /**
+   * gets all annotations whose 'purpose' is set to 'tagging' or is 'Composite' and contains 'SpecificResource' type
+   * @returns {*}
+   */
   getAllAnnotationsFileSemantic() {
     return this.getAllAnnotationsAboutThisFile('"$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"Composite"},{"body.type":"SpecificResource"}]}]',this.afs)
   }
+  //internal, call this to increment 'afs' index when number of semantic annotation is expected to change
   incAllAnnotationsSemantic(){
     this.afs++;
   }
 
-  //https://b2note.bsc.es/api/annotations?where={"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]}
+  /**
+   * gets all annotations whose 'purpose' is 'tagging' and 'type' is 'TextualBody'
+   * @returns {*}
+   */
   getAllAnnotationsFileKeyword() {
     return this.getAllAnnotationsAboutThisFile('"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]',this.afk)
   }
 
+  //internal, call this to increment 'afk' index when number of keyword annotation is expected to change
   incAllAnnotationsKeyword(){
     this.afk++;
   }
 
+  /**
+   * gets all annotation whose 'purpose' is 'commenting'
+   * @returns {*}
+   */
   getAllAnnotationsFileComment() {
     return this.getAllAnnotationsAboutThisFile('"body.purpose":"commenting"',this.afc)
   }
 
+  //internal, call this to increment 'afs' index when number of comment annotation is expected to change
   incAllAnnotationsComment(){
     this.afc++;
   }
 
-
+  /**
+   * Gets all annotation about this file, with the defined filter in EVE API format, customq used to force browser API call when change is expected
+   * @param filter
+   * @param customq
+   * @returns {*}
+   */
   getAllAnnotationsAboutThisFile(filter = "",customq=0) {
     let myfilter = '?where={"target.id":"' + this.target.id + '"' + (filter.length > 0 ? ',' + filter + '}' : '}')+(customq>0?'&customq='+customq:'');
     return this.client.fetch(this.annotationsurl + myfilter + '&max_results=' + this.maxresult)
@@ -440,26 +447,40 @@ export class AnnotationApi {
         console.log('getAnnotation() error', error);
         throw error;
       })
-
   }
 
-  //https://b2note.bsc.es/api/annotations?where={"$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"SpecificResource"},{"body.type":"Composite"}]}]}
+  /**
+   * gets users annotations whose 'purpose' is set to 'tagging' or is 'Composite' and contains 'SpecificResource' type
+   * @returns {*}
+   */
+
   getAllMyAnnotationsSemantic() {
     return this.getAllMyAnnotations('"$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"SpecificResource"},{"body.type":"Composite"}]}]',this.afs)
   }
 
-  //https://b2note.bsc.es/api/annotations?where={"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]}
+  /**
+   * gets users annotations whose 'purpose' is 'tagging' and 'type' is 'TextualBody'
+   * @returns {*}
+   */
   getAllMyAnnotationsKeyword() {
     return this.getAllMyAnnotations('"$and":[{"body.purpose":"tagging"},{"body.type":"TextualBody"}]',this.afk)
   }
 
+  /**
+   * gets all annotation whose 'purpose' is 'commenting'
+   * @returns {*}
+   */
   getAllMyAnnotationsComment() {
     return this.getAllMyAnnotations('"body.purpose":"commenting"',this.afc)
   }
 
 
-  //http://localhost/api/annotations?where={"creator.id":"1527d37f-c884-43d4-b7fc-cfa87062d827","$and":[{"body.purpose":"tagging"},{"$or":[{"body.type":"SpecificResource"},{"body.type":"Composite"}]}]}};
-
+  /**
+   * Gets all annotation of user, with the defined filter in EVE API format, customq used to force browser API call when change is expected
+   * @param filter
+   * @param customq
+   * @returns {*}
+   */
   getAllMyAnnotations(filter = "",customq=0) {
     return this.getUserInfo()
       .then(ui => {
@@ -484,6 +505,11 @@ export class AnnotationApi {
       });
   }
 
+  /**
+   * gets ontologies from SOLR index conforming uris.
+   * @param uris - array of string, at least one uri should be specified
+   * @returns {*}
+   */
   getOntologies(uris) {
     let query = '("' + uris[0];
     for (let i = 1; i < uris.length; i++) {
@@ -494,12 +520,12 @@ export class AnnotationApi {
     console.log('getOntologies query:',query)
     return this.client.fetch(this.ontologyurl + '/select?q=uris:' + query + '&rows=100&wt=json', {headers: {}})
       .then(response => {
-        //console.log(response);
+
         if (response.ok) return response.json()
         else throw response
       })
       .then(data => {
-        //console.log('postAnnotation() data', data);
+
         return data
       })
       .catch(error => {
@@ -508,10 +534,12 @@ export class AnnotationApi {
       })
   }
 
-  /*** send API request to SOLR returns array of string in form 'name (count)'
-   *   stores internally ontologies returned which is then used by subsequent call of getAnnotationItems()
+  /**
+   *  send API request to SOLR returns array of string in form 'name (count)'
+   *  stores internally ontologies returned which is then used by subsequent call of getAnnotationItems()
+   * @param prefix
+   * @returns {*}
    */
-
   getOntologySuggestions(prefix){
     //this.solrurl='https://b2note.bsc.es/solr/b2note_index/select?q=((labels:/stry.*/) AND NOT (labels:/Error[0-9].*/))&sort=norm(labels) desc&fl=labels,uris,ontology_acronym,short_form,synonyms,norm(labels)&wt=json&indent=true&rows=1000';
     let queryurl=this.ontologyurl+'/select?q=((labels:/'+prefix+'.*/) AND NOT (labels:/Error[0-9].*/))&sort=norm(labels) desc&fl=labels,uris,ontology_acronym,short_form,synonyms,norm(labels)&wt=json&indent=true&rows=1000';
@@ -560,8 +588,10 @@ export class AnnotationApi {
       })
   }
 
-  /***
+  /**
    * constructs items struct as W3C data annotation model from ontologies already stored during previous getOntologySuggestions
+   * @param key
+   * @returns {Array}
    */
   getAnnotationItems(key){
     let items= []
@@ -573,6 +603,11 @@ export class AnnotationApi {
     return items;
   }
 
+  /**
+   * creates or updates user profile stored via API POST or PUT request
+   * @param up
+   * @returns {Promise<any | never>|*}
+   */
   saveUserProfile(up){
     this.userinfo=up;
     if (up.hasOwnProperty('_etag') && up.hasOwnProperty('_id'))

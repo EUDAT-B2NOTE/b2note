@@ -1,8 +1,9 @@
 /**
- * Detail information about annotation tag
+ * Detail information about annotation tag, including browsable list of classes and details of classes used in annotation
+ * The details of classes are obtained from SOLR index.
  *
  * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
- * @since 06/2019
+ * @since v2.0
  */
 
 import {AnnotationApi} from '../components/annotationapi';
@@ -75,7 +76,6 @@ export class Detailtag {
               }
               //scroll into view
               this.detailtagref.scrollIntoView()
-
             })
         }
         //this.tagtitle=taginfo.tagvalue;

@@ -1,8 +1,8 @@
 /**
- * implements Home page - Creation of annotation
+ * implements Home page - Creation of annotation and browsing annotation details
  *
  * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
- * @since 06/2019
+ * @since v2.0
  */
 
 import {AnnotationApi} from '../components/annotationapi';
@@ -275,8 +275,3 @@ export class Home {
 function sleep(ms){
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-
-/*interface Tab {
-    id:string; label:string
-  }
-*/

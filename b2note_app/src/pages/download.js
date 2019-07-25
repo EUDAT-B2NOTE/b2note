@@ -2,7 +2,7 @@
  * implements Download page and it's functionality
  *
  * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
- * @since 06/2019
+ * @since v2.0
  */
 
 import * as jsonld from 'jsonld';
@@ -56,7 +56,7 @@ export class Download {
     this.jsonurl = window.URL.createObjectURL(data);
   }
 
-  //TODO implement RDF conversion - jsonld seems to support only nquads
+  //TODO implement RDF/XML conversion - jsonld seems to support only RDF/NQuads
   createRdf(){
 // serialize a document to N-Quads (RDF)
     this.rdf="";

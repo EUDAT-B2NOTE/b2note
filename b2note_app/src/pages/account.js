@@ -2,7 +2,7 @@
  * Account page component during activation it retrieves user info
  * it allows some custom settings
  * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
- * @since 06/2019
+ * @since v2.0
  */
 
 import {AnnotationApi} from '../components/annotationapi';

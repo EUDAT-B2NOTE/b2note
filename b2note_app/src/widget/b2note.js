@@ -4,7 +4,7 @@
  * all pages are references by PLATFORM.moduleName()
  *
  * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
- * @since 06/2019
+ * @since v2.0
  */
 
 import {PLATFORM} from 'aurelia-pal';

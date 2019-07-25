@@ -2,7 +2,7 @@
  * Main function for reffering B2Note as Web component
  *
  * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
- * @since 06/2019
+ * @since v2.0
  */
 import { CustomElementRegistry } from 'aurelia-web-components';
 import {PLATFORM} from 'aurelia-pal';

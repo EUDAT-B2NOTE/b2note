@@ -3,7 +3,7 @@
  * @todo internal link are consumed by aurelia router, check enable links in this page
  *
  * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
- * @since 06/2019
+ * @since v2.0
  */
 export class Help {
 

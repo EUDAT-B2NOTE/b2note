@@ -5,7 +5,7 @@
  * search query operators are interpretted as follows
  * e.g.: A and B or C and D =>  (A and (B or (C and D)))
  * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
- * @since 06/2019
+ * @since v2.0
  */
 
 import {AnnotationApi} from './annotationapi';

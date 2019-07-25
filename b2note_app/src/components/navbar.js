@@ -3,7 +3,7 @@
  * anchors for pages
  *
  * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
- * @since 06/2019
+ * @since v2.0
  */
 import {EventAggregator} from 'aurelia-event-aggregator';
 import {Userinfo} from './messages'

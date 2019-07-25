@@ -213,9 +213,12 @@ export abstract class AutoCompleteBase<T extends Indexer> {
         this._value = this._comittedValue;
     }
 
-    public setSuggestions(suggestions:T[]){
+  /**
+   * Sets suggestions immediatelly, .e.g. from previous get or cache when suggestions was obtained from different source.
+   * @param suggestions
+   */
+  public setSuggestions(suggestions:T[]){
       this.reset();
-      //console.log('setSuggestions',suggestions);
       this._suggestionsLogic.setSuggestions(suggestions);
       this._suggestionsElementLogic.showSuggestions();
     }

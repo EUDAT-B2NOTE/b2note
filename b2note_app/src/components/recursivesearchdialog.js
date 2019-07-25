@@ -2,7 +2,7 @@
  * Recursive Search Dialog - variant for UX to construct search query
  *
  * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
- * @since 06/2019
+ * @since v2.0
  */
 import {AnnotationApi} from '../components/annotationapi';
 import {inject} from 'aurelia-framework';

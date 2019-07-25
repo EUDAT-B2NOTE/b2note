@@ -4,8 +4,7 @@
  * search query operators are interpretted as follows
  * e.g.: A and B or C and D =>  (A and (B or (C and D)))
  * @author Tomas Kulhanek <https://github.com/TomasKulhanek>
- * @since 06/2019
-
+ * @since v2.0
  */
 
 import {AnnotationApi} from '../components/annotationapi';
@@ -35,16 +34,16 @@ export class Arraysearchdialog {
   }
 
   createSemantic() {
-    console.log('create semantic:', this.annotationsemantic)
+    //console.log('create semantic:', this.annotationsemantic)
   }
 
   createKeyword() {
-    console.log('create keyword:', this.annotationkeyword)
+    //console.log('create keyword:', this.annotationkeyword)
 
   }
 
   createComment() {
-    console.log('create semantic:', this.annotationcomment)
+    //console.log('create semantic:', this.annotationcomment)
 
   }
 
