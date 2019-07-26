@@ -159,10 +159,10 @@ export class AnnotationApi {
    */
   searchQuery(query) {
     //query is defined - then use it, otherwise use the query constructed from push.. modify... delete.. methods above
-    //console.log('searchQuery',query,this.query);
+    console.log('searchQuery',query,this.query);
     if (query) this.query = query;
     let apiquery = this.createApiQuery();
-    return this.client.fetch(this.apiurl + '/annotations?where=' + JSON.stringify(apiquery))
+    return this.client.fetch(this.apiurl + '/annotations?where=' + apiquery)
       .then(response => {
         //console.log(response);
         if (response.ok) return response.json();
@@ -200,8 +200,8 @@ export class AnnotationApi {
       //console.log('createQueryRecord shift',first);
       //console.log('createQueryRecord query',query)
       let q;
-      if (query[0].logic.match(/AND*/)) q = {'$and': [this.createQueryitem(first), this.createQueryRecord(query)]};
-      if (query[0].logic.match(/OR*/)) q = {'$or': [this.createQueryitem(first), this.createQueryRecord(query)]};
+      if (query[0].logic.match(/AND*/)) q = '{"$and": ['+this.createQueryitem(first)+', '+this.createQueryRecord(query)+']}';
+      if (query[0].logic.match(/OR*/)) q = '{"$or": ['+this.createQueryitem(first)+', '+this.createQueryRecord(query)+']}';
       return q;
     } else return {};
   }
@@ -221,12 +221,14 @@ export class AnnotationApi {
     else if (qi.type === 'semantic')
     //TODO check if synonyms - then add keyword with the same value???
     {
-      if (qi.logic.match(/.*NOT/)) return {'body.type': 'SpecificResource', 'body.source': {'$ne': qi.value}};
-      else return {'body.type': 'SpecificResource', 'body.source': qi.value}
+      //semvalue - is textualbody value stored in annotation records - next to specific tags - thus searching the textualvalue among 'SpecificResources'
+      let semvalue=this.lastsuggest[qi.value].name
+      if (qi.logic.match(/.*NOT/)) return '{"body.purpose": "tagging","body.items":{"$elemMatch":{"value":{"$ne":"'+semvalue+'"}},"$elemMatch":{"type":"SpecificResource"}}}'
+      else return '{"body.purpose": "tagging","body.items":{"$elemMatch":{"value":"'+qi.value+'"},"$elemMatch":{"type":"SpecificResource"}}}'
     } else //keyword
     {
-      if (qi.logic.match(/.*NOT/)) return {'body.type': 'TextualValue', 'body.value': {'$ne': qi.value}};
-      return {'body.type': 'TextualValue', 'body.value': qi.value}
+      if (qi.logic.match(/.*NOT/)) return '{"body.purpose": "tagging","body.items":{"$elemMatch":{"value":{"$ne":"'+semvalue+'"}},"$elemMatch":{"type":{"$ne":"SpecificResource"}}}}'
+      return '{"body.purpose": "tagging","body.items":{"$elemMatch":{"value":"'+qi.value+'"},"$elemMatch":{"type":{"$ne":"SpecificResource"}}}}'
     }
   }
 

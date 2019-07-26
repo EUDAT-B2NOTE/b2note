@@ -54,12 +54,14 @@ export class Arraysearchdialog {
       (this.active === 'keyword' ? this.annotationkeyword : '');
     this.searchtype = this.active;
     let queryitem = {first:this.query.length==0,logic: this.query.length === 0 ? '' : this.logic, type: this.searchtype, value: this.searchvalue}
-    if (queryitem.value !== '') this.query.push(queryitem);
-    console.log('search query:',JSON.stringify(this.query));
-    this.api.searchQuery(this.query)
+    let query = this.query.slice(0) //copy the query
+    if (queryitem.value !== '') query.push(queryitem); //adds the item from last dialog -
+    console.log('search query:',JSON.stringify(query));
+    this.api.searchQuery(query)
       .then(data =>{
-        this.result=JSON.stringify(data._items,null,2);
+        this.result=data;//JSON.stringify(data._items,null,2);
       })
+
   }
 
   createChild() {
@@ -149,5 +151,15 @@ export class Arraysearchdialog {
     //set modify flag
     this.modify=false;
   }
+
+    getSuggestions(value) {
+        return this.api.getOntologySuggestions(value,4000)
+          .then(data =>{
+            return data;
+          })
+          .catch(error =>{
+            return []
+    })
+    }
 
 }

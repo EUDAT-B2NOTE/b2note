@@ -1,5 +1,8 @@
 <template>
   <require from="../w3.css"></require>
+    <require from="../components/autocomplete/good-auto-complete"></require>
+  <require from="../components/autocomplete.css"></require>
+
   <table class="w3-small w3-striped">
     <tr>
       <th>logic</th>
@@ -57,7 +60,15 @@
 
   <div id="tabcontent">
     <div id="tab1" show.bind="active==='semantic'">
-      <input placeholder="Type-in to select a tag." value.bind="annotationsemantic"/>
+      <!--input placeholder="Type-in to select a tag." value.bind="annotationsemantic"/-->
+              <good-auto-complete view-model.ref="goodautocomplete"
+                    additional-class-input="form-control"
+                    selected-item.bind="annotationsemantic"
+                    suggestions-provider.bind="getSuggestions"
+                    suggestions-debounce="1000"
+                    min-search-value-length="3"
+                    placeholder="Type-in to select a tag.">
+        </good-auto-complete>
 
       <br/>
       <input class="w3-small" type="checkbox"/> <label class="w3-small">Include synonym matches </label>
@@ -111,6 +122,15 @@
   </table>
 
   <button class="w3-button" click.delegate="search()">Search</button>
-  </div>
-  </div>
+<div show.bind="result && result._items && result._items.length>0">
+        <p>Found ${result._items.length} annotations. Used to annotate these files:</p>
+        <table class="w3-border w3-striped w3-card-2 w3-padding">
+          <tr><th title="landing page">id</th><th title="direct link">source</th><th>tag</th></tr>
+          <tr repeat.for="item of result._items"><td><a href.bind="item.target.id" class="w3-tiny">${item.target.id}</a></td><td><a href.bind="item.target.source" class="w3-tiny">${item.target.source}</a></td>
+          <td>${item.body.items[item.body.items.length-1].value}</td>
+          </tr>
+        </table>
+        <p></p>
+      </div>
+  <!--pre class="w3-tiny w3-card-2">${result}</pre-->
 </template>
