@@ -35,9 +35,9 @@ describe('Annotation Component', () => {
 
   test('search creating query record',() =>{
     let q1 = api.createQueryitem({logic:"",type:'semantic',value:'alkaloid'});
-    expect(q1).toBe('{\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"alkaloid\"},\"$elemMatch\":{\"type\":\"SpecificResource\"}}}');
+    expect(q1).toBe("{\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"alkaloid\"}}}");
     let q2 = api.createQueryitem({logic:'AND',type:'keyword',value:'strychnine'});
-    expect(q2).toBe('{\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"strychnine\"},\"$elemMatch\":{\"type\":{\"$ne\":\"SpecificResource\"}}}}');
+    expect(q2).toBe("{\"body.purpose\": \"tagging\",\"body.type\":\"TextualBody\",\"body.value\":\"strychnine\"}");
 
 
     expect(api.pushQueryitem({logic:"",type:'semantic',value:'alkaloid'})).toBe(0);
@@ -45,10 +45,10 @@ describe('Annotation Component', () => {
     expect(api.query.length).toBe(2);
 
     let q3 = api.createQueryRecord(api.query);
-    expect(q3).toBe('{\"$and\": [{\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"alkaloid\"},\"$elemMatch\":{\"type\":\"SpecificResource\"}}}, {\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"strychnine\"},\"$elemMatch\":{\"type\":{\"$ne\":\"SpecificResource\"}}}}]}');
+    expect(q3).toBe("{\"$and\": [{\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"alkaloid\"}}}, {\"body.purpose\": \"tagging\",\"body.type\":\"TextualBody\",\"body.value\":\"strychnine\"}]}");
     expect(api.pushQueryitem({logic:'OR',type:'keyword',value:'glycine'})).toBe(2);
     let q4 = api.createQueryRecord(api.query);
-    expect(q4).toBe('{\"$and\": [{\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"alkaloid\"},\"$elemMatch\":{\"type\":\"SpecificResource\"}}}, {\"$or\": [{\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"strychnine\"},\"$elemMatch\":{\"type\":{\"$ne\":\"SpecificResource\"}}}}, {\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"glycine\"},\"$elemMatch\":{\"type\":{\"$ne\":\"SpecificResource\"}}}}]}]}');
+    expect(q4).toBe("{\"$and\": [{\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"alkaloid\"}}}, {\"$or\": [{\"body.purpose\": \"tagging\",\"body.type\":\"TextualBody\",\"body.value\":\"strychnine\"}, {\"body.purpose\": \"tagging\",\"body.type\":\"TextualBody\",\"body.value\":\"glycine\"}]}]}");
 
   });
 

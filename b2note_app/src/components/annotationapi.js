@@ -217,18 +217,20 @@ export class AnnotationApi {
    */
   createQueryitem(qi) {
     if (qi.type === 'comment')
-      return {'body.purpose': 'commenting'};
+      return '{"body.purpose": "commenting"}';
     else if (qi.type === 'semantic')
     //TODO check if synonyms - then add keyword with the same value???
     {
       //semvalue - is textualbody value stored in annotation records - next to specific tags - thus searching the textualvalue among 'SpecificResources'
-      let semvalue=this.lastsuggest[qi.value]?this.lastsuggest[qi.value].name:qi.value; //if previous suggestion exists for qi.value - then use it
-      if (qi.logic.match(/.*NOT/)) return '{"body.purpose": "tagging","body.items":{"$elemMatch":{"value":{"$ne":"'+semvalue+'"}},"$elemMatch":{"type":"SpecificResource"}}}'
-      else return '{"body.purpose": "tagging","body.items":{"$elemMatch":{"value":"'+qi.value+'"},"$elemMatch":{"type":"SpecificResource"}}}'
+
+      let semvalue=this.lastsuggest[qi.value] ? this.lastsuggest[qi.value].name : qi.value; //if previous suggestion exists for qi.value - then use it
+      //console.log("createQueryitem() semvalue,qi.value,lastsuggest[]",semvalue,qi.value,this.lastsuggest[qi.value])
+      if (qi.logic.match(/.*NOT/)) return '{"body.purpose": "tagging","body.items":{"$elemMatch":{"value":{"$ne":"'+semvalue+'"}}}}'
+      else return '{"body.purpose": "tagging","body.items":{"$elemMatch":{"value":"'+semvalue+'"}}}'
     } else //keyword
     {
-      if (qi.logic.match(/.*NOT/)) return '{"body.purpose": "tagging","body.items":{"$elemMatch":{"value":{"$ne":"'+semvalue+'"}},"$elemMatch":{"type":{"$ne":"SpecificResource"}}}}'
-      return '{"body.purpose": "tagging","body.items":{"$elemMatch":{"value":"'+qi.value+'"},"$elemMatch":{"type":{"$ne":"SpecificResource"}}}}'
+      if (qi.logic.match(/.*NOT/)) return '{"body.purpose": "tagging","body.type":"TextualBody","body.value":{"$ne":"'+qi.value+'"}}'
+      return '{"body.purpose": "tagging","body.type":"TextualBody","body.value":"'+qi.value+'"}'
     }
   }
 
