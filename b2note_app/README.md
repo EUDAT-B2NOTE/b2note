@@ -55,3 +55,4 @@ If the dev app is not running, launch it before any other tests: `au run & sleep
 
 Run `au teste2e` in order to test without gecko and on Chrome version 73. 
  
+## 
