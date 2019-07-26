@@ -6,7 +6,7 @@
   <div show.bind="showform" class="w3-container w3-small">
     <h3>Create annotation</h3>
 
-    <div show.bind="manualtarget">
+    <div show.bind="api.manualtarget">
       <table style="min-width:400px" class="w3-tiny">
         <tr>
           <td><label title="e.g. handle - redirecting to landing page URL">id:</label></td>
@@ -26,7 +26,7 @@
     <div class="w3-bar w3-padding-top">
       <a class="w3-bar-item w3-hover-blue"
          class.bind="(active==tab.id) ? 'w3-white w3-border-top w3-border-left w3-border-right':'w3-border-bottom w3-light-gray'  "
-         style="width:9em; white-space: normal;" repeat.for="tab of tabs" click.delegate="switchtab(tab.id)">${tab.label}
+         style="width:8em; white-space: normal;" repeat.for="tab of tabs" click.delegate="switchtab(tab.id)">${tab.label}
         <span if.bind="tab.id=='tab3'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></a>
     </div>
     <br/>
@@ -41,13 +41,13 @@
                     min-search-value-length="3"
                     placeholder="Type-in to select a tag.">
         </good-auto-complete>
-        <button class="w3-button" click.delegate="createSemantic()">Create</button>
+        <button class="w3-button" click.delegate="createSemantic()" disabled.bind="!enablecreate" title="create annotation, requires to be logged-in">Create</button>
 
       </div>
       <div show.bind="active==='tab2'">
         <div show.bind="!confirmkeyword">
         <input placeholder="Type-in a keyword." value.bind="annotationkeyword"/>
-        <button class="w3-button" click.delegate="checkKeyword()">Create</button>
+        <button class="w3-button" click.delegate="checkKeyword()" disabled.bind="!enablecreate" title="create annotation, requires to be logged-in">Create</button>
         </div>
         <div show.bind="confirmkeyword">
           We detected ${keywordterms} semantic terms matching your keyword.<br/>
@@ -62,7 +62,7 @@ Would you like to select one? Or carry on with free-text?<br/>
       <div show.bind="active==='tab3'">
         <textarea placeholder="Type your comment." value.bind="annotationcomment">
         </textarea>
-        <button class="w3-button" click.delegate="createComment()">Create</button>
+        <button class="w3-button" click.delegate="createComment()" disabled.bind="!enablecreate" title="create annotation, requires to be logged-in">Create</button>
       </div>
 
     </div>

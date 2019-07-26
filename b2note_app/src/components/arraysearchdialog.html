@@ -33,7 +33,7 @@
           <div class="w3-bar w3-padding-top">
             <a class="w3-bar-item w3-hover-blue"
                class.bind="(active==tab.id) ? 'w3-white w3-border-top w3-border-left w3-border-right':'w3-border-bottom w3-light-gray'  "
-               style="width:9em; white-space: normal;" repeat.for="tab of tabs" click.delegate="switchtab(tab.id)">${tab.label}
+               style="width:8em; white-space: normal;" repeat.for="tab of tabs" click.delegate="switchtab(tab.id)">${tab.label}
               <span if.bind="tab.id=='comment'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></a>
           </div>
           <br/>

@@ -49,15 +49,13 @@ export class Home {
     this.keywordterms=0;
     
   }
-
-
-
+  
   attached() {
-    this.manualtarget = this.api.getManualTarget();
+    //this.manualtarget = this.api.getManualTarget();
     this.api.getUserInfo()
       .then(data => {
-        this.userinfo = data
-        this.enablecreate = this.userinfo.id.length>0;
+        //this.api.userinfo = data
+        this.enablecreate = this.api.userinfo.id.length>0;
       })
       .catch(error => { //do nothing or alert
         })
@@ -109,9 +107,9 @@ export class Home {
         },
         'motivation': 'tagging',
         'creator': {
-          'id':this.userinfo.id,
+          'id':this.api.userinfo.id,
           'type': 'Person',
-          'nickname': this.userinfo.pseudo
+          'nickname': this.api.userinfo.pseudo
         },
         'generator': {
           'type': 'Software',
@@ -173,9 +171,9 @@ export class Home {
           },
           'motivation': 'tagging',
           'creator': {
-            'id':this.userinfo.id,
+            'id':this.api.userinfo.id,
             'type': 'Person',
-            'nickname': this.userinfo.pseudo
+            'nickname': this.api.userinfo.pseudo
           },
           'generator': {
             'type': 'Software',
@@ -209,9 +207,9 @@ export class Home {
           },
           'motivation': 'commenting',
           'creator': {
-            'id':this.userinfo.id,
+            'id':this.api.userinfo.id,
             'type': 'Person',
-            'nickname': this.userinfo.pseudo
+            'nickname': this.api.userinfo.pseudo
           },
           'generator': {
             'type': 'Software',
