@@ -48,6 +48,7 @@
               <good-auto-complete view-model.ref="goodautocomplete"
                     additional-class-input="form-control"
                     selected-item.bind="annotationsemantic"
+                                  _value.bind="annotationsemanticraw"
                     suggestions-provider.bind="getSuggestions"
                     suggestions-debounce="1000"
                     min-search-value-length="3"
@@ -108,9 +109,9 @@
 
   <button class="w3-button" click.delegate="search()">Search</button>
 
-  <div show.bind="result && result._items && result._items.length>0">
+  <div show.bind="result ">
         <p>Found ${result._items.length} annotations. Used to annotate these files:</p>
-        <table class="w3-border w3-striped w3-card-2 w3-padding">
+        <table class="w3-border w3-striped w3-card-2 w3-padding" show.bind="result._items.length>0">
           <tr><th title="landing page">id</th><th title="direct link">source</th><th>tag</th></tr>
           <tr repeat.for="item of result._items"><td><a href.bind="item.target.id" class="w3-tiny">${item.target.id}</a></td><td><a href.bind="item.target.source" class="w3-tiny">${item.target.source}</a></td>
           <td>${item.body.items[item.body.items.length-1].value}</td>

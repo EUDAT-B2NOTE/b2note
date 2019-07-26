@@ -223,5 +223,8 @@ export abstract class AutoCompleteBase<T extends Indexer> {
       this._suggestionsElementLogic.showSuggestions();
     }
 
+    protected _getRawValue(){
+    return this._value;
+    }
 
 }

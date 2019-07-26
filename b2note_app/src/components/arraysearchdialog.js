@@ -20,6 +20,7 @@ export class Arraysearchdialog {
     ];
     this.active = 'semantic';
     this.annotationsemantic = '';
+    this.annotationsemanticraw='';
     this.annotationkeyword = '';
     this.annotationcomment = '';
     this.api = api;
@@ -50,7 +51,7 @@ export class Arraysearchdialog {
   //TODO refactor to use api.query instead of this.query
   search() {
     //based on active tab show return appropriate value
-    this.searchvalue = this.active === 'semantic' ? this.annotationsemantic :
+    this.searchvalue = this.active === 'semantic' ? (this.annotationsemantic.length>0?this.annotationsemantic:(this.goodautocomplete?this.goodautocomplete.getRawValue():'')):
       (this.active === 'keyword' ? this.annotationkeyword : '');
     this.searchtype = this.active;
     let queryitem = {first:this.query.length==0,logic: this.query.length === 0 ? '' : this.logic, type: this.searchtype, value: this.searchvalue}
@@ -59,6 +60,7 @@ export class Arraysearchdialog {
     console.log('search query:',JSON.stringify(query));
     this.api.searchQuery(query)
       .then(data =>{
+        console.log('arraysearchdialog data:',data)
         this.result=data;//JSON.stringify(data._items,null,2);
       })
 

@@ -32,4 +32,8 @@ export class GoodAutoCompleteCustomElement<T extends Indexer> extends AutoComple
         this.reset();
     }
 
+    public getRawValue(){
+      return this._getRawValue()
+    }
+
 }

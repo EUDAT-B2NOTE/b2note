@@ -216,6 +216,7 @@ export class AnnotationApi {
    * @returns {{"body.purpose": string}|{"body.value": {$ne: *}, "body.type": string}|{"body.source": *, "body.type": string}|{"body.value": *, "body.type": string}|{"body.source": {$ne: *}, "body.type": string}}
    */
   createQueryitem(qi) {
+    console.log('createQueryItem qi:',qi);
     if (qi.type === 'comment')
       return '{"body.purpose": "commenting"}';
     else if (qi.type === 'semantic')
@@ -224,7 +225,7 @@ export class AnnotationApi {
       //semvalue - is textualbody value stored in annotation records - next to specific tags - thus searching the textualvalue among 'SpecificResources'
 
       let semvalue=this.lastsuggest[qi.value] ? this.lastsuggest[qi.value].name : qi.value; //if previous suggestion exists for qi.value - then use it
-      //console.log("createQueryitem() semvalue,qi.value,lastsuggest[]",semvalue,qi.value,this.lastsuggest[qi.value])
+      console.log("createQueryitem() semvalue,qi.value,lastsuggest[]",semvalue,qi.value,this.lastsuggest[qi.value])
       if (qi.logic.match(/.*NOT/)) return '{"body.purpose": "tagging","body.items":{"$elemMatch":{"value":{"$ne":"'+semvalue+'"}}}}'
       else return '{"body.purpose": "tagging","body.items":{"$elemMatch":{"value":"'+semvalue+'"}}}'
     } else //keyword
