@@ -35,9 +35,9 @@ describe('Annotation Component', () => {
 
   test('search creating query record',() =>{
     let q1 = api.createQueryitem({logic:"",type:'semantic',value:'alkaloid'});
-    expect(JSON.stringify(q1)).toBe("{\"body.type\":\"SpecificResource\",\"body.source\":\"alkaloid\"}");
+    expect(q1).toBe('{\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"alkaloid\"},\"$elemMatch\":{\"type\":\"SpecificResource\"}}}');
     let q2 = api.createQueryitem({logic:'AND',type:'keyword',value:'strychnine'});
-    expect(JSON.stringify(q2)).toBe("{\"body.type\":\"TextualValue\",\"body.value\":\"strychnine\"}")
+    expect(q2).toBe('{\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"strychnine\"},\"$elemMatch\":{\"type\":{\"$ne\":\"SpecificResource\"}}}}');
 
 
     expect(api.pushQueryitem({logic:"",type:'semantic',value:'alkaloid'})).toBe(0);
@@ -45,10 +45,10 @@ describe('Annotation Component', () => {
     expect(api.query.length).toBe(2);
 
     let q3 = api.createQueryRecord(api.query);
-    expect(JSON.stringify(q3)).toBe("{\"$and\":[{\"body.type\":\"SpecificResource\",\"body.source\":\"alkaloid\"},{\"body.type\":\"TextualValue\",\"body.value\":\"strychnine\"}]}");
+    expect(q3).toBe('{\"$and\": [{\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"alkaloid\"},\"$elemMatch\":{\"type\":\"SpecificResource\"}}}, {\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"strychnine\"},\"$elemMatch\":{\"type\":{\"$ne\":\"SpecificResource\"}}}}]}');
     expect(api.pushQueryitem({logic:'OR',type:'keyword',value:'glycine'})).toBe(2);
     let q4 = api.createQueryRecord(api.query);
-    expect(JSON.stringify(q4)).toBe("{\"$and\":[{\"body.type\":\"SpecificResource\",\"body.source\":\"alkaloid\"},{\"$or\":[{\"body.type\":\"TextualValue\",\"body.value\":\"strychnine\"},{\"body.type\":\"TextualValue\",\"body.value\":\"glycine\"}]}]}");
+    expect(q4).toBe('{\"$and\": [{\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"alkaloid\"},\"$elemMatch\":{\"type\":\"SpecificResource\"}}}, {\"$or\": [{\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"strychnine\"},\"$elemMatch\":{\"type\":{\"$ne\":\"SpecificResource\"}}}}, {\"body.purpose\": \"tagging\",\"body.items\":{\"$elemMatch\":{\"value\":\"glycine\"},\"$elemMatch\":{\"type\":{\"$ne\":\"SpecificResource\"}}}}]}]}');
 
   });
 

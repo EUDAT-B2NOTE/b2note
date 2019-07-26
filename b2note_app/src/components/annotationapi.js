@@ -222,7 +222,7 @@ export class AnnotationApi {
     //TODO check if synonyms - then add keyword with the same value???
     {
       //semvalue - is textualbody value stored in annotation records - next to specific tags - thus searching the textualvalue among 'SpecificResources'
-      let semvalue=this.lastsuggest[qi.value].name
+      let semvalue=this.lastsuggest[qi.value]?this.lastsuggest[qi.value].name:qi.value; //if previous suggestion exists for qi.value - then use it
       if (qi.logic.match(/.*NOT/)) return '{"body.purpose": "tagging","body.items":{"$elemMatch":{"value":{"$ne":"'+semvalue+'"}},"$elemMatch":{"type":"SpecificResource"}}}'
       else return '{"body.purpose": "tagging","body.items":{"$elemMatch":{"value":"'+qi.value+'"},"$elemMatch":{"type":"SpecificResource"}}}'
     } else //keyword
