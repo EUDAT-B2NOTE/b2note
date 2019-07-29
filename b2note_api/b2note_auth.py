@@ -117,6 +117,7 @@ def register(app):
             user_info = get_user_info()
             return jsonify(user_info)
         #(token == 'test' and request.host == 'localhost:5000')
+
         # return test user info in case of local deployment
         if (request.headers.get('authorization') == 'Basic dGVzdDp0ZXN0' and request.host=='localhost:5000'):
             users = app.data.driver.db['userprofile']
@@ -127,10 +128,12 @@ def register(app):
                 ui = a
                 ui['_id']=str(ui['_id'])
             return jsonify(ui)
+        # return guest user info
         return jsonify({"name":"Guest","status":"not logged in."})
 
     def get_user_info():
         """"function to return user information stored in current session"""
+        print('get_user_info()')
         ui = session[USER_INFO]
         ui['token']=session[AUTH_TOKEN_KEY]
         #if (ui['token'] == 'test' and request.host == 'localhost:5000'):
@@ -138,13 +141,61 @@ def register(app):
         #check whether user exists in DB, and update fields accordingly
         users = app.data.driver.db['userprofile']
         a = users.find_one({'id': ui['id']})
+
         if a !=None:
             #print(a)
             a['token']=ui['token']
             ui = a
             ui['_id'] = str(ui['_id'])
+        else:
+            # do migration
+            b = migrateuser(ui)
+            b['token']=ui['token']
+            ui = b
+            ui['_id']= str(ui['_id'])
         #print('get_user_info',ui['name'])
         return ui
+
+    def migrateuser(ui):
+        #do migration
+        #users = app.data.driver.db['userprofile']
+        print('migrateuser()',ui['email'])
+        userstomigrate = app.data.driver.db['userstomigrate']
+        usertomigrate = userstomigrate.find_one({'email':ui['email']})
+
+        if usertomigrate != None:
+            print('migrating user profile from old db records')
+            print('id',ui['id'])
+            print('email',ui['email'])
+            experience: str = 'beginner'
+            if (usertomigrate['annotator_exp']=='i'):
+                experience='intermediate'
+            else:
+                if (usertomigrate['annotator_exp']=='a'):
+                    experience='advanced'
+
+            userprofile = app.data.driver.db['userprofile']
+            #insert profile
+            up = {
+                'id':ui['id'],
+                'pseudo':usertomigrate['nickname'],
+                'email':usertomigrate['email'],
+                'firstname':usertomigrate['first_name'],
+                'lastname':usertomigrate['last_name'],
+                'experience':experience,
+                'jobtitle':usertomigrate['job_title'],
+                'org':usertomigrate['organization'],
+                'country':usertomigrate['country']
+            }
+            userprofile.insert_one(up)
+            #remove from lists to migrate
+            userstomigrate.delete_one({'email':ui['email']})
+            #list all annotations
+            annotations = app.data.driver.db['annotations']
+            #sets creator.id to all user's annotation
+            annotations.update_many({'creator.nickname':usertomigrate['nickname']},{ '$set' :{'creator.id':ui['id']}})
+            return up;
+
 
     @app.route('/interface_main', methods=['GET','POST'])
     def compatibility_redirect():
