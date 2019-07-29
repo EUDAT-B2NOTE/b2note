@@ -3,6 +3,13 @@
 Frontend application consisting of web pages UI and logic in order to support data annotation and 
 relevant use case. This component is bootstrapped by [aurelia-cli](https://github.com/aurelia/cli) and bundled using Webpack (https://aurelia.io/docs/cli/webpack).
 
+- `/src` contains all source code for web pages and it's components
+- `/dist` contains bundled (and minified) app ready to use in web server, default 'index.html' renders the b2note
+widget. Other *.html contains sample code to integrate b2note widget into web application. `swagger-ui.html` renders 
+Open-API as rendered by swagger plugin.
+- `/aurelia_project` contains configuration files for CLI scripts for developmnent and building
+- `/test` contains unit and e2e tests 
+
 ## Development environmnent 
 
 Run `au run`, then open `http://localhost:8080`
@@ -52,18 +59,19 @@ Run `au teste2e` in order to test without gecko and on Chrome version 73.
 Web components (https://www.webcomponents.org) is standardized way to export complex web application into reusable component.
 B2NOTE app exports custom-elements for these components using 'b2note-' prefix:
 
-- widget/b2note as `<b2note-b2note targetsource="" targetid="">`
-- pages/search as `<b2note-search>`
-- pages/home as `<b2note-home>`
-- pages/help as `<b2note-help>`
+- src/widget/b2note as `<b2note-b2note targetsource="" targetid="">`
+- src/pages/search as `<b2note-search>`
+- src/pages/home as `<b2note-home>`
+- src/pages/help as `<b2note-help>`
 
 Further webcomponents can be exported by ammending the `src/webcomponent/b2note.js` and building the app.bundle.js.
  
 Script with bundle `b2note_app/dist/app.bundle.js` can be used to add b2note web components into any web application or web page.
 
-The following HTML snippet loads first the `app.bundle.js` script and use element `<b2note-b2note>`.
- 
+The following HTML snippet loads first the `app.bundle.js` script and use custom-element `<b2note-b2note>` with custom attributes
+`targetid=""` and `targetsource=""` to specify target for annotation. There is additionally button to hide the `<div>` containing the custom element.
 
+```html
 <!DOCTYPE html>
 <html>
   <head>
@@ -81,4 +89,10 @@ The following HTML snippet loads first the `app.bundle.js` script and use elemen
   </div>
   </body>
 </html>
+```
+
+## Embedded iframe
+
+For backward compatibility, embedding IFRAME is supported. See
+https://b2note-docs.readthedocs.io/en/latest/integration/widget.html
 
