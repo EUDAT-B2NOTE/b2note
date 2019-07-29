@@ -122,6 +122,7 @@ export class Annotations {
     for (let tag of tags) {
       //workaround, set body record from body[0] - body[0] from b2note v1.0
       if (Array.isArray(tag.body)) {let mb = tag.body.slice(); tag.body = mb[0];if (mb.length>1) console.log("warning, more bodies per annotations. tag,mb:",tag,mb)}
+      if (Array.isArray(tag.target)) {let mb = tag.target.slice(); tag.target = mb[0];if (mb.length>1) console.log("warning, more targets per annotations. tag,mb:",tag,mb)}
       //add body value
      if (!tag.body.hasOwnProperty('value')) { // set body value from body.items[last] - or from body.source
         if (tag.body.items && tag.body.items.length > 0) tag.body.value = tag.body.items[tag.body.items.length - 1].value
@@ -147,6 +148,7 @@ export class Annotations {
     let newtags=[]
     for (let tag of tags){
       if (Array.isArray(tag.body)) {let mb = tag.body.slice(); tag.body = mb[0];if (mb.length>1) console.log("warning, more bodies per annotations. tag,mb:",tag,mb)}
+      if (Array.isArray(tag.target)) {let mb = tag.target.slice(); tag.target = mb[0];if (mb.length>1) console.log("warning, more targets per annotations. tag,mb:",tag,mb)}
       newtags.push(tag)
     }
     return newtags;
