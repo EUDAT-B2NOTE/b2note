@@ -115,7 +115,7 @@ export class Home {
         },
         'generator': {
           'type': 'Software',
-          'homepage': window.location.protocol+window.location.host+window.location.pathname,
+          'homepage': window.location.protocol+'//'+window.location.host+window.location.pathname,
           'name': 'B2Note v2.0'
         },
         'created': datetime.toISOString(),
@@ -179,7 +179,7 @@ export class Home {
           },
           'generator': {
             'type': 'Software',
-            'homepage': window.location.protocol+window.location.host+window.location.pathname,
+            'homepage': window.location.protocol+'//'+window.location.host+window.location.pathname,
             'name': 'B2Note v2.0'
           },
           'created': datetime.toISOString(),
@@ -215,7 +215,7 @@ export class Home {
           },
           'generator': {
             'type': 'Software',
-            'homepage': window.location.protocol+window.location.host+window.location.pathname,
+            'homepage': window.location.protocol+'//'+window.location.host+window.location.pathname,
             'name': 'B2Note v2.0'
           },
           'created': datetime.toISOString(),
