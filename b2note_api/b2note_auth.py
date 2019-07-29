@@ -177,7 +177,7 @@ def register(app):
             userprofile = app.data.driver.db['userprofile']
             #insert profile
             up = {
-                'id':ui['id'],
+                'id':str(ui['id']),
                 'pseudo':usertomigrate['nickname'],
                 'email':usertomigrate['email'],
                 'firstname':usertomigrate['first_name'],
@@ -193,7 +193,8 @@ def register(app):
             #list all annotations
             annotations = app.data.driver.db['annotations']
             #sets creator.id to all user's annotation
-            annotations.update_many({'creator.nickname':usertomigrate['nickname']},{ '$set' :{'creator.id':ui['id']}})
+            #creator is in old mongodb array, push to the first entry - creator.0.id
+            annotations.update_many({'creator.nickname':usertomigrate['nickname']},{ '$set' :{'creator.0.id':up['id']}})
             return up;
 
 
