@@ -30,6 +30,6 @@ export function configure(aurelia) {
     const registry = aurelia.container.get(CustomElementRegistry);
     registry.fallbackPrefix='b2note-';
     registry.useGlobalElements();
-    //aurelia.setRoot(PLATFORM.moduleName('widget/b2note'));
+
   });
 }
