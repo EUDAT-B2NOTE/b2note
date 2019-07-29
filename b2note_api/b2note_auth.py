@@ -17,7 +17,7 @@ class B2NoteAuth(TokenAuth):
 from flask import session, redirect
 from authlib.flask.client import OAuth
 from loginpass import create_flask_blueprint,Google
-from loginpass_b2access import B2Access
+from loginpass_b2access import create_b2access_backend
 import os
 
 BASE_URI = os.environ.get("GAUTH_BASE_URI", default=False)
@@ -91,6 +91,9 @@ def register(app):
     """
     oauth = OAuth(app)
     # registering flask blueprint with /b2access/login and /b2access/auth endpoints supporting oauth workflow
+    B2ACCESS_API_URL=os.environ.get('B2ACCESS_API_URL',default='https://unity.eudat-aai.fz-juelich.de/')
+    B2Access = create_b2access_backend('b2access',B2ACCESS_API_URL)
+
     b2accessbp = create_flask_blueprint(B2Access, oauth, handle_authorize_b2access)
     app.register_blueprint(b2accessbp, url_prefix='/b2access')
 

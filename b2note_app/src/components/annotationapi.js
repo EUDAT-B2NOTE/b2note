@@ -65,6 +65,7 @@ export class AnnotationApi {
     this.lastsuggest = {}; //associative array of suggestion containing ontologies
     this.afs=this.afk=this.afc=0; //indeces for cache purpose - increment when some change appears
     this.router=undefined;//router
+    this.homeattached=false;//workaround for webcomponent routing
   }
 
   /**

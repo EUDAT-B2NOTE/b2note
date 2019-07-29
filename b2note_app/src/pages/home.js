@@ -47,10 +47,12 @@ export class Home {
     this.selectedItem = null;
     this.selectedItems = [];// [items[Math.floor(Math.random() * 1000)], items[Math.floor(Math.random() * 1000)]];
     this.keywordterms=0;
-    
+    //console.log('Home()')
   }
   
   attached() {
+    //console.log('Home.attached()')
+    this.api.homeattached=true;
     //this.manualtarget = this.api.getManualTarget();
     this.api.getUserInfo()
       .then(data => {

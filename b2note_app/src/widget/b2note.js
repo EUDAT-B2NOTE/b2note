@@ -22,13 +22,28 @@ export class B2note {
   }
 
   bind(){
+    //console.log('widget.b2note.bind()')
     this.api.targetid = this.targetid;
     this.api.targetsource = this.targetsource;
   }
 
+  //webcomponent workaround to show router-view
+  async attached(){
+        //console.log('widget.b2note.attached()')
+        await sleep(200);
+        //console.log('widget.b2note.attached() navigate')
+        //ugly workaround - navigate to account and back to render route
+    if (!this.api.homeattached) {
+      console.log('widget.b2note.attached() render router-view workaround')
+      this.router.navigate('b2note_download')
+      this.router.navigateBack()
+    }
+  }
+
  configureRouter(config, router) {
-    //console.log('configurerouter()',config,router);
+    //console.log('widget.b2note.configurerouter()',config,router);
     config.title = 'B2Note';
+
     config.map([
       {
         route: ['','b2note_home','b2note_home/*target'],
@@ -83,4 +98,8 @@ export class B2note {
     this.router=router;
     this.api.router = router;
   }
+}
+
+function sleep(ms){
+    return new Promise(resolve => setTimeout(resolve, ms));
 }

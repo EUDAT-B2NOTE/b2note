@@ -12,6 +12,7 @@ import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import environment from './environment';
 import {PLATFORM} from 'aurelia-pal';
+//import '@babel/polyfill';
 
 export function configure(aurelia) {
   aurelia.use

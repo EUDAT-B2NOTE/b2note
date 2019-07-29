@@ -7,20 +7,31 @@
  */
 import {EventAggregator} from 'aurelia-event-aggregator';
 import {Userinfo} from './messages'
-import {bindable, inject} from 'aurelia-framework';
+import {inject} from 'aurelia-framework';
+import {Router} from 'aurelia-router';
 
-@inject(EventAggregator)
+
+
+@inject(EventAggregator,Router)
 export class Navbar {
-  @bindable router;
+  //@bindable router;
 
-  constructor(ea) {
+  constructor(ea,router) {
     this.username = "";
     this.ea = ea;
     this.loggedin=false;
+    //console.log('Navbar()')
+    this.router=router;
   }
 
   attached() {
+    //console.log('Navbar.attached(), router:',this.router)
+    //console.log('Navbar.attached(), router:',this.router.navigation)
+    this.navigation=this.router.navigation; //fix - router navbar not rendered in webcomponent
     this.s1 = this.ea.subscribe(Userinfo, msg => this.changeUserInfo(msg.userinfo));
+    //debug webcomponents routing - navigate to home doesn't work
+    //console.log('navigate to home')
+    //this.router.navigate('b2note_home')
   }
 
   detached() {
