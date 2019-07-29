@@ -22,9 +22,9 @@ export class B2note {
   }
 
   bind(){
-    //console.log('widget.b2note.bind()')
-    this.api.targetid = this.targetid;
-    this.api.targetsource = this.targetsource;
+    console.log('widget.b2note.bind() id,source',this.targetid,this.targetsource)
+    this.api.target.id = this.targetid;
+    this.api.target.source = this.targetsource;
   }
 
   //webcomponent workaround to show router-view

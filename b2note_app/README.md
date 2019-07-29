@@ -1,7 +1,7 @@
 # B2NOTE APP
 
 Frontend application consisting of web pages UI and logic in order to support data annotation and 
-relevant use case. This component is bootstrapped by [aurelia-cli](https://github.com/aurelia/cli). For more information, go to https://aurelia.io/docs/cli/webpack
+relevant use case. This component is bootstrapped by [aurelia-cli](https://github.com/aurelia/cli) and bundled using Webpack (https://aurelia.io/docs/cli/webpack).
 
 ## Development environmnent 
 
@@ -15,9 +15,12 @@ To enable Webpack Bundle Analyzer, do `au run --analyze`.
 
 To enable hot module reload, do `au run --hmr`.
 
-## Build for production
+## Build for development and production
 
-Run `au build --env prod`.
+Run `au build --watch`. This will create `/dist` folder containing webpack bundled application and 
+static files coppied from `/static` folder.
+
+Run `au build --env prod` to build the app for production environment
 
 ## Tests
 
@@ -49,21 +52,17 @@ Run `au teste2e` in order to test without gecko and on Chrome version 73.
 Web components (https://www.webcomponents.org) is standardized way to export complex web application into reusable component.
 B2NOTE app exports custom-elements for these components using 'b2note-' prefix:
 
-- widget/b2note
-- pages/search
-- pages/home
-- pages/help
+- widget/b2note as `<b2note-b2note targetsource="" targetid="">`
+- pages/search as `<b2note-search>`
+- pages/home as `<b2note-home>`
+- pages/help as `<b2note-help>`
 
-Further webcomponents can be exported by ammending the `src/webcomponent/b2note.js`.
+Further webcomponents can be exported by ammending the `src/webcomponent/b2note.js` and building the app.bundle.js.
  
 Script with bundle `b2note_app/dist/app.bundle.js` can be used to add b2note web components into any web application or web page.
 
-The following HTML snippet loads first the `app.bundle.js` script containing b2note widget.
-Then within the <body> there is used custom attribute aurelia-app=”webcomponent/b2note” which registers b2note components into custom elements.
-Within the <body> the following custom elements can be used:
-<au-b2note> renders full b2note widget
-<au-search> renders search dialog of b2note widget
-<au-home> renders home page (create and annotation overview) of b2note widget
+The following HTML snippet loads first the `app.bundle.js` script and use element `<b2note-b2note>`.
+ 
 
 <!DOCTYPE html>
 <html>
@@ -75,8 +74,11 @@ Within the <body> the following custom elements can be used:
   <body aurelia-app="webcomponent/b2note">
   <h3>B2NOTE as web component</h3>
   <p>This is demo page for B2NOTE web component.</p>
-  <p>au-b2note</p>
-  <au-b2note></au-b2note>
-</body>
+  <div id="aucontainer2" style="float:right;width:33%">b2note-b2note
+    <button onclick="document.getElementById('aucontainer2').hidden=true" title="close b2note component">x</button>
+    <b2note-b2note targetsource="https://b2share.eudat.eu/records/39fa39965b314f658e4a198a78d7f6b5" targetid="http://hdl.handle.net/11304/3720bb44-831c-48f3-9847-6988a41236e1"></b2note-b2note>
+  <br/>
+  </div>
+  </body>
 </html>
 
