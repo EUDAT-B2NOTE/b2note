@@ -150,8 +150,9 @@ def register(app):
         else:
             # do migration
             b = migrateuser(ui)
-            b['token']=ui['token']
-            ui = b
+            if b!=None:
+                b['token']=ui['token']
+                ui = b
             ui['_id']= str(ui['_id'])
         #print('get_user_info',ui['name'])
         return ui
