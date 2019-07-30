@@ -120,9 +120,7 @@ export class Annotations {
     let tagset = {} // set of body values
     let newtags = []
     for (let tag of tags) {
-      //workaround, set body record from body[0] - body[0] from b2note v1.0
-      if (Array.isArray(tag.body)) {let mb = tag.body.slice(); tag.body = mb[0];if (mb.length>1) console.log("warning, more bodies per annotations. tag,mb:",tag,mb)}
-      if (Array.isArray(tag.target)) {let mb = tag.target.slice(); tag.target = mb[0];if (mb.length>1) console.log("warning, more targets per annotations. tag,mb:",tag,mb)}
+      this.checkAnnotationV1V2(tag)
       //add body value
      if (!tag.body.hasOwnProperty('value')) { // set body value from body.items[last] - or from body.source
         if (tag.body.items && tag.body.items.length > 0) tag.body.value = tag.body.items[tag.body.items.length - 1].value
@@ -147,13 +145,47 @@ export class Annotations {
   repair(tags){
     let newtags=[]
     for (let tag of tags){
-      if (Array.isArray(tag.body)) {let mb = tag.body.slice(); tag.body = mb[0];if (mb.length>1) console.log("warning, more bodies per annotations. tag,mb:",tag,mb)}
-      if (Array.isArray(tag.target)) {let mb = tag.target.slice(); tag.target = mb[0];if (mb.length>1) console.log("warning, more targets per annotations. tag,mb:",tag,mb)}
+      this.checkAnnotationV1V2(tag);
       newtags.push(tag)
     }
     return newtags;
   }
 
+
+  checkAnnotationV1V2(tag) {
+  //BI-39 workaround, set body record from body[0] - body[0] from b2note v1.0
+    if (Array.isArray(tag.body)) {
+      let mb = tag.body.slice();
+      tag.body = mb[0];
+      if (mb.length > 1) console.log("Annotations.checkAnnotationV1V2() warning: more bodies per annotations. tag,mb:", tag, mb)
+    }
+    if (Array.isArray(tag.target)) {
+      let mb = tag.target.slice();
+      tag.target = mb[0];
+      if (mb.length > 1) console.log("Annotations.checkAnnotationV1V2() warning: more targets per annotations. tag,mb:", tag, mb)
+    }
+    if (Array.isArray(tag.motivation)) {
+      let mb = tag.motivation.slice();
+      tag.motivation = mb[0];
+      if (mb.length > 1) console.log("Annotations.checkAnnotationV1V2() warning: more motivation per annotations. tag,mb:", tag, mb)
+    }
+    if (Array.isArray(tag.motivation)) {
+      let mb = tag.motivation.slice();
+      tag.motivation = mb[0];
+      if (mb.length > 1) console.log("Annotations.checkAnnotationV1V2() warning: more motivation per annotations. tag,mb:", tag, mb)
+    }
+    if (Array.isArray(tag.generator)) {
+      let mb = tag.generator.slice();
+      tag.generator = mb[0];
+      if (mb.length > 1) console.log("Annotations.checkAnnotationV1V2() warning: more generator per annotations. tag,mb:", tag, mb)
+    }
+    if (Array.isArray(tag.creator)) {
+      let mb = tag.creator.slice();
+      tag.creator = mb[0];
+      if (mb.length > 1) console.log("Annotations.checkAnnotationV1V2() warning: more creator per annotations. tag,mb:", tag, mb)
+    }
+    if (!tag.target.hasOwnProperty('id') && tag.target.hasOwnProperty('jsonld_id')) tag.target.id = tag.target.jsonld_id
+  }
 
   showMySemantic() {
     this.showmydetail = true;
