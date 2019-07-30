@@ -153,7 +153,7 @@ def register(app):
             if b!=None:
                 b['token']=ui['token']
                 ui = b
-            ui['_id']= str(ui['_id'])
+                ui['_id']= str(ui['_id'])
         #print('get_user_info',ui['name'])
         return ui
 
