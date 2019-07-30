@@ -7,7 +7,7 @@
 import {AnnotationApi} from '../components/annotationapi';
 import {EventAggregator} from 'aurelia-event-aggregator';
 import {inject} from 'aurelia-framework';
-import {Taginfo,Updateall,Updatefile} from "./messages";
+import {Taginfo, Updateall, Updatefile} from "./messages";
 
 @inject(AnnotationApi, EventAggregator)
 export class Annotations {
@@ -52,8 +52,8 @@ export class Annotations {
     this.updateAll();
   }
 
-  updateAll(){
-    this.showmydetail=false;
+  updateAll() {
+    this.showmydetail = false;
     if (this.showall) {
       this.api.getAllMyAnnotationsSemantic()
         .then(data => {
@@ -79,8 +79,8 @@ export class Annotations {
     this.updateFile();
   }
 
-  updateFile(){
-        this.showfiledetail=false;
+  updateFile() {
+    this.showfiledetail = false;
     if (this.showfile) {
       this.api.getAllAnnotationsFileSemantic()
         .then(data => {
@@ -122,7 +122,7 @@ export class Annotations {
     for (let tag of tags) {
       this.checkAnnotationV1V2(tag)
       //add body value
-     if (!tag.body.hasOwnProperty('value')) { // set body value from body.items[last] - or from body.source
+      if (!tag.body.hasOwnProperty('value')) { // set body value from body.items[last] - or from body.source
         if (tag.body.items && tag.body.items.length > 0) tag.body.value = tag.body.items[tag.body.items.length - 1].value
         else if (tag.body.source) tag.body.value = tag.body.source;
       }
@@ -142,48 +142,41 @@ export class Annotations {
     return newtags;
   }
 
-  repair(tags){
-    let newtags=[]
-    for (let tag of tags){
+  repair(tags) {
+    let newtags = []
+    for (let tag of tags) {
       this.checkAnnotationV1V2(tag);
       newtags.push(tag)
     }
     return newtags;
   }
 
+  clean(myObj) {
+    Object.keys(myObj).forEach((key) => (myObj[key] == null) && delete myObj[key]);
+  }
+
+  flatten(tag, prop) {
+    if (Array.isArray(tag[prop])) {
+      //copy first element of array
+      let mb = tag[prop].slice();
+      let myObj = mb[0];
+      //clean the element from null values
+      Object.keys(myObj).forEach((key) => (myObj[key] == null) && delete myObj[key]);
+      //replace array with cleaned obj
+      tag[prop] = myObj;
+      //show warning if more elements are in array
+      if (mb.length > 1) console.log("Annotations.checkAnnotationV1V2() warning: more " + prop + " per annotations. tag,mb:", tag, mb)
+    }
+  }
+
 
   checkAnnotationV1V2(tag) {
-  //BI-39 workaround, set body record from body[0] - body[0] from b2note v1.0
-    if (Array.isArray(tag.body)) {
-      let mb = tag.body.slice();
-      tag.body = mb[0];
-      if (mb.length > 1) console.log("Annotations.checkAnnotationV1V2() warning: more bodies per annotations. tag,mb:", tag, mb)
-    }
-    if (Array.isArray(tag.target)) {
-      let mb = tag.target.slice();
-      tag.target = mb[0];
-      if (mb.length > 1) console.log("Annotations.checkAnnotationV1V2() warning: more targets per annotations. tag,mb:", tag, mb)
-    }
-    if (Array.isArray(tag.motivation)) {
-      let mb = tag.motivation.slice();
-      tag.motivation = mb[0];
-      if (mb.length > 1) console.log("Annotations.checkAnnotationV1V2() warning: more motivation per annotations. tag,mb:", tag, mb)
-    }
-    if (Array.isArray(tag.motivation)) {
-      let mb = tag.motivation.slice();
-      tag.motivation = mb[0];
-      if (mb.length > 1) console.log("Annotations.checkAnnotationV1V2() warning: more motivation per annotations. tag,mb:", tag, mb)
-    }
-    if (Array.isArray(tag.generator)) {
-      let mb = tag.generator.slice();
-      tag.generator = mb[0];
-      if (mb.length > 1) console.log("Annotations.checkAnnotationV1V2() warning: more generator per annotations. tag,mb:", tag, mb)
-    }
-    if (Array.isArray(tag.creator)) {
-      let mb = tag.creator.slice();
-      tag.creator = mb[0];
-      if (mb.length > 1) console.log("Annotations.checkAnnotationV1V2() warning: more creator per annotations. tag,mb:", tag, mb)
-    }
+    //BI-39 workaround, set body record from body[0] - body[0] from b2note v1.0
+    this.flatten(tag,"body")
+    this.flatten(tag,"target")
+    this.flatten(tag,"motivation")
+    this.flatten(tag,"generator")
+    this.flatten(tag,"creator")
     if (!tag.target.hasOwnProperty('id') && tag.target.hasOwnProperty('jsonld_id')) tag.target.id = tag.target.jsonld_id
   }
 
