@@ -14,12 +14,12 @@ SELECT * FROM accounts_annotatorprofile;
 EOT
 
 echo Cleaning mongodb user profiles, copy annotation from v1 collection
-mongo -u $MONGODB_USR -p $MONGODB_PWD -d MONGODB_NAME <<EOF
+mongo -u $MONGODB_USR -p $MONGODB_PWD $MONGODB_NAME <<EOF
 db.userprofile.drop()
 db.userstomigrate.drop()
 db.b2note_app_annotation.aggregate([{$match:{} },{ $out: "annotations"} ])
 EOF
 
 echo Importing user db to migrate
-mongoimport --d $MONGODB_NAME -u $MONGODB_USR -p $MONGODB_PWD --collection userstomigrate --file userprofiles.csv --type csv --headerline
+mongoimport -d $MONGODB_NAME -u $MONGODB_USR -p $MONGODB_PWD --collection userstomigrate --file userprofiles.csv --type csv --headerline
 
