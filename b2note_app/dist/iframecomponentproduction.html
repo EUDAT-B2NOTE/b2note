@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>B2Note iframe component demo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <base href="">
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="UTF-8">
+
+	
      <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
@@ -13,57 +12,22 @@
 
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    <!-- imported CSS are concatenated and added automatically -->
-    <script>
-      /**
- * Defines the height of the iframe in the onload event.
- * @param {String} subject
- * @return None
- */
-function load_iframe(subject){
-  console.log('load_iframe')
-	var iframe = window.parent.document.getElementById("b2note_iframe");
-	var doc = iframe.contentDocument? iframe.contentDocument:
-        iframe.contentWindow.document;
-	iframe.style.visibility = 'hidden';
-	iframe.style.height = "10px"; // reset to minimal height ...
-	// IE opt. for bing/msn needs a bit added or scrollbar appears
-	iframe.style.height = getDocHeight( doc ) + 4 + "px";
-	iframe.style.visibility = 'visible';
-	iframe.subject_tofeed=subject;
-}
 
-function show_iframe(subject){
-  console.log('show_iframe')
-	var iframe = window.parent.document.getElementById("b2note_iframe");
-	iframe.style.visibility = 'visible';
-	return true;
-}
-/**
- * Helper function which returns the higher value of the document height.
- * @param {Object} doc
- * @return {Number} height
- */
-function getDocHeight(doc) {
-    doc = doc || document;
-    // stackoverflow.com/questions/1145850/
-    var body = doc.body, html = doc.documentElement;
-    var height = Math.max( body.scrollHeight, body.offsetHeight,
-        html.clientHeight, html.scrollHeight, html.offsetHeight );
-    return height;
-}
+    <link rel="stylesheet" type="text/css" href="iframecomponentproduction/style.css">
+    <script src="iframecomponentproduction/utils.js"></script>
 
-    </script>
-    <style>
+	<title>B2NOTE v2.0 service pilot</title>
+
+<style>
 	#header {height: auto !important; }
 
 	#hostpage {background: #FFFFFF; }
-	#content {background: #FFFFFF url("/static/images/bg_b2note.jpg") no-repeat fixed center center !important; padding-bottom: 40px;}
+	/*#content {background: #FFFFFF url("/static/images/bg_b2note.jpg") no-repeat fixed center center !important; padding-bottom: 40px;}*/
 
 	#hostpage h1 {text-align: left;}
 	footer {
 	    /* background: #dddddd url("/static/images/decor-footer.png") no-repeat scroll right bottom; */
-	    background: #f7f3e9 repeat-x scroll left top;
+	    background: #f7f3e9;/* url("/static/images/color-line.png") repeat-x scroll left top;*/
 	    height: auto;
 	    padding: 20px 40px;
 	}
@@ -96,16 +60,67 @@ function getDocHeight(doc) {
 	}
 </style>
 
-  </head>
-  <body>
-          <div class = "container">
-            <h1>B2NOTE</h1>
-                       <p>The EUDAT and EOSC-Hub annotation service<br><br></p>
+</head>
+
+<body id="hostpage">
+
+	<header>
+
+		<div id="header-top">
+
+			<a href="http://www.eudat.eu/" target="_blank">GO TO EUDAT WEBSITE</a>
+
+		</div>
+
+		<div class="container" id="header">
+
+            <section class="row clearfix">
+
+              <div class="col-xs-12 col-sm-12 col-md-2">
+                    <img alt="EUDAT" title="EUDAT" src="iframecomponentproduction/logo.png" style="width: 100%;">
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-10">
+    			    <!--img alt="B2NOTE" title="B2NOTE" src="/static/images/B2NOTE%20-%20logo.png" /-->
+                </div>
+
+                <div class="clear"> </div>
+
+            </section>
+
+		</div>
+
+        <div class="clear"> </div>
+
+	</header>
+
+
+	<div class="container" id="content">
+
+        
+
+        <div style="position:absolute; top: 200px; right: 5%; border: 1px solid #1133EE; padding: 10px; background: #FAFAFA; border-radius: 10px"><br>
+            <h3 style="font-size: 20px;">Make annotations </h3><br>
+            <div style="width: 70%; margin-left: auto; margin-right: auto;">
+                <a href="https://b2share.eudat.eu/" class="btn btn-primary" title="Click to be directed to B2SHARE." target="_blank">Go to B2SHARE</a>
+            </div> <br><br><br>
+            <h3 style="font-size: 20px;">Learn and Train</h3><br>
+            <div style="width: 50%; margin-left: auto; margin-right: auto;">
+                <a href="https://b2note.bsc.es/" class="btn btn-primary" title="Click to be directed to B2SHARE training instance." target="_blank">Sandbox</a>
+            </div><br>
         </div>
 
-        <div class = "container">
+        <div class="container">
+            <h1>B2NOTE</h1>
+            <p>The EUDAT and EOSC Hub annotation service<br><br></p>
+        </div>
+
+        <div class="container">
             <h3>Use annotations to structure your data</h3>
-            <p>An annotation is a keyword or commentary attached to a file, that explains or classifies it. With B2Note, you can easily create and manage your annotations. There exist 3 types of annotations in B2Note:</p>
+            <p>An annotation is a keyword or commentary attached to a 
+file, that explains or classifies it. With B2Note, you can easily create
+ and manage your annotations. There exist 3 types of annotations in 
+B2Note:</p>
             <ul>
                 <li>The <b>semantic tag</b>, a keyword from an <b>ontology</b>;</li>
                 <li>The <b>free-text keyword</b>, a keyword chosen by the user. If possible, use semantic tags over free-text keywords.</li>
@@ -114,58 +129,38 @@ function getDocHeight(doc) {
             <p>B2Note is currently integrated in B2Share: access files with B2Share, then annotate them with B2Note.</p>
         </div>
 
-        <div class = "container">
+        <div class="container">
             <h3>How to use it</h3>
             <p>Here is how to access the B2NOTE console from a B2SHARE file record page.</p>
-            <p><b>Step 1:</b> Pick a file in <a href="https://b2share.eudat.eu">B2SHARE</a>.</p>
+            <p><b>Step 1:</b> Pick a file in <a href="https://b2share.eudat.eu/">B2SHARE</a>.</p>
             <p><b>Step 2:</b> Click on the arrow next to the file you want to annotate to reveal the annotation button.</p>
-            <p style="text-align:center;"><img src="/b2note/Description_UseinB2SHARE.png" style="width:550px;"/></p>
+            <p style="text-align:center;"><img src="iframecomponentproduction/Description_UseinB2SHARE.png" style="width:550px;"></p>
             <p><b>Step 3:</b> Click on the button to show the widget. The widget should appear at the right of the browser window.</p>
-            <p style="text-align:center;"><a href="https://b2share.eudat.eu" class="btn btn-primary" title="Click to be directed to B2SHARE." target="_blank"/>Access B2SHARE</a></p>
+            <p style="text-align:center;"><a href="https://b2share.eudat.eu/" class="btn btn-primary" title="Click to be directed to B2SHARE." target="_blank">Access B2SHARE</a></p>
         </div>
 
-        <div class = "container">
+	<div class="container">
+            <h3>Feedback</h3>
+	    <p>We'd like to invite you to participate in a short survey to help us improve the B2Note service with your <a href="https://b2note.eudat.eu/user-feedback" target="_blank">feedback</a>.</p>
+        </div>
+
+        <div class="container">
             <h3>Sandbox</h3>
-            <p>Annotations are ony valuable if they make sense. If you want to make random annotations for trying B2Note, please use the <a href="https://b2note.bsc.es">sandbox</a>.</p>
+            <p>Annotations are ony valuable if they make sense. If you want to make random annotations for trying B2Note, please use the <a href="https://b2note.bsc.es/">sandbox</a>.</p>
         </div>
 
-  </p>
-    <div id="aucontainer" style="float:right;width:33%">
-  </div>
-          <div class = "container">
+        
 
-            <a class="btn btn-info" data-toggle="collapse" href="#collapse3"><strong>Further information</strong></a>
+	</div>
 
-            <div id="collapse3" class="panel-collapse collapse in">
 
-                <div class="panel-body">
-
-                    <div class="clear"> </div>
-
-                    <p>
-                        The necessary information was collected by hand for a small subset of
-                        files. <br /> However, it is expected that the information can easily
-                        be gathered in an automated way by the actual file-hosting service.
-                    </p>
-
-                    <p>This information includes:</p>
-
-                    <ul>
-
-                        <li>The hyperlink address of the file (required).</li>
-                        <li>A human-readable label for the hyperlink (optional).</li>
-
-                    </ul>
-
-                </div>
-
-            </div>
-
-        </div>
 	<footer>
 		<div id="footer-content">
 			<div class="container">
 				<div class="row">
+					<div class="col-xs-12 col-sm-1 col-md-1">
+						<img alt="CE logo" title="CE logo" src="iframecomponentproduction/logo_ce.jpg">
+					</div>
 					<div class="col-xs-12 col-sm-5 col-md-5">
 						<p>
 							EUDAT received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No. 654065.
@@ -174,10 +169,20 @@ function getDocHeight(doc) {
                             <a href="https://www.eosc-hub.eu/" target="_blank">EOSC-Hub</a>
 						</p>
 					</div>
+					<div class="col-xs-12 col-sm-6 col-md-6 text-right">
+						<nav class="navbar navbar-footer">
+							<ul id="menu" class="nav navbar-nav navbar-right pull-right">
+								<li><a target="_blank" href="https://eudat.eu/what-eudat">About EUDAT</a></li>
+								<li><a href="http://hdl.handle.net/11304/e43b2e3f-83c5-4e3f-b8b7-18d38d37a6cd" target="_blank">Terms of Use</a></li>
+							</ul>
+						</nav>
+					</div>
 				</div>
 			</div>
 		</div>
 	</footer>
 
-  </body>
-</html>
+
+
+
+</body></html>
