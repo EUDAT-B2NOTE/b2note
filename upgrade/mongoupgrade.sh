@@ -1,6 +1,10 @@
-SQLITE_LOCATION=users.sqlite3
+export SQLDB_NAME='users.sqlite3'
+export MONGODB_NAME='b2note_mongodb'
+export MONGODB_USR='b2note'
+export MONGODB_PWD='b2note'
+
 echo Export users from sqlite
-sqlite3 $SQLITE_LICATION <<EOT
+sqlite3 $SQLDB_NAME <<EOT
 .headers on
 .mode csv
 .output userprofiles.csv
@@ -9,11 +13,11 @@ SELECT * FROM accounts_annotatorprofile;
 EOT
 
 echo Cleaning mongodb user profiles
-mongo -u $MONGODB_USER -p $MONGODB_PWD -d MONGODB_NAME <<EOF
+mongo -u $MONGODB_USR -p $MONGODB_PWD -d MONGODB_NAME <<EOF
 db.userprofile.drop()
 db.userstomigrate.drop()
 EOF
 
 echo Importing user db to migrate
-mongoimport --db $MONGODB_NAME --collection userstomigrate --file userprofiles.csv --type csv --headerline
+mongoimport --d $MONGODB_NAME -u $MONGODB_USR -p $MONGODB_PWD --collection userstomigrate --file userprofiles.csv --type csv --headerline
 
