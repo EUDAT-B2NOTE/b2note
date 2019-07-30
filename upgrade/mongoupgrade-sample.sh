@@ -1,3 +1,4 @@
+# sample file, copy to mongoupgrade.sh and edit the variables bellow
 export SQLDB_NAME='users.sqlite3'
 export MONGODB_NAME='b2note_mongodb'
 export MONGODB_USR='b2note'
@@ -12,10 +13,11 @@ SELECT * FROM accounts_annotatorprofile;
 .quit
 EOT
 
-echo Cleaning mongodb user profiles
+echo Cleaning mongodb user profiles, copy annotation from v1 collection
 mongo -u $MONGODB_USR -p $MONGODB_PWD -d MONGODB_NAME <<EOF
 db.userprofile.drop()
 db.userstomigrate.drop()
+db.b2note_app_annotation.aggregate([{$match:{} },{ $out: "annotations"} ])
 EOF
 
 echo Importing user db to migrate
